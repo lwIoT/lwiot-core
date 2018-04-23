@@ -45,6 +45,6 @@ ENDFUNCTION()
 prepend_path(GENERIC_HEADERS ${INCLUDE_DIR}/lwiot)
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${LWIOT_PORT_INCLUDE_DIR})
-add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HEADERS})
+add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS})
 
 CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/config.h)

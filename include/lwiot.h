@@ -7,4 +7,6 @@
 
 #pragma once
 
+#include <lwiot/lwiot.h>
+
 extern void lwiot_init();

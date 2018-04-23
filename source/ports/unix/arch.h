@@ -13,6 +13,8 @@
 #ifndef __UNIX_PORT_H__
 #define __UNIX_PORT_H__
 
+#include <lwiot/list.h>
+
 #include <pthread.h>
 
 typedef DLL_EXPORT struct mutex {
