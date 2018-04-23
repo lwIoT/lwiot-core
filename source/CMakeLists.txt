@@ -2,6 +2,8 @@
 # Source CMakeLists.txt
 #
 
+include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
+
 set(SOURCES
     init.c
 )

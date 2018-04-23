@@ -1,0 +1,7 @@
+if(WIN32)
+#include (${PROJECT_SOURCE_DIR}/cmake/win32.cmake)
+elseif(UNIX)
+include (${PROJECT_SOURCE_DIR}/cmake/unix.cmake)
+elseif(FREERTOS)
+#include (${PROJECT_SOURCE_DIR}/cmake/freertos.cmake)
+endif()
