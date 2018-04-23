@@ -11,7 +11,7 @@
 
 #include <stdlib.h>
 
-#include <lwiot/lwiot.h>
+#include <lwiot/compiler.h>
 
  /**
   * @brief List head structure.
