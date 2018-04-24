@@ -21,7 +21,7 @@
 #define container_of(ptr, type, entry) __compiler_co(ptr, type, entry)
 
 #ifndef __cplusplus
-typedef unsigned char bool;
+typedef char bool;
 
 #define false 0
 #define true !false

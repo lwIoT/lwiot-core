@@ -74,7 +74,7 @@ int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
 	if(!mtx->sem)
 		return -EINVALID;
 
-	mtx->recursive = !!(flags & MTX_RECURSIVE);
+	mtx->recursive = (flags & MTX_RECURSIVE) != 0;
 	return -EOK;
 }
 
@@ -99,9 +99,9 @@ int lwiot_mutex_lock(lwiot_mutex_t *mtx, int tmo)
 		ms = tmo / portTICK_RATE_MS;
 
 		if(mtx->recursive)
-			rv = xSemaphoreTakeRecursive(mtx->sem, ms) == pdTRUE;
+			rv = (bool) (xSemaphoreTakeRecursive(mtx->sem, ms) == pdTRUE);
 		else
-			rv = xSemaphoreTake(mtx->sem, ms) == pdTRUE;
+			rv = (bool) (xSemaphoreTake(mtx->sem, ms) == pdTRUE);
 	} else {
 		if(mtx->recursive)
 			while(xSemaphoreTakeRecursive(mtx->sem, portMAX_DELAY) != pdTRUE);
@@ -132,7 +132,7 @@ void lwiot_sleep(int ms)
 
 void lwiot_event_create(lwiot_event_t *event, int length)
 {
-	event->evq = xQueueCreate(length, sizeof(void*));
+	event->evq = xQueueCreate((const UBaseType_t) length, sizeof(void*));
 }
 
 int lwiot_event_wait(lwiot_event_t *event, int tmo)
@@ -210,7 +210,7 @@ void lwiot_timer_create(lwiot_timer_t *timer, const char *name, int ms,
 	else
 		timer->oneshot = false;
 
-	timer->timer = xTimerCreate(name, ms / portTICK_PERIOD_MS, !timer->oneshot, timer, vTimerCallbackHook);
+	timer->timer = xTimerCreate(name, ms / portTICK_PERIOD_MS, (const UBaseType_t) !timer->oneshot, timer, vTimerCallbackHook);
 	timer->created = true;
 	timer->state = TIMER_CREATED;
 }
@@ -229,7 +229,7 @@ int lwiot_timer_start(lwiot_timer_t *timer)
 		bt = xTimerStart(timer->timer, 0);
 
 	timer->expiry = (lwiot_utime() / 1000U) + vPortTickToMs(timer->period);
-	return (bt == pdPASS) ? -EOK : -ETMO;
+	return -EOK;
 }
 
 int lwiot_timer_stop(lwiot_timer_t *timer)
@@ -244,7 +244,7 @@ int lwiot_timer_stop(lwiot_timer_t *timer)
 		bt = xTimerStop(timer->timer, 0);
 
 	timer->state = TIMER_STOPPED;
-	return (bt == pdPASS) ? -EOK : -ETMO;
+	return -EOK;
 }
 
 int lwiot_timer_destroy(lwiot_timer_t *timer)
@@ -261,7 +261,7 @@ int lwiot_timer_destroy(lwiot_timer_t *timer)
 
 	timer->state = TIMER_STOPPED;
 	timer->created = false;
-	return (bt == pdPASS) ? -EOK : -ETMO;
+	return -EOK;
 }
 
 bool lwiot_timer_is_running(lwiot_timer_t *timer)

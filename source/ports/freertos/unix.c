@@ -21,7 +21,7 @@ time_t lwiot_utime(void)
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
-	rv = tv.tv_sec * 1000000ULL;
+	rv = (time_t) (tv.tv_sec * 1000000ULL);
 	rv += tv.tv_usec;
 	return rv;
 }
@@ -33,5 +33,6 @@ void __maybe vApplicationMallocFailedHook(void)
 
 void __maybe vApplicationStackOverflowHook(TaskHandle_t handle, char *name)
 {
+	UNUSED(handle);
 	fprintf(stderr, "Stack overflow on %s\n", name);
 }

@@ -53,7 +53,7 @@ extern DLL_EXPORT void lwiot_event_signal(lwiot_event_t *event);
 extern DLL_EXPORT int lwiot_event_wait(lwiot_event_t *event, int tmo);
 extern DLL_EXPORT void lwiot_event_signal_irq(lwiot_event_t *event);
 
-#define TIMER_ONSHOT_FLAG 0x1
+#define TIMER_ONSHOT_FLAG 0x1U
 extern DLL_EXPORT void lwiot_timer_create(lwiot_timer_t *timer, const char *name, int ms,
 	uint32_t flags, void *arg, void (*cb)(lwiot_timer_t *timer, void *arg));
 extern DLL_EXPORT int lwiot_timer_start(lwiot_timer_t *timer);

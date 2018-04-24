@@ -11,8 +11,8 @@
 #include <time.h>
 #include <assert.h>
 #include <lwiot.h>
-#include <pthread.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include <sys/time.h>
 
@@ -119,7 +119,7 @@ void lwiot_sleep(int ms)
 	time_t us;
 
 	us = ms * 1000;
-	usleep(us);
+	usleep((__useconds_t) us);
 }
 
 void lwiot_event_create(lwiot_event_t *event, int length)
@@ -156,7 +156,9 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 	assert(event);
 
 	pthread_mutex_lock(&event->mtx);
-	assert(++event->length < event->size);
+	event->length++;
+	assert(event->length < event->size);
+
 	while(!event->signalled) {
 		if(tmo == FOREVER) {
 			pthread_cond_wait(&event->cond, &event->mtx);
@@ -189,7 +191,7 @@ void lwiot_event_signal(lwiot_event_t *event)
 
 void lwiot_event_signal_irq(lwiot_event_t *event)
 {
-	/* ISR don't exist in UNIX userspace, which means that
+	/* ISR don't exist in UNIX user space, which means that
 	   something or somebody fucked up. Let them know. */
 	print_dbg("lwiot_event_signal_irq() called on Unix port!\n");
 	lwiot_event_signal(event);

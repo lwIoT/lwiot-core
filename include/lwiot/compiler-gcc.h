@@ -40,4 +40,6 @@
 #endif
 typedef unsigned char u_char;
 
+#define _GNU_SOURCE 1
+
 #define __compiler_barrier() __sync_synchronize()
