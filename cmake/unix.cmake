@@ -1,6 +1,7 @@
 SET(LWIOT_PORT_DIR ports/unix)
 SET(LWIOT_PORT_SRCS
-${LWIOT_PORT_DIR}/unix.c)
+${LWIOT_PORT_DIR}/unix.c
+ports/thread.cpp)
 SET(LWIOT_PORT_HEADERS
 ${LWIOT_PORT_DIR}/arch.h)
 SET(LWIOT_PORT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/source/ports/unix)

@@ -6,6 +6,7 @@ include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 
 set(SOURCES
     init.c
+    string.cpp
     ${LWIOT_PORT_SRCS}
 )
 
@@ -19,6 +20,8 @@ set(GENERIC_HEADERS
     config.h.in
     port.h
     types.h
+    string.h
+    thread.h
 )
 
 # Include timer implementation on UNIX and Windows builds
