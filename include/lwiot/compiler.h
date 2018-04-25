@@ -28,6 +28,11 @@ typedef char bool;
 #endif
 
 #ifdef __cplusplus
+#ifdef NULL
+#undef NULL
+#define NULL nullptr
+#endif
+
 #define CDECL extern "C" {
 #define CDECL_END }
 #else

@@ -1,8 +1,9 @@
 /*
-  WString.cpp - String library for Wiring & Arduino
+  string.cpp - String library for Wiring & Arduino
   ...mostly rewritten by Paul Stoffregen...
   Copyright (c) 2009-10 Hernando Barragan.  All rights reserved.
   Copyright 2011, Paul Stoffregen, paul@pjrc.com
+  Copyright 2018, Michel Megens <dev@bietje.net>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,6 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <lwiot/lwiot.h>
 #include <lwiot/string.h>
 
 namespace lwiot {
@@ -61,24 +63,30 @@ namespace lwiot {
 
 	String::String(unsigned char value, unsigned char base)
 	{
-		init();
 		char buf[1 + 8 * sizeof(unsigned char)];
+		UNUSED(base);
+
+		init();
 		sprintf(buf, "%u", value);
 		*this = buf;
 	}
 
 	String::String(int value, unsigned char base)
 	{
-		init();
 		char buf[2 + 8 * sizeof(int)];
+		UNUSED(base);
+
+		init();
 		sprintf(buf, "%i", value);
 		*this = buf;
 	}
 
 	String::String(unsigned int value, unsigned char base)
 	{
-		init();
+		UNUSED(base);
 		char buf[1 + 8 * sizeof(unsigned int)];
+
+		init();
 		sprintf(buf, "%u", value);
 		*this = buf;
 	}
@@ -88,6 +96,7 @@ namespace lwiot {
 		init();
 		char buf[2 + 8 * sizeof(long)];
 
+		UNUSED(base);
 		sprintf(buf, "%li", value);
 		*this = buf;
 	}
@@ -97,6 +106,7 @@ namespace lwiot {
 		init();
 		char buf[1 + 8 * sizeof(unsigned long)];
 
+		UNUSED(base);
 		sprintf(buf, "%lu", value);
 		*this = buf;
 	}
@@ -106,6 +116,7 @@ namespace lwiot {
 		init();
 		char buf[33];
 
+		UNUSED(decimalPlaces);
 		sprintf(buf, "%f", (double)value);
 		*this = buf;
 	}
@@ -115,6 +126,7 @@ namespace lwiot {
 		init();
 		char buf[33];
 
+		UNUSED(decimalPlaces);
 		sprintf(buf, "%f", value);
 		*this = buf;
 	}
@@ -128,17 +140,17 @@ namespace lwiot {
 	/*  Memory Management                        */
 	/*********************************************/
 
-	inline void String::init(void)
+	inline void String::init()
 	{
-		buffer = NULL;
+		buffer = nullptr;
 		capacity = 0;
 		len = 0;
 	}
 
-	void String::invalidate(void)
+	void String::invalidate()
 	{
 		if (buffer) free(buffer);
-		buffer = NULL;
+		buffer = nullptr;
 		capacity = len = 0;
 	}
 
