@@ -159,12 +159,12 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 
 void lwiot_event_signal_irq(lwiot_event_t *event)
 {
-	xQueueSendFromISR(&event->evq, &event, (portTickType) 0);
+	xQueueSendFromISR(&event->evq, &event, (TickType_t) 0);
 }
 
 void lwiot_event_signal(lwiot_event_t *event)
 {
-	xQueueSend(event->evq, &event, (portTickType) 0);
+	xQueueSend(event->evq, &event, (TickType_t) 0);
 }
 
 void lwiot_event_destroy(lwiot_event_t *e)

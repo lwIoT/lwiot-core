@@ -2,16 +2,26 @@
 # Source CMakeLists.txt
 #
 
+include(CheckIncludeFiles)
+include(CheckTypeSize)
+include(CheckCSourceCompiles)
+
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
+
+if(${HAVE_TASK_HANDLE_T})
+    message(STATUS "Foun task handle type!")
+endif()
 
 set(SOURCES
     init.c
+    log.c
     string.cpp
     ${LWIOT_PORT_SRCS}
 )
 
 set(GENERIC_HEADERS
     lwiot.h
+    log.h
     list.h
     error.h
     compiler.h
@@ -56,3 +66,7 @@ endif()
 add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS})
 
 CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/config.h)
+
+link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
+add_executable(thread-test test.cpp)
+target_link_libraries(thread-test freertos ${LWIOT_SYSTEM_LIBS} lwiot freertos)

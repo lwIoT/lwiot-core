@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include <arch.h>
 
-#define DLL_EXPORT
-
 #ifndef HAVE_MUTEX
 #error "Missing mutex definition!"
 #endif

@@ -5,9 +5,9 @@
  * @email  dev@bietje.net
  */
 
-#include <lwiot/port.h>
+#include <lwiot/log.h>
 
 void lwiot_init(void)
 {
-
+	log_init(stdout);
 }

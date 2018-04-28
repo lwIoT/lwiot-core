@@ -9,4 +9,6 @@
 
 #include <lwiot/lwiot.h>
 
+CDECL
 extern void lwiot_init();
+CDECL_END

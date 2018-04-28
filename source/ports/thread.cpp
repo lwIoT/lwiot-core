@@ -19,7 +19,7 @@ namespace lwiot
 		auto *ctx = (Thread*)arg;
 
 		ctx->run(ctx->argument);
-		ctx->kill();
+		ctx->stop();
 	}
 
 	Thread::Thread(const char *name, void *argument)
@@ -32,26 +32,31 @@ namespace lwiot
 		length = strlen(name);
 		this->internal.name = (char*)malloc(length + 1);
 		memcpy((void*)this->internal.name, name, length + 1);
+
+		print_dbg("Creating thread [%s]!\n", name);
+	}
+
+	Thread::Thread(const lwiot::String &name, void *argument) : Thread(name.c_str(), argument)
+	{
 	}
 
 	Thread::~Thread()
 	{
-		if(this->running) {
-			print_dbg("Deleting running thread!");
-		}
+		if(this->running)
+			this->stop();
 
-		this->stop();
-		free((void*)this->internal.name);
+		free((void*) this->internal.name);
 	}
 
-	void Thread::kill()
-	{}
-
 	void Thread::start()
-	{}
+	{
+		this->running = true;
+		lwiot_thread_create(&this->internal, thread_starter, this);
+	}
 
 	void Thread::stop()
 	{
 		this->running = false;
+		lwiot_thread_destroy(&this->internal);
 	}
 }
