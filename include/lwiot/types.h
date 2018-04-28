@@ -27,6 +27,12 @@ typedef uintptr_t size_t;
 typedef intptr_t ssize_t;
 #endif
 
+typedef enum {
+	TIMER_CREATED = 1,
+	TIMER_RUNNING,
+	TIMER_STOPPED,
+} timer_state_t;
+
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif

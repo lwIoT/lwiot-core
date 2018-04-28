@@ -11,6 +11,7 @@
 #cmakedefine HAVE_WINSOCK_H
 #cmakedefine HAVE_INET_H
 #cmakedefine HAVE_TIME_H
+#cmakedefine HAVE_STDBOOL_H
 #cmakedefine HAVE_DEBUG
 #cmakedefine HAVE_CI
 #cmakedefine HAVE_GENERIC_SYS
@@ -20,3 +21,8 @@
 
 #cmakedefine HAVE_SIZE_T
 #cmakedefine HAVE_SSIZE_T
+#cmakedefine HAVE_TASKHANDLE_T
+#cmakedefine HAVE_QUEUEHANDLE_T
+#cmakedefine HAVE_SEMAPHOREHANDLE_T
+#cmakedefine HAVE_TIMERHANDLE_T
+#cmakedefine HAVE_TICKTYPE_T

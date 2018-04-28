@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include <arch.h>
 
-#include <lwiot/lwiot.h>
-
 #define DLL_EXPORT
 
 #ifndef HAVE_MUTEX

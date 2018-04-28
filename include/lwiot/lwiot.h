@@ -12,12 +12,10 @@
 #include <lwiot/compiler.h>
 #include <lwiot/types.h>
 
-typedef enum {
-	TIMER_CREATED = 1,
-	TIMER_RUNNING,
-	TIMER_STOPPED,
-} timer_state_t;
-
 #include <lwiot/port.h>
+
+#ifdef UNUSED
+#undef UNUSED
+#endif
 
 #define UNUSED(x) (void)x

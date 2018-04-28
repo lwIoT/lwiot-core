@@ -9,12 +9,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
-#include <lwiot.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
+#include <lwiot.h>
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>
@@ -132,7 +132,7 @@ void lwiot_sleep(int ms)
 
 void lwiot_event_create(lwiot_event_t *event, int length)
 {
-	event->evq = xQueueCreate((const UBaseType_t) length, sizeof(void*));
+	event->evq = xQueueCreate(length, sizeof(void*));
 }
 
 int lwiot_event_wait(lwiot_event_t *event, int tmo)
@@ -210,7 +210,7 @@ void lwiot_timer_create(lwiot_timer_t *timer, const char *name, int ms,
 	else
 		timer->oneshot = false;
 
-	timer->timer = xTimerCreate(name, ms / portTICK_PERIOD_MS, (const UBaseType_t) !timer->oneshot, timer, vTimerCallbackHook);
+	timer->timer = xTimerCreate(name, ms / portTICK_PERIOD_MS, !timer->oneshot, timer, vTimerCallbackHook);
 	timer->created = true;
 	timer->state = TIMER_CREATED;
 }

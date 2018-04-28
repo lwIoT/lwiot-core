@@ -20,7 +20,7 @@ typedef enum error_code {
 	ENOSOCK,
 	ETMO,
 	EISCONNECTED,
-} error_t;
+} lwiot_error_t;
 
 #define ETIMEOUT ETMO
 

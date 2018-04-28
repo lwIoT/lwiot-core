@@ -13,11 +13,40 @@
 #ifndef __RTOS_PORT_H__
 #define __RTOS_PORT_H__
 
+#include <config.h>
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
 #include <timers.h>
+
+#ifndef HAVE_TASKHANDLE_T
+typedef xTaskHandle TaskHandle_t;
+#endif
+
+#ifndef HAVE_QUEUEHANDLE_T
+typedef xQueueHandle QueueHandle_t;
+#endif
+
+#ifndef HAVE_SEMAPHOREHANLE_T
+typedef xSemaphoreHandle SemaphoreHandle_t;
+#endif
+
+#ifndef HAVE_TIMERHANDLE_T
+typedef xTimerHandle TimerHandle_t;
+#endif
+
+#ifndef HAVE_TICKTYPE_T
+#define TickType_t portTickType
+#define BaseType_t portBASE_TYPE
+#endif
+
+#ifndef portTICK_PERIOD_MS
+#define portTICK_PERIOD_MS portTICK_RATE_MS
+#endif
+
+#include <lwiot/compiler.h>
+#include <lwiot/lwiot.h>
 
 typedef struct thread {
 	const char *name;

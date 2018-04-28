@@ -9,6 +9,8 @@
 #ifndef __COMPILER_H__
 #define __COMPILER_H__
 
+#include <config.h>
+
 #ifdef WIN32
 #include <lwiot/compiler-vc.h>
 #else
@@ -21,10 +23,16 @@
 #define container_of(ptr, type, entry) __compiler_co(ptr, type, entry)
 
 #ifndef __cplusplus
+
+#ifdef HAVE_STDBOOL_H
+#include <stdbool.h>
+#else
 typedef char bool;
 
 #define false 0
 #define true !false
+#endif
+
 #endif
 
 #ifdef __cplusplus

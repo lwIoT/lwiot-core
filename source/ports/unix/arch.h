@@ -13,6 +13,7 @@
 #ifndef __UNIX_PORT_H__
 #define __UNIX_PORT_H__
 
+#include <lwiot/types.h>
 #include <lwiot/list.h>
 
 #include <pthread.h>
