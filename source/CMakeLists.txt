@@ -4,18 +4,6 @@
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 
-
-if(FREERTOS)
-    SET(CMAKE_REQUIRED_INCLUDES ${LWIOT_PORT_INCLUDE_DIRECTORIES})
-    SET(CMAKE_EXTRA_INCLUDE_FILES FreeRTOS.h task.h queue.h semphr.h timers.h)
-    CHECK_TYPE_SIZE(TaskHandle_t HAVE_TASKHANDLE_T)
-    CHECK_TYPE_SIZE(QueueHandle_t HAVE_QUEUEHANDLE_T)
-    CHECK_TYPE_SIZE(SemaphoreHandle_t HAVE_SEMAPHOREHANDLE_T)
-    CHECK_TYPE_SIZE(TimerHandle_t HAVE_TIMERHANDLE_T)
-    CHECK_TYPE_SIZE(TickType_t HAVE_TICKTYPE_T)
-    CHECK_INCLUDE_FILES (stdbool.h  HAVE_STDBOOL_H)
-endif()
-
 set(SOURCES
     init.c
     string.cpp
