@@ -46,7 +46,7 @@ namespace lwiot {
 		*this = value;
 	}
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 
 	String::String(String &&rval)
 	{
@@ -203,7 +203,7 @@ namespace lwiot {
 		return *this;
 	}
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 
 	void String::move(String &rhs)
 	{

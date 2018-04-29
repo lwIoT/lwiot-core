@@ -34,13 +34,9 @@ namespace lwiot {
 
 		String(const String &str);
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-
 		String(String &&rval);
-
 		String(StringSumHelper &&rval);
 
-#endif
 
 		explicit String(char c);
 
@@ -297,7 +293,7 @@ namespace lwiot {
 		// copy and move
 		String &copy(const char *cstr, unsigned int length);
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 
 		void move(String &rhs);
 
