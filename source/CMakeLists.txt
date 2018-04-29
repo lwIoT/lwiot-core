@@ -63,10 +63,15 @@ if(EXTRA_LINK_DIRECTORIES)
     link_directories(${EXTRA_LINK_DIRECTORIES})
 endif()
 
+SET(${SOURCES} ${SOURCES})
 add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} ${LWIOT_PORT_HEADERS})
+link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
 
 CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
 
-link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
-#add_executable(thread-test test.cpp)
-#target_link_libraries(thread-test freertos ${LWIOT_SYSTEM_LIBS} lwiot freertos)
+
+foreach(source IN LISTS ${SOURCES})
+    get_filename_component(source_path "${source}" PATH)
+    string(REPLACE "/" "\\" source_path_msvc "Source Files\\${source_path}")
+    source_group("${source_path_msvc}" FILES "${source}")
+endforeach()
