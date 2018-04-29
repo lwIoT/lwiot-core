@@ -82,7 +82,7 @@ if(CMAKE_SYSTEM_NAME MATCHES Generic)
     SET(HAVE_GENERIC_SYS True)
 endif()
 
-if( NOT CMAKE_SYSTEM_NAME MATCHES Generic )
+if( NOT CMAKE_SYSTEM_NAME MATCHES Generic OR PORT MATCHES unix )
     add_subdirectory(scripts)
 
     if(CMAKE_BUILD_TYPE MATCHES Debug)
