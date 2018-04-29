@@ -5,7 +5,7 @@ ELSE()
     SET(BOT_SRC bot/byteordertool.c)
 ENDIF()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/bot)
 add_executable(byteordertool ${BOT_SRC})
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/scripts/ci-runner.py ${CMAKE_BINARY_DIR}/scripts/ci-runner.py COPYONLY)

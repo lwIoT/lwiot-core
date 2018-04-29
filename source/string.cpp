@@ -20,11 +20,17 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#define _CRT_SECURE_NO_WARNINGS 1
+
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <lwiot/lwiot.h>
 #include <lwiot/string.h>
+
+#ifdef WIN32
+#pragma warning (disable : 4244)
+#endif
 
 namespace lwiot {
 	String::String(const char *cstr)
