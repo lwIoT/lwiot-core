@@ -14,5 +14,5 @@
 void lwiot_init(void)
 {
 	log_init(stdout);
-	print_dbg("lwIoT initialised!");
+	print_dbg("lwIoT initialised!\n");
 }
