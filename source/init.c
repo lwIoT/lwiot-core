@@ -6,9 +6,13 @@
  */
 
 #include <stdio.h>
-#include <lwiot.h>
+
+#include <lwiot/lwiot.h>
+#include <lwiot/log.h>
+
 
 void lwiot_init(void)
 {
-	printf("lwIoT initialised!\n");
+	log_init(stdout);
+	print_dbg("lwIoT initialised!");
 }

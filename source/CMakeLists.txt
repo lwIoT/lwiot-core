@@ -2,16 +2,48 @@
 # Source CMakeLists.txt
 #
 
+include(CheckIncludeFiles)
+include(CheckTypeSize)
+include(CheckCSourceCompiles)
+
+include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
+
+if(${HAVE_TASK_HANDLE_T})
+    message(STATUS "Foun task handle type!")
+endif()
+
 set(SOURCES
     init.c
+    log.c
+    string.cpp
+    ${LWIOT_PORT_SRCS}
 )
 
 set(GENERIC_HEADERS
     lwiot.h
+    log.h
+    list.h
+    error.h
+    compiler.h
+    compiler-gcc.h
+    compiler-vc.h
+    config.h.in
+    port.h
+    types.h
+    string.h
+    thread.h
 )
+
+# Include timer implementation on UNIX and Windows builds
+IF(NOT CMAKE_SYSTEM_NAME MATCHES Generic)
+SET(SOURCES
+${SOURCES}
+ports/timer.c)
+ENDIF()
 
 set(BASE_HDRS
     ${PROJECT_SOURCE_DIR}/include/lwiot.h
+    ${PROJECT_BINARY_DIR}/lwiot_opts.h
 )
 
 SET(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
@@ -25,5 +57,16 @@ ENDFUNCTION()
 
 prepend_path(GENERIC_HEADERS ${INCLUDE_DIR}/lwiot)
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR})
-add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HEADERS})
+include_directories(${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${EXTRA_INCLUDE_DIRECTORIES} ${LWIOT_PORT_INCLUDE_DIRECTORIES})
+
+if(EXTRA_LINK_DIRECTORIES)
+    link_directories(${EXTRA_LINK_DIRECTORIES})
+endif()
+
+add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} ${LWIOT_PORT_HEADERS})
+
+CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
+
+link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
+#add_executable(thread-test test.cpp)
+#target_link_libraries(thread-test freertos ${LWIOT_SYSTEM_LIBS} lwiot freertos)
