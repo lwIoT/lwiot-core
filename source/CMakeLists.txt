@@ -43,7 +43,7 @@ ENDIF()
 
 set(BASE_HDRS
     ${PROJECT_SOURCE_DIR}/include/lwiot.h
-    ${PROJECT_BINARY_DIR}/config.h
+    ${PROJECT_BINARY_DIR}/lwiot_opts.h
 )
 
 SET(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
@@ -63,10 +63,10 @@ if(EXTRA_LINK_DIRECTORIES)
     link_directories(${EXTRA_LINK_DIRECTORIES})
 endif()
 
-add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS})
+add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} ${LWIOT_PORT_HEADERS})
 
-CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/config.h)
+CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
 
 link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
-add_executable(thread-test test.cpp)
-target_link_libraries(thread-test freertos ${LWIOT_SYSTEM_LIBS} lwiot freertos)
+#add_executable(thread-test test.cpp)
+#target_link_libraries(thread-test freertos ${LWIOT_SYSTEM_LIBS} lwiot freertos)

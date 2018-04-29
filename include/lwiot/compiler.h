@@ -9,7 +9,7 @@
 #ifndef __COMPILER_H__
 #define __COMPILER_H__
 
-#include <config.h>
+#include <lwiot_opts.h>
 
 #ifdef WIN32
 #include <lwiot/compiler-vc.h>

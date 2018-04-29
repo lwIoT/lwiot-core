@@ -9,7 +9,7 @@
 #ifndef __ESTACK_TYPES_H__
 #define __ESTACK_TYPES_H__
 
-#include "config.h"
+#include "lwiot_opts.h"
 
 #ifdef HAVE_TIME_H
 #include <time.h>

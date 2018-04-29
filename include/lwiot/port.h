@@ -11,7 +11,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include <arch.h>
+#include <lwiot_arch.h>
 
 #ifndef HAVE_MUTEX
 #error "Missing mutex definition!"

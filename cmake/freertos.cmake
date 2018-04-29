@@ -5,7 +5,7 @@ SET(LWIOT_PORT_SRCS
 )
 
 SET(LWIOT_PORT_HEADERS
-${LWIOT_PORT_DIR}/arch.h)
+${LWIOT_PORT_DIR}/lwiot_arch.h)
 
 SET(FREERTOS_DIR "${PROJECT_SOURCE_DIR}/external/freertos" CACHE STRING "FreeRTOS directory")
 SET(FREERTOS_CONFIG_DIR "${PROJECT_SOURCE_DIR}/external/freertos/config" CACHE STRING "FreeRTOS config directory")

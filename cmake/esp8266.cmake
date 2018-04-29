@@ -58,12 +58,12 @@ SET(LWIOT_PORT_SRCS
         )
 
 SET(LWIOT_PORT_HEADERS
-        ${LWIOT_PORT_DIR}/arch.h)
+        ${LWIOT_PORT_DIR}/lwiot_arch.h)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections" CACHE FORCE "")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
     -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
 
 SET(HAVE_RTOS True)

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <config.h>
+#include <lwiot_opts.h>
 
 #include <lwiot/compiler.h>
 #include <lwiot/types.h>

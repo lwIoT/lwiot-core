@@ -13,7 +13,7 @@
 #ifndef __RTOS_PORT_H__
 #define __RTOS_PORT_H__
 
-#include <config.h>
+#include <lwiot_opts.h>
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>

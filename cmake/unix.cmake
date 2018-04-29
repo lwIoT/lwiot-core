@@ -3,7 +3,7 @@ SET(LWIOT_PORT_SRCS
 ${LWIOT_PORT_DIR}/unix.c
 ports/thread.cpp)
 SET(LWIOT_PORT_HEADERS
-${LWIOT_PORT_DIR}/arch.h)
+${LWIOT_PORT_DIR}/lwiot_arch.h)
 SET(LWIOT_PORT_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/source/ports/unix)
 
 find_package(Threads REQUIRED)
