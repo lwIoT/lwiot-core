@@ -12,6 +12,8 @@ set(SOURCES
     init.c
     log.c
     string.cpp
+	ports/thread.cpp
+	ports/lock.cpp
     ${LWIOT_PORT_SRCS}
 )
 
@@ -28,6 +30,7 @@ set(GENERIC_HEADERS
     types.h
     string.h
     thread.h
+	lock.h
 )
 
 # Include timer implementation on UNIX and Windows builds

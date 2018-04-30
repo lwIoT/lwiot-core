@@ -55,7 +55,6 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
         ${LWIOT_PORT_DIR}/rtos.c
-        ports/thread.cpp
         )
 
 SET(LWIOT_PORT_HEADERS

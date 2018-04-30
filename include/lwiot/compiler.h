@@ -1,5 +1,5 @@
 /*
- * E/STACK - Compiler header
+ * lwIoT - Compiler header
  *
  * Author: Michel Megens
  * Date: 12/12/2017
