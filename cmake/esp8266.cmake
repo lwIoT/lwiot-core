@@ -4,6 +4,7 @@ include(CMakeForceCompiler)
 
 set(XTENSA_GCC_COMPILER "xtensa-lx106-elf-gcc${CMAKE_EXECUTABLE_SUFFIX}")
 set(XTENSA_GXX_COMPILER "xtensa-lx106-elf-g++${CMAKE_EXECUTABLE_SUFFIX}")
+set(HAVE_BIG_ENDIAN False)
 
 if(NOT DEFINED ESP8266_TOOLCHAIN_PATH)
     # Check if GCC is reachable.

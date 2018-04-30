@@ -8,10 +8,6 @@ include(CheckCSourceCompiles)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 
-if(${HAVE_TASK_HANDLE_T})
-    message(STATUS "Foun task handle type!")
-endif()
-
 set(SOURCES
     init.c
     log.c

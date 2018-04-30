@@ -3,6 +3,8 @@ SET(CMAKE_SYSTEM_VERISON 1)
 
 SET(CMAKE_C_COMPILER avr-gcc)
 SET(CMAKE_CXX_COMPILER avr-g++)
+set(HAVE_BIG_ENDIAN False)
+
 
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

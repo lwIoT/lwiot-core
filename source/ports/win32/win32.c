@@ -23,7 +23,7 @@
 #include <Windows.h>
 
 #define WIN32_EPOCH_ADJUSTMENT 11644473600000000ULL
-time_t lwiot_utime(void)
+time_t lwiot_tick(void)
 {
 	time_t rv;
 	FILETIME ft;

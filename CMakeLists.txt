@@ -5,6 +5,7 @@ include(CMakeToolsHelpers OPTIONAL)
 include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
+include(TestBigEndian)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
@@ -32,7 +33,13 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
 
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} -Wall")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} -Wall")
+	
+	if(UNIX)
+		TEST_BIG_ENDIAN(HAVE_BIG_ENDIAN)
+	endif()
 elseif(WIN32)
+	TEST_BIG_ENDIAN(HAVE_BIG_ENDIAN)
+
     if(CMAKE_BUILD_TYPE MATCHES Debug)
         SET(CFLAGS_EXTRA "/W4 /Od /Ob1 /Zi /Gd")
     elseif(CMAKE_BUILD_TYPE MATCHES Release)

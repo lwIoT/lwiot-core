@@ -12,6 +12,7 @@
 #cmakedefine HAVE_INET_H
 #cmakedefine HAVE_TIME_H
 #cmakedefine HAVE_STDBOOL_H
+#cmakedefine HAVE_BIG_ENDIAN
 #cmakedefine HAVE_DEBUG
 #cmakedefine HAVE_CI
 #cmakedefine HAVE_GENERIC_SYS

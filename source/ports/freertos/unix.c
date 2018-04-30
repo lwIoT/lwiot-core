@@ -15,7 +15,7 @@
 
 #include <sys/time.h>
 
-time_t lwiot_utime(void)
+time_t lwiot_tick(void)
 {
 	time_t rv;
 	struct timeval tv;

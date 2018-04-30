@@ -49,7 +49,7 @@ static void timer_thread_handle(void *arg)
 			break;
 		}
 
-		now = lwiot_utime();
+		now = lwiot_tick();
 		list_for_each_safe(entry, tmp, &timers) {
 			timer = list_entry(entry, struct timer, entry);
 			if(now >= timer->expiry) {
@@ -113,7 +113,7 @@ int lwiot_timer_start(lwiot_timer_t *timer)
 		return -EINVALID;
 
 	timers_lock();
-	timer->expiry = lwiot_utime() + timer->tmo;
+	timer->expiry = lwiot_tick() + timer->tmo;
 	timer->state = TIMER_RUNNING;
 	list_add(&timer->entry, &timers);
 	timers_unlock();

@@ -32,7 +32,7 @@
 
 typedef void (*thread_handle_t)(void *arg);
 CDECL
-extern DLL_EXPORT time_t lwiot_utime(void);
+extern DLL_EXPORT time_t lwiot_tick(void);
 
 extern DLL_EXPORT int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg);
 extern DLL_EXPORT int lwiot_thread_destroy(lwiot_thread_t *tp);
