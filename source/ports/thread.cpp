@@ -17,9 +17,7 @@ namespace lwiot
 	void thread_starter(void *arg)
 	{
 		auto *ctx = (Thread*)arg;
-
 		ctx->run(ctx->argument);
-		ctx->stop();
 	}
 
 	Thread::Thread(const char *name, void *argument)
