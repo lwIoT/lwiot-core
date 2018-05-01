@@ -1,5 +1,5 @@
 /*
- * E/STACK timer implementation
+ * lwIoT timer implementation
  * 
  * Author: Michel Megens
  * Date:   16/01/2018

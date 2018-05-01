@@ -14,5 +14,11 @@
 void lwiot_init(void)
 {
 	log_init(stdout);
+	lwiot_timers_init();
 	print_dbg("lwIoT initialised!");
+}
+
+void lwiot_destroy(void)
+{
+	lwiot_timers_destroy();
 }

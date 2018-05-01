@@ -11,6 +11,7 @@
 
 #include <lwiot/lock.h>
 #include <lwiot/log.h>
+#include <lwiot/error.h>
 
 namespace lwiot {
 	Lock::Lock(bool recursive)
@@ -29,6 +30,11 @@ namespace lwiot {
 	void Lock::lock()
 	{
 		lwiot_mutex_lock(&this->mtx, FOREVER);
+	}
+
+	bool Lock::try_lock(int tmo)
+	{
+		return lwiot_mutex_lock(&this->mtx, tmo) == -EOK;
 	}
 
 	void Lock::unlock()

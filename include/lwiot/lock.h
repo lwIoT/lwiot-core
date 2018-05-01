@@ -17,6 +17,7 @@ namespace lwiot {
 		virtual ~Lock();
 
 		void lock();
+		bool try_lock(int tmo = 100);
 		void unlock();
 
 	private:

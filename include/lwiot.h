@@ -11,7 +11,9 @@
 
 #ifdef __cplusplus
 extern "C" void lwiot_init();
+extern "C" void lwiot_destroy();
 #else
 extern void lwiot_init();
+extern void lwiot_destroy();
 #endif
 
