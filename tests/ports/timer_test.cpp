@@ -10,6 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/timer.h>
+#include <lwiot/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/test.h>
 
@@ -35,27 +36,48 @@ private:
 	int _ticks;
 };
 
+class ThreadTest : public lwiot::Thread {
+public:
+	explicit ThreadTest(const char *arg) : Thread("Testing thread", (void*)arg)
+	{
+	}
+
+protected:
+	void run(void *_argument) override
+	{
+		TestTimer *timer;
+
+		timer = new TestTimer("Test tmr", 500, 0, nullptr);
+		lwiot_sleep(1020);
+		assert(timer->ticks() == 0);
+
+		timer->start();
+		lwiot_sleep(2020);
+		assert(timer->ticks() == 4);
+
+		timer->stop();
+		lwiot_sleep(1000);
+		assert(timer->ticks() == 4);
+		delete timer;
+
+#ifdef HAVE_RTOS
+		vTaskEndScheduler();
+#endif
+	}
+};
+
 int main(int argc, char **argv)
 {
-	TestTimer *timer;
-
+	lwiot_init();
 	UNUSED(argc);
 	UNUSED(argv);
 
-	lwiot_init();
+	ThreadTest t1("timer-test");
 
-	timer = new TestTimer("Test tmr", 500, 0, nullptr);
-	lwiot_sleep(1020);
-	assert(timer->ticks() == 0);
-
-	timer->start();
-	lwiot_sleep(2020);
-	assert(timer->ticks() == 4);
-
-	timer->stop();
-	lwiot_sleep(1000);
-	assert(timer->ticks() == 4);
-	delete timer;
+	t1.start();
+#ifdef HAVE_RTOS
+	vTaskStartScheduler();
+#endif
 
 	lwiot_destroy();
 	wait_close();
