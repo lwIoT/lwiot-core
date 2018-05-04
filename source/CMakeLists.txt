@@ -16,6 +16,7 @@ set(SOURCES
     init.c
     log.c
     string.cpp
+	log.cpp
     ${LWIOT_PORT_SRCS}
 )
 
