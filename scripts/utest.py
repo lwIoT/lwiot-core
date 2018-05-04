@@ -99,6 +99,7 @@ class ConfigParser(object):
                     print 'Test \'%s\' does not exist in %s!' % (t, args.config)
                     exit(1)
 
+
     def print_results(self):
         print "Unit test results:"
         for t in self.tests:
