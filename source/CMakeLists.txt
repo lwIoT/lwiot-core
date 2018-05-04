@@ -14,6 +14,7 @@ set(SOURCES
     string.cpp
 	ports/thread.cpp
 	ports/lock.cpp
+	ports/event.cpp
 	ports/timer.cpp
     ${LWIOT_PORT_SRCS}
 )
@@ -32,6 +33,7 @@ set(GENERIC_HEADERS
     string.h
     thread.h
 	lock.h
+	event.h
 	timer.h
 )
 
