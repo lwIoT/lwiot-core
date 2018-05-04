@@ -1,0 +1,22 @@
+esp8266:
+    defs:
+        - CMAKE_TOOLCHAIN_FILE=../../cmake/esp8266-open-rtos.cmake
+        - CMAKE_SYSTEM_NAME=Generic
+        - CONFIG_NO_SYS=True
+        - FREERTOS=True
+        - FREERTOS_MANUAL=True
+        - ESP8266_TOOLCHAIN_PATH=~/usr/xtensa
+        - ESP8266_OPEN_RTOS_PATH=~/usr/esp-open-rtos
+
+freertos:
+    defs:
+        - FREERTOS=True
+        - CONFIG_NO_SYS=False
+        - CMAKE_SYSTEM_NAME=Generic
+
+unix:
+    defs:
+        - CONFIG_NO_SYS=False
+win32:
+    defs:
+        - CONFIG_NO_SYS=False

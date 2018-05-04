@@ -27,7 +27,7 @@ void print_dbg(const char *fmt, ...)
 	va_list va;
 
 	va_start(va, fmt);
-	vfprint_dbg("[E/STACK]: ", fmt, va);
+	vfprint_dbg("[lwIoT]: ", fmt, va);
 	va_end(va);
 }
 #endif
@@ -37,7 +37,7 @@ void panic(const char *fmt, ...)
 	va_list va;
 
 	va_start(va, fmt);
-	vfprint_dbg("[E/STACK PANIC]: ", fmt, va);
+	vfprint_dbg("[lwIoT PANIC]: ", fmt, va);
 	va_end(va);
 }
 

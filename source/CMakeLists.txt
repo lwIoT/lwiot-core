@@ -11,6 +11,7 @@ include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 set(SOURCES
     init.c
     log.c
+	log.cpp
     string.cpp
 	ports/thread.cpp
 	ports/lock.cpp
