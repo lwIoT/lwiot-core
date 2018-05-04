@@ -12,3 +12,6 @@ target_link_libraries(timer-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(thread-test thread_test.cpp)
 target_link_libraries(thread-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
+
+add_executable(events-test events_test.cpp)
+target_link_libraries(events-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
