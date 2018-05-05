@@ -32,13 +32,25 @@ protected:
 	}
 };
 
+static void main_thread(void *arg)
+{
+	lwiot_sleep(6000);
+#ifdef HAVE_RTOS
+	vTaskEndScheduler();
+#endif
+}
+
 int main(int argc, char **argv)
 {
+	lwiot_thread_t tp;
+
 	lwiot_init();
 	print_dbg("Creating threads..\n");
 
 	ThreadTest t1("Thread 1"),
 		t2("Thread 2");
+	tp.name = "main";
+	lwiot_thread_create(&tp, main_thread, NULL);
 
 	t1.start();
 	t2.start();
@@ -49,6 +61,7 @@ int main(int argc, char **argv)
 
 	t1.stop();
 	t2.stop();
+	lwiot_thread_destroy(&tp);
 
 	lwiot_destroy();
 	wait_close();
