@@ -62,6 +62,8 @@ extern DLL_EXPORT bool lwiot_timer_is_running(lwiot_timer_t *timer);
 extern DLL_EXPORT int lwiot_timer_set_period(lwiot_timer_t *timer, int ms);
 extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
 
+extern DLL_EXPORT void udelay(uint32_t us);
+
 #define FOREVER 0
 CDECL_END
 
