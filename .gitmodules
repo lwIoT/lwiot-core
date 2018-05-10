@@ -1,0 +1,3 @@
+[submodule "external/arduino-freertos/freertos"]
+	path = external/arduino-freertos/freertos
+	url = https://github.com/feilipu/Arduino_FreeRTOS_Library.git
