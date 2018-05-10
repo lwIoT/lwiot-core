@@ -14,6 +14,7 @@ set(SOURCES
 	stream.cpp
 	log.cpp
     string.cpp
+	bufferedstream.cpp
 	ports/thread.cpp
 	ports/lock.cpp
 	ports/event.cpp
@@ -36,6 +37,7 @@ set(GENERIC_HEADERS
     string.h
     thread.h
 	lock.h
+	bufferedstream.h
 	event.h
 	timer.h
 )

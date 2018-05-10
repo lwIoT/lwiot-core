@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <lwiot/lwiot.h>
 #include <lwiot/types.h>
 #include <lwiot/string.h>
 
