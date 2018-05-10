@@ -12,6 +12,7 @@ freertos:
     defs:
         - FREERTOS=True
         - CONFIG_NO_SYS=False
+        - PORT=unix
         - CMAKE_SYSTEM_NAME=Generic
 
 unix:

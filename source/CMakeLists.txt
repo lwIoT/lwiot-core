@@ -11,6 +11,7 @@ include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 set(SOURCES
     init.c
     log.c
+	stream.cpp
 	log.cpp
     string.cpp
 	ports/thread.cpp
@@ -21,6 +22,7 @@ set(SOURCES
 )
 
 set(GENERIC_HEADERS
+	stream.h
     lwiot.h
     log.h
     list.h

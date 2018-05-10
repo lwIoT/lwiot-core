@@ -48,7 +48,6 @@ namespace lwiot {
 	}
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-
 	String::String(String &&rval)
 	{
 		init();

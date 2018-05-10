@@ -33,8 +33,10 @@ namespace lwiot {
 
 		String(const String &str);
 
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 		String(String &&rval);
 		String(StringSumHelper &&rval);
+#endif
 
 
 		explicit String(char c);
@@ -71,11 +73,8 @@ namespace lwiot {
 		String &operator=(const char *cstr);
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-
 		String &operator=(String &&rval);
-
 		String &operator=(StringSumHelper &&rval);
-
 #endif
 
 		// concatenate (works w/ built-in types)
