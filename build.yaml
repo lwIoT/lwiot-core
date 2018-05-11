@@ -41,3 +41,4 @@ atmega2560:
         - FREERTOS=True
         - FREERTOS_MANUAL=True
         - AVR=True
+        - F_CPU=16000000

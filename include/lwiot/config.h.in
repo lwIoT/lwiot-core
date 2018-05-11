@@ -27,3 +27,5 @@
 #cmakedefine HAVE_SEMAPHOREHANDLE_T
 #cmakedefine HAVE_TIMERHANDLE_T
 #cmakedefine HAVE_TICKTYPE_T
+
+#cmakedefine F_CPU ${F_CPU}
