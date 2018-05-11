@@ -72,6 +72,7 @@ if(EXTRA_LINK_DIRECTORIES)
 endif()
 
 SET(${SOURCES} ${SOURCES})
+
 add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} ${LWIOT_PORT_HEADERS})
 link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
 

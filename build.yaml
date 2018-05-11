@@ -8,6 +8,16 @@ esp8266:
         - ESP8266_TOOLCHAIN_PATH=~/usr/xtensa
         - ESP8266_OPEN_RTOS_PATH=~/usr/esp-open-rtos
 
+esp32:
+    defs:
+        - CMAKE_TOOLCHAIN_FILE=../../cmake/esp32.cmake
+        - CMAKE_SYSTEM_NAME=Generic
+        - CONFIG_NO_SYS=True
+        - FREERTOS=True
+        - FREERTOS_MANUAL=True
+        - ESP32_TOOLCHAIN_PATH=~/opt/xtensa-esp32-elf
+        - ESP32_IDF_PATH=~/usr/esp-idf
+
 freertos:
     defs:
         - FREERTOS=True
@@ -21,3 +31,13 @@ unix:
 win32:
     defs:
         - CONFIG_NO_SYS=False
+        
+atmega2560:
+    defs:
+        - MCU=atmega2560
+        - CONFIG_NO_SYS=True
+        - CMAKE_SYSTEM_NAME=Generic
+        - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
+        - FREERTOS=True
+        - FREERTOS_MANUAL=True
+        - AVR=True

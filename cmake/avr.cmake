@@ -14,5 +14,17 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 SET(MCU "atmega2560" CACHE STRING "AVR MCU type")
 
+
+set(LWIOT_PORT_INCLUDE_DIRECTORIES
+        ${PROJECT_SOURCE_DIR}/source/ports/freertos
+		${PROJECT_SOURCE_DIR}/external/arduino-freertos
+		${PROJECT_SOURCE_DIR}/external/arduino-freertos/freertos/src
+)
+
+SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
+SET(LWIOT_PORT_SRCS
+	${LWIOT_PORT_DIR}/rtos.c
+)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU}")

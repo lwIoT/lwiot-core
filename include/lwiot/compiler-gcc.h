@@ -35,9 +35,6 @@
 		const typeof( ((type *)0)->member) *__mptr = (ptr); \
 		(type *)( ( char *)__mptr - offsetof(type,member) );})
 
-#ifndef __always_inline__
-#define __always_inline__ __attribute__((__always_inline__))
-#endif
 typedef unsigned char u_char;
 
 #define __compiler_barrier() __sync_synchronize()
