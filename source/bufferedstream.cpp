@@ -144,6 +144,11 @@ namespace lwiot {
 		return this->_data[indx];
 	}
 
+	size_t BufferedStream::length() const
+	{
+		return this->wr_idx;
+	}
+
 	void BufferedStream::append(void* data, size_t length)
 	{
 		if((length + this->wr_idx) > this->_size) {

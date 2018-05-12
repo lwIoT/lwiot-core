@@ -48,6 +48,9 @@ namespace lwiot {
 		virtual uint8_t read() override;
 		virtual String toString();
 
+	protected:
+		virtual size_t length() const;
+
 	private:
 		/* methods */
 		void append(void *data, size_t length);
