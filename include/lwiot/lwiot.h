@@ -19,3 +19,5 @@
 #endif
 
 #define UNUSED(x) (void)x
+
+#define CXX __cplusplus

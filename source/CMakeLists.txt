@@ -5,6 +5,7 @@
 include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
+include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 
@@ -20,10 +21,12 @@ set(SOURCES
 	ports/lock.cpp
 	ports/event.cpp
 	ports/timer.cpp
+	${IO_SOURCES}
     ${LWIOT_PORT_SRCS}
 )
 
 set(GENERIC_HEADERS
+	gpiochip.h
 	stream.h
 	vector.h
     lwiot.h
@@ -79,7 +82,6 @@ add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} ${LWIOT_PORT_HEADER
 link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
 
 CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
-
 
 foreach(source IN LISTS ${SOURCES})
     get_filename_component(source_path "${source}" PATH)
