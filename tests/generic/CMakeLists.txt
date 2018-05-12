@@ -12,5 +12,8 @@ target_link_libraries(string-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
 add_executable(log-test log_test.cpp)
 target_link_libraries(log-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
 
+add_executable(vector-test vector_test.cpp)
+target_link_libraries(vector-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
+
 add_executable(bufferedstream-test bufferedstream_test.cpp)
 target_link_libraries(bufferedstream-test lwiot ${LWIOT_SYSTEM_LIBS})
