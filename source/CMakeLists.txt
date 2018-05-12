@@ -14,6 +14,7 @@ set(SOURCES
 	stream.cpp
 	log.cpp
     string.cpp
+	vector.cpp
 	bufferedstream.cpp
 	ports/thread.cpp
 	ports/lock.cpp
@@ -24,6 +25,7 @@ set(SOURCES
 
 set(GENERIC_HEADERS
 	stream.h
+	vector.h
     lwiot.h
     log.h
     list.h
