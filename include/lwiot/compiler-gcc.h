@@ -38,3 +38,20 @@
 typedef unsigned char u_char;
 
 #define __compiler_barrier() __sync_synchronize()
+
+#ifdef IDE
+/*
+ * Visual studio code is far beyond retarded and doesn't understand
+ * GCC attributes. Fix it by using an IDE only define.
+ */
+#ifdef PROGMEM
+#undef PROGMEM
+#undef __LPM_classic__
+#undef __LPM_word_classic__
+#endif
+
+#define __LPM_classic__(addr) 0
+#define __LPM_word_classic__(addr) 0
+#define cli()
+#define PROGMEM
+#endif

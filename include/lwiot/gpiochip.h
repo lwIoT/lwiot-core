@@ -27,12 +27,11 @@ namespace lwiot
 		virtual void write(int pin, bool value) = 0;
 		virtual bool read(int pin) = 0;
 
-		virtual void open_drain() = 0;
-		virtual void od_write(int pin, bool value) = 0;
+		virtual void setOpenDrain(int pin) = 0;
+		virtual void odWrite(int pin, bool value) = 0;
 
 		virtual void input(int pin);
 		virtual void output(int pin);
-
 
 		const unsigned int& pins() const;
 

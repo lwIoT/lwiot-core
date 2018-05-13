@@ -29,3 +29,7 @@
 #cmakedefine HAVE_TICKTYPE_T
 
 #cmakedefine F_CPU ${F_CPU}
+#cmakedefine CONFIG_PINS ${CONFIG_PINS}
+#cmakedefine PINS ${CONFIG_PINS}
+#cmakedefine ARDUINO_MEGA
+#cmakedefine ARDUINO_UNO

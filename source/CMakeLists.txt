@@ -27,6 +27,7 @@ set(SOURCES
 
 set(GENERIC_HEADERS
 	gpiochip.h
+	avrgpiochip.h
 	stream.h
 	vector.h
     lwiot.h
