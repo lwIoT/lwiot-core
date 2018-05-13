@@ -9,6 +9,8 @@
 
 namespace lwiot
 {
+	extern void *grow(uint8_t *old, size_t oldsize);
+
 	template<class T> class Vector {
 	public:
 		explicit Vector() : Vector(8) { }
@@ -27,7 +29,7 @@ namespace lwiot
 		void add(const T& obj)
 		{
 			if(this->_length == this->_size) {
-				this->_data = (T*) grow(this->_size * 2U);
+				this->_data = (T*) grow((uint8_t*)this->_data, this->_size);
 				this->_size = this->_size * 2U;
 			}
 
@@ -69,6 +71,6 @@ namespace lwiot
 		size_t _length;
 		size_t _size;
 
-		friend void *grow(size_t newsize);
+		friend void *grow(uint8_t *old, size_t oldsize);
 	};
 }
