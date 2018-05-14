@@ -17,3 +17,6 @@ target_link_libraries(vector-test lwiot ${PCAP_LIBRARY} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(bufferedstream-test bufferedstream_test.cpp)
 target_link_libraries(bufferedstream-test lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(bytebuffer-test bytebuffer_test.cpp)
+target_link_libraries(bytebuffer-test lwiot ${LWIOT_SYSTEM_LIBS})
