@@ -15,6 +15,7 @@ namespace lwiot
 	enum PinMode {
 		INPUT,
 		INPUT_PULLUP,
+		INPUT_NOPULLUP,
 		OUTPUT,
 		OUTPUT_OPEN_DRAIN
 	};

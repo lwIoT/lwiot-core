@@ -58,6 +58,11 @@ namespace lwiot
 			*out &= ~bit;
 			break;
 
+		case INPUT_NOPULLUP:
+			*reg &= ~bit;
+			*out &= ~bit;
+			break;
+
 		case INPUT_PULLUP:
 			*reg &= ~bit;
 			*out |= bit;
