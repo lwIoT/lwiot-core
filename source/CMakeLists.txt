@@ -13,6 +13,7 @@ set(SOURCES
     init.c
     log.c
 	stream.cpp
+	bytebuffer.cpp
 	log.cpp
     string.cpp
 	vector.cpp
@@ -26,6 +27,8 @@ set(SOURCES
 )
 
 set(GENERIC_HEADERS
+	countable.h
+	bytebuffer.h
 	gpiochip.h
 	avrgpiochip.h
 	esp8266gpiochip.h
