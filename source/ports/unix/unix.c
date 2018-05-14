@@ -206,3 +206,9 @@ void lwiot_event_destroy(lwiot_event_t *e)
 	e->signalled = false;
 	e->size = 0;
 }
+
+void enter_critical()
+{ }
+
+void exit_critical()
+{ }

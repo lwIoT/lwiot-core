@@ -224,3 +224,9 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 
 	return (rv) ? -EOK : -ETMO;
 }
+
+void enter_critical()
+{ }
+
+void exit_critical()
+{ }
