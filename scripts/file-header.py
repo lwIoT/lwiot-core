@@ -17,7 +17,7 @@ except:
 class CliModel(object):
     def __init__(self):
         super(CliModel, self).__init__()
-        self.config = None
+        self.config = os.getcwd() + '/.header.yaml'
         self.description = None
         self.target = None
         self.force = False
@@ -29,7 +29,7 @@ class Application(object):
 
         self.model = CliModel()
         self.parser = argparse.ArgumentParser(description='lwIoT build configurator')
-        self.parser.add_argument('-c', '--config', metavar='PATH', help='build configuration file', required=True)
+        self.parser.add_argument('-c', '--config', metavar='PATH', help='build configuration file', required=False)
         self.parser.add_argument('-f', '--force', help='overwrite contents if FILE already exists', action='store_true')
         self.parser.add_argument('-d', '--description', metavar='DESCRIPTION', help='build configuration file', required=True)
         self.parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.0.1')
