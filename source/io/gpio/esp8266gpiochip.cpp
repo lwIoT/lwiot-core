@@ -47,6 +47,7 @@ namespace lwiot
 			GPIO.ENABLE_OUT_CLEAR = BIT(_pin);
 			iomux_set_gpio_function(_pin, false);
 			break;
+
 		case OUTPUT:
 			GPIO.CONF[_pin] &= ~GPIO_CONF_OPEN_DRAIN;
 			GPIO.ENABLE_OUT_SET = BIT(_pin);
@@ -80,11 +81,20 @@ namespace lwiot
 
 	bool Esp8266GpioChip::read(int pin)
 	{
-		return false;
+		auto rv = 0;
+
+		if(pin == PIN16)
+			rv = RTC.GPIO_IN & 1U;
+		else
+			rv = GPIO.IN & BIT(pin);
+
+		return rv != 0;
 	}
 
-	void Esp8266GpioChip::setOpenDrain(int _pin)
+	void Esp8266GpioChip::setOpenDrain(int pin)
 	{
+		this->mode(pin, OUTPUT_OPEN_DRAIN);
+		this->write(pin, true);
 	}
 
 	void Esp8266GpioChip::odWrite(int pin, bool value)
