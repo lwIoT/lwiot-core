@@ -34,7 +34,7 @@ static void vPortTaskStarter(void *arg)
 	vTaskDelete(NULL);
 }
 
-#define STACK_DEPTH 512
+#define STACK_DEPTH 2048
 #define TASK_PRIO 8
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 {
