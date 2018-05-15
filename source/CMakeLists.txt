@@ -37,11 +37,11 @@ set(GENERIC_HEADERS
 	vector.h
     lwiot.h
     log.h
-    list.h
     error.h
     compiler.h
     compiler-gcc.h
     compiler-vc.h
+	list.h
     config.h.in
     port.h
     types.h

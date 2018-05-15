@@ -23,6 +23,14 @@ namespace lwiot
 		memset(this->_data, 0, size);
 	}
 
+	ByteBuffer::ByteBuffer(const ByteBuffer& other) : ByteBuffer(other.count())
+	{
+		memcpy(this->_data, other._data, other.count());
+		this->_count = other.count();
+		this->_index = other._index;
+	}
+
+
 	ByteBuffer::~ByteBuffer()
 	{
 		delete[] this->_data;
@@ -65,6 +73,17 @@ namespace lwiot
 
 		memcpy(&this->_data[this->_index], bytes, num);
 		this->_index += num;
+	}
+
+	bool ByteBuffer::operator ==(const ByteBuffer& rhs) const
+	{
+		if(this->count() != rhs.count())
+			return false;
+
+		if(this->_index != rhs._index)
+			return false;
+
+		return memcmp(this->_data, rhs._data, this->count()) == 0;
 	}
 
 	void ByteBuffer::grow(size_t size)

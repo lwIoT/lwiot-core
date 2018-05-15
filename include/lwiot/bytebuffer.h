@@ -21,6 +21,7 @@ namespace lwiot
 	public:
 		explicit ByteBuffer();
 		explicit ByteBuffer(const size_t& size);
+		ByteBuffer(const ByteBuffer& other);
 		virtual ~ByteBuffer();
 
 		virtual const uint8_t& operator[] (const size_t& idx) const override;
@@ -29,14 +30,17 @@ namespace lwiot
 		const uint8_t *begin() const;
 		const uint8_t *end() const;
 
+		bool operator ==(const ByteBuffer& rhs) const;
+
 		void write(uint8_t byte);
 		void write(const uint8_t *bytes, size_t num);
+
+	protected:
+		void grow(size_t size) override;
 
 	private:
 		size_t _index;
 		uint8_t *_data;
-
-		void grow(size_t size);
 	};
 }
 #endif

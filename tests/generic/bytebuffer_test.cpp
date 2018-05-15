@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
 #include <lwiot.h>
 
 #include <lwiot/bytebuffer.h>
@@ -24,6 +25,15 @@ int main(int argc, char **argv)
 	for(auto x : bf) {
 		printf("%c ", x);
 	}
+
+	putc('\n', stdout);
+	print_dbg("Bytes in second buffer: ");
+	lwiot::ByteBuffer bf2(bf);
+	for(auto x : bf2) {
+		printf("%c ", x);
+	}
+
+	assert(bf == bf2);
 
 	putc('\n', stdout);
 	lwiot_destroy();

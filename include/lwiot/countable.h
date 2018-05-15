@@ -34,17 +34,15 @@ namespace lwiot
 			return operator[](idx);
 		}
 
-		virtual void grow(size_t num)
-		{
-			this->_count += num;
-		}
-
 	protected:
 		explicit Countable() : Countable(0) { }
 
-		explicit Countable(const size_t& count)
+		explicit Countable(const size_t& count) : _count(count)
+		{ }
+
+		virtual void grow(size_t num)
 		{
-			this->_count = count;
+			this->_count += num;
 		}
 
 		size_t _count;
