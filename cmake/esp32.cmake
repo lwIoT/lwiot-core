@@ -67,6 +67,7 @@ SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
 	soc/esp32.c
+	${PROJECT_SOURCE_DIR}/source/io/gpio/esp32gpiochip.cpp
 )
 
 SET(LWIOT_PORT_HEADERS

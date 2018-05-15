@@ -27,6 +27,7 @@ set(SOURCES
 )
 
 set(GENERIC_HEADERS
+	esp32gpiochip.h
 	countable.h
 	bytebuffer.h
 	gpiochip.h
