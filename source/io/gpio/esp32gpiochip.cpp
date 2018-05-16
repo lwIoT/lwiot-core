@@ -18,7 +18,7 @@
 #undef PINS
 #endif
 
-#define PINS 39
+#define PINS 40
 
 #ifndef HIGH
 #define HIGH 1
