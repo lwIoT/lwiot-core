@@ -19,7 +19,7 @@ namespace lwiot
 
 	ByteBuffer::ByteBuffer(const size_t& size) : Countable(size), _index(0)
 	{
-		this->_data = new uint8_t[size];
+		this->_data = (uint8_t*)mem_alloc(size);
 		memset(this->_data, 0, size);
 	}
 
@@ -90,7 +90,7 @@ namespace lwiot
 	{
 		const uint8_t *old = this->_data;
 
-		this->_data = new uint8_t[size + this->count()];
+		this->_data = (uint8_t*)mem_zalloc(size + this->count());
 		Countable::grow(size);
 		memset(this->_data, 0, this->count());
 

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <lwiot.h>
 
 #include <lwiot/vector.h>
 
@@ -19,10 +20,10 @@ namespace lwiot
 		size_t newsize;
 
 		newsize = oldsize * 2U;
-		newptr = (uint8_t*)new uint8_t[newsize];
+		newptr = (uint8_t*)mem_alloc(newsize);
 		memcpy(newptr, old, oldsize);
 
-		delete [] old;
+		mem_free(old);
 		return newptr;
 	}
 }

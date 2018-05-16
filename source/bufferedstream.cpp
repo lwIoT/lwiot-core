@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
@@ -15,7 +16,7 @@
 namespace lwiot {
 	BufferedStream::BufferedStream(int size) : Stream(), _size(size)
 	{
-		this->_data = new uint8_t[size];
+		this->_data = (uint8_t*)mem_zalloc(size);
 		this->rd_idx = 0;
 		this->wr_idx = 0;
 	}
@@ -25,7 +26,7 @@ namespace lwiot {
 
 	BufferedStream::~BufferedStream()
 	{
-		delete [] this->_data;
+		mem_free(this->_data);
 	}
 
 	uint8_t BufferedStream::read()
@@ -174,9 +175,9 @@ namespace lwiot {
 		auto newsize = num;
 
 		newsize += this->_size;
-		buf = new uint8_t[newsize];
+		buf = (uint8_t*) mem_zalloc(newsize);
 		memcpy(buf, this->_data, this->_size);
-		delete [] this->_data;
+		mem_free(this->_data);
 		this->_data = buf;
 		this->_size = newsize;
 	}

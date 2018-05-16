@@ -18,7 +18,7 @@ namespace lwiot
 		Vector(size_t size) : _size(size)
 		{
 			this->_length = 0;
-			this->_data = new T[size];
+			this->_data = (T*)malloc(sizeof(T) * size);
 		}
 
 		virtual ~Vector()
