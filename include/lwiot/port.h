@@ -66,6 +66,10 @@ extern DLL_EXPORT void udelay(uint32_t us);
 extern DLL_EXPORT void enter_critical();
 extern DLL_EXPORT void exit_critical();
 
+extern DLL_EXPORT void *mem_alloc(size_t size);
+extern DLL_EXPORT void *mem_zalloc(size_t size);
+extern DLL_EXPORT void mem_free(void *ptr);
+
 #define FOREVER 0
 CDECL_END
 

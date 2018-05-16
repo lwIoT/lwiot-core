@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include <time.h>
 #include <assert.h>
@@ -29,6 +30,24 @@ time_t lwiot_tick(void)
 	rv = (time_t) (tv.tv_sec * 1000000ULL);
 	rv += tv.tv_usec;
 	return rv;
+}
+
+void mem_free(void *ptr)
+{
+	free(ptr);
+}
+
+void *mem_alloc(size_t size)
+{
+	return malloc(size);
+}
+
+void *mem_zalloc(size_t size)
+{
+	void *ptr = malloc(size);
+
+	memset(ptr, 0, size);
+	return ptr;
 }
 
 /*

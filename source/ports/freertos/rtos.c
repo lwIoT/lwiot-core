@@ -34,6 +34,24 @@ static void vPortTaskStarter(void *arg)
 	vTaskDelete(NULL);
 }
 
+void *mem_alloc(size_t size)
+{
+	return pvPortMalloc(size);
+}
+
+void *mem_zalloc(size_t size)
+{
+	void *ptr = mem_alloc(size);
+
+	memset(ptr, 0, size);
+	return ptr;
+}
+
+void mem_free(void *ptr)
+{
+	vPortFree(ptr);
+}
+
 #define STACK_DEPTH 2048
 #define TASK_PRIO 8
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)

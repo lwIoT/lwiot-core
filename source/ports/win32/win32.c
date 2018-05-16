@@ -37,6 +37,24 @@ time_t lwiot_tick(void)
 	return rv - WIN32_EPOCH_ADJUSTMENT;
 }
 
+void mem_free(void *ptr)
+{
+	free(ptr);
+}
+
+void *mem_alloc(size_t size)
+{
+	return malloc(size);
+}
+
+void *mem_zalloc(size_t size)
+{
+	void *ptr = malloc(size);
+
+	memset(ptr, 0, size);
+	return ptr;
+}
+
 /*
  * THREAD FUNCTIONS
  */
