@@ -10,13 +10,18 @@
 #include <lwiot.h>
 
 #include <lwiot/gpiopin.h>
+#include <lwiot/vector.h>
 
 #if CXX
 namespace lwiot
 {
 	class GpioChip {
 	public:
+#ifdef CONFIG_PIN_VECTOR
+		virtual ~GpioChip();
+#else
 		virtual ~GpioChip() = default;
+#endif
 
 		virtual void mode(int pin, const PinMode& mode) = 0;
 		virtual void write(int pin, bool value) = 0;
@@ -30,11 +35,21 @@ namespace lwiot
 
 		const unsigned int& pins() const;
 
+#ifdef CONFIG_PIN_VECTOR
+		virtual GpioPin& operator[] (const size_t& idx);
+		virtual GpioPin& pin(size_t idx);
+#endif
+
 	protected:
 		explicit GpioChip(int pins);
 
 	private:
+		/* attirbutes */
 		unsigned int _nr;
+#ifdef CONFIG_PIN_VECTOR
+		Vector<GpioPin*> _iopins;
+		void buildPinVector();
+#endif
 	};
 }
 
