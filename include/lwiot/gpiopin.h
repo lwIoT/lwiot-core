@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <lwiot.h>
+
+#ifdef CXX
 namespace lwiot
 {
 	class GpioChip;
@@ -37,7 +40,9 @@ namespace lwiot
 		int pin();
 
 	private:
+		bool _open_drain;
 		int _pin;
 		GpioChip& _chip;
 	};
 }
+#endif

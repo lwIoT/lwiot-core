@@ -142,3 +142,6 @@ namespace lwiot
 			this->output(pin);
 	}
 }
+
+static lwiot::AvrGpioChip avr_gpio;
+lwiot::GpioChip& gpio = avr_gpio;

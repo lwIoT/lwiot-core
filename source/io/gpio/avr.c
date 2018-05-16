@@ -6,7 +6,9 @@
 #include <avr/pgmspace.h>
 
 #include <lwiot.h>
-#include <lwiot/avrgpiochip.h>
+
+#define NOT_A_PIN 0
+#define NOT_A_PORT 0
 
 #define PA 1
 #define PB 2

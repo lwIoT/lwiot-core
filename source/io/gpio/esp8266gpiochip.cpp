@@ -144,3 +144,6 @@ namespace lwiot
 		}
 	}
 }
+
+static lwiot::Esp8266GpioChip esp_gpio;
+lwiot::GpioChip& gpio = esp_gpio;

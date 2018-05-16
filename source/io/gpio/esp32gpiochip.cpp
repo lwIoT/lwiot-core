@@ -88,3 +88,6 @@ namespace lwiot
 		this->write(pin, value);
 	}
 }
+
+static lwiot::Esp32GpioChip esp_gpio;
+lwiot::GpioChip& gpio = esp_gpio;
