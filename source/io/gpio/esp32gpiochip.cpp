@@ -47,6 +47,7 @@ namespace lwiot
 
 		case INPUT:
 			gpio_set_direction(_pin, GPIO_MODE_INPUT);
+			gpio_set_pull_mode(_pin, GPIO_FLOATING);
 			break;
 
 		case OUTPUT:

@@ -11,10 +11,14 @@
 namespace lwiot
 {
 	GpioPin::GpioPin(int pin) : _pin(pin), _chip(gpio)
-	{ }
+	{
+		this->_open_drain = false;
+	}
 
 	GpioPin::GpioPin(int pin, GpioChip& chip) : _pin(pin), _chip(chip)
-	{ }
+	{
+		this->_open_drain = false;
+	}
 
 	GpioPin::~GpioPin()
 	{
@@ -40,12 +44,20 @@ namespace lwiot
 
 	void GpioPin::mode(const PinMode& mode)
 	{
+		if(mode == OUTPUT_OPEN_DRAIN)
+			this->_open_drain = true;
+		else
+			this->_open_drain = false;
+
 		this->_chip.mode(this->_pin, mode);
 	}
 
 	void GpioPin::write(bool value)
 	{
-		this->_chip.write(this->_pin, value);
+		if(this->_open_drain)
+			this->_chip.odWrite(this->_pin, value);
+		else
+			this->_chip.write(this->_pin, value);
 	}
 
 	bool GpioPin::read()
