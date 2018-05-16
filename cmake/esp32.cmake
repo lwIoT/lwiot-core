@@ -28,14 +28,14 @@ SET(CMAKE_CXX_COMPILER ${XTENSA_GXX_COMPILER} )
 set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PATH "")
 
 #########################
-### ESP8266 SDK setup ###
+### ESP32 SDK setup ###
 #########################
 
 if(NOT DEFINED ESP32_IDF_PATH)
-    set(ESP8266_SDK_PATH /opt/Espressif/esp-rtos-sdk)
+    set(ESP32_IDF_PATH /opt/Espressif/esp32-idf)
     message(STATUS "Default SDK location will be used: ${ESP32_IDF_PATH}")
 else()
-    message(STATUS "ESP8266 SDK path: ${ESP32_IDF_PATH}")
+    message(STATUS "ESP32 SDK path: ${ESP32_IDF_PATH}")
 endif()
 
 set(CMAKE_LIBRARY_PATH ${ESP32_IDF_PATH}/lib/)

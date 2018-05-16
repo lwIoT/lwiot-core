@@ -15,7 +15,7 @@ esp32:
         - CONFIG_NO_SYS=True
         - FREERTOS=True
         - FREERTOS_MANUAL=True
-        - ESP32_TOOLCHAIN_PATH=~/opt/xtensa-esp32-elf
+        - ESP32_TOOLCHAIN_PATH=/opt/xtensa-esp32-elf
         - ESP32_IDF_PATH=~/usr/esp-idf
 
 freertos:
