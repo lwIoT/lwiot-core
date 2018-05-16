@@ -9,17 +9,11 @@
 
 #include <lwiot.h>
 
+#include <lwiot/gpiopin.h>
+
 #if CXX
 namespace lwiot
 {
-	enum PinMode {
-		INPUT,
-		INPUT_PULLUP,
-		INPUT_NOPULLUP,
-		OUTPUT,
-		OUTPUT_OPEN_DRAIN
-	};
-
 	class GpioChip {
 	public:
 		virtual ~GpioChip() = default;
@@ -43,4 +37,6 @@ namespace lwiot
 		unsigned int _nr;
 	};
 }
+
+extern lwiot::GpioChip& gpio;
 #endif

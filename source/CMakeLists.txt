@@ -31,6 +31,7 @@ set(GENERIC_HEADERS
 	countable.h
 	bytebuffer.h
 	gpiochip.h
+	gpiopin.h
 	avrgpiochip.h
 	esp8266gpiochip.h
 	stream.h
