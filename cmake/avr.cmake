@@ -16,9 +16,8 @@ SET(MCU "atmega2560" CACHE STRING "AVR MCU type")
 
 
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
-        ${PROJECT_SOURCE_DIR}/source/ports/freertos
-		${PROJECT_SOURCE_DIR}/external/arduino-freertos
-		${PROJECT_SOURCE_DIR}/external/arduino-freertos/freertos/src
+		${PROJECT_SOURCE_DIR}/source/ports/freertos
+		${PROJECT_SOURCE_DIR}/external/avr-freertos/include
 )
 
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
