@@ -30,7 +30,7 @@ namespace lwiot
 	GpioChip::~GpioChip()
 	{
 		for(auto pin : this->_iopins) {
-			mem_free(pin);
+			delete pin;
 		}
 	}
 

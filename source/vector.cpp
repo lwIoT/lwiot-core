@@ -20,10 +20,10 @@ namespace lwiot
 		size_t newsize;
 
 		newsize = oldsize * 2U;
-		newptr = (uint8_t*)mem_alloc(newsize);
+		newptr = (uint8_t*)lwiot_mem_alloc(newsize);
 		memcpy(newptr, old, oldsize);
 
-		mem_free(old);
+		lwiot_mem_free(old);
 		return newptr;
 	}
 }

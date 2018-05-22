@@ -32,17 +32,17 @@ time_t lwiot_tick(void)
 	return rv;
 }
 
-void mem_free(void *ptr)
+void lwiot_mem_free(void *ptr)
 {
 	free(ptr);
 }
 
-void *mem_alloc(size_t size)
+void *lwiot_mem_alloc(size_t size)
 {
 	return malloc(size);
 }
 
-void *mem_zalloc(size_t size)
+void *lwiot_mem_zalloc(size_t size)
 {
 	void *ptr = malloc(size);
 

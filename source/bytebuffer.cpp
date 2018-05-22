@@ -19,7 +19,7 @@ namespace lwiot
 
 	ByteBuffer::ByteBuffer(const size_t& size) : Countable(size), _index(0)
 	{
-		this->_data = (uint8_t*)mem_alloc(size);
+		this->_data = (uint8_t*)lwiot_mem_alloc(size);
 		memset(this->_data, 0, size);
 	}
 
@@ -33,7 +33,7 @@ namespace lwiot
 
 	ByteBuffer::~ByteBuffer()
 	{
-		delete[] this->_data;
+		lwiot_mem_free(this->_data);
 	}
 
 	uint8_t& ByteBuffer::operator[](const size_t& idx)
@@ -88,13 +88,13 @@ namespace lwiot
 
 	void ByteBuffer::grow(size_t size)
 	{
-		const uint8_t *old = this->_data;
+		uint8_t *old = this->_data;
 
-		this->_data = (uint8_t*)mem_zalloc(size + this->count());
+		this->_data = (uint8_t*)lwiot_mem_zalloc(size + this->count());
 		Countable::grow(size);
 		memset(this->_data, 0, this->count());
 
 		memcpy(this->_data, old, this->_index);
-		delete[] old;
+		lwiot_mem_free(old);
 	}
 }

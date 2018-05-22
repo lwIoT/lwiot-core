@@ -35,20 +35,20 @@ static void vPortTaskStarter(void *arg)
 	vTaskDelete(NULL);
 }
 
-void *mem_alloc(size_t size)
+void *lwiot_mem_alloc(size_t size)
 {
 	return pvPortMalloc(size);
 }
 
-void *mem_zalloc(size_t size)
+void *lwiot_mem_zalloc(size_t size)
 {
-	void *ptr = mem_alloc(size);
+	void *ptr = lwiot_mem_alloc(size);
 
 	memset(ptr, 0, size);
 	return ptr;
 }
 
-void mem_free(void *ptr)
+void lwiot_mem_free(void *ptr)
 {
 	vPortFree(ptr);
 }
