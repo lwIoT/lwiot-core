@@ -60,7 +60,8 @@ SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
 	soc/esp8266.c
-	${PROJECT_SOURCE_DIR}/source/io/gpio/esp8266gpiochip.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/gpio/esp8266gpiochip.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/adc/esp8266adcchip.cpp
 )
 
 SET(LWIOT_PORT_HEADERS
