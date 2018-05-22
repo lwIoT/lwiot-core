@@ -61,13 +61,14 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${ESP32_IDF_PATH}/components/soc/esp32/include
 		${ESP32_IDF_PATH}/components/soc/include
 		${ESP32_IDF_PATH}/esp32-config
-        )
+)
 
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
 	soc/esp32.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/esp32gpiochip.cpp
+	${PROJECT_SOURCE_DIR}/source/io/adc/esp32adcchip.cpp
 )
 
 SET(LWIOT_PORT_HEADERS

@@ -7,6 +7,8 @@ SET(DIR ${PROJECT_SOURCE_DIR}/source/io)
 SET(IO_SOURCES
 	io/gpio/gpiochip.cpp
 	io/gpio/gpiopin.cpp
+
+	io/adc/adcchip.cpp
 )
 
 SET(CONFIG_PIN_VECTOR False CACHE BOOL "Build a vector of pins the the GPIO chip.")
