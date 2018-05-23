@@ -1,3 +1,12 @@
 [submodule "external/arduino-freertos/freertos"]
 	path = external/arduino-freertos/freertos
 	url = https://github.com/feilipu/Arduino_FreeRTOS_Library.git
+[submodule "external/esp-idf"]
+	path = external/esp-idf
+	url = https://github.com/espressif/esp-idf.git
+[submodule "external/esp32-idf"]
+	path = external/esp32-idf
+	url = https://github.com/espressif/esp-idf.git
+[submodule "external/esp8266-open-rtos"]
+	path = external/esp8266-open-rtos
+	url = https://github.com/SuperHouse/esp-open-rtos.git
