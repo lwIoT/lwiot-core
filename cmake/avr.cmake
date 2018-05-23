@@ -25,6 +25,7 @@ SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avr.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avrgpiochip.cpp
+	${PROJECT_SOURCE_DIR}/source/io/adc/avradcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/avr.c
 )
 
