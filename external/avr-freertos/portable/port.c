@@ -371,7 +371,6 @@ uint16_t usAddress;
 	// This function just here to ensure the library is included.
 	// Can go anywhere, as it is just to ensure that the .init3 code is included
 	extRAMcheck(); // This function just returns XMCRA. SRE is set if extended RAM enabled.
-#warning "Ext RAM Enabled."
 #endif
 
 	/* Place a few bytes of known values on the bottom of the stack.
