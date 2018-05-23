@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+#include <lwiot/types.h>
+
 namespace lwiot
 {
 	class AdcChip;
@@ -12,11 +14,12 @@ namespace lwiot
 	class AdcPin {
 	public:
 		AdcPin(int pin);
-		explicit AdcPin(int pin, const AdcChip& chip);
+		explicit AdcPin(int pin, AdcChip& chip);
 
-		size_t read();
+		size_t read() const;
 
 	private:
 		AdcChip& _chip;
+		int _pin;
 	};
 }

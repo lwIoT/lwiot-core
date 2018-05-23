@@ -27,4 +27,9 @@ namespace lwiot
 
 		return (ref / width) * reading;
 	}
+
+	size_t AdcChip::operator[] (int pin) const
+	{
+		return this->read(pin);
+	}
 }

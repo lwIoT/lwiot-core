@@ -21,6 +21,8 @@ namespace lwiot
 		size_t toVoltage(const size_t& reading) const;
 		virtual const int& pins() const;
 
+		size_t operator [](int pin) const;
+
 	protected:
 		explicit AdcChip(int pins, int ref, int width);
 
