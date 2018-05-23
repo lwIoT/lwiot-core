@@ -36,7 +36,7 @@ namespace lwiot
 		void write(const uint8_t *bytes, size_t num);
 
 	protected:
-		void grow(size_t size) override;
+		void grow(const size_t& size) override;
 
 	private:
 		size_t _index;

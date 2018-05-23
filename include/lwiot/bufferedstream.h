@@ -12,9 +12,10 @@
 
 #include <lwiot/stream.h>
 #include <lwiot/string.h>
+#include <lwiot/countable.h>
 
 namespace lwiot {
-	class BufferedStream : public Stream {
+	class BufferedStream : public Stream, public Countable<uint8_t> {
 	public:
 		explicit BufferedStream();
 		explicit BufferedStream(int size);
@@ -39,7 +40,8 @@ namespace lwiot {
 		virtual Stream& operator << (const String& str) override;
 		virtual Stream& operator << (const char *cstr) override;
 
-		virtual uint8_t& operator [] (size_t indx);
+		virtual uint8_t& operator [] (const size_t& indx) override;
+		virtual const uint8_t& operator[] (const size_t& idx) const override;
 
 		const void *data() const;
 		const size_t& size() const;
@@ -59,7 +61,6 @@ namespace lwiot {
 
 		/* attributes */
 		uint8_t *_data;
-		size_t _size;
 		size_t rd_idx, wr_idx;
 	};
 }

@@ -86,7 +86,7 @@ namespace lwiot
 		return memcmp(this->_data, rhs._data, this->count()) == 0;
 	}
 
-	void ByteBuffer::grow(size_t size)
+	void ByteBuffer::grow(const size_t& size)
 	{
 		uint8_t *old = this->_data;
 

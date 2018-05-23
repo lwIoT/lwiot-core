@@ -14,7 +14,7 @@
 #include <lwiot/bufferedstream.h>
 
 namespace lwiot {
-	BufferedStream::BufferedStream(int size) : Stream(), _size(size)
+	BufferedStream::BufferedStream(int size) : Stream(), Countable(size)
 	{
 		this->_data = (uint8_t*)lwiot_mem_zalloc(size);
 		this->rd_idx = 0;
@@ -49,7 +49,7 @@ namespace lwiot {
 
 	const size_t& BufferedStream::size() const
 	{
-		return this->_size;
+		return this->count();
 	}
 
 	Stream& BufferedStream::operator<<(char x)
@@ -136,13 +136,22 @@ namespace lwiot {
 		return *this;
 	}
 
-	uint8_t& BufferedStream::operator[](size_t indx)
+	uint8_t& BufferedStream::operator[](const size_t& indx)
 	{
-		if(indx >= this->_size) {
+		if(indx >= this->count()) {
 			print_dbg("Array out of bounds error!\n");
 		}
 
 		return this->_data[indx];
+	}
+
+	const uint8_t& BufferedStream::operator[](const size_t& idx) const
+	{
+		if(idx >= this->count()) {
+			print_dbg("Array out of bounds error!\n");
+		}
+
+		return this->_data[idx];
 	}
 
 	size_t BufferedStream::length() const
@@ -152,9 +161,9 @@ namespace lwiot {
 
 	void BufferedStream::append(void* data, size_t length)
 	{
-		if((length + this->wr_idx) > this->_size) {
+		if((length + this->wr_idx) > this->count()) {
 			const auto newsize = this->wr_idx + length;
-			if(newsize < this->_size * 2U)
+			if(newsize < this->count() * 2U)
 				this->grow();
 			else
 				this->grow(newsize);
@@ -166,7 +175,7 @@ namespace lwiot {
 
 	void BufferedStream::grow()
 	{
-		this->grow(this->_size * 2U);
+		this->grow(this->count() * 2U);
 	}
 
 	void BufferedStream::grow(int num)
@@ -174,12 +183,12 @@ namespace lwiot {
 		uint8_t *buf;
 		auto newsize = num;
 
-		newsize += this->_size;
+		Countable::grow(static_cast<size_t>(num));
+		newsize += this->count();
 		buf = (uint8_t*) lwiot_mem_zalloc(newsize);
-		memcpy(buf, this->_data, this->_size);
+		memcpy(buf, this->_data, this->count());
 		lwiot_mem_free(this->_data);
 		this->_data = buf;
-		this->_size = newsize;
 	}
 
 	String BufferedStream::toString()

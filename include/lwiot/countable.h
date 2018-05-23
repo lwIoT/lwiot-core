@@ -21,7 +21,7 @@ namespace lwiot
 			return this->_count;
 		}
 
-		virtual const size_t& count() const
+		virtual inline const size_t& count() const
 		{
 			return this->_count;
 		}
@@ -40,7 +40,7 @@ namespace lwiot
 		explicit Countable(const size_t& count) : _count(count)
 		{ }
 
-		virtual void grow(size_t num)
+		virtual void grow(const size_t& num)
 		{
 			this->_count += num;
 		}
