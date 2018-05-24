@@ -34,3 +34,6 @@
 #cmakedefine ARDUINO_MEGA
 #cmakedefine ARDUINO_UNO
 #cmakedefine CONFIG_PIN_VECTOR
+
+#cmakedefine ESP32
+#cmakedefine ESP8266

@@ -7,9 +7,20 @@ include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
 
-include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
+include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
-set(SOURCES
+if(NOT NO_OS)
+SET(WRAPPER_SOURCES
+	ports/thread.cpp
+	ports/lock.cpp
+	ports/event.cpp
+	ports/timer.cpp
+)
+else()
+SET(WRAPPER_SOURCES )
+endif()
+
+SET(SOURCES
     init.c
     log.c
 	stream.cpp
@@ -17,11 +28,8 @@ set(SOURCES
 	log.cpp
     string.cpp
 	vector.cpp
-	bufferedstream.cpp
-	ports/thread.cpp
-	ports/lock.cpp
-	ports/event.cpp
-	ports/timer.cpp
+    bufferedstream.cpp
+    ${WRAPPER_SOURCES}
 	${IO_SOURCES}
     ${LWIOT_PORT_SRCS}
 )

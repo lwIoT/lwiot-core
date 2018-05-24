@@ -12,21 +12,33 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
+SET(NO_OS False CACHE BOOL "Build without RTOS")
 SET(MCU "atmega2560" CACHE STRING "AVR MCU type")
 
-
+if(NO_OS)
+set(LWIOT_PORT_INCLUDE_DIRECTORIES
+	${PROJECT_SOURCE_DIR}/source/ports/no-os
+)
+SET(RTOS_SOURCES
+	${PROJECT_SOURCE_DIR}/source/ports/no-os/avr.c
+)
+else()
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${PROJECT_SOURCE_DIR}/source/ports/freertos
 		${PROJECT_SOURCE_DIR}/external/avr-freertos/include
 )
+SET(RTOS_SOURCES
+	${PROJECT_SOURCE_DIR}/source/ports/freertos/rtos.c
+)
+endif()
 
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
-	${LWIOT_PORT_DIR}/rtos.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avr.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avrgpiochip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/avradcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/avr.c
+	${RTOS_SOURCES}
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")

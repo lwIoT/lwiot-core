@@ -1,5 +1,5 @@
 /*
- * E/STACK - WIN32 port
+ * lwIoT - WIN32 port
  *
  * Author: Michel Megens
  * Date:   18/12/2017
@@ -82,5 +82,16 @@ typedef struct timer {
 	bool created;
 #define HAVE_TIMER
 } lwiot_timer_t;
+
+#if defined(ESP32)
+#include <rom/ets_sys.h>
+#define lwiot_udelay(__us) ets_delay_us(__us)
+#elif defined(ESP8266)
+#include <espressif/esp_misc.h>
+#define lwiot_udelay(__us) sdk_os_delay_us(__us)
+#elif defined(AVR)
+extern void udelay(uint32_t us);
+#define lwiot_udelay(__us) udelay(__us)
+#endif
 
 #endif

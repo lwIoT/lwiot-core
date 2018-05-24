@@ -50,6 +50,14 @@ typedef unsigned char u_char;
 #undef __LPM_word_classic__
 #endif
 
+#ifdef sei
+#undef sei
+#undef cli
+
+#define sei()
+#define cli()
+#endif
+
 #define __LPM_classic__(addr) 0
 #define __LPM_word_classic__(addr) 0
 #define cli()

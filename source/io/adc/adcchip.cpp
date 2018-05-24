@@ -22,10 +22,10 @@ namespace lwiot
 
 	size_t AdcChip::toVoltage(const size_t& reading) const
 	{
-		float ref = this->_reference;
-		float width = this->_width;
+		float ref = (float) this->_reference;
+		float width = (float) this->_width;
 
-		return (ref / width) * reading;
+		return (size_t) ((ref / width) * (float)reading);
 	}
 
 	size_t AdcChip::operator[] (int pin) const
