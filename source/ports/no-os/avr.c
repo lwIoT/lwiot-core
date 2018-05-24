@@ -9,9 +9,12 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+
 #include <stdlib.h>
 #include <string.h>
 #include <lwiot.h>
+
+#include <util/delay.h>
 
 void lwiot_mem_free(void *ptr)
 {
@@ -39,4 +42,10 @@ void enter_critical()
 void exit_critical()
 {
 	cli();
+}
+
+void lwiot_sleep(int ms)
+{
+	for(int num = 0; num < ms; num++)
+		_delay_ms(1);
 }

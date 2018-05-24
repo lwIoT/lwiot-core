@@ -37,3 +37,6 @@
 
 #cmakedefine ESP32
 #cmakedefine ESP8266
+#ifndef AVR
+#cmakedefine AVR
+#endif
