@@ -50,6 +50,8 @@ typedef unsigned char u_char;
 #undef __LPM_word_classic__
 #endif
 
+#define IRAM_ATTR
+
 #define __LPM_classic__(addr) 0
 #define __LPM_word_classic__(addr) 0
 #define cli()

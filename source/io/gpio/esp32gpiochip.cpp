@@ -6,6 +6,8 @@
  */
 
 #include <stdlib.h>
+#include <esp_intr.h>
+#include <esp_attr.h>
 #include <lwiot.h>
 
 #include <lwiot/gpiochip.h>
@@ -13,6 +15,8 @@
 #include <lwiot/esp32gpiochip.h>
 
 #include <driver/gpio.h>
+#include <rom/ets_sys.h>
+#include <sys/reent.h>
 
 #ifdef PINS
 #undef PINS
@@ -24,6 +28,48 @@
 #define HIGH 1
 #define LOW  0
 #endif
+
+/* Interrupt modes */
+#define DISABLED  0x00
+#define RISING    0x01
+#define FALLING   0x02
+#define CHANGE 	  0x03
+
+static irq_handler_t gpio_isr_handlers[PINS] = {0};
+static intr_handle_t gpio_intr_handle = nullptr;
+
+static void IRAM_ATTR gpio_external_isr(void *arg)
+{
+	uint32_t gpio_intr_status_l = 0;
+    uint32_t gpio_intr_status_h = 0;
+    uint8_t pin = 0;
+
+    gpio_intr_status_l = GPIO.status;
+    gpio_intr_status_h = GPIO.status1.val;
+    GPIO.status_w1tc = gpio_intr_status_l;//Clear intr for gpio0-gpio31
+    GPIO.status1_w1tc.val = gpio_intr_status_h;//Clear intr for gpio32-39
+
+    if(gpio_intr_status_l) {
+        do {
+            if(gpio_intr_status_l & ((uint32_t)1 << pin)) {
+                if(gpio_isr_handlers[pin]) {
+                    gpio_isr_handlers[pin]();
+                }
+            }
+        } while(++pin<32);
+    }
+
+    if(gpio_intr_status_h) {
+        pin=32;
+        do {
+            if(gpio_intr_status_h & ((uint32_t)1 << (pin - 32))) {
+                if(gpio_isr_handlers[pin]) {
+                    gpio_isr_handlers[pin]();
+                }
+            }
+        } while(++pin<GPIO_PIN_COUNT);
+	}
+}
 
 namespace lwiot
 {
@@ -87,6 +133,58 @@ namespace lwiot
 	void Esp32GpioChip::odWrite(int pin, bool value)
 	{
 		this->write(pin, value);
+	}
+
+	void Esp32GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
+	{
+		/*
+		 * TODO: use the `begin()' method to init IRQs
+		 */
+		static bool interrupt_initialized = false;
+    
+		if(!interrupt_initialized) {
+			interrupt_initialized = true;
+			esp_intr_alloc(ETS_GPIO_INTR_SOURCE, (int)ESP_INTR_FLAG_IRAM,
+				gpio_external_isr, NULL, &gpio_intr_handle);
+		}
+
+		gpio_isr_handlers[pin] = handler;
+		esp_intr_disable(gpio_intr_handle);
+		
+		if(esp_intr_get_cpu(gpio_intr_handle)) {
+			GPIO.pin[pin].int_ena = 1;
+		} else { //PRO_CPU
+			GPIO.pin[pin].int_ena = 4;
+		}
+
+		auto type = this->mapIrqType(edge);
+		if(type == -1) {
+			esp_intr_enable(gpio_intr_handle);
+			return;
+		}
+
+		GPIO.pin[pin].int_type = type;
+		esp_intr_enable(gpio_intr_handle);
+	}
+
+	int Esp32GpioChip::mapIrqType(const IrqEdge& edge) const
+	{
+		switch(edge) {
+		case IrqRising:
+			return RISING;
+
+		case IrqFalling:
+			return FALLING;
+
+		case IrqRisingFalling:
+			return CHANGE;
+
+		case IrqNone:
+			return DISABLED;
+
+		default:
+			return -1;
+		}
 	}
 }
 

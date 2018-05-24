@@ -37,4 +37,6 @@ typedef enum {
 #include <stdint.h>
 #endif
 
+typedef void (*irq_handler_t)(void);
+
 #endif

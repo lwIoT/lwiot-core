@@ -15,6 +15,13 @@
 #if CXX
 namespace lwiot
 {
+	enum IrqEdge {
+		IrqNone = 0,
+		IrqRising,
+		IrqFalling,
+		IrqRisingFalling
+	};
+
 	class GpioChip {
 	public:
 #ifdef CONFIG_PIN_VECTOR
@@ -29,6 +36,8 @@ namespace lwiot
 
 		virtual void setOpenDrain(int pin) = 0;
 		virtual void odWrite(int pin, bool value) = 0;
+
+		virtual void attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge) = 0;
 
 		virtual void input(int pin);
 		virtual void output(int pin);
