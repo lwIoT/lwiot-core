@@ -8,14 +8,15 @@
 #pragma once
 
 #include <lwiot.h>
-
 #include <lwiot/gpiochip.h>
+
+#include <esp/gpio.h>
 
 #ifdef PINS
 #undef PINS
 #endif
 
-#define PINS 11
+#define PINS 16
 
 #ifdef CXX
 namespace lwiot
@@ -36,6 +37,7 @@ namespace lwiot
 	private:
 		void mode16(const PinMode& mode);
 		void setPullup(int pin, bool enabled);
+		gpio_inttype_t mapIrqEdge(const IrqEdge& edge) const;
 	};
 }
 #endif

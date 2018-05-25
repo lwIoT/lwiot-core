@@ -6,18 +6,41 @@
  */
 
 #include <lwiot.h>
+#include <esp8266.h>
 
 #include <esp/rtc_regs.h>
+#include <esp/gpio.h>
+#include <esp/gpio_regs.h>
+
+#include <espressif/esp8266/eagle_soc.h>
+#include <espressif/esp8266/ets_sys.h>
+#include <espressif/esp_common.h>
 
 #include <lwiot/types.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/esp8266gpiochip.h>
 #include <lwiot/log.h>
 
+
 #define PIN16 16
+
+static irq_handler_t __handlers[PINS] = {0,};
+
 
 namespace lwiot
 {
+	static void IRAM gpio_irq_handler(uint8_t num)
+	{
+		printf("In IRQ");
+		if(num > PINS)
+			return;
+
+		auto handler = __handlers[num];
+		if(handler == nullptr)
+			return;
+
+		handler();
+	}
 	Esp8266GpioChip::Esp8266GpioChip() : GpioChip(PINS)
 	{ }
 
@@ -141,6 +164,35 @@ namespace lwiot
 		default:
 			print_dbg("Attempting to set invalid GPIO mode!\n");
 			break;
+		}
+	}
+
+	void Esp8266GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
+	{
+		auto _edge = this->mapIrqEdge(edge);
+
+		if(_edge == GPIO_INTTYPE_NONE || pin >= PINS)
+			return;
+
+		this->mode(pin, INPUT);
+		__handlers[pin] = handler;
+		gpio_set_interrupt(pin, _edge, gpio_irq_handler);
+	}
+
+	gpio_inttype_t Esp8266GpioChip::mapIrqEdge(const IrqEdge& edge) const
+	{
+		switch(edge) {
+		case IrqRising:
+			return GPIO_INTTYPE_EDGE_POS;
+
+		case IrqFalling:
+			return GPIO_INTTYPE_EDGE_NEG;
+
+		case IrqRisingFalling:
+			return GPIO_INTTYPE_EDGE_ANY;
+
+		default:
+			return GPIO_INTTYPE_NONE;
 		}
 	}
 }

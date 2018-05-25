@@ -9,6 +9,12 @@
 #include <lwiot/gpiopin.h>
 
 static lwiot::Thread *tp;
+static volatile int irqs = 0;
+
+static void IRAM irq_handler(void)
+{
+	irqs++;
+}
 
 class TestThread : public lwiot::Thread {
 public:
@@ -20,7 +26,9 @@ protected:
 	{
 		lwiot::GpioPin outPin = gpio[5];
 
+		gpio.attachIrqHandler(14, irq_handler, lwiot::IrqRisingFalling);
 		outPin.setOpenDrain();
+
 		while(true) {
 			int i = 0;
 			while(i++ < 20) {
@@ -30,6 +38,7 @@ protected:
 
 				outPin.write(false);
 				lwiot_sleep(500);
+				printf("IRQs: %i\n", irqs);
 			}
 		}
 	}
