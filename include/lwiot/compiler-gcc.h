@@ -51,6 +51,7 @@ typedef unsigned char u_char;
 #endif
 
 #define IRAM_ATTR
+#define IMPLEMENT_ISR(x, y)
 
 #define __LPM_classic__(addr) 0
 #define __LPM_word_classic__(addr) 0
