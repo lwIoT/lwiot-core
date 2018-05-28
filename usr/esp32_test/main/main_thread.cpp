@@ -6,10 +6,7 @@
 #include <lwiot/thread.h>
 #include <lwiot/string.h>
 #include <lwiot/gpiochip.h>
-#include <lwiot/adcchip.h>
 #include <lwiot/gpiopin.h>
-
-#include <esp_task_wdt.h>
 
 static volatile int irq_counter = 0;
 
@@ -27,16 +24,23 @@ public:
 protected:
 	void run(void *arg)
 	{
-		adc.begin();
-		gpio.mode(14, lwiot::INPUT);
-		gpio.attachIrqHandler(14, ping_handler, lwiot::IrqRising);
+		lwiot::GpioPin out = 33;
 
 		printf("Main thread started!\n");
+		out.setOpenDrain();
 
 		while(true) {
-			printf("ADC voltage read: %u\n", (adc.read(5) - 500) / 10);
-			printf("IRQ counter: %i\n", irq_counter);
-			lwiot_sleep(1000);
+			int i = 0;
+
+			enter_critical();
+			while(i++ < 20) {
+				out.write(true);
+				lwiot_udelay(3);
+
+				out.write(false);
+				lwiot_udelay(3);
+			}
+			exit_critical();
 		}
 	}
 };

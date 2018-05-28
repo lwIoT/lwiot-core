@@ -81,7 +81,7 @@ namespace lwiot
 
 		for(int idx = 0; idx < count; idx++) {
 			this->write(cpin, true);
-			udelay(delay);
+			lwiot_udelay(delay);
 
 			if(lsb)
 				value |= this->read(dpin);
@@ -89,7 +89,7 @@ namespace lwiot
 				value |= this->read(dpin << ((count - 1) - idx));
 
 			this->write(cpin, false);
-			udelay(delay);
+			lwiot_udelay(delay);
 		}
 
 		return value;

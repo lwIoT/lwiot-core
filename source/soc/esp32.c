@@ -14,11 +14,6 @@
 
 #include <lwiot/types.h>
 
-void udelay(uint32_t us)
-{
-	ets_delay_us(us);
-}
-
 static portMUX_TYPE xCoreMutex[] = {
 	portMUX_INITIALIZER_UNLOCKED,
 #if portNUM_PROCESSORS == 2

@@ -17,6 +17,8 @@
 
 #include <lwiot/list.h>
 
+#define lwiot_udelay(__us) udelay(__us)
+
 typedef struct DLL_EXPORT mutex {
 	HANDLE mtx;
 #define HAVE_MUTEX

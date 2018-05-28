@@ -52,6 +52,13 @@ typedef unsigned char u_char;
 
 #define IRAM_ATTR
 #define IMPLEMENT_ISR(x, y)
+#ifdef sei
+#undef sei
+#undef cli
+
+#define sei()
+#define cli()
+#endif
 
 #define __LPM_classic__(addr) 0
 #define __LPM_word_classic__(addr) 0

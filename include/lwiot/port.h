@@ -12,7 +12,14 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <lwiot_arch.h>
+#include <cpu.h>
 
+#ifndef lwiot_udelay
+#error "Microsecond delay not defined!"
+#endif
+
+CDECL
+#ifndef CONFIG_NO_OS
 #ifndef HAVE_MUTEX
 #error "Missing mutex definition!"
 #endif
@@ -31,7 +38,6 @@
 #define MTX_RECURSIVE 1U
 
 typedef void (*thread_handle_t)(void *arg);
-CDECL
 extern DLL_EXPORT time_t lwiot_tick(void);
 
 extern DLL_EXPORT int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg);
@@ -61,8 +67,11 @@ extern DLL_EXPORT void lwiot_timers_destroy(void);
 extern DLL_EXPORT bool lwiot_timer_is_running(lwiot_timer_t *timer);
 extern DLL_EXPORT int lwiot_timer_set_period(lwiot_timer_t *timer, int ms);
 extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
+#else /* CONFIG_NO_OS */
+#define lwiot_timers_init()
+#define lwiot_timers_destroy()
+#endif /* CONFIG_NO_OS */
 
-extern DLL_EXPORT void udelay(uint32_t us);
 extern DLL_EXPORT void enter_critical();
 extern DLL_EXPORT void exit_critical();
 

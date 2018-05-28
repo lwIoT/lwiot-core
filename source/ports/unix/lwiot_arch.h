@@ -18,6 +18,8 @@
 
 #include <pthread.h>
 
+#define lwiot_udelay(__us) udelay(__us)
+
 typedef DLL_EXPORT struct mutex {
 	pthread_mutex_t mtx;
 #define HAVE_MUTEX

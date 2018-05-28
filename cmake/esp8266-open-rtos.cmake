@@ -41,6 +41,7 @@ endif()
 set(CMAKE_LIBRARY_PATH ${ESP8266_OPEN_RTOS_PATH}/lib/)
 
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
+		${PROJECT_SOURCE_DIR}/include/asm/esp8266
         ${PROJECT_SOURCE_DIR}/source/ports/freertos
         ${ESP8266_OPEN_RTOS_PATH}/include
         ${ESP8266_OPEN_RTOS_PATH}/libc/xtensa-lx106-elf/include
@@ -59,18 +60,19 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
-	soc/esp8266.c
     ${PROJECT_SOURCE_DIR}/source/io/gpio/esp8266gpiochip.cpp
     ${PROJECT_SOURCE_DIR}/source/io/adc/esp8266adcchip.cpp
 )
+
+SET(ESP8266 True CACHE BOOL "ESP8266 target.")
 
 SET(LWIOT_PORT_HEADERS
         ${LWIOT_PORT_DIR}/lwiot_arch.h)
 
 set(CMAKE_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
-    -ffunction-sections" CACHE FORCE "")
+    -ffunction-sections -DESP8266" CACHE FORCE "")
 set(CMAKE_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
-    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
+    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -DESP8266" CACHE FORCE "")
 
 SET(HAVE_RTOS True)

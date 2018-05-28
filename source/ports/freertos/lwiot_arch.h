@@ -1,5 +1,5 @@
 /*
- * E/STACK - WIN32 port
+ * lwIoT - WIN32 port
  *
  * Author: Michel Megens
  * Date:   18/12/2017
