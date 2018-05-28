@@ -36,6 +36,12 @@ namespace lwiot
 			this->_data[this->_length++] = obj;
 		}
 
+		Vector<T>& operator << (const T& obj)
+		{
+			this->add(obj);
+			return *this;
+		}
+
 		const T* begin() const
 		{
 			return &this->_data[0];
