@@ -77,6 +77,8 @@ namespace lwiot
 		if(count > 8)
 			return 0;
 
+		value = 0;
+
 		for(int idx = 0; idx < count; idx++) {
 			this->write(cpin, true);
 			udelay(delay);
@@ -93,7 +95,7 @@ namespace lwiot
 		return value;
 	}
 
-	int GpioChip::shiftOut(int dpin, int cpin, bool lsb, uint8_t val, uint8_t count, int delay) 
+	int GpioChip::shiftOut(int dpin, int cpin, bool lsb, uint8_t val, uint8_t count, int delay)
 	{
 		for(auto idx = 0; idx < count; idx++) {
 			if(lsb)
