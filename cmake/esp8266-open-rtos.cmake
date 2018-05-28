@@ -41,6 +41,7 @@ endif()
 set(CMAKE_LIBRARY_PATH ${ESP8266_OPEN_RTOS_PATH}/lib/)
 
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
+		${PROJECT_SOURCE_DIR}/include/asm/esp8266
         ${PROJECT_SOURCE_DIR}/source/ports/freertos
         ${ESP8266_OPEN_RTOS_PATH}/include
         ${ESP8266_OPEN_RTOS_PATH}/libc/xtensa-lx106-elf/include

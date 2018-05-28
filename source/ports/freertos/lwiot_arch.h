@@ -83,5 +83,4 @@ typedef struct timer {
 #define HAVE_TIMER
 } lwiot_timer_t;
 
-#include "delay.h"
 #endif

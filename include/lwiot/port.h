@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <lwiot_arch.h>
+#include <cpu.h>
 
 #ifndef lwiot_udelay
 #error "Microsecond delay not defined!"

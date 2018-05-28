@@ -18,6 +18,7 @@ SET(MCU "atmega2560" CACHE STRING "AVR MCU type")
 if(NO_OS)
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
 	${PROJECT_SOURCE_DIR}/source/ports/no-os
+	${PROJECT_SOURCE_DIR}/include/asm/avr
 )
 SET(RTOS_SOURCES
 	${PROJECT_SOURCE_DIR}/source/ports/no-os/avr.c
@@ -26,6 +27,7 @@ else()
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${PROJECT_SOURCE_DIR}/source/ports/freertos
 		${PROJECT_SOURCE_DIR}/external/avr-freertos/include
+		${PROJECT_SOURCE_DIR}/include/asm/avr
 )
 SET(RTOS_SOURCES
 	${PROJECT_SOURCE_DIR}/source/ports/freertos/rtos.c

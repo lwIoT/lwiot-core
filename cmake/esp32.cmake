@@ -42,6 +42,7 @@ set(CMAKE_LIBRARY_PATH ${ESP32_IDF_PATH}/lib/)
 
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
         ${PROJECT_SOURCE_DIR}/source/ports/freertos
+		${PROJECT_SOURCE_DIR}/include/asm/esp32
 
 		${ESP32_IDF_PATH}/components/cxx/include
 		${ESP32_IDF_PATH}/components/driver/include
