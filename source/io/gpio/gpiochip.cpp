@@ -9,6 +9,7 @@
 
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
+#include <lwiot/error.h>
 
 extern lwiot::GpioPin iopins[];
 
@@ -67,5 +68,45 @@ namespace lwiot
 	void GpioChip::output(int pin)
 	{
 		this->mode(pin, OUTPUT);
+	}
+
+	uint8_t GpioChip::shiftIn(int dpin, int cpin, bool lsb, uint8_t count, int delay)
+	{
+		uint8_t value;
+
+		if(count > 8)
+			return 0;
+
+		for(int idx = 0; idx < count; idx++) {
+			this->write(cpin, true);
+			udelay(delay);
+
+			if(lsb)
+				value |= this->read(dpin);
+			else
+				value |= this->read(dpin << ((count - 1) - idx));
+
+			this->write(cpin, false);
+			udelay(delay);
+		}
+
+		return value;
+	}
+
+	int GpioChip::shiftOut(int dpin, int cpin, bool lsb, uint8_t val, uint8_t count, int delay) 
+	{
+		for(auto idx = 0; idx < count; idx++) {
+			if(lsb)
+				this->write(dpin, !!(val & (1 << idx)));
+			else
+				this->write( dpin, !!(val & (1 << ((count - 1) - idx))) );
+
+			this->write(cpin, true);
+			udelay(delay);
+			this->write(cpin, false);
+			udelay(delay);
+		}
+
+		return -EOK;
 	}
 }

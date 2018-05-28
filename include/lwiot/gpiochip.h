@@ -44,6 +44,9 @@ namespace lwiot
 
 		const unsigned int& pins() const;
 
+		virtual uint8_t shiftIn(int dpin, int cpin, bool lsb, uint8_t count, int delay);
+		virtual int shiftOut(int dpin, int cpin, bool lsb, uint8_t val, uint8_t count, int delay);
+
 #ifdef CONFIG_PIN_VECTOR
 		virtual GpioPin& operator[] (const size_t& idx);
 		virtual GpioPin& pin(size_t idx);
