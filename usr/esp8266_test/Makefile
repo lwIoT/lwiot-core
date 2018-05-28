@@ -1,5 +1,5 @@
 # Makefile for access_point example
-PROGRAM=access_point
+PROGRAM=lwiot_test
 EXTRA_COMPONENTS=extras/dhcpserver
 
 BASE := $(LWIOT_PATH)

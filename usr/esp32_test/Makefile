@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := hello-world
+PROJECT_NAME := esp32-test
 
 PORT_PATH = $(LWIOT_PATH)/source/ports/freertos
 FREERTOS_PATH = $(IDF_PATH)/components/freertos/include/freertos
