@@ -13,7 +13,7 @@
 #include <thread>
 #include <chrono>
 
-void udelay(uint32_t us)
+extern "C" void udelay(uint32_t us)
 {
 	std::this_thread::sleep_for(std::chrono::microseconds(us));
 }
