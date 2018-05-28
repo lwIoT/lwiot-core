@@ -34,10 +34,12 @@ namespace lwiot
 
 		void write(bool high);
 		bool read();
-
 		void mode(const PinMode& mode);
 
-		int pin();
+		uint8_t shiftIn(const GpioPin& clock, bool lsb, uint8_t count, int delay);
+		int shiftOut(const GpioPin& clock, bool lsb, uint8_t value, uint8_t count, int delay);
+
+		int pin() const;
 
 	private:
 		bool _open_drain;

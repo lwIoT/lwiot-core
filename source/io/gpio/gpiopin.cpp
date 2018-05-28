@@ -42,6 +42,16 @@ namespace lwiot
 		this->write(true);
 	}
 
+	uint8_t GpioPin::shiftIn(const GpioPin& clk, bool lsb, uint8_t count, int delay)
+	{
+		return this->_chip.shiftIn(this->_pin, clk.pin(), lsb, count, delay);
+	}
+
+	int GpioPin::shiftOut(const GpioPin& clk, bool lsb, uint8_t value, uint8_t count, int delay)
+	{
+		return this->_chip.shiftOut(this->_pin, clk.pin(), lsb, value, count, delay);
+	}
+
 	void GpioPin::mode(const PinMode& mode)
 	{
 		if(mode == OUTPUT_OPEN_DRAIN)
@@ -65,7 +75,7 @@ namespace lwiot
 		return this->_chip.read(this->_pin);
 	}
 
-	int GpioPin::pin()
+	int GpioPin::pin() const
 	{
 		return this->_pin;
 	}
