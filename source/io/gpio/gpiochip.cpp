@@ -104,9 +104,9 @@ namespace lwiot
 				this->write( dpin, !!(val & (1 << ((count - 1) - idx))) );
 
 			this->write(cpin, true);
-			udelay(delay);
+			lwiot_udelay(delay);
 			this->write(cpin, false);
-			udelay(delay);
+			lwiot_udelay(delay);
 		}
 
 		return -EOK;
