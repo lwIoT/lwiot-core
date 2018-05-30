@@ -35,6 +35,11 @@ SET(SOURCES
 )
 
 set(GENERIC_HEADERS
+    esp32adcchip.h
+    esp32primaryadc.h
+    esp32secondaryadc.h
+    esp32dacchip.h
+    dacchip.h
 	esp32gpiochip.h
 	countable.h
 	bytebuffer.h

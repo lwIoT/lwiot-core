@@ -10,6 +10,7 @@ SET(IO_SOURCES
 
 	io/adc/adcchip.cpp
 	io/adc/adcpin.cpp
+	io/adc/dacchip.cpp
 )
 
 SET(CONFIG_PIN_VECTOR False CACHE BOOL "Build a vector of pins the the GPIO chip.")

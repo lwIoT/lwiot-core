@@ -69,6 +69,7 @@ SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
 	soc/esp32.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/esp32gpiochip.cpp
+	${PROJECT_SOURCE_DIR}/source/io/adc/esp32dacchip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32adcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32primaryadc.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32secondaryadc.cpp
