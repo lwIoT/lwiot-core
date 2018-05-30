@@ -15,31 +15,31 @@
 
 #include <driver/adc.h>
 
+#define ADC1_PINS 8
+#define ADC2_START_PIN ADC1_PINS
+
 namespace lwiot
 {
-	Esp32AdcChip::Esp32AdcChip() : AdcChip(8, 3300, 4095)
+	Esp32AdcChip::Esp32AdcChip() : AdcChip(18, 3300, 4095)
 	{
 	}
 
 	void Esp32AdcChip::begin()
 	{
 		adc_power_on();
-		adc1_config_width(ADC_WIDTH_12Bit);
-
-		for(int i = 0; i < ADC1_CHANNEL_MAX; i++) {
-			adc1_config_channel_atten((adc1_channel_t)i, ADC_ATTEN_11db);
-		 }
+		this->primary.begin();
+		this->secondary.begin();
 	}
 
 	size_t Esp32AdcChip::read(int pin) const
 	{
-		int raw;
+		if(pin >= this->pins())
+			return 0U;
 
-		raw = adc1_get_raw((adc1_channel_t)pin);
-		if(raw < 0)
-			return 0;
+		if(pin >= ADC2_START_PIN)
+			return this->secondary.read(pin - ADC2_START_PIN);
 
-		return AdcChip::toVoltage(raw);
+		return this->primary.read(pin);
 	}
 }
 

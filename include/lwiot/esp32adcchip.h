@@ -9,6 +9,8 @@
 
 #include <lwiot/lwiot.h>
 #include <lwiot/adcchip.h>
+#include <lwiot/esp32primaryadc.h>
+#include <lwiot/esp32secondaryadc.h>
 
 #ifdef CXX
 namespace lwiot
@@ -20,6 +22,10 @@ namespace lwiot
 
 		void begin() override;
 		size_t read(int pin) const override;
+
+	private:
+		Esp32PrimaryAdc primary;
+		Esp32SecondaryAdc secondary;
 	};
 }
 #endif
