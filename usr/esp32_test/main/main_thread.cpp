@@ -8,14 +8,6 @@
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 
-static volatile int irq_counter = 0;
-
-static void IRAM_ATTR ping_handler(void)
-{
-	//printf("Interrupt happend\n");
-	irq_counter++;
-}
-
 class MainThread : public lwiot::Thread {
 public:
 	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg)
