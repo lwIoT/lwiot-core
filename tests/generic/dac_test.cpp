@@ -20,7 +20,13 @@ public:
 	void begin() override
 	{ }
 
-	void write(const size_t& value) override
+	void enable(int pin) override
+	{ }
+
+	void disable(int pin) override
+	{ }
+
+	void write(int pin, const size_t& value) override
 	{
 		auto mapped = this->map(value);
 		print_dbg("Writing DAC value [%u : %u]\n", value, mapped);
@@ -33,9 +39,9 @@ int main(int argc, char **argv)
 
 	lwiot_init();
 	testchip.begin();
-	testchip.write(3300);
-	testchip.write(1000);
-	testchip.write(2590);
+	testchip.write(1, 3300);
+	testchip.write(1, 1000);
+	testchip.write(1, 2590);
 
 	lwiot_destroy();
 	wait_close();
