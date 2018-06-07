@@ -28,6 +28,8 @@ namespace lwiot
 		explicit GpioPin(int pin, GpioChip& gpio);
 		virtual ~GpioPin();
 
+		GpioPin& operator =(int pin);
+
 		void input();
 		void output();
 		void setOpenDrain();

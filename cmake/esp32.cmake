@@ -73,6 +73,8 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32adcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32primaryadc.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32secondaryadc.cpp
+
+	${PROJECT_SOURCE_DIR}/source/io/uart/esp32uart.cpp
 )
 
 SET(LWIOT_PORT_HEADERS

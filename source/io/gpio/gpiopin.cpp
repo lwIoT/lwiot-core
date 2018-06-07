@@ -10,9 +10,8 @@
 
 namespace lwiot
 {
-	GpioPin::GpioPin(int pin) : _pin(pin), _chip(gpio)
+	GpioPin::GpioPin(int pin) : GpioPin(pin, gpio)
 	{
-		this->_open_drain = false;
 	}
 
 	GpioPin::GpioPin(int pin, GpioChip& chip) : _pin(pin), _chip(chip)
@@ -24,6 +23,12 @@ namespace lwiot
 	{
 		this->input();
 		this->write(false);
+	}
+
+	GpioPin& GpioPin::operator =(int num)
+	{
+		this->_pin = num;
+		return *this;
 	}
 
 	void GpioPin::input()
