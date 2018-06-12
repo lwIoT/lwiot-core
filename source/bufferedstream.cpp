@@ -34,6 +34,41 @@ namespace lwiot {
 		return this->_data[this->rd_idx++];
 	}
 
+	ssize_t BufferedStream::read(uint8_t *buffer, const size_t& length)
+	{
+		auto max = this->length();
+		size_t to_read;
+
+		if(this->rd_idx + length > max) {
+			to_read = max;
+		} else {
+			to_read = length;
+		}
+
+		memcpy((void*)buffer, this->_data, to_read);
+		this->rd_idx += to_read;
+
+		return to_read;
+	}
+
+	ssize_t BufferedStream::read(String& data)
+	{
+		String us(this->toString());
+		data.concat(us);
+
+		return us.length();
+	}
+
+	void BufferedStream::write(uint8_t byte)
+	{
+		*this << byte;
+	}
+
+	void BufferedStream::write(const uint8_t *data, const size_t& length)
+	{
+		this->append((const void*)data, length);
+	}
+
 	size_t BufferedStream::available()
 	{
 		auto written = this->wr_idx;
@@ -159,7 +194,7 @@ namespace lwiot {
 		return this->wr_idx;
 	}
 
-	void BufferedStream::append(void* data, size_t length)
+	void BufferedStream::append(const void* data, size_t length)
 	{
 		if((length + this->wr_idx) > this->count()) {
 			const auto newsize = this->wr_idx + length;

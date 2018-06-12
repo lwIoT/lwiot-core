@@ -7,7 +7,9 @@
 
 #include <stdlib.h>
 #include <lwiot.h>
+#include <stdint.h>
 
+#include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
 
@@ -22,6 +24,22 @@ namespace lwiot {
 		this->_timeout = timeout;
 	}
 
-	Stream::~Stream()
-	{ }
+	ssize_t Stream::read(String& output)
+	{
+		char x;
+		ssize_t bytes;
+
+		bytes = 0;
+		while((x = this->read()) != '\n') {
+			bytes++;
+			output += x;
+		}
+
+		return bytes;
+	}
+
+	void Stream::write(const String& data)
+	{
+		this->write((const uint8_t*)data.c_str(), (ssize_t)data.length());
+	}
 }

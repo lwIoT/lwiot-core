@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 #include <lwiot/types.h>
 #include <lwiot/string.h>
 
@@ -15,10 +17,9 @@ namespace lwiot {
 	public:
 		explicit Stream();
 		Stream(const time_t& timeout);
-		virtual ~Stream();
+		virtual ~Stream() = default;
 
 		virtual size_t available() = 0;
-		virtual uint8_t read() = 0;
 
 		virtual Stream& operator << (char x) = 0;
 		virtual Stream& operator << (short x) = 0;
@@ -37,6 +38,14 @@ namespace lwiot {
 
 		virtual Stream& operator << (const String& str) = 0;
 		virtual Stream& operator << (const char *cstr) = 0;
+
+		virtual uint8_t read() = 0;
+		virtual ssize_t read(uint8_t *output, const size_t& length) = 0;
+		virtual ssize_t read(String& output);
+
+		virtual void write(uint8_t byte) = 0;
+		virtual void write(const uint8_t *bytes, const size_t& length) = 0;
+		virtual void write(const String& data);
 
 	private:
 		time_t _timeout;

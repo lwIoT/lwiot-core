@@ -44,29 +44,11 @@ namespace lwiot
 {
 	class Uart {
 	public:
-		explicit Uart(long baud, const GpioPin& rx, const GpioPin& tx, uint32_t config = SERIAL_8N1);
-		explicit Uart(long baud, uint32_t config = SERIAL_8N1);
+		explicit Uart()
+		{
+
+		}
+
 		virtual ~Uart() = default;
-
-		virtual uint8_t read() = 0;
-		virtual ssize_t read(uint8_t *buffer, size_t length) = 0;
-		virtual ssize_t read(String& output);
-		virtual void write(uint8_t byte) = 0;
-		virtual void write(const uint8_t *buffer, size_t length) = 0;
-		virtual void write(const String& string);
-
-		virtual bool available() const = 0;
-		virtual operator bool() const;
-
-		virtual const uint32_t& config() const final;
-		virtual const GpioPin& rx() const final;
-		virtual const GpioPin& tx() const final;
-		virtual const long& baud() const final;
-
-	protected:
-		long _baud;
-		GpioPin _rx;
-		GpioPin _tx;
-		uint32_t _config;
 	};
 }

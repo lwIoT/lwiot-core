@@ -47,15 +47,22 @@ namespace lwiot {
 		const size_t& size() const;
 
 		virtual size_t available() override;
-		virtual uint8_t read() override;
 		virtual String toString();
+
+		virtual uint8_t read() override;
+		virtual ssize_t read(uint8_t *output, const size_t& length) override;
+		virtual ssize_t read(String& output) override final;
+
+		virtual void write(uint8_t byte) override;
+		virtual void write(const uint8_t *bytes, const size_t& length) override;
+		using Stream::write;
 
 	protected:
 		virtual size_t length() const;
 
 	private:
 		/* methods */
-		void append(void *data, size_t length);
+		void append(const void *data, size_t length);
 		void grow();
 		void grow(int num);
 

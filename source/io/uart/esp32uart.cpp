@@ -11,14 +11,15 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/uart.h>
+#include <lwiot/gpiopin.h>
 #include <lwiot/esp32uart.h>
 
 #define UART_BUFFER_SIZE 512
 
 namespace lwiot
 {
-	Esp32Uart::Esp32Uart(int num, long baud, uint32_t config) :
-		Uart(baud, config), _uart_num((uart_port_t)num)
+	Esp32Uart::Esp32Uart(int num, long baud, uint32_t config) : Stream(),
+		_rx(0), _tx(0), _uart_num((uart_port_t)num)
 	{
 		switch(num) {
 		case 0:
@@ -69,22 +70,17 @@ namespace lwiot
 		uart_driver_delete(this->_uart_num);
 	}
 
-	bool Esp32Uart::available() const
-	{
-		return false;
-	}
-
 	void Esp32Uart::write(uint8_t byte)
 	{
 		this->write(&byte, sizeof(byte));
 	}
 
-	void Esp32Uart::write(const uint8_t *bytes, size_t length)
+	void Esp32Uart::write(const uint8_t *bytes, const size_t& length)
 	{
 		uart_write_bytes(this->_uart_num, (const char*)bytes, length);
 	}
 
-	ssize_t Esp32Uart::read(uint8_t *buffer, size_t length)
+	ssize_t Esp32Uart::read(uint8_t *buffer, const size_t& length)
 	{
 		int len;
 
