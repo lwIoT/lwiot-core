@@ -12,6 +12,7 @@
 #include <lwiot.h>
 
 #include <lwiot/gpiopin.h>
+#include <lwiot/stream.h>
 #include <lwiot/string.h>
 #include <lwiot/gpiochip.h>
 
@@ -42,13 +43,105 @@
 
 namespace lwiot
 {
-	class Uart {
+	class Uart : public Stream {
 	public:
-		explicit Uart()
-		{
+		explicit Uart(int tx, int rx, long baud = 9600, uint32_t config = SERIAL_8N1);
+		explicit Uart(const GpioPin& tx, const GpioPin& rx, long baud = 9600, uint32_t config = SERIAL_8N1);
+		virtual ~Uart() = default;
 
+		using Stream::write;
+		using Stream::read;
+		using Stream::available;
+
+		virtual Stream& operator << (char x) override
+		{
+			this->write(x);
+			return *this;
+		}
+		
+		virtual Stream& operator << (short x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
 		}
 
-		virtual ~Uart() = default;
+		virtual Stream& operator << (int  x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (const long&  x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (const long long&  x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (unsigned char x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (unsigned short x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (unsigned int  x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (const unsigned long&  x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (const unsigned long long&  x) override
+		{
+			this->write((uint8_t) x);
+			return *this;
+		}
+
+		virtual Stream& operator << (const double& flt) override
+		{
+			this->write((uint8_t*)&flt, sizeof(flt));
+			return *this;
+		}
+
+		virtual Stream& operator << (const float& flt) override
+		{
+			this->write((uint8_t*)&flt, sizeof(flt));
+			return *this;
+		}
+
+		virtual Stream& operator << (const String& str) override
+		{
+			*this << str.c_str();
+			return *this;
+		}
+
+		virtual Stream& operator << (const char *cstr) override
+		{
+			this->write((uint8_t*)cstr, strlen(cstr));
+			return *this;
+		}
+
+	protected:
+		GpioPin _tx, _rx;
+		long _baud;
+
+	private:
+		uint32_t _config;
 	};
 }

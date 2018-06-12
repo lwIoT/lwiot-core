@@ -18,8 +18,8 @@
 
 namespace lwiot
 {
-	Esp32Uart::Esp32Uart(int num, long baud, uint32_t config) : Stream(),
-		_rx(0), _tx(0), _uart_num((uart_port_t)num)
+	Esp32Uart::Esp32Uart(int num, long baud, uint32_t config) : Uart(0, 0, baud, config),
+		_uart_num((uart_port_t)num)
 	{
 		switch(num) {
 		case 0:
