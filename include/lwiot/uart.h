@@ -58,89 +58,20 @@ namespace lwiot
 		using Stream::read;
 		using Stream::available;
 
-		virtual Stream& operator << (char x) override
-		{
-			this->write(x);
-			return *this;
-		}
-		
-		virtual Stream& operator << (short x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (int  x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (const long&  x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (const long long&  x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (unsigned char x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (unsigned short x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (unsigned int  x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (const unsigned long&  x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (const unsigned long long&  x) override
-		{
-			this->write((uint8_t) x);
-			return *this;
-		}
-
-		virtual Stream& operator << (const double& flt) override
-		{
-			this->write((uint8_t*)&flt, sizeof(flt));
-			return *this;
-		}
-
-		virtual Stream& operator << (const float& flt) override
-		{
-			this->write((uint8_t*)&flt, sizeof(flt));
-			return *this;
-		}
-
-		virtual Stream& operator << (const String& str) override
-		{
-			*this << str.c_str();
-			return *this;
-		}
-
-		virtual Stream& operator << (const char *cstr) override
-		{
-			this->write((uint8_t*)cstr, strlen(cstr));
-			return *this;
-		}
+		virtual Stream& operator << (char x) override;
+		virtual Stream& operator << (short x) override;
+		virtual Stream& operator << (int  x) override;
+		virtual Stream& operator << (const long&  x) override;
+		virtual Stream& operator << (const long long&  x) override;
+		virtual Stream& operator << (unsigned char x) override;
+		virtual Stream& operator << (unsigned short x) override;
+		virtual Stream& operator << (unsigned int  x) override;
+		virtual Stream& operator << (const unsigned long&  x) override;
+		virtual Stream& operator << (const unsigned long long&  x) override;
+		virtual Stream& operator << (const double& flt) override;
+		virtual Stream& operator << (const float& flt) override;
+		virtual Stream& operator << (const String& str) override;
+		virtual Stream& operator << (const char *cstr) override;
 
 	protected:
 		GpioPin _tx, _rx;
