@@ -62,6 +62,8 @@ SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
     ${PROJECT_SOURCE_DIR}/source/io/gpio/esp8266gpiochip.cpp
     ${PROJECT_SOURCE_DIR}/source/io/adc/esp8266adcchip.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/uart/esp8266uart.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/uart/esp8266-softuart.c
 )
 
 SET(ESP8266 True CACHE BOOL "ESP8266 target.")

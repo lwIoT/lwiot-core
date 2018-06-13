@@ -11,10 +11,14 @@
 #include <stdint.h>
 #include <lwiot.h>
 
+#ifdef __cplusplus
+
 #include <lwiot/gpiopin.h>
 #include <lwiot/stream.h>
 #include <lwiot/string.h>
 #include <lwiot/gpiochip.h>
+
+#endif
 
 #define SERIAL_5N1 0x8000010
 #define SERIAL_6N1 0x8000014
@@ -41,6 +45,7 @@
 #define SERIAL_7O2 0x800003b
 #define SERIAL_8O2 0x800003f
 
+#ifdef __cplusplus
 namespace lwiot
 {
 	class Uart : public Stream {
@@ -145,3 +150,4 @@ namespace lwiot
 		uint32_t _config;
 	};
 }
+#endif
