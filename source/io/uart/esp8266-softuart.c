@@ -21,7 +21,7 @@
 #include "esp8266-softuart.h"
 
 #ifdef SOFTUART_DEBUG
-#define debug(fmt, ...) print_dbg(fmt, __VA_ARGS__)
+#define debug(fmt, ...) printf("[SOFT-UART]: " fmt, ## __VA_ARGS__)
 #else
 #define debug(fmt, ...)
 #endif
@@ -134,21 +134,22 @@ static bool check_uart_enabled(uint8_t uart_no)
 
 bool esp_softuart_open(uint8_t uart_no, uint32_t baudrate, uint8_t rx_pin, uint8_t tx_pin)
 {
-    if (!check_uart_no(uart_no)) return false;
-    if (baudrate == 0)
-    {
+    if (!check_uart_no(uart_no))
+		return false;
+    if (baudrate == 0) {
         debug("Invalid baudrate");
         return false;
     }
+
     for (uint8_t i = 0; i < SOFTUART_MAX_UARTS; i++)
-        if (uarts[i].baudrate && i != uart_no
-            && (uarts[i].rx_pin == rx_pin || uarts[i].tx_pin == tx_pin || uarts[i].rx_pin == tx_pin || uarts[i].tx_pin == rx_pin))
-        {
+        if (uarts[i].baudrate && i != uart_no &&
+			(uarts[i].rx_pin == rx_pin || uarts[i].tx_pin == tx_pin ||
+			uarts[i].rx_pin == tx_pin || uarts[i].tx_pin == rx_pin)) {
             debug("Cannot share pins between uarts");
             return false;
         }
 
-    softuart_close(uart_no);
+    esp_softuart_close(uart_no);
 
     softuart_t *uart = uarts + uart_no;
 
@@ -226,7 +227,7 @@ bool esp_softuart_puts(uint8_t uart_no, const char *s)
 {
     while (*s)
     {
-        if (!softuart_put(uart_no, *s++))
+        if (!esp_softuart_put(uart_no, *s++))
             return false;
     }
 
