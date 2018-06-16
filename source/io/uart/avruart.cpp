@@ -2,6 +2,7 @@
  * AVR UART implementation.
  * 
  * @author Michel Megens
+ * @author arduino.cc
  * @email  dev@bietje.net
  */
 
