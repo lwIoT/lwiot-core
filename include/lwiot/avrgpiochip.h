@@ -6,8 +6,49 @@
  */
 
 #pragma once
+#include <avr/pgmspace.h>
+#include <avr/io.h>
 
+#include <lwiot/lwiot.h>
 #include <lwiot/gpiochip.h>
+
+extern const uint16_t PROGMEM port_to_mode_PGM[];
+extern const uint16_t PROGMEM port_to_input_PGM[];
+extern const uint16_t PROGMEM port_to_output_PGM[];
+extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
+extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
+
+#define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
+#define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
+
+#define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
+#define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_input_PGM + (P))) )
+#define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
+
+#ifdef ARDUINO_MEGA
+#define digitalPinToPCICR(p)    ( (((p) >= 10) && ((p) <= 13)) || \
+                                  (((p) >= 50) && ((p) <= 53)) || \
+                                  (((p) >= 62) && ((p) <= 69)) ? (&PCICR) : ((uint8_t *)0) )
+
+#define digitalPinToPCICRbit(p) ( (((p) >= 10) && ((p) <= 13)) || (((p) >= 50) && ((p) <= 53)) ? 0 : \
+                                ( (((p) >= 62) && ((p) <= 69)) ? 2 : \
+                                0 ) )
+
+#define digitalPinToPCMSK(p)    ( (((p) >= 10) && ((p) <= 13)) || (((p) >= 50) && ((p) <= 53)) ? (&PCMSK0) : \
+                                ( (((p) >= 62) && ((p) <= 69)) ? (&PCMSK2) : ((uint8_t *)0) ) )
+#define digitalPinToPCMSKbit(p) ( (((p) >= 10) && ((p) <= 13)) ? ((p) - 6) : \
+                                ( ((p) == 50) ? 3 : \
+                                ( ((p) == 51) ? 2 : \
+                                ( ((p) == 52) ? 1 : \
+                                ( ((p) == 53) ? 0 : \
+                                ( (((p) >= 62) && ((p) <= 69)) ? ((p) - 62) : \
+								0 ) ) ) ) ) )
+#elif defined(ARDUINO_UNO)
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 21) ? (&PCICR) : ((uint8_t *)0))
+#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
+#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 21) ? (&PCMSK1) : ((uint8_t *)0))))
+#define digitalPinToPCMSKbit(p) (((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : ((p) - 14)))
+#endif
 
 #ifdef ARDUINO_MEGA
 #define PINS 54
