@@ -9,6 +9,7 @@
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <lwiot.h>
 

@@ -80,6 +80,12 @@ const int XMIT_START_ADJUSTMENT = 4;
 
 namespace lwiot
 {
+	/* statics */
+	AvrUart *AvrUart::active_object = nullptr;
+	char AvrUart::_receive_buffer[SS_RX_BUFFER_SIZE];
+	volatile uint8_t AvrUart::_receive_buffer_head = 0;
+	volatile uint8_t AvrUart::_receive_buffer_tail = 0;
+
 	void isr_entry()
 	{
 		lwiot::AvrUart::handle_isr();
@@ -95,7 +101,7 @@ namespace lwiot
 		this->rxbit = digitalPinToBitMask(rx);
 		this->txbit = digitalPinToBitMask(tx);
 
-		this->_rx.mode(INPUT_NOPULLUP);
+		this->_rx.mode(INPUT);
 		this->_tx.mode(OUTPUT);
 		this->_tx.write(true);
 
@@ -108,11 +114,7 @@ namespace lwiot
 		this->_tx.mode(INPUT_NOPULLUP);
 
 		/* disable interrupts */
-		auto pcmsk = digitalPinToPCMSK(this->_rx.pin());
-		if(!pcmsk)
-			return;
-
-		*pcmsk &= ~_BV(digitalPinToPCMSKbit(this->_rx.pin()));
+		this->end();
 	}
 
 	void AvrUart::handle_isr()
@@ -125,8 +127,8 @@ namespace lwiot
 	{
 		this->_rx_delay_centering = this->_rx_delay_intrabit = this->_rx_delay_stopbit = this->_tx_delay = 0;
 
-		for(unsigned idx = 0; idx < sizeof(table) / sizeof(table[0]); idx++) {
-			long baud = pgm_read_dword(&table[0].baud);
+		for(unsigned idx = 0; idx < sizeof(table) / sizeof(DELAY_TABLE); idx++) {
+			long baud = pgm_read_dword(&table[idx].baud);
 
 			if(baud == this->_baud) {
 				/*
@@ -143,19 +145,42 @@ namespace lwiot
 		}
 
 		if(this->_rx_delay_stopbit) {
-			auto pcmsk = digitalPinToPCMSK(this->_rx.pin());
 			auto pcicr = digitalPinToPCICR(this->_rx.pin());
-			auto pin = digitalPinToPCMSKbit(this->_rx.pin());
+			auto pin = digitalPinToPCICRbit(this->_rx.pin());
 
-			if(pcicr) {
-				*pcmsk |= _BV(pin);
-				*pcicr |= _BV(pin);
-			}
+			pin = _BV(pin);
+
+			if(pcicr)
+				*pcicr |= pin;
 
 			this->delay(this->_tx_delay);
 		}
 
 		this->listen();
+	}
+
+	bool AvrUart::end()
+	{
+		if(active_object == this) {
+			this->setIrqMask(false);
+			AvrUart::active_object = nullptr;
+			return true;
+		}
+
+		return false;
+	}
+
+	void AvrUart::setIrqMask(bool enabled)
+	{
+		auto irqmsk = digitalPinToPCMSK(this->_rx.pin());
+		auto value = digitalPinToPCMSKbit(this->_rx.pin());
+
+		value = _BV(value);
+
+		if(enabled)
+			*irqmsk |= value;
+		else
+			*irqmsk &= ~value;
 	}
 
 	inline void AvrUart::delay(uint16_t _delay) const
@@ -177,10 +202,14 @@ namespace lwiot
 		if(AvrUart::active_object == this)
 			return false;
 
+		if(AvrUart::active_object)
+			active_object->end();
+
 		enter_critical();
 		this->_buffer_overflow = false;
 		this->_receive_buffer_head = this->_receive_buffer_tail = 0;
 		AvrUart::active_object = this;
+		this->setIrqMask(true);
 		exit_critical();
 
 		return true;
@@ -221,7 +250,8 @@ namespace lwiot
 		);
 #endif
 
-		if(this->get_rx_value()) {
+		if(!this->get_rx_value()) {
+			this->setIrqMask(false);
 			this->delay(_rx_delay_centering);
 
 			data = 0;
@@ -248,6 +278,8 @@ namespace lwiot
 				/* buffer has flown over */
 				this->_buffer_overflow = true;
 			}
+
+			this->setIrqMask(true);
 		}
 
 #if GCC_VERSION < 40302
@@ -305,7 +337,7 @@ namespace lwiot
 			return;
 
 		enter_critical();
-		this->_receive_buffer_head = _receive_buffer_tail = 0;
+		_receive_buffer_head = _receive_buffer_tail = 0;
 		exit_critical();
 	}
 
@@ -314,11 +346,11 @@ namespace lwiot
 		if(!this->isListening())
 			return 0;
 
-		if(this->_receive_buffer_head == this->_receive_buffer_tail)
+		if(_receive_buffer_head == _receive_buffer_tail)
 			return 0;
 
-		auto data = this->_receive_buffer[this->_receive_buffer_head];
-		this->_receive_buffer_head = (this->_receive_buffer_head + 1) % SS_RX_BUFFER_SIZE;
+		auto data = _receive_buffer[_receive_buffer_head];
+		_receive_buffer_head = (_receive_buffer_head + 1) % SS_RX_BUFFER_SIZE;
 		return data;
 	}
 
@@ -331,7 +363,7 @@ namespace lwiot
 
 		idx = 0;
 		while(idx < length) {
-			if(!available())
+			while(!this->available())
 				continue;
 
 			buffer[idx] = this->read();

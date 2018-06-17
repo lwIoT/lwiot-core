@@ -42,6 +42,8 @@ namespace lwiot
 		void init();
 		bool isListening();
 		friend void isr_entry();
+		bool end();
+		void setIrqMask(bool enabled);
 
 		bool listen();
 		void recv();
@@ -66,6 +68,5 @@ namespace lwiot
 		uint16_t _tx_delay;
 
 		uint16_t _buffer_overflow:1;
-		uint16_t _inverse_logic:1;
 	};
 }
