@@ -19,6 +19,7 @@
 #cmakedefine HAVE_RTOS
 #cmakedefine CONFIG_NO_SYS
 #cmakedefine CONFIG_HW_BARRIER 1
+#cmakedefine NO_OS
 
 #cmakedefine HAVE_SIZE_T
 #cmakedefine HAVE_SSIZE_T

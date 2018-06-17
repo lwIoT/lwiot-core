@@ -10,3 +10,6 @@
 
 #include <rom/ets_sys.h>
 #define lwiot_udelay(__us) ets_delay_us(__us)
+
+extern  void enter_critical();
+extern  void exit_critical();

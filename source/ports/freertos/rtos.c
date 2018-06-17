@@ -307,18 +307,6 @@ time_t lwiot_timer_get_expiry(lwiot_timer_t *timer)
 	return timer->expiry;
 }
 
-#ifndef portNUM_PROCESSORS
-void enter_critical()
-{
-	taskENTER_CRITICAL();
-}
-
-void exit_critical()
-{
-	taskEXIT_CRITICAL();
-}
-#endif
-
 #ifdef CONFIG_NO_SYS
 time_t lwiot_tick(void)
 {

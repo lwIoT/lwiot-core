@@ -34,27 +34,6 @@ void *lwiot_mem_zalloc(size_t size)
 	return ptr;
 }
 
-void __attribute__((naked)) enter_critical()
-{
-	__asm__ __volatile__(
-		"in __tmp_reg__, __SREG__"	"\n\t"
-		"cli"						"\n\t"
-		"push __tmp_reg__"
-		:
-		:
-	);
-}
-
-void __attribute__((naked)) exit_critical()
-{
-	__asm__ __volatile__(
-		"pop __tmp_reg__" "\n\t"
-		"out __SREG__, __tmp_reg__" "\n\t"
-		:
-		:
-	);
-}
-
 void lwiot_sleep(int ms)
 {
 	for(int num = 0; num < ms; num++)

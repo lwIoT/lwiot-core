@@ -55,6 +55,7 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
         ${LWIOT_PORT_DIR}/rtos.c
+        ${PROJECT_SOURCE_DIR}/source/soc/esp8266.c
         )
 
 SET(LWIOT_PORT_HEADERS

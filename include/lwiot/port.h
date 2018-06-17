@@ -72,9 +72,6 @@ extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
 #define lwiot_timers_destroy()
 #endif /* CONFIG_NO_OS */
 
-extern DLL_EXPORT void enter_critical();
-extern DLL_EXPORT void exit_critical();
-
 extern DLL_EXPORT void *lwiot_mem_alloc(size_t size);
 extern DLL_EXPORT void *lwiot_mem_zalloc(size_t size);
 extern DLL_EXPORT void lwiot_mem_free(void *ptr);

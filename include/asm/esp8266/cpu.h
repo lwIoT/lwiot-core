@@ -10,3 +10,6 @@
 
 #include <espressif/esp_misc.h>
 #define lwiot_udelay(__us) sdk_os_delay_us(__us)
+
+extern  void enter_critical();
+extern  void exit_critical();
