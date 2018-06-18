@@ -29,12 +29,15 @@ SET(SOURCES
     string.cpp
 	vector.cpp
     bufferedstream.cpp
+    system.cpp
     ${WRAPPER_SOURCES}
 	${IO_SOURCES}
     ${LWIOT_PORT_SRCS}
 )
 
 set(GENERIC_HEADERS
+    system.h
+    esp32system.h
     esp32adcchip.h
     esp32primaryadc.h
     esp32secondaryadc.h
