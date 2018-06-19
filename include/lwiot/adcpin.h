@@ -17,6 +17,13 @@ namespace lwiot
 		explicit AdcPin(int pin, AdcChip& chip);
 
 		size_t read() const;
+		const int& pin() const;
+
+		bool operator ==(const AdcPin& pin);
+		bool operator >(const AdcPin& pin);
+		bool operator <(const AdcPin& pin);
+		bool operator >=(const AdcPin& pin);
+		bool operator <=(const AdcPin& pin);
 
 	private:
 		AdcChip& _chip;

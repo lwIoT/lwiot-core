@@ -84,4 +84,29 @@ namespace lwiot
 	{
 		return this->_pin;
 	}
+
+	bool GpioPin::operator ==(const GpioPin& pin)
+	{
+		return this->_pin == pin.pin();
+	}
+
+	bool GpioPin::operator <(const GpioPin& pin)
+	{
+		return this->_pin < pin.pin();
+	}
+
+	bool GpioPin::operator >(const GpioPin& pin)
+	{
+		return this->_pin > pin.pin();
+	}
+
+	bool GpioPin::operator <=(const GpioPin& pin)
+	{
+		return this->_pin <= pin.pin();
+	}
+
+	bool GpioPin::operator >=(const GpioPin& pin)
+	{
+		return this->_pin >= pin.pin();
+	}
 }

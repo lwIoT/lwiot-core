@@ -23,4 +23,34 @@ namespace lwiot
 	{
 		return this->_chip.read(this->_pin);
 	}
+
+	const int& AdcPin::pin() const
+	{
+		return this->_pin;
+	}
+
+	bool AdcPin::operator ==(const AdcPin& pin)
+	{
+		return this->_pin == pin.pin();
+	}
+
+	bool AdcPin::operator >(const AdcPin& pin)
+	{
+		return this->_pin > pin.pin();
+	}
+
+	bool AdcPin::operator <(const AdcPin& pin)
+	{
+		return this->_pin < pin.pin();
+	}
+
+	bool AdcPin::operator >=(const AdcPin& pin)
+	{
+		return this->_pin >= pin.pin();
+	}
+
+	bool AdcPin::operator <=(const AdcPin& pin)
+	{
+		return this->_pin <= pin.pin();
+	}
 }

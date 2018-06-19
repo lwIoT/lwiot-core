@@ -11,5 +11,13 @@
 #include <rom/ets_sys.h>
 #define lwiot_udelay(__us) ets_delay_us(__us)
 
-extern "C" void enter_critical();
-extern "C" void exit_critical();
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern void enter_critical();
+extern void exit_critical();
+
+#ifdef __cplusplus
+}
+#endif

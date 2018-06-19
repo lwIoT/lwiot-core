@@ -83,10 +83,12 @@ namespace lwiot
 			this->write(cpin, true);
 			lwiot_udelay(delay);
 
-			if(lsb)
-				value |= this->read(dpin);
-			else
-				value |= this->read(dpin << ((count - 1) - idx));
+			if(lsb) {
+				value |= static_cast<uint8_t>(this->read(dpin));
+			} else {
+				auto tmp = this->read(dpin << ((count - 1) - idx));
+				value |= static_cast<uint8_t>(tmp);
+			}
 
 			this->write(cpin, false);
 			lwiot_udelay(delay);
