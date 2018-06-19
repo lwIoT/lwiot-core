@@ -41,6 +41,7 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/adc/avradcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/uart/avruart.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/avr.c
+	${PROJECT_SOURCE_DIR}/source/soc/avrsystem.cpp
 	${RTOS_SOURCES}
 )
 

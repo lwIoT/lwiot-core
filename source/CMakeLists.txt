@@ -36,6 +36,9 @@ SET(SOURCES
 )
 
 set(GENERIC_HEADERS
+    esp32system.h
+    esp8266system.h
+    avrsystem.h
     system.h
     esp32system.h
     esp32adcchip.h
