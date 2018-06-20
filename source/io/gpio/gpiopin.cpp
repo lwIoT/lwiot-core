@@ -19,11 +19,7 @@ namespace lwiot
 		this->_open_drain = false;
 	}
 
-	GpioPin::~GpioPin()
-	{
-		this->input();
-		this->write(false);
-	}
+	GpioPin::~GpioPin() = default;
 
 	GpioPin& GpioPin::operator =(int num)
 	{

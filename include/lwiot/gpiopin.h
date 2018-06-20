@@ -48,6 +48,7 @@ namespace lwiot
 		bool operator <(const GpioPin& pin);
 		bool operator >=(const GpioPin& pin);
 		bool operator <=(const GpioPin& pin);
+
 	private:
 		bool _open_drain;
 		int _pin;

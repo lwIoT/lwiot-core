@@ -7,8 +7,9 @@ include(${CMAKE_SOURCE_DIR}/cmake/FindNumPy.cmake)
 SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/win32.c
 	soc/win32.cpp
-	${CMAKE_SOURCE_DIR}/source/io/gpio/hostedgpiochip.cpp
+	io/gpio/hostedgpiochip.cpp
 )
+
 SET(LWIOT_PORT_HEADERS ${LWIOT_PORT_DIR}/lwiot_arch.h)
 SET(LWIOT_PORT_INCLUDE_DIRECTORIES
 	${PROJECT_SOURCE_DIR}/source/ports/win32 ${PROJECT_SOURCE_DIR}/include/asm/hosted
