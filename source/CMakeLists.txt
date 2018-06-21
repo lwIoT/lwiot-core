@@ -6,6 +6,7 @@ include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
+include(${PROJECT_SOURCE_DIR}/source/lib/lib.cmake)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
@@ -23,15 +24,14 @@ endif()
 SET(SOURCES
     init.c
     log.c
-	stream.cpp
 	bytebuffer.cpp
 	log.cpp
     string.cpp
 	vector.cpp
-    bufferedstream.cpp
     ${WRAPPER_SOURCES}
 	${IO_SOURCES}
     ${LWIOT_PORT_SRCS}
+    ${LIB_SOURCES}
 )
 
 set(GENERIC_HEADERS
