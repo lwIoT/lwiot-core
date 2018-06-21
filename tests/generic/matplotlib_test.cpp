@@ -16,6 +16,8 @@ namespace plt = matplotlibcpp;
 
 int main(int argc, char **argv)
 {
+	lwiot_init();
+
 	std::vector<double> x,y, x2, y2;
 	srand(std::rand());
 
@@ -42,5 +44,6 @@ int main(int argc, char **argv)
 	plt::xlim(0, 10);
 	plt::show();
 
+	lwiot_destroy();
 	return -EXIT_SUCCESS;
 }

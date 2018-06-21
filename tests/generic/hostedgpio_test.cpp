@@ -14,6 +14,8 @@
 
 int main(int argc, char **argv)
 {
+	lwiot_init();
+
 	lwiot::HostedGpioChip hosted(10);
 
 	hosted.write(1, true);
@@ -46,5 +48,6 @@ int main(int argc, char **argv)
 	std::cout << "Rendering plot.." << std::endl;
 	hosted.plot("output.png", true, 1, 2);
 
+	lwiot_destroy();
 	return -EXIT_SUCCESS;
 }
