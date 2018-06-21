@@ -42,12 +42,9 @@ int main(int argc, char **argv)
 
 	hosted.write(2, true);
 	hosted.write(1, true);
-	std::cout << "Rendering plot.." << std::endl;
 
-	try {
-		hosted.plot("output.png", false, 1, 2);
-	} catch(...) {
-	}
+	std::cout << "Rendering plot.." << std::endl;
+	hosted.plot("output.png", true, 1, 2);
 
 	return -EXIT_SUCCESS;
 }

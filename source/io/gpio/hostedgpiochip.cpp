@@ -75,7 +75,7 @@ namespace lwiot
 		std::vector<double> x1, x2;
 
 		this->split(pin1, 0, x1, y1);
-		this->split(pin2, 2.0f, x2, y2);
+		this->split(pin2, 1.4f, x2, y2);
 
 		plt::step(x1, y1);
 
@@ -104,8 +104,8 @@ namespace lwiot
 		assert(y.empty());
 
 		first_entry = static_cast<double>(data[0].first());
-		x.push_back(-1000);
-		y.push_back(1+yoff);
+		x.push_back(-500);
+		y.push_back(data.front().second() + yoff);
 
 		for(auto& entry : data) {
 			auto rel = entry.first() - first_entry;
