@@ -10,6 +10,8 @@ include(TestBigEndian)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
 
+SET(HAVE_DEBUG False CACHE BOOL "ESP32 target.")
+
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(HAVE_DEBUG True)
 endif ()
