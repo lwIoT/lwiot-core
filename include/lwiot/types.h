@@ -11,6 +11,17 @@
 
 #include "lwiot_opts.h"
 
+typedef enum {
+    WL_NO_SHIELD        = 255,
+    WL_IDLE_STATUS      = 0,
+    WL_NO_SSID_AVAIL    = 1,
+    WL_SCAN_COMPLETED   = 2,
+    WL_CONNECTED        = 3,
+    WL_CONNECT_FAILED   = 4,
+    WL_CONNECTION_LOST  = 5,
+    WL_DISCONNECTED     = 6
+} wireless_status_t;
+
 #ifdef HAVE_TIME_H
 #include <time.h>
 #else

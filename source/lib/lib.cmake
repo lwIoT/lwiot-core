@@ -15,4 +15,6 @@ SET(LIB_SOURCES
 	lib/json/list.cpp
 	lib/json/prettyfier.cpp
 	lib/json/staticstringbuilder.cpp
+
+	lib/net/ipaddress.cpp
 )
