@@ -50,6 +50,7 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${ESP32_IDF_PATH}/components/freertos/include
 		${ESP32_IDF_PATH}/components/freertos/include/freertos
 		${ESP32_IDF_PATH}/components/heap/include
+		${ESP32_IDF_PATH}/components/nvs_flash/include
 		${ESP32_IDF_PATH}/components/lwip/include/lwip
 		${ESP32_IDF_PATH}/components/lwip/include/lwip/port
 		${ESP32_IDF_PATH}/components/lwip/include/lwip/posix
@@ -59,6 +60,8 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${ESP32_IDF_PATH}/components/mdns/include
 		${ESP32_IDF_PATH}/components/newlib/platform_include
 		${ESP32_IDF_PATH}/components/newlib/include
+		${ESP32_IDF_PATH}/components/vfs/include
+		${ESP32_IDF_PATH}/components/tcpip_adapter/include
 		${ESP32_IDF_PATH}/components/soc/esp32/include
 		${ESP32_IDF_PATH}/components/soc/include
 		${ESP32_IDF_PATH}/esp32-config
@@ -68,6 +71,9 @@ SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
 	${LWIOT_PORT_DIR}/rtos.c
 	soc/esp32.c
+	${PROJECT_SOURCE_DIR}/source/io/wifi/esp32_station.cpp
+	${PROJECT_SOURCE_DIR}/source/io/wifi/esp32_ap.cpp
+	${PROJECT_SOURCE_DIR}/source/io/wifi/esp32_wifi.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/esp32gpiochip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32adcchip.cpp
 )

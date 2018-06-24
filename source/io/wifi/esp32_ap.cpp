@@ -47,15 +47,13 @@ extern "C" void esp32_wifi_ap_event(system_event_t *event)
 
 namespace lwiot
 {
-	WifiAccessPoint::WifiAccessPoint() : initialised(false)
+	WifiAccessPoint::WifiAccessPoint()
 	{
+		esp32_wifi_subsys_init();
 	}
 
 	void WifiAccessPoint::begin(const String& ssid, const String& pass, int chan, bool hidden, int max)
 	{
-		if(!initialised)
-			esp32_wifi_subsys_init();
-
 		esp32_wifi_init_softap(ssid.c_str(), pass.c_str(), max, hidden, chan);
 	}
 
@@ -91,16 +89,25 @@ namespace lwiot
 		this->_subnet = sn;
 	}
 
-	void end()
+	void WifiAccessPoint::end()
 	{
 		wifi_mode_t mode;
+		wifi_config_t config;
 
-		/* TODO: NULLIFY config */
+		*config.ap.ssid = '\0';
+		*config.ap.password = '\0';
+		config.ap.authmode = WIFI_AUTH_OPEN;
+		esp_wifi_set_config(WIFI_IF_AP, &config);
 
 		esp_wifi_get_mode(&mode);
 		if(mode == WIFI_MODE_APSTA)
 			esp_wifi_set_mode(WIFI_MODE_STA);
 		else
 			esp_wifi_set_mode(WIFI_MODE_NULL);
+	}
+
+	WifiAccessPoint::operator bool() const
+	{
+		return this->_local != static_cast<uint32_t>(0);
 	}
 }

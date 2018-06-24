@@ -23,10 +23,12 @@ public:
 protected:
 	void run(void *arg)
 	{
-		auto& ap = lwiot::WifiAccessPoint::instance();
+		//auto& ap = lwiot::WifiAccessPoint::instance();
+		auto& sta = lwiot::WifiStation::instance();
 
 		printf("Main thread started!\n");
-		ap.begin("ESP-TEST", "12345678", 4, false, 4);
+		sta.connectTo("Intranet", "plofkip01");
+		//ap.begin("ESP-TEST", "12345678", 4, false, 4);
 
 		while(true) {
 			print_dbg("Main thread ping\n");

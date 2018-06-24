@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include <esp_system.h>
 #include <esp_wifi.h>
@@ -26,6 +27,7 @@
 
 static EventGroupHandle_t wifi_events;
 static const int WIFI_CONNECTED = BIT0;
+static bool initialised = false;
 
 extern void esp32_wifi_station_event(system_event_t *event);
 extern void esp32_wifi_ap_event(system_event_t *event);
@@ -38,7 +40,7 @@ static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
         break;
 
     case SYSTEM_EVENT_STA_GOT_IP:
-        print_dbg("[WIFI]: got ip:%s",
+        print_dbg("[WIFI]: got ip: %s",
                  ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
         xEventGroupSetBits(wifi_events, WIFI_CONNECTED);
 		esp32_wifi_station_event(event);
@@ -66,6 +68,9 @@ void esp32_wifi_subsys_init(void)
 	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	esp_err_t ret;
 
+	if(initialised)
+		return;
+
 	ret = nvs_flash_init();
 	if(ret == ESP_ERR_NVS_NO_FREE_PAGES) {
 		ESP_ERROR_CHECK(nvs_flash_erase());
@@ -78,6 +83,7 @@ void esp32_wifi_subsys_init(void)
 	tcpip_adapter_init();
 	esp_event_loop_init(wifi_event_handler, NULL);
 	esp_wifi_init(&cfg);
+	initialised = true;
 }
 
 void esp32_wifi_init_softap(const char *ssid, const char *pass, int max, uint8_t hidden, int channel)
