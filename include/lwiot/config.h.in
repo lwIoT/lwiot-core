@@ -21,6 +21,9 @@
 #cmakedefine CONFIG_HW_BARRIER 1
 #cmakedefine NO_OS
 
+#cmakedefine CONFIG_TASK_PRIO ${CONFIG_TASK_PRIO}
+#cmakedefine CONFIG_STACK_SIZE ${CONFIG_STACK_SIZE}
+
 #cmakedefine HAVE_SIZE_T
 #cmakedefine HAVE_SSIZE_T
 #cmakedefine HAVE_TASKHANDLE_T

@@ -10,6 +10,9 @@ include(TestBigEndian)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
 
+SET(CONFIG_STACK_SIZE 2048 CACHE STRING "RTOS stack size")
+SET(CONFIG_TASK_PRIO  8 CACHE STRING "Task priority")
+
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(HAVE_DEBUG True)
 endif ()

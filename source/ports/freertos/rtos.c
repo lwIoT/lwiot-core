@@ -10,12 +10,12 @@
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
+#include <lwiot.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
-#include <lwiot.h>
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>
@@ -53,8 +53,8 @@ void lwiot_mem_free(void *ptr)
 	vPortFree(ptr);
 }
 
-#define STACK_DEPTH 2048
-#define TASK_PRIO 8
+#define STACK_DEPTH CONFIG_STACK_SIZE
+#define TASK_PRIO CONFIG_TASK_PRIO
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 {
 	BaseType_t bt;
