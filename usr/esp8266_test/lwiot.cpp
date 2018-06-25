@@ -51,7 +51,7 @@ protected:
 		//while(!sta);
 
 		ap.config(local, gateway, subnet);
-		ap.begin("Test-AP", "12345678", 4, false, 4);
+		ap.begin("Test-AP", "12345678", 5, false, 4);
 		while(!ap);
 		IP4_ADDR(&first, 10, 0, 0, 2);
 		dhcpserver_start(&first, 15);
