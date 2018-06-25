@@ -23,3 +23,9 @@ target_link_libraries(bytebuffer-test lwiot ${LWIOT_SYSTEM_LIBS})
 
 add_executable(dac-test dac_test.cpp)
 target_link_libraries(dac-test lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(matplotlib-test matplotlib_test.cpp)
+target_link_libraries(matplotlib-test lwiot ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(hostedgpio-test hostedgpio_test.cpp)
+target_link_libraries(hostedgpio-test lwiot ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
