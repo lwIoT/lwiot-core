@@ -118,6 +118,11 @@ namespace lwiot
 		return memcmp(addr, this->_address.bytes, sizeof(this->_address.bytes)) == 0;
 	}
 
+	bool IPAddress::operator==(const uint32_t& other) const
+	{
+		return this->_address.dword == other;
+	}
+
 	bool IPAddress::operator==(const IPAddress& addr) const
 	{
 		return memcmp(addr.raw(), this->_address.bytes, sizeof(this->_address.bytes)) == 0;

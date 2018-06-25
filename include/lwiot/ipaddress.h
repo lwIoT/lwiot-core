@@ -27,6 +27,7 @@ namespace lwiot
 		/* Operators */
 		operator uint32_t () const;
 		bool operator ==(const IPAddress& other) const;
+		bool operator ==(const uint32_t& other) const;
 		bool operator ==(const uint8_t* other) const;
 		uint8_t operator [](int idx) const;
 		uint8_t& operator [](int idx);
