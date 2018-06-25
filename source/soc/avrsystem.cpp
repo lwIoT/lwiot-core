@@ -44,7 +44,6 @@ namespace lwiot
 
 	void AvrSystem::sleep(const uint32_t& ms) const
 	{
-		uint32_t _ms = ms;
 #ifdef NO_OS
 		auto idx = ms;
 		while(idx) {
@@ -55,6 +54,7 @@ namespace lwiot
 		if(this->sleepState() == SLEEP_DEEP)
 			this->restart();
 #else
+		uint32_t _ms = ms;
 		time_t now;
 
 		switch(this->sleepState()) {

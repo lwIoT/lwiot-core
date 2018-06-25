@@ -43,7 +43,7 @@ atmega2560:
         - AVR=True
         - F_CPU=16000000
 
-atmega328
+atmega328:
     defs:
         - MCU=atmega328
         - ARDUINO_UNO=True
