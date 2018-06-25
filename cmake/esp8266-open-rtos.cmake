@@ -67,6 +67,8 @@ SET(LWIOT_PORT_SRCS
     ${PROJECT_SOURCE_DIR}/source/soc/esp8266system.cpp
     ${PROJECT_SOURCE_DIR}/source/soc/esp8266.cpp
     ${PROJECT_SOURCE_DIR}/source/io/wdt/esp8266watchdog.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/wifi/esp8266_station.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/wifi/esp8266_ap.cpp
 )
 
 SET(ESP8266 True CACHE BOOL "ESP8266 target.")

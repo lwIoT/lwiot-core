@@ -6,6 +6,7 @@ include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
+include(${PROJECT_SOURCE_DIR}/source/lib/lib.cmake)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
@@ -23,16 +24,15 @@ endif()
 SET(SOURCES
     init.c
     log.c
-	stream.cpp
 	bytebuffer.cpp
 	log.cpp
     string.cpp
 	vector.cpp
-    bufferedstream.cpp
     system.cpp
     ${WRAPPER_SOURCES}
 	${IO_SOURCES}
     ${LWIOT_PORT_SRCS}
+    ${LIB_SOURCES}
 )
 
 set(GENERIC_HEADERS
@@ -96,7 +96,10 @@ ENDFUNCTION()
 
 prepend_path(GENERIC_HEADERS ${INCLUDE_DIR}/lwiot)
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${EXTRA_INCLUDE_DIRECTORIES} ${LWIOT_PORT_INCLUDE_DIRECTORIES})
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${EXTRA_INCLUDE_DIRECTORIES}
+    ${LWIOT_PORT_INCLUDE_DIRECTORIES} ${PROJECT_SOURCE_DIR}/source/lib/json/include
+)
 
 if(EXTRA_LINK_DIRECTORIES)
     link_directories(${EXTRA_LINK_DIRECTORIES})

@@ -18,14 +18,6 @@
 
 #include <pthread.h>
 
-#ifdef __cplusplus
-extern "C" void udelay(uint32_t us);
-#else
-extern void udelay(uint32_t us);
-#endif
-
-#define lwiot_udelay(__us) udelay(__us)
-
 typedef DLL_EXPORT struct mutex {
 	pthread_mutex_t mtx;
 #define HAVE_MUTEX
