@@ -65,6 +65,8 @@ SET(LWIOT_PORT_SRCS
     ${PROJECT_SOURCE_DIR}/source/io/uart/esp8266uart.cpp
     ${PROJECT_SOURCE_DIR}/source/io/uart/esp8266-softuart.c
     ${PROJECT_SOURCE_DIR}/source/soc/esp8266system.cpp
+    ${PROJECT_SOURCE_DIR}/source/soc/esp8266.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/wdt/esp8266watchdog.cpp
 )
 
 SET(ESP8266 True CACHE BOOL "ESP8266 target.")
@@ -75,7 +77,7 @@ SET(LWIOT_PORT_HEADERS
 set(CMAKE_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections -DESP8266" CACHE FORCE "")
-set(CMAKE_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
+set(CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
     -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -DESP8266" CACHE FORCE "")
 
 SET(HAVE_RTOS True)

@@ -39,6 +39,15 @@ else()
 endif()
 
 set(CMAKE_LIBRARY_PATH ${ESP32_IDF_PATH}/lib/)
+SET(CONFIG_APP_CFG_PATH ${ESP32_IDF_PATH}/esp32-config CACHE STRING "Application Kconfig directory")
+
+if(NOT IS_ABSOLUTE ${CONFIG_APP_CFG_PATH})
+	SET(APP_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG_APP_CFG_PATH}")
+else()
+	SET(APP_CONFIG "${CONFIG_APP_CFG_PATH}")
+endif()
+
+message( STATUS "Config path: ${APP_CONFIG}")
 
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
         ${PROJECT_SOURCE_DIR}/source/ports/freertos
@@ -61,7 +70,7 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${ESP32_IDF_PATH}/components/newlib/include
 		${ESP32_IDF_PATH}/components/soc/esp32/include
 		${ESP32_IDF_PATH}/components/soc/include
-		${ESP32_IDF_PATH}/esp32-config
+		${APP_CONFIG}/build/include
 )
 
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
@@ -76,6 +85,7 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/adc/esp32secondaryadc.cpp
 
 	${PROJECT_SOURCE_DIR}/source/io/uart/esp32uart.cpp
+	${PROJECT_SOURCE_DIR}/source/io/wdt/esp32watchdog.cpp
 )
 
 SET(LWIOT_PORT_HEADERS

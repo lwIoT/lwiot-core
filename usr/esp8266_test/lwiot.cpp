@@ -7,6 +7,7 @@
 #include <lwiot/stream.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
+#include <lwiot/watchdog.h>
 
 static lwiot::Thread *tp;
 static volatile int irqs = 0;
@@ -15,6 +16,7 @@ static void IRAM irq_handler(void)
 {
 	irqs++;
 }
+
 
 class TestThread : public lwiot::Thread {
 public:
@@ -26,6 +28,7 @@ protected:
 	{
 		lwiot::GpioPin outPin = gpio[5];
 
+		wdt.enable(2000);
 		gpio.attachIrqHandler(14, irq_handler, lwiot::IrqRisingFalling);
 		outPin.setOpenDrain();
 
@@ -33,11 +36,11 @@ protected:
 			int i = 0;
 			while(i++ < 20) {
 				outPin.write(true);
-
 				lwiot_sleep(500);
-
 				outPin.write(false);
 				lwiot_sleep(500);
+
+				wdt.reset();
 				printf("IRQs: %i\n", irqs);
 			}
 		}
@@ -50,9 +53,3 @@ extern "C" void lwiot_setup()
 	tp = new TestThread();
 	tp->start();
 }
-
-extern "C" void __cxa_pure_virtual()
-{
-	while(true);
-}
-
