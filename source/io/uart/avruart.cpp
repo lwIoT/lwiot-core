@@ -192,7 +192,7 @@ namespace lwiot
 			"cpi %A0, 0xFF \n\t"
 			"cpc %B0, %1 \n\t"
 			"brne .-10 \n\t"
-			: "+r" (_delay), "+a" (tmp)
+			: "+z" (_delay), "+a" (tmp)
 			: "0" (_delay)
 		);
 	}
@@ -373,17 +373,17 @@ namespace lwiot
 		return idx;
 	}
 
-	inline void AvrUart::set_tx_high() const
+	inline void AvrUart::set_tx_high()
 	{
 		*(this->port) |= this->txbit;
 	}
 
-	inline void AvrUart::set_tx_low() const
+	inline void AvrUart::set_tx_low()
 	{
 		*(this->port) &= ~this->txbit;
 	}
 
-	inline bool AvrUart::get_rx_value() const
+	inline bool AvrUart::get_rx_value()
 	{
 		auto value = *(this->pin);
 

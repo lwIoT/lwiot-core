@@ -106,3 +106,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -Wno-comment -fno-builtin -Wl,
     -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
 
 SET(HAVE_RTOS True)
+SET(HAVE_JSON True)

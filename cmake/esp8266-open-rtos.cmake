@@ -83,3 +83,4 @@ set(CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL
     -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -DESP8266" CACHE FORCE "")
 
 SET(HAVE_RTOS True)
+SET(HAVE_JSON True)

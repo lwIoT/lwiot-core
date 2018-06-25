@@ -35,9 +35,9 @@ namespace lwiot
 
 	private:
 		/* Methods */
-		inline void set_tx_high() const;
-		inline void set_tx_low() const;
-		inline bool get_rx_value() const;
+		inline void set_tx_high();
+		inline void set_tx_low();
+		inline bool get_rx_value();
 		inline void delay(uint16_t delay) const;
 		void init();
 		bool isListening();

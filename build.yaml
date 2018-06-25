@@ -42,3 +42,15 @@ atmega2560:
         - FREERTOS_MANUAL=True
         - AVR=True
         - F_CPU=16000000
+
+atmega328
+    defs:
+        - MCU=atmega328
+        - ARDUINO_UNO=True
+        - CONFIG_NO_SYS=True
+        - CMAKE_SYSTEM_NAME=Generic
+        - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
+        - FREERTOS=True
+        - FREERTOS_MANUAL=True
+        - AVR=True
+        - F_CPU=16000000

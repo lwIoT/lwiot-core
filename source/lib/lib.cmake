@@ -1,8 +1,6 @@
 
-SET(LIB_SOURCES
-	lib/streams/bufferedstream.cpp
-	lib/streams/stream.cpp
-
+if(HAVE_JSON)
+SET(JSON_SOURCES
 	lib/json/jsonarray.cpp
 	lib/json/jsonbuffer.cpp
 	lib/json/jsonobject.cpp
@@ -15,6 +13,13 @@ SET(LIB_SOURCES
 	lib/json/list.cpp
 	lib/json/prettyfier.cpp
 	lib/json/staticstringbuilder.cpp
+)
+endif()
+
+SET(LIB_SOURCES
+	lib/streams/bufferedstream.cpp
+	lib/streams/stream.cpp
 
 	lib/net/ipaddress.cpp
+	${JSON_SOURCES}
 )
