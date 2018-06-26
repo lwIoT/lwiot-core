@@ -11,7 +11,7 @@
 
 #if ARDUINOJSON_ENABLE_STD_STREAM
 
-#include "../Arduino/Print.hpp"
+#include "../Arduino/Printer.hpp"
 
 #include <ostream>
 

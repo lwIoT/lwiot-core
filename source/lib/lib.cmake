@@ -13,6 +13,7 @@ SET(JSON_SOURCES
 	lib/json/list.cpp
 	lib/json/prettyfier.cpp
 	lib/json/staticstringbuilder.cpp
+	lib/json/printer.cpp
 )
 endif()
 

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "../Arduino/Print.hpp"
+#include "../Arduino/Printer.hpp"
 #include "Encoding.hpp"
 #include "ForceInline.hpp"
 #include "JsonFloat.hpp"
