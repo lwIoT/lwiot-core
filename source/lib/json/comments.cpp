@@ -5,7 +5,7 @@
 // https://github.com/bblanchon/ArduinoJson
 // If you like this project, please add a star!
 
-#include "include/ArduinoJson/Internals/Comments.hpp"
+#include <ArduinoJson/Internals/Comments.hpp>
 
 inline static const char *skipCStyleComment(const char *ptr) {
   ptr += 2;

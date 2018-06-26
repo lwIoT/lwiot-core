@@ -5,7 +5,7 @@
 // https://github.com/bblanchon/ArduinoJson
 // If you like this project, please add a star!
 
-#include "include/ArduinoJson/Internals/Encoding.hpp"
+#include <ArduinoJson/Internals/Encoding.hpp>
 
 // How to escape special chars:
 // _escapeTable[2*i+1] => the special char
