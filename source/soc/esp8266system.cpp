@@ -12,7 +12,7 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/esp8266system.h>
+#include <lwiot/esp8266/esp8266system.h>
 
 #include <espressif/esp_system.h>
 

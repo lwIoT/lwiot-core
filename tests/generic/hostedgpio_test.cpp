@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/hostedgpiochip.h>
+#include <lwiot/hosted/hostedgpiochip.h>
 #include <ostream>
 #include <iostream>
 

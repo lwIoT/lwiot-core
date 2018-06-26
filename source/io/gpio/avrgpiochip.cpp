@@ -15,7 +15,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/gpiochip.h>
-#include <lwiot/avrgpiochip.h>
+#include <lwiot/avr/avrgpiochip.h>
 
 static volatile irq_handler_t handlers[EXTERNAL_NUM_INTERRUPTS] = {0,};
 

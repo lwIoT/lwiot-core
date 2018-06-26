@@ -8,7 +8,7 @@
 #include <lwiot/string.h>
 #include <lwiot/uart.h>
 #include <lwiot/string.h>
-#include <lwiot/esp32uart.h>
+#include <lwiot/esp32/esp32uart.h>
 
 class MainThread : public lwiot::Thread {
 public:
@@ -23,12 +23,11 @@ protected:
 		lwiot::GpioPin out = 33;
 		lwiot::String text("Test message");
 
-
 		printf("Main thread started!\n");
 		while(true) {
 			memset((void*)&buffer[0], 0, 32);
 			uart << text;
-			uart.read((uint8_t*)&buffer[0], 13);
+			uart.read((uint8_t*)&buffer[0], 3);
 			printf("Received: %s\n", buffer);
 			lwiot_sleep(1000);
 		}

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/avradcchip.h>
+#include <lwiot/avr/avradcchip.h>
 
 #include <avr/io.h>
 #include <avr/interrupt.h>

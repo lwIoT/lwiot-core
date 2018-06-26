@@ -73,6 +73,7 @@ void __cxa_guard_release (__guard *g)
 	*(char *)g = 1;
 }
 
+extern void __cxa_pure_virtual(void) __attribute__((weak));
 /**
  * @brief Temporary implementation for pure virtual functions.
  */
@@ -89,6 +90,7 @@ void __cxa_guard_abort (__guard *g)
 	for(;;);
 }
 
+extern void __gxx_personality_v0(void) __attribute__((weak));
 void __gxx_personality_v0(void)
 { }
 

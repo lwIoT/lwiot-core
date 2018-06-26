@@ -18,7 +18,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/gpiochip.h>
-#include <lwiot/esp8266gpiochip.h>
+#include <lwiot/esp8266/esp8266gpiochip.h>
 #include <lwiot/log.h>
 
 

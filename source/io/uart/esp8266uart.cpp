@@ -11,7 +11,7 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/uart.h>
-#include <lwiot/esp8266uart.h>
+#include <lwiot/esp8266/esp8266uart.h>
 
 #include "esp8266-softuart.h"
 

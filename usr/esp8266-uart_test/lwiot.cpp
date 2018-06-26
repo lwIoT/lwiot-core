@@ -7,7 +7,7 @@
 #include <lwiot/stream.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
-#include <lwiot/esp8266uart.h>
+#include <lwiot/esp8266/esp8266uart.h>
 
 static const char *name = "tst-tp";
 

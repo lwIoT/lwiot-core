@@ -12,7 +12,7 @@
 #include <lwiot/gpiochip.h>
 #include <lwiot/uart.h>
 #include <lwiot/gpiopin.h>
-#include <lwiot/esp32uart.h>
+#include <lwiot/esp32/esp32uart.h>
 
 #define UART_BUFFER_SIZE 512
 

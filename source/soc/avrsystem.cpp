@@ -11,7 +11,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/system.h>
-#include <lwiot/avrsystem.h>
+#include <lwiot/avr/avrsystem.h>
 
 #include <avr/sleep.h>
 #include <avr/wdt.h>

@@ -11,7 +11,6 @@
 #include <lwiot/types.h>
 #include <lwiot/system.h>
 
-
 namespace lwiot
 {
 	class Esp8266System : public System {

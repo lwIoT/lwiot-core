@@ -10,7 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/dacchip.h>
-#include <lwiot/esp32dacchip.h>
+#include <lwiot/esp32/esp32dacchip.h>
 
 #include <driver/dac.h>
 

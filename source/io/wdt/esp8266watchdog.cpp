@@ -13,7 +13,7 @@
 #include <espressif/esp8266/esp8266.h>
 
 #include <lwiot/watchdog.h>
-#include <lwiot/esp8266watchdog.h>
+#include <lwiot/esp8266/esp8266watchdog.h>
 
 #define WDT_FREQ 10
 

@@ -36,41 +36,64 @@ SET(SOURCES
 )
 
 set(GENERIC_HEADERS
-    esp32system.h
-    esp8266system.h
-    avrsystem.h
-    system.h
-    esp32system.h
-    esp32adcchip.h
-    esp32primaryadc.h
-    esp32secondaryadc.h
-    esp32dacchip.h
-    dacchip.h
-	esp32gpiochip.h
-	countable.h
-	bytebuffer.h
-	gpiochip.h
-	gpiopin.h
-	avrgpiochip.h
-	esp8266gpiochip.h
-	stream.h
-	vector.h
+    asm/avr/cpu.h
+    asm/esp32/cpu.h
+    asm/esp8266/cpu.h
+    asm/hosted/cpu.h
+    lwiot/adcchip.h
+    lwiot/adcpin.h
+    lwiot/avr/avradcchip.h
+    lwiot/avr/avrgpiochip.h
+    lwiot/avr/avrsystem.h
+    lwiot/avr/avruart.h
+    lwiot/avr/avrwatchdog.h
+    lwiot/bufferedstream.h
+    lwiot/bytebuffer.h
+    lwiot/compiler-gcc.h
+    lwiot/compiler-vc.h
+    lwiot/compiler.h
+    lwiot/countable.h
+    lwiot/dacchip.h
+    lwiot/dacpin.h
+    lwiot/error.h
+    lwiot/esp32/esp32adcchip.h
+    lwiot/esp32/esp32dacchip.h
+    lwiot/esp32/esp32gpiochip.h
+    lwiot/esp32/esp32primaryadc.h
+    lwiot/esp32/esp32secondaryadc.h
+    lwiot/esp32/esp32system.h
+    lwiot/esp32/esp32uart.h
+    lwiot/esp32/esp32watchdog.h
+    lwiot/esp8266/esp8266adcchip.h
+    lwiot/esp8266/esp8266gpiochip.h
+    lwiot/esp8266/esp8266system.h
+    lwiot/esp8266/esp8266uart.h
+    lwiot/esp8266/esp8266watchdog.h
+    lwiot/event.h
+    lwiot/gpiochip.h
+    lwiot/gpiopin.h
+    lwiot/hosted/hostedgpiochip.h
+    lwiot/ipaddress.h
+    lwiot/json.h
+    lwiot/list.h
+    lwiot/lock.h
+    lwiot/log.h
+    lwiot/lwiot.h
+    lwiot/pair.h
+    lwiot/port.h
+    lwiot/stream.h
+    lwiot/string.h
+    lwiot/system.h
+    lwiot/test.h
+    lwiot/thread.h
+    lwiot/timer.h
+    lwiot/types.h
+    lwiot/uart.h
+    lwiot/vector.h
+    lwiot/watchdog.h
+    lwiot/wifiaccesspoint.h
+    lwiot/wifistation.h
     lwiot.h
-    log.h
-    error.h
-    compiler.h
-    compiler-gcc.h
-    compiler-vc.h
-	list.h
-    config.h.in
-    port.h
-    types.h
-    string.h
-    thread.h
-	lock.h
-	bufferedstream.h
-	event.h
-	timer.h
 )
 
 # Include timer implementation on UNIX and Windows builds
@@ -94,7 +117,7 @@ FUNCTION( prepend_path SOURCE_FILES INC_PATH )
     SET( ${SOURCE_FILES} ${MODIFIED} PARENT_SCOPE )
 ENDFUNCTION()
 
-prepend_path(GENERIC_HEADERS ${INCLUDE_DIR}/lwiot)
+prepend_path(GENERIC_HEADERS ${INCLUDE_DIR})
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${EXTRA_INCLUDE_DIRECTORIES}

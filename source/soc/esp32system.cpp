@@ -11,7 +11,7 @@
 #include <lwiot/log.h>
 #include <lwiot/lwiot.h>
 #include <lwiot/system.h>
-#include <lwiot/esp32system.h>
+#include <lwiot/esp32/esp32system.h>
 
 #include <soc/soc.h>
 #include <esp_sleep.h>

@@ -10,7 +10,7 @@
 
 #include <lwiot/gpiochip.h>
 #include <lwiot/pair.h>
-#include <lwiot/hostedgpiochip.h>
+#include <lwiot/hosted/hostedgpiochip.h>
 
 #include <vector>
 #include <map>

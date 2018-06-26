@@ -12,7 +12,7 @@
 
 #include <lwiot/gpiochip.h>
 #include <lwiot/log.h>
-#include <lwiot/esp32gpiochip.h>
+#include <lwiot/esp32/esp32gpiochip.h>
 
 #include <driver/gpio.h>
 #include <rom/ets_sys.h>

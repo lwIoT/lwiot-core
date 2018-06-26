@@ -10,7 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/watchdog.h>
-#include <lwiot/avrwatchdog.h>
+#include <lwiot/avr/avrwatchdog.h>
 #include <lwiot/log.h>
 
 #include <avr/wdt.h>
