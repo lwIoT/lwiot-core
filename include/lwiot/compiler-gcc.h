@@ -10,16 +10,6 @@
 #error "Don't include compiler-gcc.h directly, include compiler.h instead"
 #endif
 
-#define max(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a > _b ? _a : _b; })
-
-#define min(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a < _b ? _a : _b; })
-
 #define __compiler_likely(x) __builtin_expect(!!(x), 1)
 #define __compiler_unlikely(x) __builtin_expect(!!(x), 0)
 
