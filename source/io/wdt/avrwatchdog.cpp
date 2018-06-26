@@ -1,0 +1,101 @@
+/*
+ * AVR watchdog timer definition.
+ * 
+ * @author Michel Megens
+ * @email  dev@bietje.net
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <lwiot.h>
+
+#include <lwiot/watchdog.h>
+#include <lwiot/avrwatchdog.h>
+#include <lwiot/log.h>
+
+#include <avr/wdt.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
+
+#ifdef IDE
+/* VS code fix */
+#undef wdt_disable()
+#undef wdt_enable(x)
+#define wdt_enable(x)
+#define wdt_disable()
+#endif
+
+namespace lwiot
+{
+	extern void wdt_isr_handler();
+
+	static inline bool is_between(uint32_t x, uint32_t a, uint32_t b)
+	{
+		return x >= a && x <= b;
+	}
+
+	AvrWatchdog::AvrWatchdog() : Watchdog(), enabled(false)
+	{ }
+
+	bool AvrWatchdog::enable(uint32_t tmo)
+	{
+		uint8_t wdtsetting;
+
+		if(is_between(tmo, 0, 15))
+			wdtsetting = WDTO_15MS;
+		else if(is_between(tmo, 15, 30))
+			wdtsetting = WDTO_30MS;
+		else if(is_between(tmo, 30, 60))
+			wdtsetting = WDTO_60MS;
+		else if(is_between(tmo, 60, 120))
+			wdtsetting = WDTO_120MS;
+		else if(is_between(tmo, 120, 250))
+			wdtsetting = WDTO_250MS;
+		else if(is_between(tmo, 250, 500))
+			wdtsetting = WDTO_500MS;
+		else if(is_between(tmo, 500, 1000))
+			wdtsetting = WDTO_1S;
+		else if(is_between(tmo, 1000, 2000))
+			wdtsetting = WDTO_2S;
+		else if(is_between(tmo, 2000, 4000))
+			wdtsetting = WDTO_4S;
+		else if(is_between(tmo, 4000, 0xFFFFFFFF))
+			wdtsetting = WDTO_8S;
+
+		auto old = SREG;
+		cli();
+		wdt_reset();
+		_WD_CONTROL_REG |= 1 << WDIE;
+		wdt_enable(wdtsetting);
+		SREG = old;
+
+		this->enabled = true;
+		return true;
+	}
+
+	bool AvrWatchdog::disable()
+	{
+		auto old = SREG;
+
+		cli();
+		wdt_reset();
+		wdt_disable();
+		SREG = old;
+
+		return true;
+	}
+
+	void AvrWatchdog::reset()
+	{
+		wdt_reset();
+	}
+}
+
+extern "C" {
+	ISR(WDT_vect)
+	{
+		lwiot::wdt_isr_handler();
+	}
+}
+
+lwiot::Watchdog& wdt = lwiot::AvrWatchdog::instance();

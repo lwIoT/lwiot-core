@@ -40,10 +40,12 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avrgpiochip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/adc/avradcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/uart/avruart.cpp
+	${PROJECT_SOURCE_DIR}/source/io/wdt/avrwatchdog.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/avr.c
 	${PROJECT_SOURCE_DIR}/source/soc/avrsystem.cpp
+	${PROJECT_SOURCE_DIR}/source/soc/cplusplus.cpp
 	${RTOS_SOURCES}
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU} -fno-rtti")

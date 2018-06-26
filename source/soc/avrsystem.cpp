@@ -119,8 +119,3 @@ namespace lwiot
 		printf("Watchdog timer triggerd!\n");
 	}
 }
-
-ISR(WDT_vect)
-{
-	lwiot::wdt_isr_handler();
-}

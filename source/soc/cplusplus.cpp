@@ -6,11 +6,54 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <lwiot.h>
+
+#include <lwiot/types.h>
 
 __extension__ typedef int __guard __attribute__((mode (__DI__)));
 
 extern "C" {
+#ifdef AVR
+void *operator new(size_t num)
+{
+	auto ptr = malloc(num);
+
+	memset(ptr, 0, sizeof(num));
+	return ptr;
+}
+
+void *operator new[](size_t num)
+{
+	auto ptr = malloc(num);
+
+	memset(ptr, 0, sizeof(num));
+	return ptr;
+}
+
+void operator delete(void *ptr)
+{
+	if(ptr == nullptr)
+		return;
+
+	free(ptr);
+}
+
+void operator delete[](void *ptr)
+{
+	if(ptr == nullptr)
+		return;
+
+	free(ptr);
+}
+
+int atexit( void (*func)(void))
+{
+	return -1;
+}
+#endif
 
 /**
  * @brief Lock for data initialisation.
