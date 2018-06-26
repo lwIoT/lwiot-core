@@ -70,6 +70,17 @@ namespace lwiot
 		uart_driver_delete(this->_uart_num);
 	}
 
+	size_t Esp32Uart::available()
+	{
+		size_t retval;
+
+		retval = 0;
+		if(unlikely(uart_get_buffered_data_len(this->_uart_num, &retval)) != ESP_OK)
+			return 0;
+
+		return retval;
+	}
+
 	void Esp32Uart::write(uint8_t byte)
 	{
 		this->write(&byte, sizeof(byte));
