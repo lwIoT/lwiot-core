@@ -25,6 +25,7 @@ SET(SOURCES
     init.c
     log.c
 	bytebuffer.cpp
+    datetime.cpp
 	log.cpp
     string.cpp
 	vector.cpp

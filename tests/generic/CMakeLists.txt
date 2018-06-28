@@ -38,3 +38,6 @@ target_link_libraries(json-test lwiot ${LWIOT_SYSTEM_LIBS})
 
 add_executable(ipaddress-test ipaddress_test.cpp)
 target_link_libraries(ipaddress-test lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(datetime-test datetime_test.cpp)
+target_link_libraries(datetime-test lwiot ${LWIOT_SYSTEM_LIBS})
