@@ -19,6 +19,7 @@ if(NO_OS)
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
 	${PROJECT_SOURCE_DIR}/source/ports/no-os
 	${PROJECT_SOURCE_DIR}/include/asm/avr
+	${PROJECT_SOURCE_DIR}/source/lib/time
 )
 SET(RTOS_SOURCES
 	${PROJECT_SOURCE_DIR}/source/ports/no-os/avr.c
@@ -49,3 +50,5 @@ SET(LWIOT_PORT_SRCS
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU} -fno-rtti")
+
+SET(HAVE_LIBTIME True)

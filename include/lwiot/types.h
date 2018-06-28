@@ -22,10 +22,12 @@ typedef enum {
     WL_DISCONNECTED     = 6
 } wireless_status_t;
 
-#ifdef HAVE_TIME_H
+#if defined(HAVE_TIME_H) || defined(AVR)
 #include <time.h>
 #else
+#ifndef AVR
 typedef unsigned long long time_t;
+#endif
 #endif
 
 #ifndef HAVE_SIZE_T
