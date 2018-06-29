@@ -26,8 +26,8 @@ namespace lwiot
 	class DateTime {
 	public:
 		explicit DateTime();
-		explicit DateTime(const time_t& ts);
-		DateTime(const DateTime& dt);
+		explicit DateTime(const DateTime& dt);
+		DateTime(const time_t& ts);
 
 		virtual ~DateTime() = default;
 
@@ -46,7 +46,7 @@ namespace lwiot
 		int minute() const;
 		int second() const;
 
-		bool operator=(const time_t& time);
+		DateTime& operator=(const DateTime& time);
 		operator time_t() const;
 
 		/* Equality operators */

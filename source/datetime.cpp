@@ -35,6 +35,17 @@ namespace lwiot
 		return DateTime(time(NULL));
 	}
 
+	DateTime::operator time_t() const
+	{
+		return this->stamp;
+	}
+
+	DateTime& DateTime::operator=(const DateTime& time)
+	{
+		this->stamp = time.stamp;
+		return *this;
+	}
+
 	const time_t& DateTime::timestamp() const
 	{
 		return this->stamp;
