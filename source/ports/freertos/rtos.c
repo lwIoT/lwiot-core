@@ -12,10 +12,19 @@
 #include <assert.h>
 #include <lwiot.h>
 
+#ifdef ESP32
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/queue.h>
+#include <freertos/semphr.h>
+#include <freertos/timers.h>
+#else
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
+#include <timers.h>
+#endif
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>

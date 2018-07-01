@@ -59,7 +59,8 @@ SET(LWIOT_PORT_SRCS
         )
 
 SET(LWIOT_PORT_HEADERS
-        ${LWIOT_PORT_DIR}/lwiot_arch.h)
+        ${LWIOT_PORT_DIR}/lwiot_arch.h
+)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \

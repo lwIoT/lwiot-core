@@ -57,7 +57,6 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${ESP32_IDF_PATH}/components/driver/include
 		${ESP32_IDF_PATH}/components/esp32/include
 		${ESP32_IDF_PATH}/components/freertos/include
-		${ESP32_IDF_PATH}/components/freertos/include/freertos
 		${ESP32_IDF_PATH}/components/heap/include
 		${ESP32_IDF_PATH}/components/nvs_flash/include
 		${ESP32_IDF_PATH}/components/lwip/include/lwip

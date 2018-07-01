@@ -141,3 +141,9 @@ foreach(source IN LISTS ${SOURCES})
     string(REPLACE "/" "\\" source_path_msvc "Source Files\\${source_path}")
     source_group("${source_path_msvc}" FILES "${source}")
 endforeach()
+
+# Install targets
+INSTALL(TARGETS lwiot DESTINATION lib)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
+INSTALL(FILES ${LWIOT_PORT_HEADERS} DESTINATION include)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/lwiot_opts.h DESTINATION include)

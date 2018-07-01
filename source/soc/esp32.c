@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <lwiot.h>
-#include <FreeRTOS.h>
+#include <freertos/FreeRTOS.h>
 
 /* ESP8266 SDK headers */
 #include <rom/ets_sys.h>

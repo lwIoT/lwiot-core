@@ -14,11 +14,20 @@
 #define __RTOS_PORT_H__
 
 #include <lwiot_opts.h>
+
+#ifdef ESP32
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/queue.h>
+#include <freertos/semphr.h>
+#include <freertos/timers.h>
+#else
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
 #include <timers.h>
+#endif
 
 #ifndef HAVE_TASKHANDLE_T
 typedef xTaskHandle TaskHandle_t;

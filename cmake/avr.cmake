@@ -48,6 +48,10 @@ SET(LWIOT_PORT_SRCS
 	${RTOS_SOURCES}
 )
 
+SET(LWIOT_PORT_HEADERS
+		${LWIOT_PORT_DIR}/lwiot_arch.h
+)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU} -fno-rtti")
 
