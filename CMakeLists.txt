@@ -28,7 +28,7 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
     endif()
 
     if(CMAKE_BUILD_TYPE MATCHES Release)
-        set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -ffast-math")
+        set(CFLAGS_EXTRA "${CFLAGS_EXTRA}")
     endif()
 
     if(CMAKE_BUILD_TYPE MATCHES RelSize)
@@ -95,10 +95,12 @@ if(CMAKE_SYSTEM_NAME MATCHES Generic)
     SET(HAVE_GENERIC_SYS True)
 endif()
 
+SET(CONFIG_BUILD_TESTS False CACHE BOOL "Build unit tests.")
+
 if( NOT CMAKE_SYSTEM_NAME MATCHES Generic OR PORT MATCHES unix )
     add_subdirectory(scripts)
 
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
+    if(CONFIG_BUILD_TESTS)
         add_subdirectory(tests)
     endif()
 endif()
