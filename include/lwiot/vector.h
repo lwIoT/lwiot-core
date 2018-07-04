@@ -52,12 +52,27 @@ namespace lwiot
 			return &this->_data[this->_length];
 		}
 
-		T get(size_t idx)
+		T *begin()
+		{
+			return &this->_data[0];
+		}
+
+		T *end()
+		{
+			return &this->_data[this->_length];
+		}
+
+		const T& get(size_t idx) const
 		{
 			return this->_data[idx];
 		}
 
 		T& operator[] (size_t idx)
+		{
+			return this->_data[idx];
+		}
+
+		const T& operator[](const size_t& idx) const
 		{
 			return this->_data[idx];
 		}

@@ -27,6 +27,11 @@ namespace lwiot
 		return *this;
 	}
 
+	GpioPin::operator int() const
+	{
+		return this->_pin;
+	}
+
 	void GpioPin::input()
 	{
 		this->mode(INPUT);
