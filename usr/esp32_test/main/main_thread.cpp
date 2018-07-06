@@ -11,19 +11,40 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/datetime.h>
 
+#include <lwiot/esp32/esp32pwm.h>
+
 class MainThread : public lwiot::Thread {
 public:
 	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg)
 	{ }
 
 protected:
+	void startPwm(lwiot::Esp32PwmTimer& timer)
+	{
+		auto& channel = timer[0];
+		auto pin = lwiot::GpioPin(5);
+
+		channel.setGpioPin(pin);
+		channel.setDutyCycle(75.0f);
+		channel.enable();
+		lwiot_sleep(2000);
+
+		channel.setDutyCycle(50.0f);
+		timer.setFrequency(100);
+		channel.reload();
+	}
+
 	void run(void *arg)
 	{
-		lwiot::GpioPin out = 23;
+		lwiot::GpioPin out = 22;
+		lwiot::GpioPin out2 = 23;
+		lwiot::Esp32PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		size_t freesize;
 
 		printf("Main thread started!\n");
+		this->startPwm(timer);
 		out.setOpenDrain();
+		out2.setOpenDrain();
 		lwiot_sleep(1000);
 
 		lwiot::DateTime dt;
@@ -38,9 +59,11 @@ protected:
 			enter_critical();
 			while(i++ < 20) {
 				out.write(true);
+				out2.write(false);
 				lwiot_udelay(3);
 
 				out.write(false);
+				out2.write(true);
 				lwiot_udelay(3);
 			}
 			exit_critical();
