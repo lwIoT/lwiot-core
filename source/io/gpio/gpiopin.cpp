@@ -27,6 +27,14 @@ namespace lwiot
 		return *this;
 	}
 
+	GpioPin& GpioPin::operator =(const GpioPin& pin)
+	{
+		this->_pin = pin.pin();
+		this->_chip = pin._chip;
+
+		return *this;
+	}
+
 	GpioPin::operator int() const
 	{
 		return this->_pin;

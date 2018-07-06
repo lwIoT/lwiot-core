@@ -29,6 +29,7 @@ namespace lwiot
 		virtual ~GpioPin();
 
 		GpioPin& operator =(int pin);
+		GpioPin& operator =(const GpioPin& pin);
 		operator int() const;
 
 		void input();
