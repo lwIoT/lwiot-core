@@ -14,6 +14,9 @@ SET(IO_SOURCES
 	io/adc/dacpin.cpp
 
 	io/uart/uart.cpp
+
+	io/pwm/pwmchannel.cpp
+	io/pwm/pwmtimer.cpp
 )
 
 SET(CONFIG_PIN_VECTOR False CACHE BOOL "Build a vector of pins the the GPIO chip.")

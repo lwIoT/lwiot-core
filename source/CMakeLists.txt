@@ -63,6 +63,7 @@ set(GENERIC_HEADERS
     lwiot/esp32/esp32primaryadc.h
     lwiot/esp32/esp32secondaryadc.h
     lwiot/esp32/esp32system.h
+    lwiot/esp32/esp32pwm.h
     lwiot/esp32/esp32uart.h
     lwiot/esp32/esp32watchdog.h
     lwiot/esp8266/esp8266adcchip.h
@@ -94,6 +95,7 @@ set(GENERIC_HEADERS
     lwiot/watchdog.h
     lwiot/wifiaccesspoint.h
     lwiot/wifistation.h
+    lwiot/pwm.h
     lwiot.h
 )
 

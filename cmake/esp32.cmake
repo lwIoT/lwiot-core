@@ -91,6 +91,9 @@ SET(LWIOT_PORT_SRCS
 
 	${PROJECT_SOURCE_DIR}/source/io/uart/esp32uart.cpp
 	${PROJECT_SOURCE_DIR}/source/io/wdt/esp32watchdog.cpp
+
+	${PROJECT_SOURCE_DIR}/source/io/pwm/esp32/esp32pwmchannel.cpp
+	${PROJECT_SOURCE_DIR}/source/io/pwm/esp32/esp32pwmtimer.cpp
 )
 
 SET(LWIOT_PORT_HEADERS
