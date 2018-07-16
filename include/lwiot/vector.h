@@ -7,91 +7,158 @@
 
 #pragma once
 
+#ifdef __cplusplus
+template <typename T>
+void *operator new(size_t s, T *v)
+{
+	return v;
+}
+
 namespace lwiot
 {
-	extern void *grow(uint8_t *old, size_t oldsize);
+	template<typename T> struct Simple_alloc {
 
-	template<class T> class Vector {
-	public:
-		explicit Vector() : Vector(8) { }
+		Simple_alloc() = default;
 
-		Vector(size_t size) : _size(size)
+		T* allocate(int n)
 		{
-			this->_length = 0;
-			this->_data = (T*)malloc(sizeof(T) * size);
+			return reinterpret_cast<T*>(new char[n * sizeof(T)]);
 		}
+		void deallocate(T* p, int n)
+		{
+			delete[] reinterpret_cast<char*>(p);
+		}
+
+		void construct(T* p, const T& t) { new(p) T(t); }
+		void destroy(T* p) { p->~T(); }
+	};
+
+	template<class T, class A = Simple_alloc<T> >
+	class Vector {
+
+		A alloc;
+
+		int sz;
+		T* elem;
+		int space;
+
+	public:
+		typedef T* iterator;
+		typedef const T* const_iterator;
+
+		Vector() : sz(0), elem(nullptr), space(0) {}
+		Vector(const int s) : sz(0)
+		{
+			reserve(s);
+		}
+
+		Vector(const Vector&) = delete;
+		Vector& operator=(const Vector&);	//copy assignment
 
 		virtual ~Vector()
 		{
-			delete[] this->_data;
+			for(int i = 0; i<sz; ++i) alloc.destroy(&elem[i]);
 		}
 
-		void add(const T& obj)
+		iterator begin()
 		{
-			if(this->_length == this->_size) {
-				this->_data = (T*) grow((uint8_t*)this->_data, this->_size);
-				this->_size = this->_size * 2U;
+			return &this->elem[0];
+		}
+
+		const_iterator begin() const
+		{
+			return &this->elem[0];
+		}
+
+		iterator end()
+		{
+			return &this->elem[this->sz];
+		}
+
+		const_iterator end() const
+		{
+			return &this->elem[this->sz];
+		}
+
+		const T& get(int n) const
+		{
+			return this->elem[n];
+		}
+
+		T& operator[](int n) { return elem[n]; }
+		const T& operator[](int n) const { return elem[n]; }
+
+		int size() const { return sz; }
+		int capacity() const { return space; }
+		int length() const { return this->size(); }
+
+		void reserve(int newalloc);
+		void pushback(const T& val);
+
+		void add(const T& val)
+		{
+			this->pushback(val);
+		}
+
+		template <typename Func>
+		void foreach(Func functor)
+		{
+			for(size_t idx = 0U; idx < this->sz; idx++) {
+				functor(this->elem[idx]);
 			}
-
-			this->_data[this->_length++] = obj;
 		}
+	};
 
-		Vector<T>& operator << (const T& obj)
-		{
-			this->add(obj);
+	template<class T, class A>
+	Vector<T, A>& Vector<T, A>::operator=(const Vector& a)
+	{
+		if(this == &a) return *this;
+
+		if(a.size() <= space) {
+			for(int i = 0; i<a.size(); ++i) elem[i] = a[i];
+			sz = a.size();
 			return *this;
 		}
 
-		const T* begin() const
-		{
-			return &this->_data[0];
+		T* p = alloc.allocate(a.size());
+
+		for(int i = 0; i<a.size(); ++i) {
+			alloc.construct(&p[i], a[i]);
 		}
 
-		const T* end() const
-		{
-			return &this->_data[this->_length];
-		}
+		for(int i = 0; i<sz; ++i)
+			alloc.destroy(&elem[i]);
 
-		T *begin()
-		{
-			return &this->_data[0];
-		}
+		space = sz = a.size();
+		elem = p;
+		return *this;
+	}
 
-		T *end()
-		{
-			return &this->_data[this->_length];
-		}
+	template<class T, class A> void Vector<T, A>::reserve(int newalloc)
+	{
+		if(newalloc <= space)
+			return;
 
-		const T& get(size_t idx) const
-		{
-			return this->_data[idx];
-		}
+		T* p = alloc.allocate(newalloc);
 
-		T& operator[] (size_t idx)
-		{
-			return this->_data[idx];
-		}
+		for(int i = 0; i<sz; ++i)
+			alloc.construct(&p[i], elem[i]);
+		for(int i = 0; i<sz; ++i)
+			alloc.destroy(&elem[i]);
 
-		const T& operator[](const size_t& idx) const
-		{
-			return this->_data[idx];
-		}
+		alloc.deallocate(elem, space);
+		elem = p;
+		space = newalloc;
+	}
 
-		const size_t& length() const
-		{
-			return this->_length;
-		}
-
-		const size_t& size() const
-		{
-			return this->_size;
-		}
-
-	private:
-		T *_data;
-		size_t _length;
-		size_t _size;
-
-		friend void *grow(uint8_t *old, size_t oldsize);
-	};
+	template<class T, class A>
+	void Vector<T, A>::pushback(const T& val)
+	{
+		if(space == 0) reserve(4);
+		else if(sz == space) reserve(2 * space);
+		alloc.construct(&elem[sz], val);
+		++sz;
+	}
 }
+
+#endif
