@@ -16,13 +16,12 @@
 
 int main(int argc, char**argv)
 {
-	lwiot::Vector<int> vec;
-
 	lwiot_init();
+
+	lwiot::Vector<int> vec;
 	UNUSED(argc);
 	UNUSED(argv);
 
-	assert(vec.length() == 0);
 	vec.add(2);
 	vec.add(21);
 	vec.add(120);

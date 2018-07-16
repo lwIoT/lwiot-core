@@ -6,9 +6,13 @@
 #include <avr/pgmspace.h>
 
 #include <lwiot.h>
+#include <lwiot/gpiochip.h>
+
+#include <lwiot/avr/avrgpiochip.h>
 
 #define NOT_A_PIN 0
 #define NOT_A_PORT 0
+#define NOT_ON_TIMER 0
 
 #define PA 1
 #define PB 2
@@ -220,6 +224,82 @@ const uint16_t PROGMEM port_to_input_PGM[] = {
 	(uint16_t)&PINK,
 	(uint16_t)&PINL,
 };
+
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+	// TIMERS		
+	// -------------------------------------------		
+	NOT_ON_TIMER	, // PE 0 ** 0 ** USART0_RX	
+	NOT_ON_TIMER	, // PE 1 ** 1 ** USART0_TX	
+	TIMER3B	, // PE 4 ** 2 ** PWM2	
+	TIMER3C	, // PE 5 ** 3 ** PWM3	
+	TIMER0B	, // PG 5 ** 4 ** PWM4	
+	TIMER3A	, // PE 3 ** 5 ** PWM5	
+	TIMER4A	, // PH 3 ** 6 ** PWM6	
+	TIMER4B	, // PH 4 ** 7 ** PWM7	
+	TIMER4C	, // PH 5 ** 8 ** PWM8	
+	TIMER2B	, // PH 6 ** 9 ** PWM9	
+	TIMER2A	, // PB 4 ** 10 ** PWM10	
+	TIMER1A	, // PB 5 ** 11 ** PWM11	
+	TIMER1B	, // PB 6 ** 12 ** PWM12	
+	TIMER0A	, // PB 7 ** 13 ** PWM13	
+	NOT_ON_TIMER	, // PJ 1 ** 14 ** USART3_TX	
+	NOT_ON_TIMER	, // PJ 0 ** 15 ** USART3_RX	
+	NOT_ON_TIMER	, // PH 1 ** 16 ** USART2_TX	
+	NOT_ON_TIMER	, // PH 0 ** 17 ** USART2_RX	
+	NOT_ON_TIMER	, // PD 3 ** 18 ** USART1_TX	
+	NOT_ON_TIMER	, // PD 2 ** 19 ** USART1_RX	
+	NOT_ON_TIMER	, // PD 1 ** 20 ** I2C_SDA	
+	NOT_ON_TIMER	, // PD 0 ** 21 ** I2C_SCL	
+	NOT_ON_TIMER	, // PA 0 ** 22 ** D22	
+	NOT_ON_TIMER	, // PA 1 ** 23 ** D23	
+	NOT_ON_TIMER	, // PA 2 ** 24 ** D24	
+	NOT_ON_TIMER	, // PA 3 ** 25 ** D25	
+	NOT_ON_TIMER	, // PA 4 ** 26 ** D26	
+	NOT_ON_TIMER	, // PA 5 ** 27 ** D27	
+	NOT_ON_TIMER	, // PA 6 ** 28 ** D28	
+	NOT_ON_TIMER	, // PA 7 ** 29 ** D29	
+	NOT_ON_TIMER	, // PC 7 ** 30 ** D30	
+	NOT_ON_TIMER	, // PC 6 ** 31 ** D31	
+	NOT_ON_TIMER	, // PC 5 ** 32 ** D32	
+	NOT_ON_TIMER	, // PC 4 ** 33 ** D33	
+	NOT_ON_TIMER	, // PC 3 ** 34 ** D34	
+	NOT_ON_TIMER	, // PC 2 ** 35 ** D35	
+	NOT_ON_TIMER	, // PC 1 ** 36 ** D36	
+	NOT_ON_TIMER	, // PC 0 ** 37 ** D37	
+	NOT_ON_TIMER	, // PD 7 ** 38 ** D38	
+	NOT_ON_TIMER	, // PG 2 ** 39 ** D39	
+	NOT_ON_TIMER	, // PG 1 ** 40 ** D40	
+	NOT_ON_TIMER	, // PG 0 ** 41 ** D41	
+	NOT_ON_TIMER	, // PL 7 ** 42 ** D42	
+	NOT_ON_TIMER	, // PL 6 ** 43 ** D43	
+	TIMER5C	, // PL 5 ** 44 ** D44	
+	TIMER5B	, // PL 4 ** 45 ** D45	
+	TIMER5A	, // PL 3 ** 46 ** D46	
+	NOT_ON_TIMER	, // PL 2 ** 47 ** D47	
+	NOT_ON_TIMER	, // PL 1 ** 48 ** D48	
+	NOT_ON_TIMER	, // PL 0 ** 49 ** D49	
+	NOT_ON_TIMER	, // PB 3 ** 50 ** SPI_MISO	
+	NOT_ON_TIMER	, // PB 2 ** 51 ** SPI_MOSI	
+	NOT_ON_TIMER	, // PB 1 ** 52 ** SPI_SCK	
+	NOT_ON_TIMER	, // PB 0 ** 53 ** SPI_SS	
+	NOT_ON_TIMER	, // PF 0 ** 54 ** A0	
+	NOT_ON_TIMER	, // PF 1 ** 55 ** A1	
+	NOT_ON_TIMER	, // PF 2 ** 56 ** A2	
+	NOT_ON_TIMER	, // PF 3 ** 57 ** A3	
+	NOT_ON_TIMER	, // PF 4 ** 58 ** A4	
+	NOT_ON_TIMER	, // PF 5 ** 59 ** A5	
+	NOT_ON_TIMER	, // PF 6 ** 60 ** A6	
+	NOT_ON_TIMER	, // PF 7 ** 61 ** A7	
+	NOT_ON_TIMER	, // PK 0 ** 62 ** A8	
+	NOT_ON_TIMER	, // PK 1 ** 63 ** A9	
+	NOT_ON_TIMER	, // PK 2 ** 64 ** A10	
+	NOT_ON_TIMER	, // PK 3 ** 65 ** A11	
+	NOT_ON_TIMER	, // PK 4 ** 66 ** A12	
+	NOT_ON_TIMER	, // PK 5 ** 67 ** A13	
+	NOT_ON_TIMER	, // PK 6 ** 68 ** A14	
+	NOT_ON_TIMER	, // PK 7 ** 69 ** A15	
+};
+
 #elif defined(ARDUINO_UNO)
 const uint16_t PROGMEM port_to_mode_PGM[] = {
 	NOT_A_PORT,
@@ -289,5 +369,43 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 	_BV(3),
 	_BV(4),
 	_BV(5),
+};
+
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+	NOT_ON_TIMER, /* 0 - port D */
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	// on the ATmega168, digital pin 3 has hardware pwm
+#if defined(__AVR_ATmega8__)
+	NOT_ON_TIMER,
+#else
+	TIMER2B,
+#endif
+	NOT_ON_TIMER,
+	// on the ATmega168, digital pins 5 and 6 have hardware pwm
+#if defined(__AVR_ATmega8__)
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+#else
+	TIMER0B,
+	TIMER0A,
+#endif
+	NOT_ON_TIMER,
+	NOT_ON_TIMER, /* 8 - port B */
+	TIMER1A,
+	TIMER1B,
+#if defined(__AVR_ATmega8__)
+	TIMER2,
+#else
+	TIMER2A,
+#endif
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER, /* 14 - port C */
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
 };
 #endif
