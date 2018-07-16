@@ -17,13 +17,35 @@ extern const uint16_t PROGMEM port_to_input_PGM[];
 extern const uint16_t PROGMEM port_to_output_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
+extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
 #define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
+#define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )
 
 #define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
 #define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_input_PGM + (P))) )
 #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
+
+#define TIMER0A 1
+#define TIMER0B 2
+#define TIMER1A 3
+#define TIMER1B 4
+#define TIMER1C 5
+#define TIMER2  6
+#define TIMER2A 7
+#define TIMER2B 8
+
+#define TIMER3A 9
+#define TIMER3B 10
+#define TIMER3C 11
+#define TIMER4A 12
+#define TIMER4B 13
+#define TIMER4C 14
+#define TIMER4D 15
+#define TIMER5A 16
+#define TIMER5B 17
+#define TIMER5C 18
 
 #ifdef ARDUINO_MEGA
 #define digitalPinToPCICR(p)    ( (((p) >= 10) && ((p) <= 13)) || \

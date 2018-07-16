@@ -12,7 +12,7 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/vector.h>
 
-#if CXX
+#ifdef __cplusplus
 namespace lwiot
 {
 	enum IrqEdge {
