@@ -40,6 +40,11 @@ namespace lwiot
 		this->_pin = pin;
 	}
 
+	const GpioPin& PwmChannel::pin() const
+	{
+		return this->_pin;
+	}
+
 	PwmChannel::operator bool() const
 	{
 		return this->_pin.pin() >= 0;

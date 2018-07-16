@@ -36,13 +36,13 @@ namespace lwiot
 		virtual void reload() = 0;
 		operator bool() const;
 
-
 	protected:
-		mutable int freq_cache;
+		mutable unsigned int freq_cache;
 
 		/* Methods */
 		virtual void setFrequency(int frequency) const;
 		virtual void update(int freq) = 0;
+		const GpioPin& pin() const;
 		friend class PwmTimer;
 
 	private:
@@ -68,6 +68,7 @@ namespace lwiot
 	protected:
 		void addChannel(PwmChannel& channel);
 		Vector<PwmChannel*> _channels;
+		friend class PwmChannel;
 
 	private:
 		int _freq;
