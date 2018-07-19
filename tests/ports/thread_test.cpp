@@ -10,6 +10,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/thread.h>
+#include <lwiot/functionalthread.h>
 #include <lwiot/test.h>
 
 class ThreadTest : public lwiot::Thread {
@@ -34,7 +35,19 @@ protected:
 
 static void main_thread(void *arg)
 {
+	auto lambda = [](void) -> void {
+		int i = 0;
+		while(i++ <= 5) {
+			print_dbg("Lambda thread ping!\n");
+			lwiot_sleep(750);
+		}
+	};
+
+	lwiot::FunctionalThread<decltype(lambda)> tp("fn-thread", lambda);
+	tp.start();
+
 	lwiot_sleep(6000);
+	tp.stop();
 #ifdef HAVE_RTOS
 	vTaskEndScheduler();
 #endif

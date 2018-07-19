@@ -18,6 +18,7 @@
 #include <lwiot/ipaddress.h>
 #include <lwiot/wifistation.h>
 #include <lwiot/wifiaccesspoint.h>
+#include <lwiot/functionalthread.h>
 
 #include <lwip/api.h>
 
@@ -38,17 +39,12 @@ public:
 protected:
 	void run(void *argument) override
 	{
-		//auto& sta = lwiot::WifiStation::instance();
 		auto& ap = lwiot::WifiAccessPoint::instance();
 		lwiot::GpioPin outPin = gpio[5];
 		lwiot::IPAddress local(10, 0, 0, 1);
 		lwiot::IPAddress gateway(10, 0, 0, 1);
 		lwiot::IPAddress subnet(255, 255, 255, 0);
 		ip4_addr_t first;
-
-
-		//sta.connectTo("bietje", "banaan01");
-		//while(!sta);
 
 		ap.config(local, gateway, subnet);
 		ap.begin("Test-AP", "12345678", 5, false, 4);
@@ -59,6 +55,16 @@ protected:
 		wdt.enable(2000);
 		gpio.attachIrqHandler(14, irq_handler, lwiot::IrqRisingFalling);
 		outPin.setOpenDrain();
+
+		FUNC_THREAD(tp, "fthread", [](void) -> void {
+			int i = 0;
+			while(i++ <= 10) {
+				print_dbg("Lambda thread ping!\n");
+				lwiot_sleep(750);
+			}
+		});
+
+		tp.start();
 
 		while(true) {
 			int i = 0;

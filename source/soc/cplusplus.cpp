@@ -55,36 +55,23 @@ int atexit( void (*func)(void))
 }
 #endif
 
-/**
- * @brief Lock for data initialisation.
- * @param g Lock to aquire.
- * @return Non zero if the lock was aquired succesfully.
- */
 int __cxa_guard_acquire(__guard *g) 
 {
 	return !*(char *)(g);
 }
 
-/**
- * @brief Release the lock aquired with __cxa_guard_acquire
- */
 void __cxa_guard_release (__guard *g) 
 {
 	*(char *)g = 1;
 }
 
 extern void __cxa_pure_virtual(void) __attribute__((weak));
-/**
- * @brief Temporary implementation for pure virtual functions.
- */
 void __cxa_pure_virtual(void)
 {
 	printf("Virtual function not implemented (%s:%i)", __FILE__, __LINE__);
+	for(;;);
 }
 
-/**
- * @brief Abort the program.
- */
 void __cxa_guard_abort (__guard *g)
 {
 	for(;;);
