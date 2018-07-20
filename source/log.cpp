@@ -47,7 +47,7 @@ namespace lwiot {
 		return *this;
 	}
 
-	Logger& Logger::operator<<(String txt)
+	Logger& Logger::operator<<(const String& txt)
 	{
 		this->format("%s", txt.c_str());
 		return *this;

@@ -44,7 +44,7 @@ namespace lwiot {
 
 		Logger& operator <<(NewLine nl);
 		Logger& operator <<(const char *txt);
-		Logger& operator <<(String txt);
+		Logger& operator <<(const String& txt);
 		Logger& operator <<(int num);
 		Logger& operator <<(long num);
 		Logger& operator <<(unsigned int num);
