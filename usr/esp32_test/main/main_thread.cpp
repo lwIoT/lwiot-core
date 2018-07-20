@@ -9,6 +9,7 @@
 #include <lwiot/string.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
+#include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
 
 #include <lwiot/esp32/esp32pwm.h>
@@ -40,6 +41,7 @@ protected:
 		lwiot::GpioPin out2 = 23;
 		lwiot::Esp32PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		size_t freesize;
+		bool value;
 
 		printf("Main thread started!\n");
 		this->startPwm(timer);
@@ -50,6 +52,7 @@ protected:
 		lwiot::DateTime dt;
 		print_dbg("Time: %s\n", dt.toString().c_str());
 		freesize = heap_caps_get_free_size(0);
+		wdt.enable();
 
 		print_dbg("Free heap size: %u\n", freesize);
 
@@ -58,15 +61,18 @@ protected:
 
 			enter_critical();
 			while(i++ < 20) {
-				out.write(true);
-				out2.write(false);
+				out << true;
 				lwiot_udelay(3);
+				out2 >> value;
+				assert(value == true);
 
-				out.write(false);
-				out2.write(true);
+				out << false;
 				lwiot_udelay(3);
+				out2 >> value;
+				assert(value == false);
 			}
 			exit_critical();
+			wdt.reset();
 		}
 	}
 };
