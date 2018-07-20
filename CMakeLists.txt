@@ -7,7 +7,7 @@ include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(TestBigEndian)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_C_STANDARD 11)
 
 SET(CONFIG_STACK_SIZE 2048 CACHE STRING "RTOS stack size")
