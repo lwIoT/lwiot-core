@@ -94,6 +94,11 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
 	return -EOK;
 }
 
+void lwiot_thread_yield()
+{
+	taskYIELD();
+}
+
 int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
 {
 	assert(mtx);

@@ -17,6 +17,11 @@ namespace lwiot {
 		void stop();
 		void start();
 
+		static void yield()
+		{
+			lwiot_thread_yield();
+		}
+
 		bool isRunning()
 		{
 			return this->running;

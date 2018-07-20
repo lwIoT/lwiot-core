@@ -83,7 +83,7 @@ protected:
 				wdt.reset();
 				printf("IRQs: %i\n", irqs);
 				lock.unlock();
-				taskYIELD();
+				lwiot::Thread::yield();
 			}
 		}
 	}

@@ -6,6 +6,7 @@
  * Email:  dev@bietje.net
  */
 
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -62,6 +63,11 @@ static void *unix_thread_starter(void *arg)
 	tp->handle(tp->arg);
 
 	return NULL;
+}
+
+void lwiot_thread_yield()
+{
+	pthread_yield();
 }
 
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)

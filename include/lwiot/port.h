@@ -42,6 +42,7 @@ extern DLL_EXPORT time_t lwiot_tick(void);
 
 extern DLL_EXPORT int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg);
 extern DLL_EXPORT int lwiot_thread_destroy(lwiot_thread_t *tp);
+extern DLL_EXPORT void lwiot_thread_yield();
 
 extern DLL_EXPORT int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags);
 extern DLL_EXPORT int lwiot_mutex_destroy(lwiot_mutex_t *mtx);
