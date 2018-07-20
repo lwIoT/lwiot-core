@@ -105,9 +105,17 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin 
 	-Wno-implicit-function-declaration -Wl,-EL,--gc-sections -fno-inline-functions \
 	-nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections" CACHE FORCE "")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -Wno-comment -fno-builtin \
-	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections" CACHE FORCE "")
 
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)
+SET(RTTI False CACHE BOOL "Enable/disable runtime type identification.")
+
+IF(RTTI)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -frtti -Wno-comment -fno-builtin \
+	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
+	-mtext-section-literals -ffunction-sections" CACHE FORCE "")
+ELSE()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -Wno-comment -fno-builtin \
+	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
+	-mtext-section-literals -ffunction-sections" CACHE FORCE "")
+ENDIF()

@@ -24,8 +24,12 @@ namespace lwiot
 		{
 			return reinterpret_cast<T*>(new char[n * sizeof(T)]);
 		}
+
 		void deallocate(T* p, int n)
 		{
+			if(!p || n == 0)
+				return;
+
 			delete[] reinterpret_cast<char*>(p);
 		}
 
@@ -35,21 +39,17 @@ namespace lwiot
 
 	template<class T, class A = Simple_alloc<T> >
 	class Vector {
-
-		A alloc;
-
-		int sz;
-		T* elem;
-		int space;
-
 	public:
 		typedef T* iterator;
 		typedef const T* const_iterator;
 
-		Vector() : sz(0), elem(nullptr), space(0) {}
-		Vector(const int s) : sz(0)
+		Vector() : sz(0), elem(nullptr), space(0)
 		{
-			reserve(s);
+		}
+
+		Vector(const int s) : sz(0), elem(nullptr), space(0)
+		{
+			this->reserve(s);
 		}
 
 		Vector(const Vector&) = delete;
@@ -107,6 +107,13 @@ namespace lwiot
 				functor(this->elem[idx]);
 			}
 		}
+
+	private:
+		A alloc;
+
+		int sz;
+		T* elem;
+		int space;
 	};
 
 	template<class T, class A>
@@ -146,9 +153,10 @@ namespace lwiot
 		for(int i = 0; i<sz; ++i)
 			alloc.destroy(&elem[i]);
 
-		alloc.deallocate(elem, space);
-		elem = p;
-		space = newalloc;
+		if(this->elem)
+			alloc.deallocate(elem, space);
+		this->elem = p;
+		this->space = newalloc;
 	}
 
 	template<class T, class A>

@@ -1,3 +1,10 @@
+/*
+ * ESP32 device test.
+ * 
+ * @author Michel Megens
+ * @email  dev@bietje.net
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <esp_attr.h>
@@ -35,7 +42,7 @@ protected:
 		channel.reload();
 	}
 
-	void run(void *arg)
+	virtual void run(void *arg) override
 	{
 		lwiot::GpioPin out = 22;
 		lwiot::GpioPin out2 = 23;
@@ -78,7 +85,7 @@ protected:
 };
 
 static MainThread *mt;
-const char *arg = "Hello, World! [FROM main-thread]";
+static const char *arg = "Hello, World! [FROM main-thread]";
 
 extern "C" void main_start(void)
 {
