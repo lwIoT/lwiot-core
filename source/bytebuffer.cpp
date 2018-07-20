@@ -36,6 +36,20 @@ namespace lwiot
 		lwiot_mem_free(this->_data);
 	}
 
+	ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other)
+	{
+		auto size = this->count();
+
+		lwiot_mem_free(this->_data);
+		this->_data = static_cast<uint8_t*>(lwiot_mem_zalloc(size));
+
+		memcpy(this->_data, other._data, other.count());
+		this->_count = other.count();
+		this->_index = other._index;
+
+		return *this;
+	}
+
 	uint8_t& ByteBuffer::operator[](const size_t& idx)
 	{
 		return this->_data[idx];

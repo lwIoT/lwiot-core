@@ -19,8 +19,9 @@ namespace lwiot {
 		Stream(const time_t& timeout);
 		virtual ~Stream() = default;
 
-		virtual size_t available() = 0;
+		virtual Stream& operator =(const Stream& other) = 0;
 
+		virtual size_t available() = 0;
 		virtual Stream& operator << (char x) = 0;
 		virtual Stream& operator << (short x) = 0;
 		virtual Stream& operator << (int  x) = 0;

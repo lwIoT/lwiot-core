@@ -24,9 +24,33 @@ namespace lwiot {
 	BufferedStream::BufferedStream() : BufferedStream(32)
 	{ }
 
+	BufferedStream::BufferedStream(const BufferedStream& other)
+	{
+		auto size = other.size();
+
+		this->_data = static_cast<uint8_t*>(lwiot_mem_zalloc(size));
+		this->rd_idx = other.rd_idx;
+		this->wr_idx = other.wr_idx;
+		memcpy(static_cast<void*>(this->_data), static_cast<const void*>(other.data()), size);
+	}
+
 	BufferedStream::~BufferedStream()
 	{
 		lwiot_mem_free(this->_data);
+	}
+
+	Stream& BufferedStream::operator =(const Stream& other)
+	{
+		const BufferedStream& bfs = reinterpret_cast<const BufferedStream&>(other);
+		auto size = bfs.size();
+
+		lwiot_mem_free(this->_data);
+		this->_data = static_cast<uint8_t*>(lwiot_mem_zalloc(size));
+		this->rd_idx = bfs.rd_idx;
+		this->wr_idx = bfs.wr_idx;
+		memcpy(static_cast<void*>(this->_data), static_cast<const void*>(bfs.data()), size);
+
+		return *this;
 	}
 
 	uint8_t BufferedStream::read()

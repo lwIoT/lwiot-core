@@ -21,8 +21,10 @@ namespace lwiot
 	public:
 		explicit ByteBuffer();
 		explicit ByteBuffer(const size_t& size);
-		ByteBuffer(const ByteBuffer& other);
+		explicit ByteBuffer(const ByteBuffer& other);
 		virtual ~ByteBuffer();
+
+		virtual ByteBuffer& operator =(const ByteBuffer& other);
 
 		virtual const uint8_t& operator[] (const size_t& idx) const override;
 		virtual uint8_t& operator[] (const size_t& idx) override;

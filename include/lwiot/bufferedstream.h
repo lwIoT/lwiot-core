@@ -19,8 +19,11 @@ namespace lwiot {
 	public:
 		explicit BufferedStream();
 		explicit BufferedStream(int size);
+		explicit BufferedStream(const BufferedStream& stream);
 
 		virtual ~BufferedStream();
+
+		virtual Stream& operator =(const Stream& stream) override;
 
 		virtual Stream& operator << (char x) override;
 		virtual Stream& operator << (short x) override;
