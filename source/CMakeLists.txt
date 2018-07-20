@@ -27,6 +27,7 @@ SET(SOURCES
 	bytebuffer.cpp
     datetime.cpp
 	log.cpp
+    scopedlock.cpp
     string.cpp
 	vector.cpp
     system.cpp

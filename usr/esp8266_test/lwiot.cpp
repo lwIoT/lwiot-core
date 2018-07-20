@@ -9,6 +9,7 @@
 #include <dhcpserver.h>
 
 #include <lwiot/string.h>
+#include <lwiot/scopedlock.h>
 #include <lwiot/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
@@ -44,6 +45,7 @@ protected:
 		lwiot::IPAddress local(10, 0, 0, 1);
 		lwiot::IPAddress gateway(10, 0, 0, 1);
 		lwiot::IPAddress subnet(255, 255, 255, 0);
+		lwiot::Lock lock(false);
 		ip4_addr_t first;
 
 		ap.config(local, gateway, subnet);
@@ -56,10 +58,13 @@ protected:
 		gpio.attachIrqHandler(14, irq_handler, lwiot::IrqRisingFalling);
 		outPin.setOpenDrain();
 
-		FUNC_THREAD(tp, "fthread", [](void) -> void {
+		FUNC_THREAD(tp, "fthread", [&lock](void) -> void {
+			lwiot::ScopedLock slock(lock);
 			int i = 0;
+
 			while(i++ <= 10) {
 				print_dbg("Lambda thread ping!\n");
+				wdt.reset();
 				lwiot_sleep(750);
 			}
 		});
@@ -69,6 +74,7 @@ protected:
 		while(true) {
 			int i = 0;
 			while(i++ < 20) {
+				lock.lock();
 				outPin.write(true);
 				lwiot_sleep(500);
 				outPin.write(false);
@@ -76,6 +82,8 @@ protected:
 
 				wdt.reset();
 				printf("IRQs: %i\n", irqs);
+				lock.unlock();
+				taskYIELD();
 			}
 		}
 	}
