@@ -32,6 +32,12 @@ namespace lwiot
 		GpioPin& operator =(const GpioPin& pin);
 		operator int() const;
 
+		GpioPin& operator <<(bool high);
+		void operator ()(bool high);
+
+		GpioPin& operator >>(bool& high);
+		bool operator ()(void);
+
 		void input();
 		void output();
 		void setOpenDrain();

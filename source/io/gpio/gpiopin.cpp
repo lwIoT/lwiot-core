@@ -84,9 +84,31 @@ namespace lwiot
 			this->_chip.write(this->_pin, value);
 	}
 
+	void GpioPin::operator()(bool high)
+	{
+		this->write(high);
+	}
+
+	GpioPin& GpioPin::operator<<(bool high)
+	{
+		this->write(high);
+		return *this;
+	}
+
 	bool GpioPin::read()
 	{
 		return this->_chip.read(this->_pin);
+	}
+
+	GpioPin& GpioPin::operator>>(bool& high)
+	{
+		high = this->read();
+		return *this;
+	}
+
+	bool GpioPin::operator()(void)
+	{
+		return this->read();
 	}
 
 	int GpioPin::pin() const
