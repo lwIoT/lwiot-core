@@ -23,10 +23,10 @@ namespace lwiot
 		bool ret = esp_task_wdt_init(tmo / 1000, true) == ESP_OK;
 
 #ifdef CONFIG_TASK_WDT_CHECK_IDLE_TASK_CPU0
-		esp_task_wdt_add(xTaskGetIdleTaskHandleForCPU(0));
+		esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(0));
 #endif
 #ifdef CONFIG_TASK_WDT_CHECK_IDLE_TASK_CPU1
-		esp_task_wdt_add(xTaskGetIdleTaskHandleForCPU(1));
+		esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(1));
 #endif
 
 		return ret;
