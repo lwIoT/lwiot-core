@@ -5,12 +5,12 @@
  * @email  dev@bietje.net
  */
 
-#ifndef LWIOT_STRING_H
-#define LWIOT_STRING_H
+#pragma once
 
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef __cplusplus
 namespace lwiot {
 	class StringSumHelper;
 
@@ -321,5 +321,4 @@ namespace lwiot {
 		StringSumHelper(double num) : String(num) {}
 	};
 }
-
-#endif //LWIOT_STRING_H
+#endif

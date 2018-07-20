@@ -14,7 +14,7 @@
 
 int main(int argc, char **argv)
 {
-	lwiot::Logger logger;
+	lwiot::Logger logger("log-test");
 
 	logger << "Hello, World! ";
 	logger << "Today it is " << 21.1531f << " Degrees!" << lwiot::Logger::newline;

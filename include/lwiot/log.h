@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <lwiot/string.h>
 #include <lwiot/lwiot.h>
 
 #ifdef HAVE_DEBUG
@@ -41,6 +42,7 @@ namespace lwiot {
 
 		explicit Logger();
 		explicit Logger(FILE *output);
+		Logger(const String& subsys, FILE *output = stdout);
 
 		Logger& operator <<(NewLine nl);
 		Logger& operator <<(const char *txt);
@@ -56,9 +58,11 @@ namespace lwiot {
 
 		static NewLine newline;
 	private:
-		void format(const char *fmt, ...);
 		FILE *_f_output;
 		bool _newline;
+		String _subsys;
+
+		void format(const char *fmt, ...);
 		void print_newline();
 	};
 }
