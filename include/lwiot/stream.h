@@ -20,6 +20,7 @@ namespace lwiot {
 		virtual ~Stream() = default;
 
 		virtual Stream& operator =(const Stream& other) = 0;
+		virtual Stream& operator =(Stream&& other) = 0;
 
 		virtual size_t available() = 0;
 		virtual Stream& operator << (char x) = 0;

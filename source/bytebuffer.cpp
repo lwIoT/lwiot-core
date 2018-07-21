@@ -30,11 +30,51 @@ namespace lwiot
 		this->_index = other._index;
 	}
 
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+	ByteBuffer::ByteBuffer(ByteBuffer&& other)
+	{
+		this->move(other);
+	}
+#endif
 
 	ByteBuffer::~ByteBuffer()
 	{
 		lwiot_mem_free(this->_data);
 	}
+
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+	ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other)
+	{
+		this->move(other);
+		return *this;
+	}
+
+	void ByteBuffer::move(ByteBuffer& other)
+	{
+		if(this->_data) {
+			if(other._data && this->_count >= other._count) {
+				memcpy(reinterpret_cast<void*>(this->_data),
+				       reinterpret_cast<void*>(other._data),
+					   other.count());
+				this->_count = other.count();
+				this->_index = other._index;
+
+				other._count = 0;
+				other._index = 0;
+				return;
+			} else {
+				lwiot_mem_free(this->_data);
+			}
+		}
+
+		this->_data = other._data;
+		this->_index = other._index;
+		this->_count = other._count;
+
+		other._count = other._index = 0;
+		other._data = reinterpret_cast<uint8_t*>(lwiot_mem_alloc(BYTEBUFFER_DEFAULT_SIZE));
+	}
+#endif
 
 	ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other)
 	{

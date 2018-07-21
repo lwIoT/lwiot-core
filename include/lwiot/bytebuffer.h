@@ -22,9 +22,15 @@ namespace lwiot
 		explicit ByteBuffer();
 		explicit ByteBuffer(const size_t& size);
 		explicit ByteBuffer(const ByteBuffer& other);
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+		explicit ByteBuffer(ByteBuffer&& other);
+#endif
 		virtual ~ByteBuffer();
 
 		virtual ByteBuffer& operator =(const ByteBuffer& other);
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+		virtual ByteBuffer& operator =(ByteBuffer&& other);
+#endif
 
 		virtual const uint8_t& operator[] (const size_t& idx) const override;
 		virtual uint8_t& operator[] (const size_t& idx) override;
@@ -39,6 +45,9 @@ namespace lwiot
 
 	protected:
 		void grow(const size_t& size) override;
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+		void move(ByteBuffer& other);
+#endif
 
 	private:
 		size_t _index;

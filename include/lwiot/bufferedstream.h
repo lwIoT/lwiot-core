@@ -20,10 +20,16 @@ namespace lwiot {
 		explicit BufferedStream();
 		explicit BufferedStream(int size);
 		explicit BufferedStream(const BufferedStream& stream);
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+		explicit BufferedStream(BufferedStream&& other);
+#endif
 
 		virtual ~BufferedStream();
 
 		virtual Stream& operator =(const Stream& stream) override;
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+		virtual Stream& operator =(Stream&& stream) override;
+#endif
 
 		virtual Stream& operator << (char x) override;
 		virtual Stream& operator << (short x) override;
@@ -68,6 +74,10 @@ namespace lwiot {
 		void append(const void *data, size_t length);
 		void grow();
 		void grow(int num);
+
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
+		void move(BufferedStream& other);
+#endif
 
 		/* attributes */
 		uint8_t *_data;
