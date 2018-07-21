@@ -53,6 +53,6 @@ SET(LWIOT_PORT_HEADERS
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU} -fno-rtti")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU} -fno-rtti -std=gnu++14")
 
 SET(HAVE_LIBTIME True)

@@ -110,6 +110,8 @@ SET(HAVE_RTOS True)
 SET(HAVE_JSON True)
 SET(RTTI False CACHE BOOL "Enable/disable runtime type identification.")
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
+
 IF(RTTI)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -frtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
