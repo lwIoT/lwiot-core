@@ -10,13 +10,14 @@
 
 #include <lwiot/lwiot.h>
 
-extern DLL_EXPORT void enter_critical();
-extern DLL_EXPORT void exit_critical();
-
 #ifdef __cplusplus
+extern "C" void enter_critical();
+extern "C" void exit_critical();
 extern "C" void udelay(uint32_t us);
 #else
 extern void udelay(uint32_t us);
+extern void enter_critical();
+extern void exit_critical();
 #endif
 
 #define lwiot_udelay(__us) udelay(__us)
