@@ -34,7 +34,7 @@ namespace lwiot
 		esp_softuart_close(this->_num);
 	}
 
-	size_t Esp8266Uart::available()
+	size_t Esp8266Uart::available() const
 	{
 		auto avail = esp_softuart_available(this->_num);
 		return static_cast<size_t>(avail);

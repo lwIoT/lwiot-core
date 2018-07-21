@@ -140,7 +140,7 @@ namespace lwiot {
 		this->append((const void*)data, length);
 	}
 
-	size_t BufferedStream::available()
+	size_t BufferedStream::available() const
 	{
 		auto written = this->wr_idx;
 

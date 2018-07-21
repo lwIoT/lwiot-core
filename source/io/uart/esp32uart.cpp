@@ -70,7 +70,7 @@ namespace lwiot
 		uart_driver_delete(this->_uart_num);
 	}
 
-	size_t Esp32Uart::available()
+	size_t Esp32Uart::available() const
 	{
 		size_t retval;
 

@@ -31,7 +31,7 @@ namespace lwiot
 		virtual void flush();
 		using Stream::write;
 
-		virtual size_t available() override;
+		virtual size_t available() const override;
 
 	private:
 		/* Methods */

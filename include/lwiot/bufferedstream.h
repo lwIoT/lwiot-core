@@ -55,7 +55,7 @@ namespace lwiot {
 		const void *data() const;
 		const size_t& size() const;
 
-		virtual size_t available() override;
+		virtual size_t available() const override;
 		virtual String toString();
 
 		virtual uint8_t read() override;

@@ -22,7 +22,7 @@ namespace lwiot {
 		virtual Stream& operator =(const Stream& other) = 0;
 		virtual Stream& operator =(Stream&& other) = 0;
 
-		virtual size_t available() = 0;
+		virtual size_t available() const = 0;
 		virtual Stream& operator << (char x) = 0;
 		virtual Stream& operator << (short x) = 0;
 		virtual Stream& operator << (int  x) = 0;

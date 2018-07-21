@@ -31,7 +31,7 @@ namespace lwiot
 		void write(const uint8_t *buffer, const size_t& length) override;
 		using Uart::write;
 
-		virtual size_t available() override;
+		virtual size_t available() const override;
 
 	private:
 		uart_config_t _setup;

@@ -32,7 +32,7 @@ namespace lwiot
 		virtual void write(const uint8_t *buffer, const size_t& length);
 		using Stream::write;
 
-		virtual size_t available() override;
+		virtual size_t available() const override;
 
 	private:
 		uart_port_t _port;

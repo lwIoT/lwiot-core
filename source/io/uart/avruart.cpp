@@ -220,7 +220,7 @@ namespace lwiot
 		return this == active_object;
 	}
 
-	size_t AvrUart::available()
+	size_t AvrUart::available() const
 	{
 		if(!this->isListening())
 			return 0;
