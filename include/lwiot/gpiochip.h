@@ -32,7 +32,7 @@ namespace lwiot
 
 		virtual void mode(int pin, const PinMode& mode) = 0;
 		virtual void write(int pin, bool value) = 0;
-		virtual bool read(int pin) = 0;
+		virtual bool read(int pin) const = 0;
 
 		virtual void setOpenDrain(int pin) = 0;
 		virtual void odWrite(int pin, bool value) = 0;

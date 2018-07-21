@@ -139,7 +139,7 @@ namespace lwiot
 		SREG = old;
 	}
 
-	bool AvrGpioChip::read(int pin)
+	bool AvrGpioChip::read(int pin) const
 	{
 		uint8_t bit, port;
 		uint8_t old;

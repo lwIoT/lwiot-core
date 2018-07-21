@@ -119,7 +119,7 @@ namespace lwiot
 		gpio_set_level((gpio_num_t)pin, level);
 	}
 
-	bool Esp32GpioChip::read(int pin)
+	bool Esp32GpioChip::read(int pin) const
 	{
 		return gpio_get_level((gpio_num_t)pin) == 1U;
 	}

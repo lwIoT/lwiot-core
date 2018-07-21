@@ -28,7 +28,7 @@ namespace lwiot
 
 		virtual void mode(int pin, const PinMode& mode) override;
 		virtual void write(int pin, bool value) override;
-		virtual bool read(int pin) override;
+		virtual bool read(int pin) const override;
 
 		virtual void setOpenDrain(int pin) override;
 		virtual void odWrite(int pin, bool value) override;
@@ -37,12 +37,10 @@ namespace lwiot
 		void plot(const String& output, bool dialog, int pin1, int pin2 = -1) const;
 
 	private:
-		std::map<double, std::vector<Pair<time_t, bool>>> _pindata;
+		mutable std::map<double, std::vector<Pair<time_t, bool>>> _pindata;
 
 		/* Methods */
-		bool pop(int pin);
-		//void render(const String& output) const;
-		//void show() const;
+		bool pop(int pin) const;
 		void split(int pin, double yoff, std::vector<double>& x, std::vector<double>& y) const;
 	};
 }

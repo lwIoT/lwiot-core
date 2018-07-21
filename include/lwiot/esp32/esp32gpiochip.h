@@ -20,7 +20,7 @@ namespace lwiot
 
 		virtual void mode(int pin, const PinMode& mode) override;
 		virtual void write(int pin, bool value) override;
-		virtual bool read(int pin) override;
+		virtual bool read(int pin) const override;
 
 		virtual void setOpenDrain(int pin) override;
 		virtual void odWrite(int pin, bool value) override;

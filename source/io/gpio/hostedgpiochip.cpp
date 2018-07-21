@@ -44,12 +44,12 @@ namespace lwiot
 		this->write(pin, value);
 	}
 
-	bool HostedGpioChip::read(int pin)
+	bool HostedGpioChip::read(int pin) const
 	{
 		return this->pop(pin);
 	}
 
-	bool HostedGpioChip::pop(int pin)
+	bool HostedGpioChip::pop(int pin) const
 	{
 		auto& data = this->_pindata.at(pin);
 

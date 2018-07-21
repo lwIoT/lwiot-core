@@ -30,26 +30,28 @@ namespace lwiot
 
 		GpioPin& operator =(int pin);
 		GpioPin& operator =(const GpioPin& pin);
-		operator int() const;
 
-		GpioPin& operator <<(bool high);
-		void operator ()(bool high);
 
-		GpioPin& operator >>(bool& high);
-		bool operator ()(void);
+		void write(bool value);
+		GpioPin& operator <<(bool value);
+		void operator ()(bool value);
+
+		bool read() const;
+		GpioPin& operator >>(bool& value);
+		bool operator ()(void) const;
+		operator bool() const;
 
 		void input();
 		void output();
 		void setOpenDrain();
 
-		void write(bool high);
-		bool read();
 		void mode(const PinMode& mode);
 
 		uint8_t shiftIn(const GpioPin& clock, bool lsb, uint8_t count, int delay);
 		int shiftOut(const GpioPin& clock, bool lsb, uint8_t value, uint8_t count, int delay);
 
 		int pin() const;
+		operator int() const;
 
 		bool operator ==(const GpioPin& pin);
 		bool operator >(const GpioPin& pin);

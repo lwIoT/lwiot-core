@@ -102,7 +102,7 @@ namespace lwiot
 		}
 	}
 
-	bool Esp8266GpioChip::read(int pin)
+	bool Esp8266GpioChip::read(int pin) const
 	{
 		auto rv = 0;
 
