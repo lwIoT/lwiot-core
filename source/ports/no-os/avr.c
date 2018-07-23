@@ -34,6 +34,11 @@ void *lwiot_mem_zalloc(size_t size)
 	return ptr;
 }
 
+void *lwiot_mem_realloc(void *ptr, size_t size)
+{
+	return realloc(ptr, size);
+}
+
 void lwiot_sleep(int ms)
 {
 	for(int num = 0; num < ms; num++)

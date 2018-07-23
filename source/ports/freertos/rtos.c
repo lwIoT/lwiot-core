@@ -57,6 +57,24 @@ void *lwiot_mem_zalloc(size_t size)
 	return ptr;
 }
 
+extern void vApplicationMallocFailedHook( void );
+void *lwiot_mem_realloc(void *ptr, size_t size)
+{
+	void *retval;
+
+	vTaskSuspendAll();
+	retval = realloc(ptr, size);
+	xTaskResumeAll();
+
+
+#if configUSE_MALLOC_FAILED_HOOK == 1
+	if(!retval) 
+		vApplicationMallocFailedHook();
+#endif
+
+	return retval;
+}
+
 void lwiot_mem_free(void *ptr)
 {
 	vPortFree(ptr);

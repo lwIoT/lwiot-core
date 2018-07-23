@@ -47,6 +47,11 @@ void *lwiot_mem_alloc(size_t size)
 	return malloc(size);
 }
 
+void *lwiot_mem_realloc(void *ptr, size_t size)
+{
+	return realloc(ptr, size);
+}
+
 void *lwiot_mem_zalloc(size_t size)
 {
 	void *ptr = malloc(size);

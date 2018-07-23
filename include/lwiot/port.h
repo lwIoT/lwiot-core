@@ -76,6 +76,7 @@ extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
 extern DLL_EXPORT void *lwiot_mem_alloc(size_t size);
 extern DLL_EXPORT void *lwiot_mem_zalloc(size_t size);
 extern DLL_EXPORT void lwiot_mem_free(void *ptr);
+extern DLL_EXPORT void *lwiot_mem_realloc(void *ptr, size_t size);
 
 #define FOREVER 0
 CDECL_END
