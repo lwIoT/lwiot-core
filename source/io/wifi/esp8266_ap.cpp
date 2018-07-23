@@ -68,6 +68,13 @@ namespace lwiot
 
 	void WifiAccessPoint::end()
 	{
+		auto mode = sdk_wifi_get_opmode();
+
+		if(mode == STATIONAP_MODE) {
+			sdk_wifi_set_opmode(STATION_MODE);
+		} else if(mode == SOFTAP_MODE) {
+			sdk_wifi_set_opmode(NULL_MODE);
+		}
 	}
 
 	WifiAccessPoint::operator bool() const
