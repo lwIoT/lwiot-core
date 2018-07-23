@@ -34,6 +34,11 @@ namespace lwiot
 		this->_pin.mode(PinMode::INPUT);
 	}
 
+	const GpioPin& OneWireBus::pin() const
+	{
+		return this->_pin;
+	}
+
 	bool OneWireBus::reset()
 	{
 		ScopedLock lock(this->_lock);
