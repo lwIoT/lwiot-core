@@ -17,6 +17,9 @@ SET(IO_SOURCES
 
 	io/pwm/pwmchannel.cpp
 	io/pwm/pwmtimer.cpp
+
+	io/onewire/onewirebus.cpp
+	io/onewire/dhtbus.cpp
 )
 
 SET(CONFIG_PIN_VECTOR False CACHE BOOL "Build a vector of pins the the GPIO chip.")

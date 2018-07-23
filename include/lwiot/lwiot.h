@@ -20,3 +20,9 @@
 #define UNUSED(x) (void)x
 
 #define CXX __cplusplus
+
+#ifndef BIT
+#define BIT(__x) (1U << __x)
+#endif
+
+#define BITS_PER_BYTE 8U
