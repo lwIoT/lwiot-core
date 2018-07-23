@@ -9,7 +9,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <time.h>
+#include <stdint.h>
 
+#include <lwiot/types.h>
 #include <lwiot/lwiot.h>
 #include <lwiot/log.h>
 
@@ -17,6 +20,10 @@ static FILE *dbg_file;
 
 static void vfprint_dbg(const char *prefix, const char *fmt, va_list va)
 {
+	time_t tick;
+
+	tick = lwiot_tick();
+	fprintf(dbg_file, "[%lu]", tick);
 	fprintf(dbg_file, "%s", prefix);
 	vfprintf(dbg_file, fmt, va);
 }
