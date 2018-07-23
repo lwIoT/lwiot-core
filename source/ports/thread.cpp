@@ -22,14 +22,11 @@ namespace lwiot
 
 	Thread::Thread(const char *name, void *argument)
 	{
-		size_t length;
-
 		this->running = false;
 		this->argument = argument;
 
-		length = strlen(name);
-		this->internal.name = (char*)malloc(length + 1);
-		memcpy((void*)this->internal.name, name, length + 1);
+		memset((void*)this->internal.name, 0, sizeof(this->internal.name));
+		memcpy((void*)this->internal.name, name, strlen(name));
 
 		print_dbg("Creating thread [%s]!\n", name);
 	}

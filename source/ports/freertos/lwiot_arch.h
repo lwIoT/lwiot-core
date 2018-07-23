@@ -62,7 +62,7 @@ typedef xTimerHandle TimerHandle_t;
 #include <lwiot/lwiot.h>
 
 typedef struct thread {
-	const char *name;
+	char name[16];
 	void *arg;
 	void (*handle)(void *arg);
 	TaskHandle_t task;

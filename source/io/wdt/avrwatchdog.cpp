@@ -34,7 +34,7 @@ namespace lwiot
 		return x >= a && x <= b;
 	}
 
-	AvrWatchdog::AvrWatchdog() : Watchdog(), enabled(false)
+	AvrWatchdog::AvrWatchdog() : Watchdog()
 	{ }
 
 	bool AvrWatchdog::enable(uint32_t tmo)

@@ -24,7 +24,7 @@ typedef DLL_EXPORT struct mutex {
 } lwiot_mutex_t;
 
 typedef DLL_EXPORT struct thread {
-	const char *name;
+	char name[16];
 	pthread_t tid;
 	void(*handle)(void *arg);
 	void  *arg;
