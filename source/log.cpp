@@ -109,12 +109,18 @@ namespace lwiot {
 	void Logger::format(const char *fmt, ...)
 	{
 		va_list va;
+		time_t tick;
 
 		if(fmt == nullptr)
 			return;
 
 		if(this->_newline) {
 			this->_newline = false;
+
+			tick = lwiot_tick();
+			tick /= 1000U;
+
+			fprintf(this->_f_output, "[%llu]", (unsigned long long)tick);
 
 			if(this->_subsys.length() > 0)
 				fprintf(this->_f_output, "[lwiot][%s]: ", this->_subsys.c_str());
