@@ -39,8 +39,6 @@ namespace lwiot
 	{
 		if(this->running)
 			this->stop();
-
-		free((void*) this->internal.name);
 	}
 
 	void Thread::start()
