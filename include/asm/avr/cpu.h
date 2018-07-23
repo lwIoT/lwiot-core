@@ -12,8 +12,10 @@
 
 #ifdef __cplusplus
 extern "C" void udelay(uint32_t us);
+extern "C" void extmem_enable(int pin);
 #else
 extern void udelay(uint32_t us);
+extern void extmem_enable(int pin);
 #endif
 
 #define lwiot_udelay(__us) udelay((uint32_t)__us)
