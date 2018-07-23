@@ -5,6 +5,8 @@
  * @email dev@bietje.net
  */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdlib.h>
 #include <lwiot.h>
 
@@ -59,7 +61,9 @@ int main(int argc, char **argv)
 
 	ThreadTest t1("Thread 1", e),
 		t2("Thread 2", e);
-	tp.name = "main";
+
+	strcpy(tp.name, "main");
+	tp.name[sizeof("main")] = '\0';
 
 	t1.start();
 	t2.start();
