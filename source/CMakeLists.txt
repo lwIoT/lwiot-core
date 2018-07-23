@@ -7,6 +7,7 @@ include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
 include(${PROJECT_SOURCE_DIR}/source/lib/lib.cmake)
+include(${PROJECT_SOURCE_DIR}/source/sensors/sensors.cmake)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
@@ -32,9 +33,10 @@ SET(SOURCES
 	vector.cpp
     system.cpp
     ${WRAPPER_SOURCES}
-	${IO_SOURCES}
     ${LWIOT_PORT_SRCS}
+	${IO_SOURCES}
     ${LIB_SOURCES}
+    ${SENSOR_SOURCES}
 )
 
 set(GENERIC_HEADERS
