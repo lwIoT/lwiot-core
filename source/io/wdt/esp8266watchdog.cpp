@@ -50,12 +50,14 @@ namespace lwiot
 		timer_set_frequency(FRC1, WDT_FREQ);
 		timer_set_interrupts(FRC1, true);
 		timer_set_run(FRC1, true);
+		Watchdog::enable(tmo);
 
 		return true;
 	}
 
 	bool Esp8266Watchdog::disable()
 	{
+		Watchdog::disable();
 		timer_set_interrupts(FRC1, false);
 		timer_set_run(FRC1, false);
 		this->count = this->overflow = 0;
@@ -65,7 +67,12 @@ namespace lwiot
 
 	void Esp8266Watchdog::reset()
 	{
+		if(!this->enabled())
+			return;
+
+		enter_critical();
 		this->count = 0;
+		exit_critical();
 	}
 }
 

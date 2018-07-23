@@ -69,7 +69,7 @@ namespace lwiot
 		wdt_enable(wdtsetting);
 		SREG = old;
 
-		this->enabled = true;
+		Watchdog::enable(tmo);
 		return true;
 	}
 
@@ -77,6 +77,7 @@ namespace lwiot
 	{
 		auto old = SREG;
 
+		Watchdog::disable();
 		cli();
 		wdt_reset();
 		wdt_disable();
@@ -87,6 +88,9 @@ namespace lwiot
 
 	void AvrWatchdog::reset()
 	{
+		if(!this->enabled())
+			return;
+
 		wdt_reset();
 	}
 }

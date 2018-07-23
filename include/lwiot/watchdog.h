@@ -7,16 +7,22 @@
 
 #pragma once
 
+#include <stdint.h>
+
 namespace lwiot
 {
 	class Watchdog {
 	public:
-		virtual bool enable(uint32_t tmo = 2000) = 0;
-		virtual bool disable() = 0;
+		virtual bool enable(uint32_t tmo = 2000);
+		virtual bool disable();
 		virtual void reset() = 0;
 
 	protected:
-		explicit Watchdog() { }
+		explicit Watchdog();
+		bool enabled() const;
+
+	private:
+		bool _enabled;
 	};
 }
 
