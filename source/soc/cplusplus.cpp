@@ -19,7 +19,7 @@ extern "C" {
 #ifdef AVR
 void *operator new(size_t num)
 {
-	auto ptr = malloc(num);
+	auto ptr = lwiot_mem_alloc(num);
 
 	memset(ptr, 0, sizeof(num));
 	return ptr;
@@ -27,7 +27,7 @@ void *operator new(size_t num)
 
 void *operator new[](size_t num)
 {
-	auto ptr = malloc(num);
+	auto ptr = lwiot_mem_alloc(num);
 
 	memset(ptr, 0, sizeof(num));
 	return ptr;

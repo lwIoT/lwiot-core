@@ -10,13 +10,14 @@
 #include "../JsonBuffer.hpp"
 
 #include <stdlib.h>
+#include <lwiot.h>
 
 namespace ArduinoJson {
 namespace Internals {
 class DefaultAllocator {
  public:
-  void* allocate(size_t size) { return malloc(size); }
-  void deallocate(void* pointer) { free(pointer); }
+  void* allocate(size_t size) { return lwiot_mem_alloc(size); }
+  void deallocate(void* pointer) { lwiot_mem_free(pointer); }
 };
 
 template <typename TAllocator>
