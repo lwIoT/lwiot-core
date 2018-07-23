@@ -58,7 +58,7 @@ namespace lwiot
 		virtual ~PwmTimer() = default;
 
 		const int& frequency() const;
-		void setFrequency(const int &freq);
+		virtual void setFrequency(const int &freq);
 		virtual void update();
 
 		PwmChannel& operator [](const size_t& index);

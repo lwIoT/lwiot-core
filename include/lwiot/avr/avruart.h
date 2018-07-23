@@ -40,7 +40,7 @@ namespace lwiot
 		inline bool get_rx_value();
 		inline void delay(uint16_t delay) const;
 		void init();
-		bool isListening();
+		bool isListening() const;
 		friend void isr_entry();
 		bool end();
 		void setIrqMask(bool enabled);

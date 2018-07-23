@@ -215,7 +215,7 @@ namespace lwiot
 		return true;
 	}
 
-	bool AvrUart::isListening()
+	bool AvrUart::isListening() const
 	{
 		return this == active_object;
 	}

@@ -120,7 +120,11 @@ namespace lwiot {
 			tick = lwiot_tick();
 			tick /= 1000U;
 
+#ifdef AVR
+			fprintf(this->_f_output, "[%lu]", (unsigned long)tick);
+#else
 			fprintf(this->_f_output, "[%llu]", (unsigned long long)tick);
+#endif
 
 			if(this->_subsys.length() > 0)
 				fprintf(this->_f_output, "[lwiot][%s]: ", this->_subsys.c_str());

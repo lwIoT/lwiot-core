@@ -16,7 +16,7 @@ extern "C" void udelay(uint32_t us);
 extern void udelay(uint32_t us);
 #endif
 
-#define lwiot_udelay(__us) udelay(__us)
+#define lwiot_udelay(__us) udelay((uint32_t)__us)
 
 #define enter_critical() \
 	__asm__ __volatile__( \

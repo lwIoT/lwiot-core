@@ -23,7 +23,11 @@ static void vfprint_dbg(const char *prefix, const char *fmt, va_list va)
 	time_t tick;
 
 	tick = lwiot_tick() / 1000U;
+#ifdef AVR
+	fprintf(dbg_file, "[%lu]", (unsigned long)tick);
+#else
 	fprintf(dbg_file, "[%llu]", (unsigned long long)tick);
+#endif
 
 	fprintf(dbg_file, "%s", prefix);
 	vfprintf(dbg_file, fmt, va);

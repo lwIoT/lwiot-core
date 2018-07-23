@@ -33,8 +33,6 @@ namespace lwiot
 		virtual void reset() override;
 
 	private:
-		bool enabled;
-
 		/* Methods */
 		explicit AvrWatchdog();
 		friend void wdt_trigger_handler();
