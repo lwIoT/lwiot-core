@@ -6,10 +6,8 @@ include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(TestBigEndian)
+include(${PROJECT_SOURCE_DIR}/cmake/config.cmake)
 
-SET(CONFIG_STACK_SIZE 2048 CACHE STRING "RTOS stack size")
-SET(CONFIG_TASK_PRIO  8 CACHE STRING "Task priority")
-SET(HAVE_DEBUG False CACHE BOOL "ESP32 target.")
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(HAVE_DEBUG True)
@@ -89,13 +87,10 @@ CHECK_C_SOURCE_COMPILES (
     }
   " HAVE_SIZE_T)
 
-SET(PINS ${CONFIG_PINS})
-
 if(CMAKE_SYSTEM_NAME MATCHES Generic)
     SET(HAVE_GENERIC_SYS True)
 endif()
 
-SET(CONFIG_BUILD_TESTS False CACHE BOOL "Build unit tests.")
 
 if( NOT CMAKE_SYSTEM_NAME MATCHES Generic OR PORT MATCHES unix )
     add_subdirectory(scripts)
