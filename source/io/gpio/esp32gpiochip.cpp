@@ -188,5 +188,27 @@ namespace lwiot
 	}
 }
 
+extern "C" void pinMode(int pin, int mode)
+{
+	switch(mode) {
+	case RAW_INPUT:
+		gpio.mode(pin, lwiot::PinMode::INPUT);
+		break;
+
+	case RAW_OUTPUT:
+		gpio.mode(pin, lwiot::PinMode::OUTPUT);
+		break;
+
+	case RAW_OUTPUT_OPENDRAIN:
+		gpio.mode(pin, lwiot::PinMode::OUTPUT_OPEN_DRAIN);
+		break;
+	}
+}
+
+extern "C" void digitalWrite(int pin, bool value)
+{
+	gpio.write(pin, value);
+}
+
 static lwiot::Esp32GpioChip esp_gpio;
 lwiot::GpioChip& gpio = esp_gpio;

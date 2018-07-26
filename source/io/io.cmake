@@ -22,4 +22,7 @@ SET(IO_SOURCES
 	io/onewire/dhtbus.cpp
 
 	io/wdt/watchdog.cpp
+
+	io/spi/spimessage.cpp
+	io/spi/spibus.cpp
 )

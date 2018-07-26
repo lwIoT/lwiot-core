@@ -10,7 +10,7 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/gpiochip.h>
 
-#ifdef CXX
+#ifdef __cplusplus
 namespace lwiot
 {
 	class Esp32GpioChip : public GpioChip {
@@ -30,4 +30,16 @@ namespace lwiot
 		int mapIrqType(const IrqEdge& edge) const;
 	};
 }
+#endif
+
+#define RAW_INPUT 1
+#define RAW_OUTPUT 2 
+#define RAW_OUTPUT_OPENDRAIN 3
+
+#ifdef __cplusplus
+extern "C" void pinMode(int pin, int mode);
+extern "C" void digitalWrite(int pin, bool value);
+#else
+extern void pinMode(int pin, int mode);
+extern void digitalWrite(int pin, bool value);
 #endif
