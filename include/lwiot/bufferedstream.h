@@ -26,9 +26,9 @@ namespace lwiot {
 
 		virtual ~BufferedStream();
 
-		virtual Stream& operator =(const Stream& stream) override;
+		virtual Stream& operator =(const Stream& stream);
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-		virtual Stream& operator =(Stream&& stream) override;
+		virtual Stream& operator =(Stream&& stream);
 #endif
 
 		virtual Stream& operator << (char x) override;

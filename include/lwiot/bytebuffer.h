@@ -38,6 +38,8 @@ namespace lwiot
 		const uint8_t *begin() const;
 		const uint8_t *end() const;
 
+		void setIndex(size_t index) { this->_index = index; }
+
 		bool operator ==(const ByteBuffer& rhs) const;
 
 		void write(uint8_t byte);

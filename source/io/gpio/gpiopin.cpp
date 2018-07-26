@@ -14,6 +14,10 @@ namespace lwiot
 	{
 	}
 
+	GpioPin::GpioPin() : GpioPin(-1)
+	{
+	}
+
 	GpioPin::GpioPin(int pin, GpioChip& chip) : _pin(pin), _chip(chip)
 	{
 		this->_open_drain = false;

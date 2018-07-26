@@ -25,6 +25,7 @@ namespace lwiot
 	class GpioPin {
 	public:
 		GpioPin(int pin);
+		explicit GpioPin();
 		explicit GpioPin(int pin, GpioChip& gpio);
 		virtual ~GpioPin();
 

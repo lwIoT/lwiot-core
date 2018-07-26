@@ -52,7 +52,6 @@ namespace lwiot
 	public:
 		explicit Uart(int tx, int rx, long baud = 9600, uint32_t config = SERIAL_8N1);
 		explicit Uart(const GpioPin& tx, const GpioPin& rx, long baud = 9600, uint32_t config = SERIAL_8N1);
-		virtual ~Uart() = default;
 
 		using Stream::write;
 		using Stream::read;
