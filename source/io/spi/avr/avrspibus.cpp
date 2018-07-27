@@ -40,6 +40,11 @@ namespace lwiot
 
 	AvrSpiBus::~AvrSpiBus()
 	{
+		atmega_spi_destroy();
+
+		this->_mosi.mode(PinMode::INPUT);
+		this->_clk.mode(PinMode::INPUT);
+		this->_miso.mode(PinMode::INPUT);
 	}
 
 	void AvrSpiBus::setFrequency(uint32_t frequency)

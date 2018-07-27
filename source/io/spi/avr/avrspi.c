@@ -12,8 +12,6 @@
 #include <lwiot/types.h>
 #include <lwiot/error.h>
 
-#include <lwiot/avr/avrspibus.h>
-
 #include <avr/io.h>
 
 typedef enum spi_ctrl {
@@ -54,13 +52,16 @@ int atmega_spi_setspeed(uint32_t rate)
 	unsigned char div = 0;
 	unsigned char spcr;
 
+	lwiot_mutex_lock(&master_xfer_mutex, FOREVER);
 	for(; div <= 7; div++) {
 		if((F_CPU / spi_clk_div[div]) == rate)
 			break;
 	}
 
-	if(div > 7)
+	if(div > 7) {
+		lwiot_mutex_unlock(&master_xfer_mutex);
 		return -EINVALID;
+	}
 
 	if(div > 3) {
 		/* enable spi2x */
@@ -76,6 +77,7 @@ int atmega_spi_setspeed(uint32_t rate)
 	spcr |= div | 0x3;
 	SPCR = spcr;
 
+	lwiot_mutex_unlock(&master_xfer_mutex);
 	return -EOK;
 }
 
@@ -83,6 +85,7 @@ int atmega_spi_xfer(const uint8_t *tx, uint8_t *rx, size_t length)
 {
 	size_t len = length;
 
+	lwiot_mutex_lock(&master_xfer_mutex, FOREVER);
 	SPDR = tx[0];
 	while(--len > 0UL) {
 		while(!(SPSR & _BV(SPIF)));
@@ -93,6 +96,7 @@ int atmega_spi_xfer(const uint8_t *tx, uint8_t *rx, size_t length)
 	while(!(SPSR & _BV(SPIF)));
 	*rx = SPDR;
 
+	lwiot_mutex_unlock(&master_xfer_mutex);
 	return length;
 }
 
@@ -100,7 +104,15 @@ void atmega_spi_init(void)
 {
 	/* software initialisation */
 	lwiot_mutex_create(&master_xfer_mutex, 0);
-	SPCR |= SPR1;
-	SPCR |= MSTR;
-	SPCR |= SPE;
+	SPCR |= _BV(SPR1);
+	SPCR |= _BV(MSTR);
+	SPCR |= _BV(SPE);
+}
+
+void atmega_spi_destroy(void)
+{
+	SPCR &= ~_BV(SPR1);
+	SPCR &= ~_BV(MSTR);
+	SPCR &= ~_BV(SPE);
+	lwiot_mutex_destroy(&master_xfer_mutex);
 }

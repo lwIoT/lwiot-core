@@ -19,6 +19,7 @@ extern "C" {
 extern int atmega_spi_xfer(const uint8_t *tx, uint8_t *rx, size_t length);
 extern int atmega_spi_setspeed(uint32_t rate);
 extern void  atmega_spi_init(void);
+extern void atmega_spi_destroy(void);
 
 #ifdef __cplusplus
 }
