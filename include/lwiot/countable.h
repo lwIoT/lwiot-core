@@ -9,7 +9,7 @@
 
 #include <lwiot.h>
 
-#ifdef CXX
+#ifdef __cplusplus
 namespace lwiot
 {
 	template <typename T> class Countable {

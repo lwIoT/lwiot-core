@@ -14,7 +14,7 @@
 
 #define BYTEBUFFER_DEFAULT_SIZE 32
 
-#ifdef CXX
+#ifdef __cplusplus
 namespace lwiot
 {
 	class ByteBuffer : public Countable<uint8_t> {

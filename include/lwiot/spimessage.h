@@ -16,6 +16,7 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/bytebuffer.h>
 
+#ifdef __cplusplus
 namespace lwiot
 {
 	class SpiMessage {
@@ -40,3 +41,4 @@ namespace lwiot
 		size_t _size;
 	};
 }
+#endif

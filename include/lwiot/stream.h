@@ -12,6 +12,7 @@
 #include <lwiot/types.h>
 #include <lwiot/string.h>
 
+#ifdef __cplusplus
 namespace lwiot {
 	class Stream {
 	public:
@@ -51,3 +52,4 @@ namespace lwiot {
 		time_t _millis;
 	};
 }
+#endif

@@ -42,6 +42,9 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/adc/avradcchip.cpp
 	${PROJECT_SOURCE_DIR}/source/io/uart/avruart.cpp
 	${PROJECT_SOURCE_DIR}/source/io/wdt/avrwatchdog.cpp
+
+	${PROJECT_SOURCE_DIR}/source/io/spi/avr/avrspi.c
+
 	${PROJECT_SOURCE_DIR}/source/soc/avr.c
 	${PROJECT_SOURCE_DIR}/source/soc/avrsystem.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/cplusplus.cpp

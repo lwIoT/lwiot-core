@@ -15,6 +15,7 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/vector.h>
 
+#ifdef __cplusplus
 namespace lwiot
 {
 	class SpiBus {
@@ -42,3 +43,4 @@ namespace lwiot
 		uint32_t _freq;
 	};
 }
+#endif

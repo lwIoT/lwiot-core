@@ -18,6 +18,7 @@ typedef enum error_code {
 	EINUSE,
 	ENOTSUPPORTED,
 	ENOSOCK,
+	EAGAIN,
 	ETMO,
 	EISCONNECTED,
 } lwiot_error_t;
