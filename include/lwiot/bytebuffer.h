@@ -45,6 +45,13 @@ namespace lwiot
 		void write(uint8_t byte);
 		void write(const uint8_t *bytes, size_t num);
 
+		template<typename Func> void foreach(Func f)
+		{
+			for(auto idx = 0UL; idx < this->_index; idx++) {
+				f(this->_data[idx]);
+			}
+		}
+
 	protected:
 		void grow(const size_t& size) override;
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)

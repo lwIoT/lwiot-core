@@ -29,9 +29,12 @@ int main(int argc, char **argv)
 	putc('\n', stdout);
 	print_dbg("Bytes in second buffer: ");
 	lwiot::ByteBuffer bf2(bf);
-	for(auto x : bf2) {
-		printf("%c ", x);
-	}
+
+	auto lambda = [](uint8_t& byte) -> void {
+		printf("%c ", byte);
+	};
+
+	bf2.foreach(lambda);
 
 	assert(bf == bf2);
 
