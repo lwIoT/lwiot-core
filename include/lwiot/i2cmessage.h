@@ -31,11 +31,15 @@ namespace lwiot
 		void setAddress(uint16_t addr, bool is10bit, bool readop);
 		void markAsRead(bool read);
 
+		void setRepeatedStart(bool repstart);
+		bool I2CMessage::repstart() const;
+
 		using ByteBuffer::operator[];
 
 	private:
 		uint16_t _addr;
 		uint16_t _is_10bit;
 		bool _readop;
+		bool _repstart;
 	};
 }

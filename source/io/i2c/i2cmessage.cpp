@@ -72,4 +72,14 @@ namespace lwiot
 	{
 		this->_readop = read;
 	}
+
+	void I2CMessage::setRepeatedStart(bool repstart)
+	{
+		this->_repstart = repstart;
+	}
+
+	bool I2CMessage::repstart() const
+	{
+		return this->_repstart;
+	}
 }
