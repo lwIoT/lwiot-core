@@ -44,3 +44,6 @@ target_link_libraries(datetime-test lwiot ${LWIOT_SYSTEM_LIBS})
 
 add_executable(spi-test spi_test.cpp)
 target_link_libraries(spi-test lwiot ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(i2cmessage-test i2cmessage_test.cpp)
+target_link_libraries(i2cmessage-test lwiot ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})

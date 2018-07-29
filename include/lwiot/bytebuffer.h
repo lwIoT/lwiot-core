@@ -53,13 +53,14 @@ namespace lwiot
 		}
 
 	protected:
+		size_t _index;
+
 		void grow(const size_t& size) override;
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 		void move(ByteBuffer& other);
 #endif
 
 	private:
-		size_t _index;
 		uint8_t *_data;
 	};
 }

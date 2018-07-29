@@ -25,4 +25,6 @@ SET(IO_SOURCES
 
 	io/spi/spimessage.cpp
 	io/spi/spibus.cpp
+
+	io/i2c/i2cmessage.cpp
 )
