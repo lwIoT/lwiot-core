@@ -23,10 +23,12 @@ namespace lwiot
 		explicit I2CAlgorithm();
 
 		const uint32_t& frequency() const;
+		int delay() const;
+
 		void setFrequency(const uint32_t& freq);
 
-		virtual ssize_t transfer(const I2CMessage& msg) = 0;
-		virtual ssize_t transfer(const Vector<I2CMessage>& msgs) = 0;
+		virtual ssize_t transfer(I2CMessage& msg) = 0;
+		virtual ssize_t transfer(Vector<I2CMessage>& msgs) = 0;
 
 	protected:
 		uint32_t _frequency;

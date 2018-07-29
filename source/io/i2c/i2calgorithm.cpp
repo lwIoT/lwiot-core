@@ -32,6 +32,11 @@ namespace lwiot
 			return this->_frequency;
 		}
 
+		int I2CAlgorithm::delay() const
+		{
+			return this->_retry;
+		}
+
 		void I2CAlgorithm::setFrequency(const uint32_t& freq)
 		{
 			this->_frequency = freq;

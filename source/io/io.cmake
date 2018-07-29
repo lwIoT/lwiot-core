@@ -28,4 +28,5 @@ SET(IO_SOURCES
 
 	io/i2c/i2cmessage.cpp
 	io/i2c/i2calgorithm.cpp
+	io/i2c/i2cbus.cpp
 )
