@@ -123,20 +123,24 @@ namespace lwiot
 					true
 				);
 
-				if(msg.count() > 1)
-					i2c_master_read(handle, data, msg.count() - 1, ACK);
+				auto idx = 0UL;
+				for(; idx < msg.count() - 1; idx++) {
+					i2c_master_read_byte(handle, &data[idx], ACK);
+				}
 
-				i2c_master_read_byte(handle, data + msg.count() - 1, I2C_MASTER_NACK);
+				i2c_master_read_byte(handle, data + idx, I2C_MASTER_NACK);
+
 				msg.setIndex(msg.count());
-
 			} else {
 				i2c_master_write_byte(
 					handle,
-					address | static_cast<uint16_t>(I2C_MASTER_WRITE),
+					address,
 					true
 				);
 
-				i2c_master_write(handle, msg.data(), msg.count(), true);
+				for(auto idx = 0UL; idx < msg.count(); idx++) {
+					i2c_master_write_byte(handle, msg[idx], true);
+				}
 			}
 		}
 }
