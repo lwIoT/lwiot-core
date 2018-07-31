@@ -97,6 +97,8 @@ SET(LWIOT_PORT_SRCS
 
 	${PROJECT_SOURCE_DIR}/source/io/spi/esp32/esp32spibus.cpp
 	${PROJECT_SOURCE_DIR}/source/io/spi/esp32/esp32spi.c
+
+	${PROJECT_SOURCE_DIR}/source/io/i2c/esp32i2calgorithm.cpp
 )
 
 SET(LWIOT_PORT_HEADERS
