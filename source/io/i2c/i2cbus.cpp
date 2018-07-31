@@ -40,7 +40,7 @@ namespace lwiot
 
 	bool I2CBus::transfer(I2CMessage& msg)
 	{
-		return this->_algo.transfer(msg) == static_cast<ssize_t>(msg.count());
+		return this->_algo.transfer(msg) > 0;
 	}
 
 	void I2CBus::setAlgorithm(I2CAlgorithm& algo)

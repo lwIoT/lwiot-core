@@ -24,15 +24,16 @@ namespace lwiot
 		virtual ~I2CMessage() = default;
 
 		uint16_t address() const;
-		bool isReadOnly() const;
+		bool isRead() const;
 		bool is10Bit() const;
 		size_t available() const;
+		const size_t& length() const;
 
 		void setAddress(uint16_t addr, bool is10bit, bool readop);
 		void markAsRead(bool read);
 
 		void setRepeatedStart(bool repstart);
-		bool I2CMessage::repstart() const;
+		bool repstart() const;
 
 		using ByteBuffer::operator[];
 

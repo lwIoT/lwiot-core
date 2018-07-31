@@ -35,7 +35,7 @@ namespace lwiot
 	{
 		this->_addr = other.address();
 		this->_is_10bit = other.is10Bit();
-		this->_readop = other.isReadOnly();
+		this->_readop = other.isRead();
 	}
 
 	uint16_t I2CMessage::address() const
@@ -43,7 +43,7 @@ namespace lwiot
 		return this->_addr;
 	}
 
-	bool I2CMessage::isReadOnly() const
+	bool I2CMessage::isRead() const
 	{
 		return this->_readop;
 	}
@@ -81,5 +81,10 @@ namespace lwiot
 	bool I2CMessage::repstart() const
 	{
 		return this->_repstart;
+	}
+
+	const size_t& I2CMessage::length() const
+	{
+		return this->_index;
 	}
 }

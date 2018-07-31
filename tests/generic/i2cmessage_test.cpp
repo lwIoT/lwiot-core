@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 {
 	lwiot_init();
 
-	lwiot::I2CMessage msg;
+	lwiot::I2CMessage msg(5);
 	lwiot::Logger log;
 
 	msg.setAddress(0x5E, false, false);
@@ -29,6 +29,7 @@ int main(int argc, char **argv)
 	msg.write(0xAD);
 	msg.write(0xFA);
 
+	log << "Message size: " << msg.count() << lwiot::Logger::newline;
 	auto printer = [&log](uint8_t byte) -> void {
 		log << byte;
 		log << " ";

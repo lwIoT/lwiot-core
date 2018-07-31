@@ -37,6 +37,7 @@ namespace lwiot
 
 		const uint8_t *begin() const;
 		const uint8_t *end() const;
+		uint8_t *data() { return this->_data; }
 
 		void setIndex(size_t index) { this->_index = index; }
 

@@ -117,7 +117,7 @@ namespace lwiot
 
 	void ByteBuffer::write(const uint8_t* bytes, size_t num)
 	{
-		if(this->_index + num >= this->count())
+		if(this->_index + num > this->count())
 			this->grow(num + 10);
 
 		if(num == 1) {

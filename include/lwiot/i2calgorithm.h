@@ -25,7 +25,7 @@ namespace lwiot
 		const uint32_t& frequency() const;
 		int delay() const;
 
-		void setFrequency(const uint32_t& freq);
+		virtual void setFrequency(const uint32_t& freq);
 
 		virtual ssize_t transfer(I2CMessage& msg) = 0;
 		virtual ssize_t transfer(Vector<I2CMessage>& msgs) = 0;
