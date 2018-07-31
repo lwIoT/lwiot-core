@@ -29,6 +29,16 @@ typedef unsigned char u_char;
 
 #define __compiler_barrier() __sync_synchronize()
 
+#ifdef ESP32
+#include <esp_attr.h>
+#define RAM_ATTR IRAM_ATTR
+#elif defined(ESP8266)
+#include <common_macros.h>
+#define RAM_ATTR IRAM
+#else
+#define RAM_ATTR
+#endif
+
 #ifdef IDE
 /*
  * Visual studio code is far beyond retarded and doesn't understand

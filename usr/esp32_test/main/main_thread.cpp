@@ -63,22 +63,23 @@ protected:
 
 		print_dbg("Free heap size: %u\n", freesize);
 
+		value = true;
+
 		while(true) {
 			int i = 0;
 
 			enter_critical();
-			while(i++ < 20) {
+			while(i++ < 1600) {
 				out << true;
+				out2 << false;
 				lwiot_udelay(3);
-				out2 >> value;
-				assert(value == true);
 
 				out << false;
+				out2 << true;
 				lwiot_udelay(3);
-				out2 >> value;
-				assert(value == false);
 			}
 			exit_critical();
+
 			wdt.reset();
 		}
 	}

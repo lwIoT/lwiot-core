@@ -113,13 +113,13 @@ namespace lwiot
 		}
 	}
 
-	void Esp32GpioChip::write(int pin, bool value)
+	void IRAM_ATTR Esp32GpioChip::write(int pin, bool value)
 	{
 		auto level = value ? HIGH : LOW;
 		gpio_set_level((gpio_num_t)pin, level);
 	}
 
-	bool Esp32GpioChip::read(int pin) const
+	bool IRAM_ATTR Esp32GpioChip::read(int pin) const
 	{
 		return gpio_get_level((gpio_num_t)pin) == 1U;
 	}
@@ -130,16 +130,14 @@ namespace lwiot
 		this->write(pin, true);
 	}
 
-	void Esp32GpioChip::odWrite(int pin, bool value)
+	void IRAM_ATTR Esp32GpioChip::odWrite(int pin, bool value)
 	{
-		this->write(pin, value);
+		auto level = value ? HIGH : LOW;
+		gpio_set_level((gpio_num_t)pin, level);
 	}
 
 	void Esp32GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
 	{
-		/*
-		 * TODO: use the `begin()' method to init IRQs
-		 */
 		static bool interrupt_initialized = false;
     
 		if(!interrupt_initialized) {
@@ -203,11 +201,6 @@ extern "C" void pinMode(int pin, int mode)
 		gpio.mode(pin, lwiot::PinMode::OUTPUT_OPEN_DRAIN);
 		break;
 	}
-}
-
-extern "C" void digitalWrite(int pin, bool value)
-{
-	gpio.write(pin, value);
 }
 
 static lwiot::Esp32GpioChip esp_gpio;

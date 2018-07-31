@@ -80,7 +80,7 @@ namespace lwiot
 		this->_chip.mode(this->_pin, mode);
 	}
 
-	void GpioPin::write(bool value)
+	void RAM_ATTR GpioPin::write(bool value)
 	{
 		if(this->_open_drain)
 			this->_chip.odWrite(this->_pin, value);
@@ -88,36 +88,43 @@ namespace lwiot
 			this->_chip.write(this->_pin, value);
 	}
 
-	void GpioPin::operator()(bool value)
+	void RAM_ATTR GpioPin::operator()(bool value)
 	{
-		this->write(value);
+		if(this->_open_drain)
+			this->_chip.odWrite(this->_pin, value);
+		else
+			this->_chip.write(this->_pin, value);
 	}
 
-	GpioPin& GpioPin::operator<<(bool value)
+	GpioPin& RAM_ATTR GpioPin::operator<<(bool value)
 	{
-		this->write(value);
+		if(this->_open_drain)
+			this->_chip.odWrite(this->_pin, value);
+		else
+			this->_chip.write(this->_pin, value);
+
 		return *this;
 	}
 
-	bool GpioPin::read() const
+	bool RAM_ATTR GpioPin::read() const
 	{
 		return this->_chip.read(this->_pin);
 	}
 
-	GpioPin& GpioPin::operator>>(bool& value)
+	GpioPin& RAM_ATTR GpioPin::operator>>(bool& value)
 	{
-		value = this->read();
+		value = this->_chip.read(this->_pin);
 		return *this;
 	}
 
-	bool GpioPin::operator()(void) const
+	bool RAM_ATTR GpioPin::operator()(void) const
 	{
-		return this->read();
+		return this->_chip.read(this->_pin);
 	}
 
-	GpioPin::operator bool() const
+	RAM_ATTR GpioPin::operator bool() const
 	{
-		return this->read();
+		return this->_chip.read(this->_pin);
 	}
 
 	int GpioPin::pin() const
