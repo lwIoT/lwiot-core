@@ -17,6 +17,8 @@
 
 #define __maybe
 
+#define RAM_ATTR
+
 #pragma warning(disable : 4251)
 #pragma warning (disable : 4820)
 #pragma warning (disable : 4100)
