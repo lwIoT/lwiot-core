@@ -85,6 +85,7 @@ namespace lwiot
 			return msg.count();
 		}
 
+#if 0
 		ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
 		{
 			auto handle = i2c_cmd_link_create();
@@ -107,6 +108,29 @@ namespace lwiot
 			i2c_cmd_link_delete(handle);
 
 			return (error == ESP_OK) ? total : -EINVALID;
+		}
+#endif
+
+		ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
+		{
+			i2c_cmd_handle_t handle;
+			ssize_t total = 0L;
+
+			for(auto& msg : msgs) {
+				handle = i2c_cmd_link_create();
+				i2c_master_start(handle);
+
+				this->prepareTransfer(handle, msg);
+
+				if(!msg.repstart())
+					i2c_master_stop(handle);
+
+				i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
+				i2c_cmd_link_delete(handle);
+				total += msg.count();
+			}
+
+			return total;
 		}
 
 		void Esp32I2CAlgorithm::prepareTransfer(i2c_cmd_handle_t handle, I2CMessage& msg) const
@@ -138,9 +162,11 @@ namespace lwiot
 					true
 				);
 
-				for(auto idx = 0UL; idx < msg.count(); idx++) {
+				i2c_master_write(handle, msg.data(), msg.count(), I2C_MASTER_ACK);
+
+				/*for(auto idx = 0UL; idx < msg.count(); idx++) {
 					i2c_master_write_byte(handle, msg[idx], true);
-				}
+				}*/
 			}
 		}
 }
