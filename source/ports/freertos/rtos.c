@@ -91,7 +91,20 @@ int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 
 	tp->handle = handle;
 	tp->arg = arg;
+
+#ifdef ESP32
+	BaseType_t coreID = esp32_get_next_coreid();
+	bt = xTaskCreatePinnedToCore(
+		vPortTaskStarter,
+		tp->name,
+		STACK_DEPTH,
+		tp, TASK_PRIO,
+		&tp->task,
+		coreID
+	);
+#else
 	bt = xTaskCreate(vPortTaskStarter, tp->name, STACK_DEPTH, tp, TASK_PRIO, &tp->task);
+#endif
 
 	if(bt == pdPASS)
 		return -EOK;

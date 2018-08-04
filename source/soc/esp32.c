@@ -36,3 +36,14 @@ void exit_critical()
 	id = xPortGetCoreID();
 	portEXIT_CRITICAL(&xCoreMutex[id]);
 }
+
+BaseType_t esp32_get_next_coreid()
+{
+	static bool coreid = false;
+	BaseType_t retval;
+
+	retval = coreid;
+	coreid = !coreid;
+
+	return retval;
+}
