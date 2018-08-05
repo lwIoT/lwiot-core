@@ -35,12 +35,38 @@ namespace lwiot
 
 	bool I2CBus::transfer(Vector<I2CMessage*>& msgs)
 	{
-		return this->_algo.transfer(msgs) > 0;
+		int rv = -EINVALID;
+
+		for(int i = 0; i < MAX_RETRIES; i++) {
+			rv = this->_algo.transfer(msgs);
+
+			if(rv == -ETRYAGAIN) {
+				lwiot_sleep(this->_algo.delay());
+				continue;
+			} else {
+				break;
+			}
+		}
+
+		return rv > 0;
 	}
 
 	bool I2CBus::transfer(I2CMessage& msg)
 	{
-		return this->_algo.transfer(msg) > 0;
+		int rv = -EINVALID;
+
+		for(int i = 0; i < MAX_RETRIES; i++) {
+			rv = this->_algo.transfer(msg);
+
+			if(rv == -ETRYAGAIN) {
+				lwiot_sleep(this->_algo.delay());
+				continue;
+			} else {
+				break;
+			}
+		}
+
+		return rv > 0;
 	}
 
 	void I2CBus::setAlgorithm(I2CAlgorithm& algo)
