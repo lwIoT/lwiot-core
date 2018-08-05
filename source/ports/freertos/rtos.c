@@ -258,7 +258,7 @@ static void vTimerCallbackHook(TimerHandle_t xTimer)
 	if(tmr->oneshot) {
 		tmr->state = TIMER_STOPPED;
 	} else {
-		tmr->expiry = (lwiot_tick() / 1000U) + tmr->period;
+		tmr->expiry = lwiot_tick_ms() + tmr->period;
 	}
 }
 
@@ -292,7 +292,7 @@ int lwiot_timer_start(lwiot_timer_t *timer)
 	while(bt != pdPASS)
 		bt = xTimerStart(timer->timer, 0);
 
-	timer->expiry = (lwiot_tick() / 1000U) + vPortTickToMs(timer->period);
+	timer->expiry = lwiot_tick_ms() + vPortTickToMs(timer->period);
 	return -EOK;
 }
 
@@ -343,7 +343,7 @@ int lwiot_timer_set_period(lwiot_timer_t *timer, int ms)
 	while(bt != pdPASS)
 		bt = xTimerChangePeriod(timer->timer, ms / portTICK_PERIOD_MS, 0);
 
-	timer->expiry = (lwiot_tick() / 1000U) + vPortTickToMs(timer->period);
+	timer->expiry = lwiot_tick_ms() + vPortTickToMs(timer->period);
 	return -EOK;
 }
 
