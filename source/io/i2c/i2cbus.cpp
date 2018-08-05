@@ -33,7 +33,7 @@ namespace lwiot
 		this->_algo.setFrequency(freq);
 	}
 
-	bool I2CBus::transfer(Vector<I2CMessage>& msgs)
+	bool I2CBus::transfer(Vector<I2CMessage*>& msgs)
 	{
 		return this->_algo.transfer(msgs) > 0;
 	}

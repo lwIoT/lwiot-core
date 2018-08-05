@@ -24,7 +24,7 @@ namespace lwiot
 		explicit I2CBus(I2CAlgorithm *algo);
 
 		bool transfer(I2CMessage& msg);
-		bool transfer(Vector<I2CMessage>& msgs);
+		bool transfer(Vector<I2CMessage*>& msgs);
 
 		void setFrequency(const uint32_t& freq);
 		void setAlgorithm(I2CAlgorithm& algo);

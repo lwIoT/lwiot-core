@@ -39,8 +39,8 @@ namespace lwiot
 			this->config.mode = I2C_MODE_MASTER;
 			this->config.sda_io_num = static_cast<gpio_num_t>(sda);
 			this->config.scl_io_num = static_cast<gpio_num_t>(scl);
-			this->config.scl_pullup_en = GPIO_PULLUP_ENABLE;
-			this->config.sda_pullup_en = GPIO_PULLUP_ENABLE;
+			this->config.scl_pullup_en = GPIO_PULLUP_DISABLE;
+			this->config.sda_pullup_en = GPIO_PULLUP_DISABLE;
 			this->config.master.clk_speed = this->frequency();
 
 			i2c_param_config(num, &this->config);
@@ -111,12 +111,13 @@ namespace lwiot
 		}
 #endif
 
-		ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
+		ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
 		{
 			i2c_cmd_handle_t handle;
 			ssize_t total = 0L;
 
-			for(auto& msg : msgs) {
+			for(auto& _msg : msgs) {
+				auto& msg = *_msg;
 				handle = i2c_cmd_link_create();
 				i2c_master_start(handle);
 
@@ -125,9 +126,15 @@ namespace lwiot
 				if(!msg.repstart())
 					i2c_master_stop(handle);
 
-				i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
+				auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
+
+				if(err != ESP_OK)
+					total = -EINVALID;
+
 				i2c_cmd_link_delete(handle);
-				total += msg.count();
+
+				if(total >= 0)
+					total += msg.count();
 			}
 
 			return total;
@@ -162,11 +169,11 @@ namespace lwiot
 					true
 				);
 
-				i2c_master_write(handle, msg.data(), msg.count(), I2C_MASTER_ACK);
+				//i2c_master_write(handle, msg.data(), msg.count(), I2C_MASTER_ACK);
 
-				/*for(auto idx = 0UL; idx < msg.count(); idx++) {
+				for(auto idx = 0UL; idx < msg.count(); idx++) {
 					i2c_master_write_byte(handle, msg[idx], true);
-				}*/
+				}
 			}
 		}
 }

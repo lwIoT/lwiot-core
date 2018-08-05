@@ -15,6 +15,8 @@
 #include <lwiot/i2cmessage.h>
 #include <lwiot/vector.h>
 
+#define MAX_RETRIES 3
+
 namespace lwiot
 {
 	class I2CAlgorithm {
@@ -28,15 +30,15 @@ namespace lwiot
 		virtual void setFrequency(const uint32_t& freq);
 
 		virtual ssize_t transfer(I2CMessage& msg) = 0;
-		virtual ssize_t transfer(Vector<I2CMessage>& msgs) = 0;
+		virtual ssize_t transfer(Vector<I2CMessage*>& msgs) = 0;
 
 	protected:
 		uint32_t _frequency;
+		static constexpr int DefaultRetryDelay = 200;
 
 	private:
 		int _retry;
 
 		static constexpr uint32_t DefaultFrequency = 100000UL;
-		static constexpr int DefaultRetryDelay = 200;
 	};
 }

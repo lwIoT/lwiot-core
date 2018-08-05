@@ -22,7 +22,8 @@ namespace lwiot
 
 		T* allocate(int n)
 		{
-			return reinterpret_cast<T*>(new char[n * sizeof(T)]);
+			auto data = lwiot_mem_alloc(n * sizeof(T));
+			return reinterpret_cast<T*>(data);
 		}
 
 		void deallocate(T* p, int n)
@@ -30,7 +31,8 @@ namespace lwiot
 			if(!p || n == 0)
 				return;
 
-			delete[] reinterpret_cast<char*>(p);
+			lwiot_mem_free(p);
+			//delete[] reinterpret_cast<char*>(p);
 		}
 
 		void construct(T* p, const T& t) { new(p) T(t); }

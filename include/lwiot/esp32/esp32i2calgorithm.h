@@ -28,7 +28,7 @@ namespace lwiot
 		virtual ~Esp32I2CAlgorithm();
 
 		virtual ssize_t transfer(I2CMessage& msg) override;
-		virtual ssize_t transfer(Vector<I2CMessage>& msgs) override;
+		virtual ssize_t transfer(Vector<I2CMessage*>& msgs) override;
 		virtual void setFrequency(const uint32_t& freq) override;
 
 	private:
