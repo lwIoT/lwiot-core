@@ -358,7 +358,16 @@ time_t lwiot_tick(void)
 	time_t ticks;
 
 	ticks = xTaskGetTickCount();
-	ticks *= (float)1/configTICK_RATE_HZ * 1000ULL * 1000ULL;
+	ticks *= (double)1/configTICK_RATE_HZ * 1000ULL * 1000ULL;
+	return ticks;
+}
+
+time_t lwiot_tick_ms(void)
+{
+	time_t ticks;
+
+	ticks = xTaskGetTickCount();
+	ticks *= (double)1/configTICK_RATE_HZ * 1000ULL;
 	return ticks;
 }
 #endif

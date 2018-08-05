@@ -116,9 +116,7 @@ namespace lwiot {
 
 		if(this->_newline) {
 			this->_newline = false;
-
-			tick = lwiot_tick();
-			tick /= 1000U;
+			tick = lwiot_tick_ms();
 
 #ifdef AVR
 			fprintf(this->_f_output, "[%lu]", (unsigned long)tick);

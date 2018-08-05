@@ -37,6 +37,11 @@ time_t lwiot_tick(void)
 	return rv - WIN32_EPOCH_ADJUSTMENT;
 }
 
+time_t lwiot_tick_ms(void)
+{
+	return lwiot_tick() / 1000ULL;
+}
+
 void lwiot_mem_free(void *ptr)
 {
 	free(ptr);

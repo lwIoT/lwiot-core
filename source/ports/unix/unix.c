@@ -33,6 +33,11 @@ time_t lwiot_tick(void)
 	return rv;
 }
 
+time_t lwiot_tick_ms(void)
+{
+	return lwiot_tick() / 1000ULL;
+}
+
 void lwiot_mem_free(void *ptr)
 {
 	free(ptr);

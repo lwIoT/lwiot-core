@@ -22,7 +22,7 @@ static void vfprint_dbg(const char *prefix, const char *fmt, va_list va)
 {
 	time_t tick;
 
-	tick = lwiot_tick() / 1000U;
+	tick = lwiot_tick_ms();
 #ifdef AVR
 	fprintf(dbg_file, "[%lu]", (unsigned long)tick);
 #else
