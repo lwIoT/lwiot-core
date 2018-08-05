@@ -80,9 +80,9 @@ SET(LWIOT_PORT_HEADERS
 
 set(CMAKE_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
-    -ffunction-sections -DESP8266" CACHE FORCE "")
+    -ffunction-sections" CACHE FORCE "")
 set(CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
-    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -DESP8266" CACHE FORCE "")
+    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
 
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)

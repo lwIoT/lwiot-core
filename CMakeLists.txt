@@ -23,10 +23,10 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
     endif()
 
     if(CMAKE_BUILD_TYPE MATCHES Release)
-        set(CFLAGS_EXTRA "${CFLAGS_EXTRA}")
+        set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -O3")
     endif()
 
-    if(CMAKE_BUILD_TYPE MATCHES RelSize)
+    if(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
         set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -Os")
     endif()
 
