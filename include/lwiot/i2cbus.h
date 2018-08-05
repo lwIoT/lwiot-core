@@ -15,6 +15,7 @@
 #include <lwiot/i2cmessage.h>
 #include <lwiot/vector.h>
 #include <lwiot/i2calgorithm.h>
+#include <lwiot/lock.h>
 
 namespace lwiot
 {
@@ -31,5 +32,6 @@ namespace lwiot
 
 	private:
 		I2CAlgorithm& _algo;
+		Lock _lock;
 	};
 }
