@@ -25,19 +25,18 @@
 #define wdt_disable()
 #endif
 
-namespace lwiot
+static inline bool is_between(uint32_t x, uint32_t a, uint32_t b)
+{
+	return x >= a && x <= b;
+}
+
+namespace lwiot { namespace avr
 {
 	extern void wdt_isr_handler();
-
-	static inline bool is_between(uint32_t x, uint32_t a, uint32_t b)
-	{
-		return x >= a && x <= b;
-	}
-
-	AvrWatchdog::AvrWatchdog() : Watchdog()
+	Watchdog::Watchdog() : ::lwiot::Watchdog()
 	{ }
 
-	bool AvrWatchdog::enable(uint32_t tmo)
+	bool Watchdog::enable(uint32_t tmo)
 	{
 		uint8_t wdtsetting;
 
@@ -73,7 +72,7 @@ namespace lwiot
 		return true;
 	}
 
-	bool AvrWatchdog::disable()
+	bool Watchdog::disable()
 	{
 		auto old = SREG;
 
@@ -86,7 +85,7 @@ namespace lwiot
 		return true;
 	}
 
-	void AvrWatchdog::reset()
+	void Watchdog::reset()
 	{
 		if(!this->enabled())
 			return;
@@ -94,12 +93,13 @@ namespace lwiot
 		wdt_reset();
 	}
 }
+}
 
 extern "C" {
 	ISR(WDT_vect)
 	{
-		lwiot::wdt_isr_handler();
+		lwiot::avr::wdt_isr_handler();
 	}
 }
 
-lwiot::Watchdog& wdt = lwiot::AvrWatchdog::instance();
+::lwiot::Watchdog& wdt = lwiot::avr::Watchdog::instance();

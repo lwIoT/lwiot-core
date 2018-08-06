@@ -28,12 +28,12 @@
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	AvrAdcChip::AvrAdcChip() : AdcChip(ADC_PINS, 5000, 1023)
+	AdcChip::AdcChip() : lwiot::AdcChip(ADC_PINS, 5000, 1023)
 	{ }
 
-	void AvrAdcChip::begin()
+	void AdcChip::begin()
 	{
 #if defined(ADCSRA)
 	#if F_CPU >= 16000000
@@ -66,7 +66,7 @@ namespace lwiot
 #endif
 	}
 
-	size_t AvrAdcChip::read(int pin) const
+	size_t AdcChip::read(int pin) const
 	{
 		uint8_t high, low;
 #if defined(analogPinToChannel)
@@ -129,6 +129,7 @@ namespace lwiot
 		return this->toVoltage(value);
 	}
 }
+}
 
-static lwiot::AvrAdcChip _avradc;
+static lwiot::avr::AdcChip _avradc;
 lwiot::AdcChip& adc = _avradc;

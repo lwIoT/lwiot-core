@@ -78,20 +78,20 @@ static const DELAY_TABLE table[] PROGMEM =
 const int XMIT_START_ADJUSTMENT = 4;
 #endif
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
 	/* statics */
-	AvrUart *AvrUart::active_object = nullptr;
-	char AvrUart::_receive_buffer[SS_RX_BUFFER_SIZE];
-	volatile uint8_t AvrUart::_receive_buffer_head = 0;
-	volatile uint8_t AvrUart::_receive_buffer_tail = 0;
+	Uart *Uart::active_object = nullptr;
+	char Uart::_receive_buffer[SS_RX_BUFFER_SIZE];
+	volatile uint8_t Uart::_receive_buffer_head = 0;
+	volatile uint8_t Uart::_receive_buffer_tail = 0;
 
 	void isr_entry()
 	{
-		lwiot::AvrUart::handle_isr();
+		lwiot::avr::Uart::handle_isr();
 	}
 
-	AvrUart::AvrUart(int rx, int tx, long baud) : Uart(tx, rx, baud, SERIAL_8N1)
+	Uart::Uart(int rx, int tx, long baud) : lwiot::Uart(tx, rx, baud, SERIAL_8N1)
 	{
 		auto _txport = digitalPinToPort(tx);
 		auto _rxport = digitalPinToPort(rx);
@@ -108,7 +108,7 @@ namespace lwiot
 		this->init();
 	}
 
-	AvrUart::~AvrUart()
+	Uart::~Uart()
 	{
 		this->_rx.mode(INPUT_NOPULLUP);
 		this->_tx.mode(INPUT_NOPULLUP);
@@ -117,13 +117,13 @@ namespace lwiot
 		this->end();
 	}
 
-	void AvrUart::handle_isr()
+	void Uart::handle_isr()
 	{
 		if(active_object)
 			active_object->recv();
 	}
 
-	void AvrUart::init()
+	void Uart::init()
 	{
 		this->_rx_delay_centering = this->_rx_delay_intrabit = this->_rx_delay_stopbit = this->_tx_delay = 0;
 
@@ -159,18 +159,18 @@ namespace lwiot
 		this->listen();
 	}
 
-	bool AvrUart::end()
+	bool Uart::end()
 	{
 		if(active_object == this) {
 			this->setIrqMask(false);
-			AvrUart::active_object = nullptr;
+			Uart::active_object = nullptr;
 			return true;
 		}
 
 		return false;
 	}
 
-	void AvrUart::setIrqMask(bool enabled)
+	void Uart::setIrqMask(bool enabled)
 	{
 		auto irqmsk = digitalPinToPCMSK(this->_rx.pin());
 		auto value = digitalPinToPCMSKbit(this->_rx.pin());
@@ -183,7 +183,7 @@ namespace lwiot
 			*irqmsk &= ~value;
 	}
 
-	inline void AvrUart::delay(uint16_t _delay) const
+	inline void Uart::delay(uint16_t _delay) const
 	{
 		uint8_t tmp = 0;
 
@@ -197,30 +197,30 @@ namespace lwiot
 		);
 	}
 
-	bool AvrUart::listen()
+	bool Uart::listen()
 	{
-		if(AvrUart::active_object == this)
+		if(Uart::active_object == this)
 			return false;
 
-		if(AvrUart::active_object)
+		if(Uart::active_object)
 			active_object->end();
 
 		enter_critical();
 		this->_buffer_overflow = false;
 		this->_receive_buffer_head = this->_receive_buffer_tail = 0;
-		AvrUart::active_object = this;
+		Uart::active_object = this;
 		this->setIrqMask(true);
 		exit_critical();
 
 		return true;
 	}
 
-	bool AvrUart::isListening() const
+	bool Uart::isListening() const
 	{
 		return this == active_object;
 	}
 
-	size_t AvrUart::available() const
+	size_t Uart::available() const
 	{
 		if(!this->isListening())
 			return 0;
@@ -228,7 +228,7 @@ namespace lwiot
 		return (_receive_buffer_tail + SS_RX_BUFFER_SIZE - _receive_buffer_head) % SS_RX_BUFFER_SIZE;
 	}
 
-	void AvrUart::recv()
+	void Uart::recv()
 	{
 		uint8_t data;
 
@@ -298,7 +298,7 @@ namespace lwiot
 #endif
 	}
 
-	void AvrUart::write(uint8_t byte)
+	void Uart::write(uint8_t byte)
 	{
 		if(_tx_delay == 0)
 			return;
@@ -321,7 +321,7 @@ namespace lwiot
 		exit_critical();
 	}
 
-	void AvrUart::write(const uint8_t *buffer, const size_t& length)
+	void Uart::write(const uint8_t *buffer, const size_t& length)
 	{
 		if(_tx_delay == 0)
 			return;
@@ -331,7 +331,7 @@ namespace lwiot
 		}
 	}
 
-	void AvrUart::flush()
+	void Uart::flush()
 	{
 		if(!this->isListening())
 			return;
@@ -341,7 +341,7 @@ namespace lwiot
 		exit_critical();
 	}
 
-	uint8_t AvrUart::read()
+	uint8_t Uart::read()
 	{
 		if(!this->isListening())
 			return 0;
@@ -354,7 +354,7 @@ namespace lwiot
 		return data;
 	}
 
-	ssize_t AvrUart::read(uint8_t *buffer, const size_t& length)
+	ssize_t Uart::read(uint8_t *buffer, const size_t& length)
 	{
 		unsigned idx;
 
@@ -373,23 +373,24 @@ namespace lwiot
 		return idx;
 	}
 
-	inline void AvrUart::set_tx_high()
+	inline void Uart::set_tx_high()
 	{
 		*(this->port) |= this->txbit;
 	}
 
-	inline void AvrUart::set_tx_low()
+	inline void Uart::set_tx_low()
 	{
 		*(this->port) &= ~this->txbit;
 	}
 
-	inline bool AvrUart::get_rx_value()
+	inline bool Uart::get_rx_value()
 	{
 		auto value = *(this->pin);
 
 		value &= this->rxbit;
 		return !!value;
 	}
+}
 }
 
 /*
@@ -399,27 +400,27 @@ namespace lwiot
 #ifdef PCINT0_vect
 ISR(PCINT0_vect)
 {
-	lwiot::isr_entry();
+	lwiot::avr::isr_entry();
 }
 #endif
 
 #ifdef PCINT1_vect
 ISR(PCINT1_vect)
 {
-	lwiot::isr_entry();
+	lwiot::avr::isr_entry();
 }
 #endif
 
 #ifdef PCINT2_vect
 ISR(PCINT2_vect)
 {
-	lwiot::isr_entry();
+	lwiot::avr::isr_entry();
 }
 #endif
 
 #ifdef PCINT3_vect
 ISR(PCINT3_vect)
 {
-	lwiot::isr_entry();
+	lwiot::avr::isr_entry();
 }
 #endif

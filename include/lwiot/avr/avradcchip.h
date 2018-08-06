@@ -10,14 +10,15 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/adcchip.h>
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	class AvrAdcChip : public AdcChip {
+	class AdcChip : public lwiot::AdcChip {
 	public:
-		explicit AvrAdcChip();
-		virtual ~AvrAdcChip() = default;
+		explicit AdcChip();
+		virtual ~AdcChip() = default;
 
 		void begin() override;
 		size_t read(int pin) const override;
 	};
+}
 }

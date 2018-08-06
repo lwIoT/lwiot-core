@@ -14,19 +14,19 @@
 #include <lwiot/log.h>
 #include <lwiot/watchdog.h>
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	class AvrWatchdog : public Watchdog {
+	class Watchdog : public lwiot::Watchdog {
 	public:
-		static AvrWatchdog& instance()
+		static Watchdog& instance()
 		{
-			static AvrWatchdog _instance;
+			static Watchdog _instance;
 			return _instance;
 		}
 
-		virtual ~AvrWatchdog() = default;
-		AvrWatchdog(const AvrWatchdog&) = delete;
-		const AvrWatchdog& operator =(const AvrWatchdog&) = delete;
+		virtual ~Watchdog() = default;
+		Watchdog(const Watchdog&) = delete;
+		const Watchdog& operator =(const Watchdog&) = delete;
 
 		virtual bool enable(uint32_t tmo = 2000) override;
 		virtual bool disable() override;
@@ -34,7 +34,8 @@ namespace lwiot
 
 	private:
 		/* Methods */
-		explicit AvrWatchdog();
+		explicit Watchdog();
 		friend void wdt_trigger_handler();
 	};
+}
 }

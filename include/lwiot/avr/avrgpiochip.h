@@ -102,12 +102,12 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define EXTERNAL_INT_7 7
 
 #ifdef __cplusplus
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	class AvrGpioChip : public GpioChip {
+	class GpioChip : public lwiot::GpioChip {
 	public:
-		explicit AvrGpioChip();
-		virtual ~AvrGpioChip() = default;
+		explicit GpioChip();
+		virtual ~GpioChip() = default;
 
 		virtual void mode(int pin, const PinMode& mode) override;
 		virtual void write(int pin, bool value) override;
@@ -120,5 +120,6 @@ namespace lwiot
 	private:
 		int mapIrqEdge(const IrqEdge& edge) const;
 	};
+}
 }
 #endif

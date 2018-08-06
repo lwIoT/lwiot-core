@@ -25,9 +25,9 @@
 #define SCK  13
 #endif
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	AvrSpiBus::AvrSpiBus(uint32_t freq) : SpiBus(MOSI, MISO, SCK, freq)
+	AvrSpiBus::AvrSpiBus(uint32_t freq) : lwiot::SpiBus(MOSI, MISO, SCK, freq)
 	{
 		this->_mosi.mode(PinMode::OUTPUT);
 		this->_clk.mode(PinMode::OUTPUT);
@@ -57,4 +57,5 @@ namespace lwiot
 	{
 		atmega_spi_xfer(tx, rx, length);
 	}
+}
 }

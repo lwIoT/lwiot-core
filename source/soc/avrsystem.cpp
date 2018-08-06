@@ -28,21 +28,21 @@
 #define wdt_disable()
 #endif
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	bool AvrSystem::_restart = false;
+	bool System::_restart = false;
 
-	AvrSystem::AvrSystem(SleepState state) : System(state)
+	System::System(SleepState state) : lwiot::System(state)
 	{
 		wdt_disable();
 	}
 
-	AvrSystem::~AvrSystem()
+	System::~System()
 	{
 		sleep_disable();
 	}
 
-	void AvrSystem::sleep(const uint32_t& ms) const
+	void System::sleep(const uint32_t& ms) const
 	{
 #ifdef NO_OS
 		auto idx = ms;
@@ -91,7 +91,7 @@ namespace lwiot
 #endif
 	}
 
-	void AvrSystem::setupWdt() const
+	void System::setupWdt() const
 	{
 		auto sreg = SREG;
 
@@ -101,21 +101,22 @@ namespace lwiot
 		SREG = sreg;
 	}
 
-	void AvrSystem::restart() const
+	void System::restart() const
 	{
 		/*
 		  Use the WDT to reset the MCU.
 		 */
 		this->setupWdt();
-		AvrSystem::_restart = true;
+		System::_restart = true;
 		while(true);
 	}
 
 	void wdt_isr_handler()
 	{
-		if(AvrSystem::_restart)
+		if(System::_restart)
 			return;
 
 		printf("Watchdog timer triggerd!\n");
 	}
+}
 }

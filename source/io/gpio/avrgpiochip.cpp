@@ -62,12 +62,12 @@ IMPLEMENT_ISR(INT2_vect, EXTERNAL_INT_2)
 #endif
 }
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	AvrGpioChip::AvrGpioChip() : GpioChip(PINS)
+	GpioChip::GpioChip() : lwiot::GpioChip(PINS)
 	{ }
 
-	void AvrGpioChip::mode(int pin, const PinMode& mode)
+	void GpioChip::mode(int pin, const PinMode& mode)
 	{
 		uint8_t bit, port;
 		uint8_t old;
@@ -114,7 +114,7 @@ namespace lwiot
 		SREG = old;
 	}
 
-	void AvrGpioChip::write(int pin, bool value)
+	void GpioChip::write(int pin, bool value)
 	{
 		uint8_t bit, port;
 		uint8_t old;
@@ -139,7 +139,7 @@ namespace lwiot
 		SREG = old;
 	}
 
-	bool AvrGpioChip::read(int pin) const
+	bool GpioChip::read(int pin) const
 	{
 		uint8_t bit, port;
 		uint8_t old;
@@ -161,13 +161,13 @@ namespace lwiot
 		return !!rv;
 	}
 
-	void AvrGpioChip::setOpenDrain(int pin)
+	void GpioChip::setOpenDrain(int pin)
 	{
 		this->input(pin);
 		this->write(pin, false);
 	}
 
-	void AvrGpioChip::odWrite(int pin, bool value)
+	void GpioChip::odWrite(int pin, bool value)
 	{
 		if(value)
 			this->input(pin);
@@ -175,7 +175,7 @@ namespace lwiot
 			this->output(pin);
 	}
 
-	void AvrGpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
+	void GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
 	{
 		auto mode = this->mapIrqEdge(edge);
 
@@ -313,7 +313,7 @@ namespace lwiot
 #define FALLING 2
 #define RISING 3
 
-	int AvrGpioChip::mapIrqEdge(const IrqEdge& edge) const
+	int GpioChip::mapIrqEdge(const IrqEdge& edge) const
 	{
 		switch(edge) {
 		case IrqRising:
@@ -330,6 +330,7 @@ namespace lwiot
 		}
 	}
 }
+}
 
-static lwiot::AvrGpioChip avr_gpio;
+static lwiot::avr::GpioChip avr_gpio;
 lwiot::GpioChip& gpio = avr_gpio;

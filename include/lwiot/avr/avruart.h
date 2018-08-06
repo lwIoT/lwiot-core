@@ -15,12 +15,12 @@
 
 #define SS_RX_BUFFER_SIZE 64
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	class AvrUart : public Uart {
+	class Uart : public lwiot::Uart {
 	public:
-		explicit AvrUart(int rx, int tx, long baud = 9600);
-		virtual ~AvrUart();
+		explicit Uart(int rx, int tx, long baud = 9600);
+		virtual ~Uart();
 
 		virtual uint8_t read() override;
 		virtual ssize_t read(uint8_t *buffer, const size_t& length) override;
@@ -52,7 +52,7 @@ namespace lwiot
 		static char _receive_buffer[SS_RX_BUFFER_SIZE];
 		static volatile uint8_t _receive_buffer_tail;
 		static volatile uint8_t _receive_buffer_head;
-		static AvrUart *active_object;
+		static Uart *active_object;
 		static inline void handle_isr();
 
 		/* Attribs */
@@ -69,4 +69,5 @@ namespace lwiot
 
 		uint16_t _buffer_overflow:1;
 	};
+}
 }

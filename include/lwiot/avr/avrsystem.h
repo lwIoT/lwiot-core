@@ -11,12 +11,12 @@
 #include <lwiot/types.h>
 #include <lwiot/system.h>
 
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	class AvrSystem : public System {
+	class System : public lwiot::System {
 	public:
-		explicit AvrSystem(SleepState state = SLEEP_DEEP);
-		virtual ~AvrSystem();
+		explicit System(SleepState state = SLEEP_DEEP);
+		virtual ~System();
 
 		virtual void sleep(const uint32_t& ms) const override;
 		virtual void restart() const override;
@@ -28,4 +28,5 @@ namespace lwiot
 		void setupWdt() const;
 		friend void wdt_isr_handler();
 	};
+}
 }

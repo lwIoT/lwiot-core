@@ -26,15 +26,15 @@ extern void atmega_spi_destroy(void);
 #endif
 
 #ifdef __cplusplus
-namespace lwiot
+namespace lwiot { namespace avr
 {
-	class AvrSpiBus : public SpiBus {
+	class SpiBus : public lwiot::SpiBus {
 	public:
-		explicit AvrSpiBus(uint32_t freq);
-		virtual ~AvrSpiBus();
+		explicit SpiBus(uint32_t freq);
+		virtual ~SpiBus();
 
 		virtual void setFrequency(uint32_t freq) override;
-		using SpiBus::transfer;
+		using lwiot::SpiBus::transfer;
 
 	protected:
 		virtual bool transfer(const uint8_t* tx, uint8_t* rx, size_t length) override;
@@ -44,5 +44,6 @@ namespace lwiot
 		uint8_t _num;
 		GpioPin _ss;
 	};
+}
 }
 #endif
