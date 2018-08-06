@@ -29,151 +29,151 @@
 
 namespace lwiot
 {
-		Esp32I2CAlgorithm::Esp32I2CAlgorithm(int sda, int scl, uint32_t freq, i2c_port_t num) :
+	Esp32I2CAlgorithm::Esp32I2CAlgorithm(int sda, int scl, uint32_t freq, i2c_port_t num) :
 			I2CAlgorithm(), _sda(sda), _scl(scl), _portno(num)
-		{
-			this->_sda.setOpenDrain();
-			this->_scl.setOpenDrain();
+	{
+		this->_sda.setOpenDrain();
+		this->_scl.setOpenDrain();
 
-			this->_frequency = freq;
-			this->config.mode = I2C_MODE_MASTER;
-			this->config.sda_io_num = static_cast<gpio_num_t>(sda);
-			this->config.scl_io_num = static_cast<gpio_num_t>(scl);
-			this->config.scl_pullup_en = GPIO_PULLUP_DISABLE;
-			this->config.sda_pullup_en = GPIO_PULLUP_DISABLE;
-			this->config.master.clk_speed = this->frequency();
+		this->_frequency = freq;
+		this->config.mode = I2C_MODE_MASTER;
+		this->config.sda_io_num = static_cast<gpio_num_t>(sda);
+		this->config.scl_io_num = static_cast<gpio_num_t>(scl);
+		this->config.scl_pullup_en = GPIO_PULLUP_DISABLE;
+		this->config.sda_pullup_en = GPIO_PULLUP_DISABLE;
+		this->config.master.clk_speed = this->frequency();
 
-			i2c_param_config(num, &this->config);
-			i2c_driver_install(num, this->config.mode, 0, 0, 0);
+		i2c_param_config(num, &this->config);
+		i2c_driver_install(num, this->config.mode, 0, 0, 0);
 
-			i2c_set_timeout(num, 12000);
-		}
+		i2c_set_timeout(num, 12000);
+	}
 
-		Esp32I2CAlgorithm::Esp32I2CAlgorithm() : Esp32I2CAlgorithm(23, 22)
-		{
-		}
+	Esp32I2CAlgorithm::Esp32I2CAlgorithm() : Esp32I2CAlgorithm(23, 22)
+	{
+	}
 
-		Esp32I2CAlgorithm::~Esp32I2CAlgorithm()
-		{
-			i2c_driver_delete(this->_portno);
+	Esp32I2CAlgorithm::~Esp32I2CAlgorithm()
+	{
+		i2c_driver_delete(this->_portno);
 
-			this->_sda.input();
-			this->_scl.input();
-		}
+		this->_sda.input();
+		this->_scl.input();
+	}
 
-		void Esp32I2CAlgorithm::setFrequency(const uint32_t& freq)
-		{
-			I2CAlgorithm::setFrequency(freq);
+	void Esp32I2CAlgorithm::setFrequency(const uint32_t& freq)
+	{
+		I2CAlgorithm::setFrequency(freq);
 
-			this->config.master.clk_speed = freq;
-			i2c_param_config(this->_portno, &this->config);
-		}
+		this->config.master.clk_speed = freq;
+		i2c_param_config(this->_portno, &this->config);
+	}
 
-		ssize_t Esp32I2CAlgorithm::transfer(I2CMessage& msg)
-		{
-			auto handle = i2c_cmd_link_create();
+	ssize_t Esp32I2CAlgorithm::transfer(I2CMessage& msg)
+	{
+		auto handle = i2c_cmd_link_create();
 
-			i2c_master_start(handle);
-			this->prepareTransfer(handle, msg);
-			i2c_master_stop(handle);
-			auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
-			i2c_cmd_link_delete(handle);
+		i2c_master_start(handle);
+		this->prepareTransfer(handle, msg);
+		i2c_master_stop(handle);
+		auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
+		i2c_cmd_link_delete(handle);
 
-			if(err != ESP_OK)
-				return -EINVALID;
+		if(err != ESP_OK)
+			return -EINVALID;
 
-			return msg.count();
-		}
+		return msg.count();
+	}
 
 #if 0
-		ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
-		{
-			auto handle = i2c_cmd_link_create();
-			esp_err_t error;
-			ssize_t total = 0L;
+	ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
+	{
+		auto handle = i2c_cmd_link_create();
+		esp_err_t error;
+		ssize_t total = 0L;
 
-			i2c_master_start(handle);
-			for(auto& msg : msgs) {
-				this->prepareTransfer(handle, msg);
+		i2c_master_start(handle);
+		for(auto& msg : msgs) {
+			this->prepareTransfer(handle, msg);
 
-				if(msg.repstart())
-					i2c_master_start(handle);
-				else
-					i2c_master_stop(handle);
+			if(msg.repstart())
+				i2c_master_start(handle);
+			else
+				i2c_master_stop(handle);
 
-				total += msg.count();
-			}
-
-			error = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
-			i2c_cmd_link_delete(handle);
-
-			return (error == ESP_OK) ? total : -EINVALID;
+			total += msg.count();
 		}
+
+		error = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
+		i2c_cmd_link_delete(handle);
+
+		return (error == ESP_OK) ? total : -EINVALID;
+	}
 #endif
 
-		ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
-		{
-			i2c_cmd_handle_t handle;
-			ssize_t total = 0L;
+	ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
+	{
+		i2c_cmd_handle_t handle;
+		ssize_t total = 0L;
 
-			for(auto& _msg : msgs) {
-				auto& msg = *_msg;
-				handle = i2c_cmd_link_create();
-				i2c_master_start(handle);
+		for(auto& _msg : msgs) {
+			auto& msg = *_msg;
+			handle = i2c_cmd_link_create();
+			i2c_master_start(handle);
 
-				this->prepareTransfer(handle, msg);
+			this->prepareTransfer(handle, msg);
 
-				if(!msg.repstart())
-					i2c_master_stop(handle);
+			if(!msg.repstart())
+				i2c_master_stop(handle);
 
-				auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
+			auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
 
-				if(err != ESP_OK)
-					total = -EINVALID;
+			if(err != ESP_OK)
+				total = -EINVALID;
 
-				i2c_cmd_link_delete(handle);
+			i2c_cmd_link_delete(handle);
 
-				if(total >= 0)
-					total += msg.count();
-			}
-
-			return total;
+			if(total >= 0)
+				total += msg.count();
 		}
 
-		void Esp32I2CAlgorithm::prepareTransfer(i2c_cmd_handle_t handle, I2CMessage& msg) const
-		{
-			uint8_t *data;
-			uint16_t address = msg.address() << 1;
+		return total;
+	}
 
-			if(msg.isRead()) {
-				data = msg.data();
+	void Esp32I2CAlgorithm::prepareTransfer(i2c_cmd_handle_t handle, I2CMessage& msg) const
+	{
+		uint8_t *data;
+		uint16_t address = msg.address() << 1;
 
-				i2c_master_write_byte(
-					handle,
-					address | 1,
-					true
-				);
+		if(msg.isRead()) {
+			data = msg.data();
 
-				auto idx = 0UL;
-				for(; idx < msg.count() - 1; idx++) {
-					i2c_master_read_byte(handle, &data[idx], ACK);
-				}
+			i2c_master_write_byte(
+				handle,
+				address | 1,
+				true
+			);
 
-				i2c_master_read_byte(handle, data + idx, I2C_MASTER_NACK);
+			auto idx = 0UL;
+			for(; idx < msg.count() - 1; idx++) {
+				i2c_master_read_byte(handle, &data[idx], ACK);
+			}
 
-				msg.setIndex(msg.count());
-			} else {
-				i2c_master_write_byte(
-					handle,
-					address,
-					true
-				);
+			i2c_master_read_byte(handle, data + idx, I2C_MASTER_NACK);
 
-				//i2c_master_write(handle, msg.data(), msg.count(), I2C_MASTER_ACK);
+			msg.setIndex(msg.count());
+		} else {
+			i2c_master_write_byte(
+				handle,
+				address,
+				true
+			);
 
-				for(auto idx = 0UL; idx < msg.count(); idx++) {
-					i2c_master_write_byte(handle, msg[idx], true);
-				}
+			//i2c_master_write(handle, msg.data(), msg.count(), I2C_MASTER_ACK);
+
+			for(auto idx = 0UL; idx < msg.count(); idx++) {
+				i2c_master_write_byte(handle, msg[idx], true);
 			}
 		}
+	}
 }
