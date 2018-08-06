@@ -71,12 +71,12 @@ static void IRAM_ATTR gpio_external_isr(void *arg)
 	}
 }
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32GpioChip::Esp32GpioChip() : GpioChip(PINS)
+	GpioChip::GpioChip() : lwiot::GpioChip(PINS)
 	{ }
 
-	void Esp32GpioChip::mode(int pin, const PinMode& mode)
+	void GpioChip::mode(int pin, const PinMode& mode)
 	{
 		gpio_num_t _pin = (gpio_num_t)pin;
 
@@ -113,30 +113,30 @@ namespace lwiot
 		}
 	}
 
-	void IRAM_ATTR Esp32GpioChip::write(int pin, bool value)
+	void IRAM_ATTR GpioChip::write(int pin, bool value)
 	{
 		auto level = value ? HIGH : LOW;
 		gpio_set_level((gpio_num_t)pin, level);
 	}
 
-	bool IRAM_ATTR Esp32GpioChip::read(int pin) const
+	bool IRAM_ATTR GpioChip::read(int pin) const
 	{
 		return gpio_get_level((gpio_num_t)pin) == 1U;
 	}
 
-	void Esp32GpioChip::setOpenDrain(int pin)
+	void GpioChip::setOpenDrain(int pin)
 	{
 		this->mode(pin, OUTPUT_OPEN_DRAIN);
 		this->write(pin, true);
 	}
 
-	void IRAM_ATTR Esp32GpioChip::odWrite(int pin, bool value)
+	void IRAM_ATTR GpioChip::odWrite(int pin, bool value)
 	{
 		auto level = value ? HIGH : LOW;
 		gpio_set_level((gpio_num_t)pin, level);
 	}
 
-	void Esp32GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
+	void GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
 	{
 		static bool interrupt_initialized = false;
     
@@ -165,7 +165,7 @@ namespace lwiot
 		esp_intr_enable(gpio_intr_handle);
 	}
 
-	int Esp32GpioChip::mapIrqType(const IrqEdge& edge) const
+	int GpioChip::mapIrqType(const IrqEdge& edge) const
 	{
 		switch(edge) {
 		case IrqRising:
@@ -202,6 +202,7 @@ extern "C" void pinMode(int pin, int mode)
 		break;
 	}
 }
+}
 
-static lwiot::Esp32GpioChip esp_gpio;
+static lwiot::esp32::GpioChip esp_gpio;
 lwiot::GpioChip& gpio = esp_gpio;

@@ -23,10 +23,10 @@
 #define SPI_MSBFIRST 1
 #define SPI_MODE0    0
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32SpiBus::Esp32SpiBus(uint8_t num, uint8_t clk, uint8_t miso, uint8_t mosi) :
-		SpiBus(mosi, miso, clk, 1000000UL), _frequency(1000000UL), _num(num)
+	SpiBus::SpiBus(uint8_t num, uint8_t clk, uint8_t miso, uint8_t mosi) :
+		lwiot::SpiBus(mosi, miso, clk, 1000000UL), _frequency(1000000UL), _num(num)
 	{
 		this->_div = spiFrequencyToClockDiv(this->_frequency);
 		this->_spi = spiStartBus(num, this->_div, SPI_MODE0, SPI_MSBFIRST);
@@ -36,7 +36,7 @@ namespace lwiot
 		spiAttachMOSI(this->_spi, miso);
 	}
 
-	Esp32SpiBus::~Esp32SpiBus()
+	SpiBus::~SpiBus()
 	{
 		spiDetachMOSI(this->_spi, this->_mosi.pin());
 		spiDetachMISO(this->_spi, this->_miso.pin());
@@ -44,7 +44,7 @@ namespace lwiot
 		spiStopBus(this->_spi);
 	}
 
-	void Esp32SpiBus::setFrequency(uint32_t freq)
+	void SpiBus::setFrequency(uint32_t freq)
 	{
 		auto clkdiv = spiFrequencyToClockDiv(freq);
 
@@ -57,9 +57,10 @@ namespace lwiot
 		this->_div = clkdiv;
 	}
 
-	bool Esp32SpiBus::transfer(const uint8_t* tx, uint8_t* rx, size_t length)
+	bool SpiBus::transfer(const uint8_t* tx, uint8_t* rx, size_t length)
 	{
 		spiTransferBytes(this->_spi, (uint8_t*)tx, rx, length);
 		return true;
 	}
+}
 }

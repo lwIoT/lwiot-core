@@ -27,10 +27,10 @@
 
 #define TIMEOUT 500
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32I2CAlgorithm::Esp32I2CAlgorithm(int sda, int scl, uint32_t freq, i2c_port_t num) :
-			I2CAlgorithm(), _sda(sda), _scl(scl), _portno(num)
+	I2CAlgorithm::I2CAlgorithm(int sda, int scl, uint32_t freq, i2c_port_t num) :
+		lwiot::I2CAlgorithm(), _sda(sda), _scl(scl), _portno(num)
 	{
 		this->_sda.setOpenDrain();
 		this->_scl.setOpenDrain();
@@ -49,11 +49,11 @@ namespace lwiot
 		i2c_set_timeout(num, 12000);
 	}
 
-	Esp32I2CAlgorithm::Esp32I2CAlgorithm() : Esp32I2CAlgorithm(23, 22)
+	I2CAlgorithm::I2CAlgorithm() : I2CAlgorithm(23, 22)
 	{
 	}
 
-	Esp32I2CAlgorithm::~Esp32I2CAlgorithm()
+	I2CAlgorithm::~I2CAlgorithm()
 	{
 		i2c_driver_delete(this->_portno);
 
@@ -61,7 +61,7 @@ namespace lwiot
 		this->_scl.input();
 	}
 
-	void Esp32I2CAlgorithm::setFrequency(const uint32_t& freq)
+	void I2CAlgorithm::setFrequency(const uint32_t& freq)
 	{
 		I2CAlgorithm::setFrequency(freq);
 
@@ -69,7 +69,7 @@ namespace lwiot
 		i2c_param_config(this->_portno, &this->config);
 	}
 
-	ssize_t Esp32I2CAlgorithm::transfer(I2CMessage& msg)
+	ssize_t I2CAlgorithm::transfer(I2CMessage& msg)
 	{
 		auto handle = i2c_cmd_link_create();
 
@@ -86,7 +86,7 @@ namespace lwiot
 	}
 
 #if 0
-	ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
+	ssize_t I2CAlgorithm::transfer(Vector<I2CMessage>& msgs)
 	{
 		auto handle = i2c_cmd_link_create();
 		esp_err_t error;
@@ -111,7 +111,7 @@ namespace lwiot
 	}
 #endif
 
-	ssize_t Esp32I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
+	ssize_t I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
 	{
 		i2c_cmd_handle_t handle;
 		ssize_t total = 0L;
@@ -140,7 +140,7 @@ namespace lwiot
 		return total;
 	}
 
-	void Esp32I2CAlgorithm::prepareTransfer(i2c_cmd_handle_t handle, I2CMessage& msg) const
+	void I2CAlgorithm::prepareTransfer(i2c_cmd_handle_t handle, I2CMessage& msg) const
 	{
 		uint8_t *data;
 		uint16_t address = msg.address() << 1;
@@ -176,4 +176,5 @@ namespace lwiot
 			}
 		}
 	}
+}
 }

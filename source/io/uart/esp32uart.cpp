@@ -16,9 +16,9 @@
 
 #define UART_BUFFER_SIZE 512
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32Uart::Esp32Uart(int num, long baud, uint32_t config) : Uart(0, 0, baud, config),
+	Uart::Uart(int num, long baud, uint32_t config) : lwiot::Uart(0, 0, baud, config),
 		_uart_num((uart_port_t)num)
 	{
 		switch(num) {
@@ -65,12 +65,12 @@ namespace lwiot
 		uart_driver_install(_uart_num, UART_BUFFER_SIZE * 2, 0, 0, NULL, 0);
 	}
 
-	Esp32Uart::~Esp32Uart()
+	Uart::~Uart()
 	{
 		uart_driver_delete(this->_uart_num);
 	}
 
-	size_t Esp32Uart::available() const
+	size_t Uart::available() const
 	{
 		size_t retval;
 
@@ -81,17 +81,17 @@ namespace lwiot
 		return retval;
 	}
 
-	void Esp32Uart::write(uint8_t byte)
+	void Uart::write(uint8_t byte)
 	{
 		this->write(&byte, sizeof(byte));
 	}
 
-	void Esp32Uart::write(const uint8_t *bytes, const size_t& length)
+	void Uart::write(const uint8_t *bytes, const size_t& length)
 	{
 		uart_write_bytes(this->_uart_num, (const char*)bytes, length);
 	}
 
-	ssize_t Esp32Uart::read(uint8_t *buffer, const size_t& length)
+	ssize_t Uart::read(uint8_t *buffer, const size_t& length)
 	{
 		int len;
 
@@ -99,7 +99,7 @@ namespace lwiot
 		return static_cast<ssize_t>(len);
 	}
 
-	uint8_t Esp32Uart::read()
+	uint8_t Uart::read()
 	{
 		uint8_t retval;
 		int len;
@@ -109,4 +109,5 @@ namespace lwiot
 
 		return len == 1 ? retval : 0;
 	}
+}
 }

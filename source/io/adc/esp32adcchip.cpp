@@ -18,20 +18,20 @@
 #define ADC1_PINS 8
 #define ADC2_START_PIN ADC1_PINS
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32AdcChip::Esp32AdcChip() : AdcChip(18, 3300, 4095)
+	AdcChip::AdcChip() : lwiot::AdcChip(18, 3300, 4095)
 	{
 	}
 
-	void Esp32AdcChip::begin()
+	void AdcChip::begin()
 	{
 		adc_power_on();
 		this->primary.begin();
 		this->secondary.begin();
 	}
 
-	size_t Esp32AdcChip::read(int pin) const
+	size_t AdcChip::read(int pin) const
 	{
 		if(pin >= this->pins())
 			return 0U;
@@ -42,6 +42,7 @@ namespace lwiot
 		return this->primary.read(pin);
 	}
 }
+}
 
-static lwiot::Esp32AdcChip _espadc;
+static lwiot::esp32::AdcChip _espadc;
 lwiot::AdcChip& adc = _espadc;

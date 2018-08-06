@@ -18,13 +18,13 @@
 
 #include <driver/mcpwm.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32PwmTimer;
-	class Esp32PwmChannel : public PwmChannel {
+	class PwmTimer;
+	class PwmChannel : public lwiot::PwmChannel {
 	public:
-		explicit Esp32PwmChannel(int num, Esp32PwmTimer& timer);
-		virtual ~Esp32PwmChannel() = default;
+		explicit PwmChannel(int num, PwmTimer& timer);
+		virtual ~PwmChannel() = default;
 
 		void enable() override;
 		void disable() override;
@@ -35,17 +35,17 @@ namespace lwiot
 		virtual void update(int freq) override;
 
 	private:
-		Esp32PwmTimer& _timer;
+		PwmTimer& _timer;
 		mcpwm_io_signals_t _iopin;
 
 		/* Methods */
 		mcpwm_operator_t toOperator() const;
 	};
 
-	class Esp32PwmTimer : public PwmTimer {
+	class PwmTimer : public lwiot::PwmTimer {
 	public:
-		Esp32PwmTimer(int num, mcpwm_unit_t unit, int freq = -1);
-		virtual ~Esp32PwmTimer();
+		PwmTimer(int num, mcpwm_unit_t unit, int freq = -1);
+		virtual ~PwmTimer();
 
 		mcpwm_unit_t unit() const;
 
@@ -53,6 +53,7 @@ namespace lwiot
 		mcpwm_unit_t _unit;
 		int _num;
 
-		friend class Esp32PwmChannel;
+		friend class PwmChannel;
 	};
+}
 }

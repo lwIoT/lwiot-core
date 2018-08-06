@@ -13,12 +13,12 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/esp32/esp32watchdog.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32Watchdog::Esp32Watchdog() : Watchdog()
+	Watchdog::Watchdog() : lwiot::Watchdog()
 	{ }
 
-	bool Esp32Watchdog::enable(uint32_t tmo)
+	bool Watchdog::enable(uint32_t tmo)
 	{
 		bool ret = esp_task_wdt_init(tmo / 1000, true) == ESP_OK;
 
@@ -35,13 +35,13 @@ namespace lwiot
 		return ret;
 	}
 
-	bool Esp32Watchdog::disable()
+	bool Watchdog::disable()
 	{
 		Watchdog::disable();
 		return esp_task_wdt_deinit() == ESP_OK;
 	}
 
-	void Esp32Watchdog::reset()
+	void Watchdog::reset()
 	{
 		TaskHandle_t handle;
 
@@ -56,5 +56,6 @@ namespace lwiot
 		esp_task_wdt_reset();
 	}
 }
+}
 
-lwiot::Watchdog& wdt = lwiot::Esp32Watchdog::instance();
+lwiot::Watchdog& wdt = lwiot::esp32::Watchdog::instance();

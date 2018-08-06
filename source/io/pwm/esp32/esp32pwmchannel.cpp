@@ -33,10 +33,10 @@ static mcpwm_config_t pwm_config[] = {
 	{0}, {0}, {0} /* Second unit */
 };
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32PwmChannel::Esp32PwmChannel(int num, Esp32PwmTimer& timer) :
-		PwmChannel(-1), _timer(timer)
+	PwmChannel::PwmChannel(int num, PwmTimer& timer) :
+		lwiot::PwmChannel(-1), _timer(timer)
 	{
 		if((unsigned)num >= sizeof(pwm_channel_map))
 			return;
@@ -44,7 +44,7 @@ namespace lwiot
 		this->_iopin = pwm_channel_map[num];
 	}
 
-	void Esp32PwmChannel::update(int freq)
+	void PwmChannel::update(int freq)
 	{
 		auto num = static_cast<mcpwm_timer_t>(this->_timer._num);
 		auto _operator = this->toOperator();
@@ -53,7 +53,7 @@ namespace lwiot
 		mcpwm_set_duty(this->_timer.unit(), num, _operator, this->duty());
 	}
 
-	mcpwm_operator_t Esp32PwmChannel::toOperator() const
+	mcpwm_operator_t PwmChannel::toOperator() const
 	{
 		mcpwm_operator_t _operator;
 
@@ -75,13 +75,13 @@ namespace lwiot
 		return _operator;
 	}
 
-	void Esp32PwmChannel::enable()
+	void PwmChannel::enable()
 	{
 		auto num = static_cast<mcpwm_timer_t>(this->_timer._num);
 		mcpwm_set_duty(this->_timer.unit(), num, this->toOperator(), this->duty());
 	}
 
-	void Esp32PwmChannel::reload()
+	void PwmChannel::reload()
 	{
 		auto num = static_cast<mcpwm_timer_t>(this->_timer._num);
 
@@ -89,13 +89,13 @@ namespace lwiot
 		mcpwm_set_duty(this->_timer.unit(), num, this->toOperator(), this->duty());
 	}
 
-	void Esp32PwmChannel::disable()
+	void PwmChannel::disable()
 	{
 		auto num = static_cast<mcpwm_timer_t>(this->_timer._num);
 		mcpwm_set_duty(this->_timer.unit(), num, this->toOperator(), this->duty());
 	}
 
-	void Esp32PwmChannel::setGpioPin(const GpioPin& pin)
+	void PwmChannel::setGpioPin(const GpioPin& pin)
 	{
 		int idx = (int)this->_timer.unit() + this->_timer._num;
 
@@ -110,4 +110,5 @@ namespace lwiot
 		mcpwm_gpio_init(this->_timer.unit(), this->_iopin, pin.pin());
 		mcpwm_init(this->_timer.unit(), static_cast<mcpwm_timer_t>(this->_timer._num), config);
 	}
+}
 }

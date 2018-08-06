@@ -9,23 +9,25 @@
 
 #include <lwiot/lwiot.h>
 #include <lwiot/adcchip.h>
+
 #include <lwiot/esp32/esp32primaryadc.h>
 #include <lwiot/esp32/esp32secondaryadc.h>
 
 #ifdef CXX
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32AdcChip : public AdcChip {
+	class AdcChip : public lwiot::AdcChip {
 	public:
-		explicit Esp32AdcChip();
-		virtual ~Esp32AdcChip() = default;
+		explicit AdcChip();
+		virtual ~AdcChip() = default;
 
 		void begin() override;
 		size_t read(int pin) const override;
 
 	private:
-		Esp32PrimaryAdc primary;
-		Esp32SecondaryAdc secondary;
+		PrimaryAdc primary;
+		SecondaryAdc secondary;
 	};
+}
 }
 #endif

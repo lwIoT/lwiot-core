@@ -19,13 +19,13 @@
 
 #include <driver/i2c.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32I2CAlgorithm : public I2CAlgorithm {
+	class I2CAlgorithm : public lwiot::I2CAlgorithm {
 	public:
-		explicit Esp32I2CAlgorithm(int sda, int scl, uint32_t freq = 100000, i2c_port_t portnum = I2C_NUM_0);
-		explicit Esp32I2CAlgorithm();
-		virtual ~Esp32I2CAlgorithm();
+		explicit I2CAlgorithm(int sda, int scl, uint32_t freq = 100000, i2c_port_t portnum = I2C_NUM_0);
+		explicit I2CAlgorithm();
+		virtual ~I2CAlgorithm();
 
 		virtual ssize_t transfer(I2CMessage& msg) override;
 		virtual ssize_t transfer(Vector<I2CMessage*>& msgs) override;
@@ -40,4 +40,5 @@ namespace lwiot
 		/* Methods */
 		void prepareTransfer(i2c_cmd_handle_t handle, I2CMessage& msg) const;
 	};
+}
 }

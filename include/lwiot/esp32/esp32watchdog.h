@@ -14,25 +14,26 @@
 #include <lwiot/log.h>
 #include <lwiot/watchdog.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32Watchdog : public Watchdog {
+	class Watchdog : public lwiot::Watchdog {
 	public:
-		static Esp32Watchdog& instance()
+		static Watchdog& instance()
 		{
-			static Esp32Watchdog _instance;
+			static Watchdog _instance;
 			return _instance;
 		}
 
-		virtual ~Esp32Watchdog() = default;
-		Esp32Watchdog(const Esp32Watchdog&) = delete;
-		const Esp32Watchdog& operator =(const Esp32Watchdog&) = delete;
+		virtual ~Watchdog() = default;
+		Watchdog(const Watchdog&) = delete;
+		const Watchdog& operator =(const Watchdog&) = delete;
 
 		virtual bool enable(uint32_t tmo = 2000) override;
 		virtual bool disable() override;
 		virtual void reset() override;
 
 	private:
-		explicit Esp32Watchdog();
+		explicit Watchdog();
 	};
+}
 }

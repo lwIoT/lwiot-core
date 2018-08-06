@@ -16,10 +16,10 @@
 
 #include <lwiot/esp32/esp32pwm.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32PwmTimer::Esp32PwmTimer(int num, mcpwm_unit_t unit, int freq) :
-		PwmTimer(freq), _unit(unit), _num(num)
+	PwmTimer::PwmTimer(int num, mcpwm_unit_t unit, int freq) :
+		lwiot::PwmTimer(freq), _unit(unit), _num(num)
 	{
 		int channel;
 
@@ -40,19 +40,20 @@ namespace lwiot
 			return;
 		}
 
-		this->_channels.add(new Esp32PwmChannel(channel, *this));
-		this->_channels.add(new Esp32PwmChannel(channel + 1, *this));
+		this->_channels.add(new PwmChannel(channel, *this));
+		this->_channels.add(new PwmChannel(channel + 1, *this));
 	}
 
-	Esp32PwmTimer::~Esp32PwmTimer()
+	PwmTimer::~PwmTimer()
 	{
 		for(auto channel : this->_channels) {
 			delete channel;
 		}
 	}
 
-	mcpwm_unit_t Esp32PwmTimer::unit() const
+	mcpwm_unit_t PwmTimer::unit() const
 	{
 		return this->_unit;
 	}
+}
 }

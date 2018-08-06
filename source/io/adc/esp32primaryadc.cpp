@@ -15,13 +15,13 @@
 
 #include <driver/adc.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32PrimaryAdc::Esp32PrimaryAdc() : AdcChip(8, 3300, 4095)
+	PrimaryAdc::PrimaryAdc() : lwiot::AdcChip(8, 3300, 4095)
 	{
 	}
 
-	void Esp32PrimaryAdc::begin()
+	void PrimaryAdc::begin()
 	{
 		adc1_config_width(ADC_WIDTH_12Bit);
 
@@ -30,7 +30,7 @@ namespace lwiot
 		 }
 	}
 
-	size_t Esp32PrimaryAdc::read(int pin) const
+	size_t PrimaryAdc::read(int pin) const
 	{
 		int raw;
 
@@ -40,4 +40,5 @@ namespace lwiot
 
 		return AdcChip::toVoltage(raw);
 	}
+}
 }

@@ -16,13 +16,13 @@
 #include <soc/soc.h>
 #include <esp_sleep.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32System::Esp32System(SleepState state) : System(state)
+	System::System(SleepState state) : lwiot::System(state)
 	{
 	}
 
-	void Esp32System::sleep(const uint32_t& ms) const
+	void System::sleep(const uint32_t& ms) const
 	{
 		uint64_t us;
 
@@ -35,8 +35,9 @@ namespace lwiot
 		}
 	}
 
-	void Esp32System::restart() const
+	void System::restart() const
 	{
 		esp_restart();
 	}
+}
 }

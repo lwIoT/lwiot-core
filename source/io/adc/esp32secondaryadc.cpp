@@ -15,20 +15,20 @@
 
 #include <driver/adc.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	Esp32SecondaryAdc::Esp32SecondaryAdc() : AdcChip(10, 3300, 4095)
+	SecondaryAdc::SecondaryAdc() : lwiot::AdcChip(10, 3300, 4095)
 	{
 	}
 
-	void Esp32SecondaryAdc::begin()
+	void SecondaryAdc::begin()
 	{
 		for(int i = 0; i < ADC2_CHANNEL_MAX; i++) {
 			adc2_config_channel_atten((adc2_channel_t)i, ADC_ATTEN_11db);
 		 }
 	}
 
-	size_t Esp32SecondaryAdc::read(int pin) const
+	size_t SecondaryAdc::read(int pin) const
 	{
 		int readvalue;
 
@@ -38,4 +38,5 @@ namespace lwiot
 
 		return AdcChip::toVoltage(readvalue);
 	}
+}
 }

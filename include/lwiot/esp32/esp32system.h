@@ -1,5 +1,5 @@
 /*
- * Esp32 system interface class definition.
+ *  system interface class definition.
  *
  * @author Michel Megens
  * @email  dev@bietje.net
@@ -12,14 +12,15 @@
 #include <lwiot/system.h>
 
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {	
-	class Esp32System : public System {
+	class System : public lwiot::System {
 	public:
-		explicit Esp32System(SleepState state = SLEEP_DEEP);
-		virtual ~Esp32System() = default;
+		explicit System(SleepState state = SLEEP_DEEP);
+		virtual ~System() = default;
 
 		virtual void sleep(const uint32_t& ms) const override;
 		virtual void restart() const override;
 	};
+}
 }

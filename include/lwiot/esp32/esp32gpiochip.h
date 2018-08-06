@@ -11,12 +11,12 @@
 #include <lwiot/gpiochip.h>
 
 #ifdef __cplusplus
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32GpioChip : public GpioChip {
+	class GpioChip : public lwiot::GpioChip {
 	public:
-		explicit Esp32GpioChip();
-		virtual ~Esp32GpioChip() = default;
+		explicit GpioChip();
+		virtual ~GpioChip() = default;
 
 		virtual void mode(int pin, const PinMode& mode) override;
 		virtual void write(int pin, bool value) override;
@@ -29,6 +29,7 @@ namespace lwiot
 	private:
 		int mapIrqType(const IrqEdge& edge) const;
 	};
+}
 }
 #endif
 

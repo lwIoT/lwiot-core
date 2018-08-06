@@ -13,12 +13,12 @@
 
 #include <lwiot/dacchip.h>
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32DacChip : public DacChip {
+	class DacChip : public lwiot::DacChip {
 	public:
-		explicit Esp32DacChip();
-		virtual ~Esp32DacChip() = default;
+		explicit DacChip();
+		virtual ~DacChip() = default;
 
 		virtual void enable(int pin) override;
 		virtual void disable(int pin) override;
@@ -26,4 +26,5 @@ namespace lwiot
 
 		void write(int pin, const size_t& voltage) override;
 	};
+}
 }

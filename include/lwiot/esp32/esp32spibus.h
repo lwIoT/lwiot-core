@@ -23,15 +23,15 @@ typedef struct spi_struct_t spi_t;
 #define HSPI 2
 #define VSPI 3
 
-namespace lwiot
+namespace lwiot { namespace esp32
 {
-	class Esp32SpiBus : public SpiBus {
+	class SpiBus : public lwiot::SpiBus {
 	public:
-		explicit Esp32SpiBus(uint8_t num, uint8_t clk, uint8_t miso, uint8_t mosi);
-		virtual ~Esp32SpiBus();
+		explicit SpiBus(uint8_t num, uint8_t clk, uint8_t miso, uint8_t mosi);
+		virtual ~SpiBus();
 
 		virtual void setFrequency(uint32_t freq) override;
-		using SpiBus::transfer;
+		using lwiot::SpiBus::transfer;
 
 	protected:
 		virtual bool transfer(const uint8_t* tx, uint8_t* rx, size_t length) override;
@@ -44,4 +44,5 @@ namespace lwiot
 		spi_t *_spi;
 		GpioPin _ss;
 	};
+}
 }
