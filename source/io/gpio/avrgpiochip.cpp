@@ -185,18 +185,8 @@ namespace lwiot { namespace avr
 		if(pin < EXTERNAL_NUM_INTERRUPTS) {
 			handlers[pin] = handler;
 			
-			// Configure the interrupt mode (trigger on low input, any change, rising
-			// edge, or falling edge).  The mode constants were chosen to correspond
-			// to the configuration bits in the hardware register, so we simply shift
-			// the mode into place.
-			
-			// Enable the interrupt.
-			
 			switch (pin) {
 #if defined(__AVR_ATmega32U4__)
-			// I hate doing this, but the register assignment differs between the 1280/2560
-			// and the 32U4.  Since avrlib defines registers PCMSK1 and PCMSK2 that aren't 
-			// even present on the 32U4 this is the only way to distinguish between them.
 			case 0:
 				EICRA = (EICRA & ~((1<<ISC00) | (1<<ISC01))) | (mode << ISC00);
 				EIMSK |= (1<<INT0);
@@ -221,7 +211,7 @@ namespace lwiot { namespace avr
 				EICRB = (EICRB & ~((1<<ISC60) | (1<<ISC61))) | (mode << ISC60);
 				EIMSK |= (1<<INT6);
 				break;
-		#elif defined(EICRA) && defined(EICRB) && defined(EIMSK)
+#elif defined(EICRA) && defined(EICRB) && defined(EIMSK)
 			case 2:
 				EICRA = (EICRA & ~((1 << ISC00) | (1 << ISC01))) | (mode << ISC00);
 				EIMSK |= (1 << INT0);
