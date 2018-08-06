@@ -19,7 +19,7 @@ protected:
 	void run(void *arg)
 	{
 		char *buffer = (char*)malloc(32);
-		lwiot::Esp32Uart uart(2, 4800);
+		lwiot::esp32::Uart uart(2, 4800);
 		lwiot::GpioPin out = 33;
 		lwiot::String text("Test message");
 

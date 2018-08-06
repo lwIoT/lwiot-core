@@ -27,7 +27,7 @@ public:
 	{ }
 
 protected:
-	void startPwm(lwiot::Esp32PwmTimer& timer)
+	void startPwm(lwiot::esp32::PwmTimer& timer)
 	{
 		auto& channel = timer[0];
 		auto pin = lwiot::GpioPin(5);
@@ -46,7 +46,7 @@ protected:
 	{
 		lwiot::GpioPin out = 22;
 		lwiot::GpioPin out2 = 23;
-		lwiot::Esp32PwmTimer timer(0, MCPWM_UNIT_0, 100);
+		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		size_t freesize;
 		bool value;
 
