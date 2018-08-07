@@ -68,7 +68,7 @@ namespace lwiot { namespace avr
 		wdt_enable(wdtsetting);
 		SREG = old;
 
-		Watchdog::enable(tmo);
+		lwiot::Watchdog::enable(tmo);
 		return true;
 	}
 

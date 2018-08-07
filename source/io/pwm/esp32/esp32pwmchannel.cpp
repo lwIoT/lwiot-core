@@ -101,7 +101,7 @@ namespace lwiot { namespace esp32
 
 		auto config = &pwm_config[idx];
 
-		PwmChannel::setGpioPin(pin);
+		lwiot::PwmChannel::setGpioPin(pin);
 		config->cmpr_a = config->cmpr_b = 0.0f;
 		config->frequency = 50;
 		config->counter_mode = MCPWM_UP_COUNTER;

@@ -63,7 +63,7 @@ namespace lwiot { namespace esp32
 
 	void I2CAlgorithm::setFrequency(const uint32_t& freq)
 	{
-		I2CAlgorithm::setFrequency(freq);
+		lwiot::I2CAlgorithm::setFrequency(freq);
 
 		this->config.master.clk_speed = freq;
 		i2c_param_config(this->_portno, &this->config);

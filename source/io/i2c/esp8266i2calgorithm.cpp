@@ -41,7 +41,8 @@ namespace lwiot { namespace esp8266
 
 	void I2CAlgorithm::setFrequency(const uint32_t& freq)
 	{
-		I2CAlgorithm::setFrequency(freq);
+		lwiot::I2CAlgorithm::setFrequency(freq);
+		i2c_set_frequency_hz(this->_bus, freq);
 	}
 
 	ssize_t I2CAlgorithm::transfer(I2CMessage& msg)

@@ -23,7 +23,7 @@ namespace lwiot { namespace esp32
 		bool ret = esp_task_wdt_init(tmo / 1000, true) == ESP_OK;
 
 		if(ret) {
-			Watchdog::enable(tmo);
+			lwiot::Watchdog::enable(tmo);
 #ifdef CONFIG_TASK_WDT_CHECK_IDLE_TASK_CPU0
 			esp_task_wdt_delete(xTaskGetIdleTaskHandleForCPU(0));
 #endif

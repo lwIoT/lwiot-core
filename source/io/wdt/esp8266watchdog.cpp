@@ -50,7 +50,7 @@ namespace lwiot { namespace esp8266
 		timer_set_frequency(FRC1, WDT_FREQ);
 		timer_set_interrupts(FRC1, true);
 		timer_set_run(FRC1, true);
-		Watchdog::enable(tmo);
+		lwiot::Watchdog::enable(tmo);
 
 		return true;
 	}
