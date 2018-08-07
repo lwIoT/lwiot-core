@@ -19,15 +19,15 @@ protected:
 	void run(void *arg)
 	{
 		char *buffer = (char*)malloc(32);
-		lwiot::esp32::Uart uart(2, 4800);
+		lwiot::esp32::Uart uart(2, 9600);
 		lwiot::GpioPin out = 33;
-		lwiot::String text("Test message");
+		uint32_t data = 0xDEADBEEF;
 
 		printf("Main thread started!\n");
 		while(true) {
 			memset((void*)&buffer[0], 0, 32);
-			uart << text;
-			uart.read((uint8_t*)&buffer[0], 3);
+			uart.write((const uint8_t*)&data, sizeof(data));
+			uart.read((uint8_t*)&buffer[0], 17);
 			printf("Received: %s\n", buffer);
 			lwiot_sleep(1000);
 		}
