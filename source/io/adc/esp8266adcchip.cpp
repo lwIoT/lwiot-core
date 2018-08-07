@@ -28,7 +28,7 @@ namespace lwiot { namespace esp8266
 			return 0;
 
 		auto value = sdk_system_adc_read();
-		return AdcChip::toVoltage(value);		
+		return lwiot::AdcChip::toVoltage(value);		
 	}
 }
 }
