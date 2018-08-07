@@ -35,6 +35,7 @@ win32:
 atmega2560:
     defs:
         - MCU=atmega2560
+        - ARDUINO_MEGA=True
         - CONFIG_NO_SYS=True
         - CMAKE_SYSTEM_NAME=Generic
         - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
