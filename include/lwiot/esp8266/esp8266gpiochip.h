@@ -19,12 +19,12 @@
 #define PINS 16
 
 #ifdef CXX
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	class Esp8266GpioChip : public GpioChip {
+	class GpioChip : public lwiot::GpioChip {
 	public:
-		explicit Esp8266GpioChip();
-		virtual ~Esp8266GpioChip() = default;
+		explicit GpioChip();
+		virtual ~GpioChip() = default;
 
 		virtual void mode(int pin, const PinMode& mode) override;
 		virtual void write(int pin, bool value) override;
@@ -39,5 +39,6 @@ namespace lwiot
 		void setPullup(int pin, bool enabled);
 		gpio_inttype_t mapIrqEdge(const IrqEdge& edge) const;
 	};
+}
 }
 #endif

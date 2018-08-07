@@ -11,15 +11,16 @@
 #include <lwiot/adcchip.h>
 
 #ifdef CXX
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	class Esp8266AdcChip : public AdcChip {
+	class AdcChip : public lwiot::AdcChip {
 	public:
-		explicit Esp8266AdcChip();
-		virtual ~Esp8266AdcChip() = default;
+		explicit AdcChip();
+		virtual ~AdcChip() = default;
 
 		void begin() override;
 		size_t read(int pin) const override;
 	};
+}
 }
 #endif

@@ -34,7 +34,7 @@ protected:
 		}
 	}
 
-	lwiot::Esp8266Uart uart;
+	lwiot::esp8266::Uart uart;
 };
 
 static TestThread *tp;

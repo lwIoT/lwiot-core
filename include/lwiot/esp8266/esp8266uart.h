@@ -16,13 +16,13 @@
 #include <esp/uart.h>
 #include <esp/uart_regs.h>
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
 	typedef int uart_port_t;
-	class Esp8266Uart : public Uart {
+	class Uart : public lwiot::Uart {
 	public:
-		explicit Esp8266Uart(int num, int rx, int tx, long baud, uint32_t config = SERIAL_8N1);
-		virtual ~Esp8266Uart();
+		explicit Uart(int num, int rx, int tx, long baud, uint32_t config = SERIAL_8N1);
+		virtual ~Uart();
 
 		virtual uint8_t read();
 		virtual ssize_t read(uint8_t *buffer, const size_t& length);
@@ -39,4 +39,5 @@ namespace lwiot
 		bool initialized;
 		uint8_t _num;
 	};
+}
 }

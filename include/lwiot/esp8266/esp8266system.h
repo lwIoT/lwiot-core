@@ -11,14 +11,15 @@
 #include <lwiot/types.h>
 #include <lwiot/system.h>
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	class Esp8266System : public System {
+	class System : public lwiot::System {
 	public:
-		explicit Esp8266System(SleepState state = SLEEP_DEEP);
-		virtual ~Esp8266System() = default;
+		explicit System(SleepState state = SLEEP_DEEP);
+		virtual ~System() = default;
 
 		virtual void sleep(const uint32_t& ms) const override;
 		virtual void restart() const override;
 	};
+}
 }

@@ -17,15 +17,16 @@
 
 #define UART_GPIO_TXD 2
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	Esp8266Uart::Esp8266Uart(int num, int rx, int tx, long baud, uint32_t config) : Uart(tx, rx, baud, config), _num((uint8_t)num)
+	Uart::Uart(int num, int rx, int tx, long baud, uint32_t config) :
+		lwiot::Uart(tx, rx, baud, config), _num((uint8_t)num)
 	{
 		esp_softuart_open(this->_num, baud, rx, tx);
 		this->initialized = true;
 	}
 
-	Esp8266Uart::~Esp8266Uart()
+	Uart::~Uart()
 	{
 		if(!this->initialized)
 			return;
@@ -34,19 +35,19 @@ namespace lwiot
 		esp_softuart_close(this->_num);
 	}
 
-	size_t Esp8266Uart::available() const
+	size_t Uart::available() const
 	{
 		auto avail = esp_softuart_available(this->_num);
 		return static_cast<size_t>(avail);
 	}
 
-	uint8_t Esp8266Uart::read()
+	uint8_t Uart::read()
 	{
 		while(!this->available());
 		return esp_softuart_read(this->_num);
 	}
 
-	ssize_t Esp8266Uart::read(uint8_t *buffer, const size_t& size)
+	ssize_t Uart::read(uint8_t *buffer, const size_t& size)
 	{
 		for(size_t idx = 0; idx < size; idx++) {
 			buffer[idx] = this->read();
@@ -55,15 +56,16 @@ namespace lwiot
 		return (ssize_t)size;
 	}
 
-	void Esp8266Uart::write(uint8_t byte)
+	void Uart::write(uint8_t byte)
 	{
 		esp_softuart_put(this->_num, static_cast<char>(byte));
 	}
 
-	void Esp8266Uart::write(const uint8_t *buffer, const size_t& length)
+	void Uart::write(const uint8_t *buffer, const size_t& length)
 	{
 		for(unsigned int idx = 0; idx < length; idx++) {
 			this->write(buffer[idx]);
 		}
 	}
+}
 }

@@ -14,19 +14,19 @@
 #include <lwiot/log.h>
 #include <lwiot/watchdog.h>
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	class Esp8266Watchdog : public Watchdog {
+	class Watchdog : public lwiot::Watchdog {
 	public:
-		static Esp8266Watchdog& instance()
+		static Watchdog& instance()
 		{
-			static Esp8266Watchdog _instance;
+			static Watchdog _instance;
 			return _instance;
 		}
 
-		virtual ~Esp8266Watchdog() = default;
-		Esp8266Watchdog(const Esp8266Watchdog&) = delete;
-		const Esp8266Watchdog& operator =(const Esp8266Watchdog&) = delete;
+		virtual ~Watchdog() = default;
+		Watchdog(const Watchdog&) = delete;
+		const Watchdog& operator =(const Watchdog&) = delete;
 
 		virtual bool enable(uint32_t tmo = 2000) override;
 		virtual bool disable() override;
@@ -37,6 +37,7 @@ namespace lwiot
 		volatile uint32_t overflow;
 
 		friend void wdt_timer_irq_handler(void *arg);
-		explicit Esp8266Watchdog();
+		explicit Watchdog();
 	};
+}
 }

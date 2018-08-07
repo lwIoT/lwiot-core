@@ -14,15 +14,15 @@
 
 #include <espressif/esp_system.h>
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	Esp8266AdcChip::Esp8266AdcChip() : AdcChip(1, 3300, 1024)
+	AdcChip::AdcChip() : lwiot::AdcChip(1, 3300, 1024)
 	{ }
 
-	void Esp8266AdcChip::begin()
+	void AdcChip::begin()
 	{ }
 
-	size_t Esp8266AdcChip::read(int pin) const
+	size_t AdcChip::read(int pin) const
 	{
 		if(pin != 0)
 			return 0;
@@ -31,6 +31,7 @@ namespace lwiot
 		return AdcChip::toVoltage(value);		
 	}
 }
+}
 
-static lwiot::Esp8266AdcChip _espadc;
+static lwiot::esp8266::AdcChip _espadc;
 lwiot::AdcChip& adc = _espadc;

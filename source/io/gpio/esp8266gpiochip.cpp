@@ -27,7 +27,7 @@
 static irq_handler_t __handlers[PINS] = {0,};
 
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
 	static void IRAM gpio_irq_handler(uint8_t num)
 	{
@@ -41,10 +41,10 @@ namespace lwiot
 
 		handler();
 	}
-	Esp8266GpioChip::Esp8266GpioChip() : GpioChip(PINS)
+	GpioChip::GpioChip() : lwiot::GpioChip(PINS)
 	{ }
 
-	void Esp8266GpioChip::mode(int pin, const PinMode& mode)
+	void GpioChip::mode(int pin, const PinMode& mode)
 	{
 		if(pin == PIN16) {
 			this->mode16(mode);
@@ -89,7 +89,7 @@ namespace lwiot
 		}
 	}
 
-	void Esp8266GpioChip::write(int pin, bool value)
+	void GpioChip::write(int pin, bool value)
 	{
 		uint8_t _pin = pin;
 
@@ -102,7 +102,7 @@ namespace lwiot
 		}
 	}
 
-	bool Esp8266GpioChip::read(int pin) const
+	bool GpioChip::read(int pin) const
 	{
 		auto rv = 0;
 
@@ -114,18 +114,18 @@ namespace lwiot
 		return rv != 0;
 	}
 
-	void Esp8266GpioChip::setOpenDrain(int pin)
+	void GpioChip::setOpenDrain(int pin)
 	{
 		this->mode(pin, OUTPUT_OPEN_DRAIN);
 		this->write(pin, true);
 	}
 
-	void Esp8266GpioChip::odWrite(int pin, bool value)
+	void GpioChip::odWrite(int pin, bool value)
 	{
 		this->write(pin, value);
 	}
 
-	void Esp8266GpioChip::setPullup(int pin, bool enable)
+	void GpioChip::setPullup(int pin, bool enable)
 	{
 		uint32_t flags = 0;
 
@@ -136,7 +136,7 @@ namespace lwiot
 		iomux_set_pullup_flags(gpio_to_iomux(pin), flags);
 	}
 
-	void Esp8266GpioChip::mode16(const PinMode& mode)
+	void GpioChip::mode16(const PinMode& mode)
 	{
 		RTC.GPIO_CFG[3] = (RTC.GPIO_CFG[3] & 0xffffffbc) | 1;
 		RTC.GPIO_CONF = (RTC.GPIO_CONF & 0xfffffffe) | 0;
@@ -167,7 +167,7 @@ namespace lwiot
 		}
 	}
 
-	void Esp8266GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
+	void GpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
 	{
 		auto _edge = this->mapIrqEdge(edge);
 
@@ -179,7 +179,7 @@ namespace lwiot
 		gpio_set_interrupt(pin, _edge, gpio_irq_handler);
 	}
 
-	gpio_inttype_t Esp8266GpioChip::mapIrqEdge(const IrqEdge& edge) const
+	gpio_inttype_t GpioChip::mapIrqEdge(const IrqEdge& edge) const
 	{
 		switch(edge) {
 		case IrqRising:
@@ -196,6 +196,7 @@ namespace lwiot
 		}
 	}
 }
+}
 
-static lwiot::Esp8266GpioChip esp_gpio;
+static lwiot::esp8266::GpioChip esp_gpio;
 lwiot::GpioChip& gpio = esp_gpio;

@@ -18,12 +18,12 @@
 
 #define RF_DISABLED 4
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	Esp8266System::Esp8266System(SleepState state) : System(state)
+	System::System(SleepState state) : lwiot::System(state)
 	{ }
 
-	void Esp8266System::sleep(const uint32_t& ms) const
+	void System::sleep(const uint32_t& ms) const
 	{
 		uint32_t us;
 
@@ -37,8 +37,9 @@ namespace lwiot
 		}
 	}
 
-	void Esp8266System::restart() const
+	void System::restart() const
 	{
 		sdk_system_restart();
 	}
+}
 }

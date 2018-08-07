@@ -17,11 +17,11 @@
 
 #define WDT_FREQ 10
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
 	void wdt_timer_irq_handler(void *arg)
 	{
-		lwiot::Esp8266Watchdog *wd = (lwiot::Esp8266Watchdog*)arg;
+		lwiot::esp8266::Watchdog *wd = (lwiot::esp8266::Watchdog*)arg;
 		wd->count++;
 
 		if(wd->count >= wd->overflow) {
@@ -30,10 +30,10 @@ namespace lwiot
 		}
 	}
 
-	Esp8266Watchdog::Esp8266Watchdog() : Watchdog()
+	Watchdog::Watchdog() : lwiot::Watchdog()
 	{ }
 
-	bool Esp8266Watchdog::enable(uint32_t tmo)
+	bool Watchdog::enable(uint32_t tmo)
 	{
 		double divider;
 
@@ -55,7 +55,7 @@ namespace lwiot
 		return true;
 	}
 
-	bool Esp8266Watchdog::disable()
+	bool Watchdog::disable()
 	{
 		Watchdog::disable();
 		timer_set_interrupts(FRC1, false);
@@ -65,7 +65,7 @@ namespace lwiot
 		return true;
 	}
 
-	void Esp8266Watchdog::reset()
+	void Watchdog::reset()
 	{
 		if(!this->enabled())
 			return;
@@ -75,5 +75,6 @@ namespace lwiot
 		exit_critical();
 	}
 }
+}
 
-lwiot::Watchdog& wdt = lwiot::Esp8266Watchdog::instance();
+lwiot::Watchdog& wdt = lwiot::esp8266::Watchdog::instance();

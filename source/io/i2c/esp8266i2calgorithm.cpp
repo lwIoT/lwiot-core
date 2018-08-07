@@ -19,32 +19,32 @@
 
 #include <i2c/i2c.h>
 
-namespace lwiot
+namespace lwiot { namespace esp8266
 {
-	Esp8266I2CAlgorithm::Esp8266I2CAlgorithm(int sda, int scl, uint32_t freq, uint8_t bus) :
-		I2CAlgorithm(), _sda(sda), _scl(scl), _bus(bus)
+	I2CAlgorithm::I2CAlgorithm(int sda, int scl, uint32_t freq, uint8_t bus) :
+		lwiot::I2CAlgorithm(), _sda(sda), _scl(scl), _bus(bus)
 	{
 		if(i2c_init_hz(bus, scl, sda, freq)) {
 			print_dbg("Unable to initialise I2C bus!\n");
 		}
 	}
 
-	Esp8266I2CAlgorithm::Esp8266I2CAlgorithm() : Esp8266I2CAlgorithm(4, 3)
+	I2CAlgorithm::I2CAlgorithm() : I2CAlgorithm(4, 3)
 	{
 	}
 
-	Esp8266I2CAlgorithm::~Esp8266I2CAlgorithm()
+	I2CAlgorithm::~I2CAlgorithm()
 	{
 		this->_sda.input();
 		this->_scl.input();
 	}
 
-	void Esp8266I2CAlgorithm::setFrequency(const uint32_t& freq)
+	void I2CAlgorithm::setFrequency(const uint32_t& freq)
 	{
 		I2CAlgorithm::setFrequency(freq);
 	}
 
-	ssize_t Esp8266I2CAlgorithm::transfer(I2CMessage& msg)
+	ssize_t I2CAlgorithm::transfer(I2CMessage& msg)
 	{
 		uint8_t addr, data;
 		size_t count;
@@ -92,7 +92,7 @@ namespace lwiot
 		return static_cast<ssize_t>(msg.count());
 	}
 
-	ssize_t Esp8266I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
+	ssize_t I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
 	{
 		ssize_t total;
 		ssize_t rv;
@@ -111,4 +111,5 @@ namespace lwiot
 
 		return total;
 	}
+}
 }
