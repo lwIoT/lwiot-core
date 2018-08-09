@@ -9,6 +9,7 @@
 #pragma once
 
 #include <lwiot/port.h>
+#include <lwiot/types.h>
 
 namespace lwiot {
 	class Lock {
@@ -21,6 +22,10 @@ namespace lwiot {
 		void unlock();
 
 	private:
+#ifndef NO_OS
 		lwiot_mutex_t mtx;
+#else
+		uint8_t _lockval;
+#endif
 	};
 }
