@@ -6,7 +6,7 @@
  * Email:  dev@bietje.net
  */
 
-#ifndef __PORT_H__
+#pragma once
 #define __PORT_H__
 
 #include <stdlib.h>
@@ -63,7 +63,6 @@ extern DLL_EXPORT void lwiot_timer_create(lwiot_timer_t *timer, const char *name
 extern DLL_EXPORT int lwiot_timer_start(lwiot_timer_t *timer);
 extern DLL_EXPORT int lwiot_timer_destroy(lwiot_timer_t *timer);
 extern DLL_EXPORT int lwiot_timer_stop(lwiot_timer_t *timer);
-extern DLL_EXPORT int lwiot_timer_destroy(lwiot_timer_t *timer);
 extern DLL_EXPORT void lwiot_timers_init(void);
 extern DLL_EXPORT void lwiot_timers_destroy(void);
 extern DLL_EXPORT bool lwiot_timer_is_running(lwiot_timer_t *timer);
@@ -81,5 +80,3 @@ extern DLL_EXPORT void *lwiot_mem_realloc(void *ptr, size_t size);
 
 #define FOREVER 0
 CDECL_END
-
-#endif
