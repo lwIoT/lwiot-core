@@ -6,7 +6,9 @@
  * Email:  dev@bietje.net
  */
 
+#define _GNU_SOURCE
 #include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include <time.h>
 #include <assert.h>
@@ -31,6 +33,34 @@ time_t lwiot_tick(void)
 	return rv;
 }
 
+time_t lwiot_tick_ms(void)
+{
+	return lwiot_tick() / 1000ULL;
+}
+
+void lwiot_mem_free(void *ptr)
+{
+	free(ptr);
+}
+
+void *lwiot_mem_alloc(size_t size)
+{
+	return malloc(size);
+}
+
+void *lwiot_mem_realloc(void *ptr, size_t size)
+{
+	return realloc(ptr, size);
+}
+
+void *lwiot_mem_zalloc(size_t size)
+{
+	void *ptr = malloc(size);
+
+	memset(ptr, 0, size);
+	return ptr;
+}
+
 /*
  * THREAD FUNCTIONS
  */
@@ -43,6 +73,11 @@ static void *unix_thread_starter(void *arg)
 	tp->handle(tp->arg);
 
 	return NULL;
+}
+
+void lwiot_thread_yield()
+{
+	pthread_yield();
 }
 
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
@@ -206,3 +241,9 @@ void lwiot_event_destroy(lwiot_event_t *e)
 	e->signalled = false;
 	e->size = 0;
 }
+
+void enter_critical()
+{ }
+
+void exit_critical()
+{ }

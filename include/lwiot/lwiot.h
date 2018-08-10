@@ -11,7 +11,6 @@
 
 #include <lwiot/compiler.h>
 #include <lwiot/types.h>
-
 #include <lwiot/port.h>
 
 #ifdef UNUSED
@@ -19,3 +18,11 @@
 #endif
 
 #define UNUSED(x) (void)x
+
+#define CXX __cplusplus
+
+#ifndef BIT
+#define BIT(__x) (1U << __x)
+#endif
+
+#define BITS_PER_BYTE 8U

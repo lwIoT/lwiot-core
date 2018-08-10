@@ -5,12 +5,12 @@
  * @email  dev@bietje.net
  */
 
-#ifndef LWIOT_STRING_H
-#define LWIOT_STRING_H
+#pragma once
 
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef __cplusplus
 namespace lwiot {
 	class StringSumHelper;
 
@@ -33,8 +33,10 @@ namespace lwiot {
 
 		String(const String &str);
 
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 		String(String &&rval);
 		String(StringSumHelper &&rval);
+#endif
 
 
 		explicit String(char c);
@@ -53,7 +55,7 @@ namespace lwiot {
 
 		explicit String(double, unsigned char decimalPlaces = 2);
 
-		~String(void);
+		virtual ~String(void);
 
 		// memory management
 		// return true on success, false on failure (in which case, the string
@@ -71,11 +73,8 @@ namespace lwiot {
 		String &operator=(const char *cstr);
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-
 		String &operator=(String &&rval);
-
 		String &operator=(StringSumHelper &&rval);
-
 #endif
 
 		// concatenate (works w/ built-in types)
@@ -322,5 +321,4 @@ namespace lwiot {
 		StringSumHelper(double num) : String(num) {}
 	};
 }
-
-#endif //LWIOT_STRING_H
+#endif

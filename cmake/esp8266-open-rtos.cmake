@@ -41,6 +41,7 @@ endif()
 set(CMAKE_LIBRARY_PATH ${ESP8266_OPEN_RTOS_PATH}/lib/)
 
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
+		${PROJECT_SOURCE_DIR}/include/asm/esp8266
         ${PROJECT_SOURCE_DIR}/source/ports/freertos
         ${ESP8266_OPEN_RTOS_PATH}/include
         ${ESP8266_OPEN_RTOS_PATH}/libc/xtensa-lx106-elf/include
@@ -53,21 +54,37 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
         ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4/lwip
         ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/lwip
         ${ESP8266_OPEN_RTOS_PATH}/core/include
+        ${ESP8266_OPEN_RTOS_PATH}/extras
         ${ESP8266_OPEN_RTOS_PATH}/open_esplibs/include
         )
 
 SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
-        ${LWIOT_PORT_DIR}/rtos.c
-        )
+	${LWIOT_PORT_DIR}/rtos.c
+    ${PROJECT_SOURCE_DIR}/source/io/gpio/esp8266gpiochip.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/adc/esp8266adcchip.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/uart/esp8266uart.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/uart/esp8266-softuart.c
+    ${PROJECT_SOURCE_DIR}/source/soc/esp8266system.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/wdt/esp8266watchdog.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/wifi/esp8266_station.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/wifi/esp8266_ap.cpp
+    ${PROJECT_SOURCE_DIR}/source/io/i2c/esp8266i2calgorithm.cpp
+	${PROJECT_SOURCE_DIR}/source/soc/cplusplus.cpp
+	${PROJECT_SOURCE_DIR}/source/soc/esp8266.c
+)
+
+SET(ESP8266 True CACHE BOOL "ESP8266 target.")
 
 SET(LWIOT_PORT_HEADERS
-        ${LWIOT_PORT_DIR}/lwiot_arch.h)
+        ${LWIOT_PORT_DIR}/lwiot_arch.h
+)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
+set(CMAKE_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections" CACHE FORCE "")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
+set(CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
     -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
 
 SET(HAVE_RTOS True)
+SET(HAVE_JSON True)

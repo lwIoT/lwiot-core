@@ -25,6 +25,11 @@ namespace lwiot {
 		this->_f_output = stdout;
 	}
 
+	Logger::Logger(const String& subsys, FILE *output /* = stdout */) :
+		_f_output(output), _newline(true), _subsys(subsys)
+	{
+	}
+
 	void Logger::print_newline(void)
 	{
 #ifdef WIN32
@@ -47,7 +52,7 @@ namespace lwiot {
 		return *this;
 	}
 
-	Logger& Logger::operator<<(String txt)
+	Logger& Logger::operator<<(const String& txt)
 	{
 		this->format("%s", txt.c_str());
 		return *this;
@@ -104,13 +109,25 @@ namespace lwiot {
 	void Logger::format(const char *fmt, ...)
 	{
 		va_list va;
+		time_t tick;
 
 		if(fmt == nullptr)
 			return;
 
 		if(this->_newline) {
 			this->_newline = false;
-			fprintf(this->_f_output, "[lwIoT]: ");
+			tick = lwiot_tick_ms();
+
+#ifdef AVR
+			fprintf(this->_f_output, "[%lu]", (unsigned long)tick);
+#else
+			fprintf(this->_f_output, "[%llu]", (unsigned long long)tick);
+#endif
+
+			if(this->_subsys.length() > 0)
+				fprintf(this->_f_output, "[lwiot][%s]: ", this->_subsys.c_str());
+			else
+				fprintf(this->_f_output, "[lwIoT]: ");
 		}
 
 		va_start(va, fmt);

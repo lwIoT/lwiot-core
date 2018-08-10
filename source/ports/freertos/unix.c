@@ -26,6 +26,11 @@ time_t lwiot_tick(void)
 	return rv;
 }
 
+time_t lwiot_tick_ms(void)
+{
+	return lwiot_tick() / 1000ULL;
+}
+
 void __maybe vApplicationMallocFailedHook(void)
 {
 	fprintf(stderr, "Failed to allocate memory!\n");

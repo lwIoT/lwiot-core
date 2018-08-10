@@ -73,9 +73,11 @@ static void timer_thread_handle(void *arg)
 
 void lwiot_timers_init(void)
 {
-	lwiot_mutex_create(&timer_lock, 0);
+	const char *tmp = "timer-thread";
 
-	timer_thread.name = "timer-thread";
+	lwiot_mutex_create(&timer_lock, 0);
+	memset((void*)timer_thread.name, 0, sizeof(timer_thread.name));
+	memcpy((void*)timer_thread.name, tmp, strlen(tmp));
 	timers_lock();
 	running = true;
 	timers_unlock();

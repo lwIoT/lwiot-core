@@ -6,9 +6,8 @@ include(CheckIncludeFiles)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(TestBigEndian)
+include(${PROJECT_SOURCE_DIR}/cmake/config.cmake)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 11)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(HAVE_DEBUG True)
@@ -24,16 +23,16 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
     endif()
 
     if(CMAKE_BUILD_TYPE MATCHES Release)
-        set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -ffast-math")
+        set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -O3")
     endif()
 
-    if(CMAKE_BUILD_TYPE MATCHES RelSize)
+    if(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
         set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -Os")
     endif()
 
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} -Wall")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} -Wall -std=gnu11")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} -Wall")
-	
+
 	if(UNIX)
 		TEST_BIG_ENDIAN(HAVE_BIG_ENDIAN)
 	endif()
@@ -49,6 +48,9 @@ elseif(WIN32)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA}")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA}")
 endif()
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 11)
 
 # Check header files
 CHECK_INCLUDE_FILES (stdlib.h HAVE_STDLIB_H)
@@ -89,10 +91,11 @@ if(CMAKE_SYSTEM_NAME MATCHES Generic)
     SET(HAVE_GENERIC_SYS True)
 endif()
 
+
 if( NOT CMAKE_SYSTEM_NAME MATCHES Generic OR PORT MATCHES unix )
     add_subdirectory(scripts)
 
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
+    if(CONFIG_BUILD_TESTS)
         add_subdirectory(tests)
     endif()
 endif()

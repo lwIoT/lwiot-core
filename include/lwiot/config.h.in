@@ -19,6 +19,10 @@
 #cmakedefine HAVE_RTOS
 #cmakedefine CONFIG_NO_SYS
 #cmakedefine CONFIG_HW_BARRIER 1
+#cmakedefine NO_OS
+
+#cmakedefine CONFIG_TASK_PRIO ${CONFIG_TASK_PRIO}
+#cmakedefine CONFIG_STACK_SIZE ${CONFIG_STACK_SIZE}
 
 #cmakedefine HAVE_SIZE_T
 #cmakedefine HAVE_SSIZE_T
@@ -27,3 +31,14 @@
 #cmakedefine HAVE_SEMAPHOREHANDLE_T
 #cmakedefine HAVE_TIMERHANDLE_T
 #cmakedefine HAVE_TICKTYPE_T
+
+#cmakedefine F_CPU ${F_CPU}
+#cmakedefine ARDUINO_MEGA
+#cmakedefine ARDUINO_UNO
+#cmakedefine CONFIG_PIN_VECTOR
+
+#cmakedefine ESP32
+#cmakedefine ESP8266
+#ifndef AVR
+#cmakedefine AVR
+#endif

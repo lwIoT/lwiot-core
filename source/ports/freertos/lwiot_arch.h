@@ -1,5 +1,5 @@
 /*
- * E/STACK - WIN32 port
+ * lwIoT - WIN32 port
  *
  * Author: Michel Megens
  * Date:   18/12/2017
@@ -14,11 +14,20 @@
 #define __RTOS_PORT_H__
 
 #include <lwiot_opts.h>
+
+#ifdef ESP32
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/queue.h>
+#include <freertos/semphr.h>
+#include <freertos/timers.h>
+#else
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
 #include <timers.h>
+#endif
 
 #ifndef HAVE_TASKHANDLE_T
 typedef xTaskHandle TaskHandle_t;
@@ -53,7 +62,7 @@ typedef xTimerHandle TimerHandle_t;
 #include <lwiot/lwiot.h>
 
 typedef struct thread {
-	const char *name;
+	char name[16];
 	void *arg;
 	void (*handle)(void *arg);
 	TaskHandle_t task;

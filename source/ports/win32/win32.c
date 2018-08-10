@@ -37,6 +37,34 @@ time_t lwiot_tick(void)
 	return rv - WIN32_EPOCH_ADJUSTMENT;
 }
 
+time_t lwiot_tick_ms(void)
+{
+	return lwiot_tick() / 1000ULL;
+}
+
+void lwiot_mem_free(void *ptr)
+{
+	free(ptr);
+}
+
+void *lwiot_mem_alloc(size_t size)
+{
+	return malloc(size);
+}
+
+void *lwiot_mem_realloc(void *ptr, size_t size)
+{
+	return realloc(ptr, size);
+}
+
+void *lwiot_mem_zalloc(size_t size)
+{
+	void *ptr = malloc(size);
+
+	memset(ptr, 0, size);
+	return ptr;
+}
+
 /*
  * THREAD FUNCTIONS
  */
@@ -106,6 +134,11 @@ int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
 	}
 
 	return -EOK;
+}
+
+void lwiot_thread_yield()
+{
+	SwitchToThread();
 }
 
 int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
@@ -224,3 +257,9 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 
 	return (rv) ? -EOK : -ETMO;
 }
+
+void enter_critical()
+{ }
+
+void exit_critical()
+{ }

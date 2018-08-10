@@ -48,7 +48,6 @@ namespace lwiot {
 	}
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-
 	String::String(String &&rval)
 	{
 		init();
@@ -144,7 +143,7 @@ namespace lwiot {
 
 	String::~String()
 	{
-		free(buffer);
+		lwiot_mem_free(buffer);
 	}
 
 	/*********************************************/
@@ -161,7 +160,7 @@ namespace lwiot {
 	void String::invalidate()
 	{
 		if(buffer)
-			free(buffer);
+			lwiot_mem_free(buffer);
 		buffer = nullptr;
 		capacity = len = 0;
 	}
@@ -180,7 +179,7 @@ namespace lwiot {
 
 	unsigned char String::changeBuffer(unsigned int maxStrLen)
 	{
-		char *newbuffer = (char *) realloc(buffer, maxStrLen + 1);
+		char *newbuffer = (char *) lwiot_mem_realloc(buffer, maxStrLen + 1);
 		if(newbuffer) {
 			buffer = newbuffer;
 			capacity = maxStrLen;
@@ -215,7 +214,7 @@ namespace lwiot {
 				rhs.len = 0;
 				return;
 			} else {
-				free(buffer);
+				lwiot_mem_free(buffer);
 			}
 		}
 		buffer = rhs.buffer;

@@ -7,14 +7,24 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include <assert.h>
+#include <lwiot.h>
 
+#ifdef ESP32
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/queue.h>
+#include <freertos/semphr.h>
+#include <freertos/timers.h>
+#else
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
-#include <lwiot.h>
+#include <timers.h>
+#endif
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>
@@ -34,8 +44,44 @@ static void vPortTaskStarter(void *arg)
 	vTaskDelete(NULL);
 }
 
-#define STACK_DEPTH 512
-#define TASK_PRIO 8
+void *lwiot_mem_alloc(size_t size)
+{
+	return pvPortMalloc(size);
+}
+
+void *lwiot_mem_zalloc(size_t size)
+{
+	void *ptr = lwiot_mem_alloc(size);
+
+	memset(ptr, 0, size);
+	return ptr;
+}
+
+extern void vApplicationMallocFailedHook( void );
+void *lwiot_mem_realloc(void *ptr, size_t size)
+{
+	void *retval;
+
+	vTaskSuspendAll();
+	retval = realloc(ptr, size);
+	xTaskResumeAll();
+
+
+#if configUSE_MALLOC_FAILED_HOOK == 1
+	if(!retval) 
+		vApplicationMallocFailedHook();
+#endif
+
+	return retval;
+}
+
+void lwiot_mem_free(void *ptr)
+{
+	vPortFree(ptr);
+}
+
+#define STACK_DEPTH CONFIG_STACK_SIZE
+#define TASK_PRIO CONFIG_TASK_PRIO
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 {
 	BaseType_t bt;
@@ -45,7 +91,20 @@ int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 
 	tp->handle = handle;
 	tp->arg = arg;
+
+#ifdef ESP32
+	BaseType_t coreID = esp32_get_next_coreid();
+	bt = xTaskCreatePinnedToCore(
+		vPortTaskStarter,
+		tp->name,
+		STACK_DEPTH,
+		tp, TASK_PRIO,
+		&tp->task,
+		coreID
+	);
+#else
 	bt = xTaskCreate(vPortTaskStarter, tp->name, STACK_DEPTH, tp, TASK_PRIO, &tp->task);
+#endif
 
 	if(bt == pdPASS)
 		return -EOK;
@@ -64,6 +123,11 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
 	}
 
 	return -EOK;
+}
+
+void lwiot_thread_yield()
+{
+	taskYIELD();
 }
 
 int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
@@ -194,7 +258,7 @@ static void vTimerCallbackHook(TimerHandle_t xTimer)
 	if(tmr->oneshot) {
 		tmr->state = TIMER_STOPPED;
 	} else {
-		tmr->expiry = (lwiot_tick() / 1000U) + tmr->period;
+		tmr->expiry = lwiot_tick_ms() + tmr->period;
 	}
 }
 
@@ -228,7 +292,7 @@ int lwiot_timer_start(lwiot_timer_t *timer)
 	while(bt != pdPASS)
 		bt = xTimerStart(timer->timer, 0);
 
-	timer->expiry = (lwiot_tick() / 1000U) + vPortTickToMs(timer->period);
+	timer->expiry = lwiot_tick_ms() + vPortTickToMs(timer->period);
 	return -EOK;
 }
 
@@ -279,7 +343,7 @@ int lwiot_timer_set_period(lwiot_timer_t *timer, int ms)
 	while(bt != pdPASS)
 		bt = xTimerChangePeriod(timer->timer, ms / portTICK_PERIOD_MS, 0);
 
-	timer->expiry = (lwiot_tick() / 1000U) + vPortTickToMs(timer->period);
+	timer->expiry = lwiot_tick_ms() + vPortTickToMs(timer->period);
 	return -EOK;
 }
 
@@ -294,7 +358,16 @@ time_t lwiot_tick(void)
 	time_t ticks;
 
 	ticks = xTaskGetTickCount();
-	ticks *= (float)1/configTICK_RATE_HZ * 1000ULL * 1000ULL;
+	ticks *= (double)1/configTICK_RATE_HZ * 1000ULL * 1000ULL;
+	return ticks;
+}
+
+time_t lwiot_tick_ms(void)
+{
+	time_t ticks;
+
+	ticks = xTaskGetTickCount();
+	ticks *= (double)1/configTICK_RATE_HZ * 1000ULL;
 	return ticks;
 }
 #endif
