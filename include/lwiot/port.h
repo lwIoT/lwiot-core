@@ -19,10 +19,11 @@
 #endif
 
 CDECL
-#ifndef CONFIG_NO_OS
 #ifndef HAVE_MUTEX
 #error "Missing mutex definition!"
 #endif
+
+#ifndef CONFIG_NO_OS
 #ifndef HAVE_THREAD
 #error "Missing thread definition!"
 #endif
@@ -38,18 +39,9 @@ CDECL
 #define MTX_RECURSIVE 1U
 
 typedef void (*thread_handle_t)(void *arg);
-extern DLL_EXPORT time_t lwiot_tick(void);
-extern DLL_EXPORT time_t lwiot_tick_ms(void);
-
 extern DLL_EXPORT int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg);
 extern DLL_EXPORT int lwiot_thread_destroy(lwiot_thread_t *tp);
 extern DLL_EXPORT void lwiot_thread_yield();
-
-extern DLL_EXPORT int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags);
-extern DLL_EXPORT int lwiot_mutex_destroy(lwiot_mutex_t *mtx);
-extern DLL_EXPORT int lwiot_mutex_lock(lwiot_mutex_t *mtx, int tmo);
-extern DLL_EXPORT void lwiot_mutex_unlock(lwiot_mutex_t *mtx);
-extern DLL_EXPORT void lwiot_sleep(int ms);
 
 extern DLL_EXPORT void lwiot_event_create(lwiot_event_t *event, int length);
 extern DLL_EXPORT void lwiot_event_destroy(lwiot_event_t *e);
@@ -73,10 +65,20 @@ extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
 #define lwiot_timers_destroy()
 #endif /* CONFIG_NO_OS */
 
+extern DLL_EXPORT time_t lwiot_tick(void);
+extern DLL_EXPORT time_t lwiot_tick_ms(void);
+
 extern DLL_EXPORT void *lwiot_mem_alloc(size_t size);
 extern DLL_EXPORT void *lwiot_mem_zalloc(size_t size);
 extern DLL_EXPORT void lwiot_mem_free(void *ptr);
 extern DLL_EXPORT void *lwiot_mem_realloc(void *ptr, size_t size);
+
+extern DLL_EXPORT int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags);
+extern DLL_EXPORT int lwiot_mutex_destroy(lwiot_mutex_t *mtx);
+extern DLL_EXPORT int lwiot_mutex_lock(lwiot_mutex_t *mtx, int tmo);
+extern DLL_EXPORT void lwiot_mutex_unlock(lwiot_mutex_t *mtx);
+
+extern DLL_EXPORT void lwiot_sleep(int ms);
 
 #define FOREVER 0
 CDECL_END

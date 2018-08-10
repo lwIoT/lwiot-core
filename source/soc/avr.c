@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <lwiot.h>
 
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <avr/pgmspace.h>
+
 void __attribute__((optimize("Os")))  udelay(uint32_t us)
 {
 #if F_CPU >= 24000000L
@@ -77,53 +81,81 @@ void __attribute__((optimize("Os")))  udelay(uint32_t us)
 #define P6		6
 #define P7	    7
 
+#ifdef XMCRA
 static void avr_sre_enable(char reg, char idx)
 {
 	switch(reg) {
+#ifdef PORTA
 	case 0:
 		DDRA |= BIT(idx);
 		PORTA &= ~BIT(idx);
 		break;
+#endif
+
 	case 1:
 		DDRB |= BIT(idx);
 		PORTB &= ~BIT(idx);
 		break;
+
 	case 2:
 		DDRC |= BIT(idx);
 		PORTC &= ~BIT(idx);
 		break;
+
 	case 3:
 		DDRD |= BIT(idx);
 		PORTD &= ~BIT(idx);
 		break;
+
+#ifdef PORTE
 	case 4:
 		DDRE |= BIT(idx);
 		PORTE &= ~BIT(idx);
 		break;
+#endif
+
+#ifdef PORTF 
 	case 5:
 		DDRF |= BIT(idx);
 		PORTF &= ~BIT(idx);
 		break;
+#endif
+
+#ifdef PORTG
 	case 6:
 		DDRG |= BIT(idx);
 		PORTG &= ~BIT(idx);
 		break;
+#endif
+
+#ifdef PORTH
 	case 7:
 		DDRH |= BIT(idx);
 		PORTH &= ~BIT(idx);
 		break;
+#endif
+
+#ifdef PORTJ
 	case 8:
 		DDRJ |= BIT(idx);
 		PORTJ &= ~BIT(idx);
 		break;
+#endif
+
+#ifdef PORTK
 	case 9:
 		DDRK |= BIT(idx);
 		PORTK &= ~BIT(idx);
 		break;
+#endif
+
+#ifdef PORTL
 	case 10:
 		DDRL |= BIT(idx);
 		PORTL &= ~BIT(idx);
 		break;
+#endif
+
 	default:
 		break;
 	}
@@ -146,3 +178,4 @@ void extmem_enable(int pin)
 	/* Select bank 0 */
 	PORTL &= ~(BIT(P5) | BIT(P6) | BIT(P7));
 }
+#endif

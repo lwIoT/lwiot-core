@@ -17,8 +17,13 @@
 
 #ifdef __cplusplus
 extern "C" void udelay(uint32_t us);
+extern "C" void no_os_init(void);
 #else
 extern void udelay(uint32_t us);
+extern void no_os_init(void);
 #endif
 
-#define lwiot_udelay(__us) udelay(__us)
+typedef struct mutex {
+	uint8_t lock;
+#define HAVE_MUTEX
+} lwiot_mutex_t;
