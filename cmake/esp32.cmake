@@ -32,14 +32,14 @@ set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PAT
 #########################
 
 if(NOT DEFINED ESP32_IDF_PATH)
-    set(ESP32_IDF_PATH /opt/Espressif/esp32-idf)
+    set(ESP32_IDF_PATH ${PROJECT_SOURCE_DIR}/external/esp32-idf)
     message(STATUS "Default SDK location will be used: ${ESP32_IDF_PATH}")
 else()
     message(STATUS "ESP32 SDK path: ${ESP32_IDF_PATH}")
 endif()
 
 set(CMAKE_LIBRARY_PATH ${ESP32_IDF_PATH}/lib/)
-SET(CONFIG_APP_CFG_PATH ${ESP32_IDF_PATH}/esp32-config CACHE STRING "Application Kconfig directory")
+SET(CONFIG_APP_CFG_PATH ${PROJECT_SOURCE_DIR}/usr/esp32_test CACHE STRING "Application Kconfig directory")
 
 if(NOT IS_ABSOLUTE ${CONFIG_APP_CFG_PATH})
 	SET(APP_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG_APP_CFG_PATH}")
@@ -72,6 +72,7 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${ESP32_IDF_PATH}/components/tcpip_adapter/include
 		${ESP32_IDF_PATH}/components/soc/esp32/include
 		${ESP32_IDF_PATH}/components/soc/include
+		${ESP32_IDF_PATH}/components/freertos/include/freertos
 		${APP_CONFIG}/build/include
 )
 
