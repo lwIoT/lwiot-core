@@ -25,7 +25,7 @@ namespace lwiot {
 #ifndef NO_OS
 		lwiot_mutex_t mtx;
 #else
-		uint8_t _lockval;
+		bool _lockval;
 #endif
 	};
 }

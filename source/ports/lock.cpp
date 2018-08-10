@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <lwiot.h>
+#include <cpu.h>
 
 #include <lwiot/lock.h>
 #include <lwiot/log.h>
@@ -43,24 +44,43 @@ namespace lwiot {
 		lwiot_mutex_unlock(&this->mtx);
 	}
 #else /* No OS definitions */
-	Lock::Lock(bool recursive) : _lockval(0)
+	Lock::Lock(bool recursive) : _lockval(false)
 	{
 	}
 
 	void Lock::lock()
 	{
-		while(this->_lockval);
-		this->_lockval = 1;
+		bool value = true;
+
+		while(value) {
+			enter_critical();
+			value = this->_lockval;
+			exit_critical();
+
+			lwiot_sleep(1);
+		}
+
+		enter_critical();
+		this->_lockval = true;
+		exit_critical();
 	}
 
 	void Lock::unlock()
 	{
-		this->_lockval = 0;
+		enter_critical();
+		this->_lockval = false;
+		exit_critical();
 	}
 
 	bool Lock::try_lock(int tmo)
 	{
-		if(this->_lockval)
+		bool cache;
+
+		enter_critical();
+		cache = this->_lockval;
+		exit_critical();
+
+		if(cache)
 			return false;
 
 		this->lock();
