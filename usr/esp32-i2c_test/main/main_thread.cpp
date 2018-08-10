@@ -81,9 +81,9 @@ protected:
 			print_dbg("Read test failed!\n");
 		}
 
-		auto& msg = msgs[1];
+		auto& msg = *msgs[1];
 		print_dbg("Read data:\n");
-		for(auto& byte : *msg) {
+		for(auto& byte : msg) {
 			print_dbg("Read byte: %u\n", byte);
 		}
 
