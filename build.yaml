@@ -52,5 +52,6 @@ atmega328:
         - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
         - FREERTOS=True
         - FREERTOS_MANUAL=True
+        - NO_OS=True
         - AVR=True
         - F_CPU=16000000
