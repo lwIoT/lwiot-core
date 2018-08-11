@@ -19,8 +19,6 @@ extern void lwiot_init();
 void app_main()
 {
     lwiot_init();
-    printf("Hello world!\n");
-    main_start();
 
     /* Print chip information */
     esp_chip_info_t chip_info;
@@ -30,14 +28,10 @@ void app_main()
             (chip_info.features & CHIP_FEATURE_BT) ? "/BT" : "",
             (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
 
-    printf("silicon revision %d, ", chip_info.revision);
+    printf("Silicon revision %d, ", chip_info.revision);
 
     printf("%dMB %s flash\n", spi_flash_get_chip_size() / (1024 * 1024),
             (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
-    while(true) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-    fflush(stdout);
-    esp_restart();
+    main_start();
 }
