@@ -29,6 +29,7 @@ SET(SOURCES
     datetime.cpp
 	log.cpp
     scopedlock.cpp
+	application.cpp
     string.cpp
 	vector.cpp
     system.cpp
@@ -44,62 +45,60 @@ set(GENERIC_HEADERS
     asm/esp32/cpu.h
     asm/esp8266/cpu.h
     asm/hosted/cpu.h
-    lwiot/adcchip.h
-    lwiot/adcpin.h
-    lwiot/avr/avradcchip.h
-    lwiot/avr/avrgpiochip.h
-    lwiot/avr/avrsystem.h
-    lwiot/avr/avruart.h
-    lwiot/avr/avrwatchdog.h
-    lwiot/bufferedstream.h
-    lwiot/bytebuffer.h
-    lwiot/compiler-gcc.h
-    lwiot/compiler-vc.h
-    lwiot/compiler.h
-    lwiot/countable.h
-    lwiot/dacchip.h
-    lwiot/dacpin.h
-    lwiot/error.h
-    lwiot/esp32/esp32adcchip.h
-    lwiot/esp32/esp32dacchip.h
-    lwiot/esp32/esp32gpiochip.h
-    lwiot/esp32/esp32primaryadc.h
-    lwiot/esp32/esp32secondaryadc.h
-    lwiot/esp32/esp32system.h
-    lwiot/esp32/esp32pwm.h
-    lwiot/esp32/esp32uart.h
-    lwiot/esp32/esp32watchdog.h
-    lwiot/esp8266/esp8266adcchip.h
-    lwiot/esp8266/esp8266gpiochip.h
-    lwiot/esp8266/esp8266system.h
-    lwiot/esp8266/esp8266uart.h
-    lwiot/esp8266/esp8266watchdog.h
-    lwiot/event.h
-    lwiot/gpiochip.h
-    lwiot/gpiopin.h
-    lwiot/hosted/hostedgpiochip.h
-    lwiot/ipaddress.h
-    lwiot/json.h
-    lwiot/list.h
-    lwiot/lock.h
-    lwiot/log.h
-    lwiot/lwiot.h
-    lwiot/pair.h
-    lwiot/port.h
-    lwiot/stream.h
-    lwiot/string.h
-    lwiot/system.h
-    lwiot/test.h
-    lwiot/thread.h
-    lwiot/timer.h
-    lwiot/types.h
-    lwiot/uart.h
-    lwiot/vector.h
-    lwiot/watchdog.h
-    lwiot/wifiaccesspoint.h
-    lwiot/wifistation.h
-    lwiot/pwm.h
-    lwiot.h
+
+	lwiot.h
+	ArduinoJson.h
+
+	lwiot/application.h
+	lwiot/adcchip.h
+	lwiot/adcpin.h
+	lwiot/bufferedstream.h
+	lwiot/bytebuffer.h
+	lwiot/compiler.h
+	lwiot/compiler-gcc.h
+	lwiot/compiler-vc.h
+	lwiot/config.h.in
+	lwiot/count.h
+	lwiot/countable.h
+	lwiot/dacchip.h
+	lwiot/dacpin.h
+	lwiot/datetime.h
+	lwiot/dhtbus.h
+	lwiot/dhtsensor.h
+	lwiot/error.h
+	lwiot/event.h
+	lwiot/functionalthread.h
+	lwiot/gpiochip.h
+	lwiot/gpiopin.h
+	lwiot/i2calgorithm.h
+	lwiot/i2cbus.h
+	lwiot/i2cmessage.h
+	lwiot/ipaddress.h
+	lwiot/json.h
+	lwiot/list.h
+	lwiot/lock.h
+	lwiot/log.h
+	lwiot/lwiot.h
+	lwiot/onewirebus.h
+	lwiot/pair.h
+	lwiot/port.h
+	lwiot/pwm.h
+	lwiot/scopedlock.h
+	lwiot/softwarei2calgorithm.h
+	lwiot/spibus.h
+	lwiot/spimessage.h
+	lwiot/stream.h
+	lwiot/string.h
+	lwiot/system.h
+	lwiot/test.h
+	lwiot/thread.h
+	lwiot/timer.h
+	lwiot/types.h
+	lwiot/uart.h
+	lwiot/vector.h
+	lwiot/watchdog.h
+	lwiot/wifiaccesspoint.h
+	lwiot/wifistation.h
 )
 
 # Include timer implementation on UNIX and Windows builds
