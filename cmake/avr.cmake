@@ -16,6 +16,7 @@ SET(NO_OS False CACHE BOOL "Build without RTOS")
 SET(MCU "atmega2560" CACHE STRING "AVR MCU type")
 
 if(NO_OS)
+SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/no-os)
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
 	${PROJECT_SOURCE_DIR}/source/ports/no-os
 	${PROJECT_SOURCE_DIR}/include/asm/avr
@@ -25,6 +26,7 @@ SET(RTOS_SOURCES
 	${PROJECT_SOURCE_DIR}/source/ports/no-os/avr.c
 )
 else()
+SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 set(LWIOT_PORT_INCLUDE_DIRECTORIES
 		${PROJECT_SOURCE_DIR}/source/ports/freertos
 		${PROJECT_SOURCE_DIR}/external/avr-freertos/include
@@ -35,7 +37,6 @@ SET(RTOS_SOURCES
 )
 endif()
 
-SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
 SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avr.c
 	${PROJECT_SOURCE_DIR}/source/io/gpio/avrgpiochip.cpp
