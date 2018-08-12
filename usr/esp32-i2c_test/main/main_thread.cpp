@@ -20,6 +20,8 @@
 #include <lwiot/datetime.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/softwarei2calgorithm.h>
+#include <lwiot/application.h>
+#include <lwiot/functionalthread.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 #include <lwiot/esp32/esp32i2calgorithm.h>
@@ -39,58 +41,9 @@ static int calculate_udelay_test(const uint32_t& frequency)
 	return static_cast<int>(tval);
 }
 
-class MainThread : public lwiot::Thread {
+class I2CTestApplication : public lwiot::Functor {
 public:
-	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg)
-	{ }
-
-protected:
-	void testSingle(lwiot::I2CBus& bus)
-	{
-		lwiot::I2CMessage wr(1);
-
-		wr.setAddress(0x5B, false, false);
-		wr.write(1);
-
-		if(bus.transfer(wr)) {
-			print_dbg("Single test successfull!\n");
-		} else {
-			print_dbg("Single test failed!\n");
-		}
-
-		lwiot_sleep(500);
-	}
-
-	void testRead(lwiot::I2CBus& bus)
-	{
-		lwiot::I2CMessage wr(1), rd(3);
-		lwiot::Vector<lwiot::I2CMessage*> msgs;
-
-		wr.setAddress(0x5B, false, false);
-		wr.write(1);
-		wr.setRepeatedStart(true);
-
-		rd.setAddress(0x5B, false, true);
-
-		msgs.pushback(&wr);
-		msgs.pushback(&rd);
-
-		if(bus.transfer(msgs)) {
-			print_dbg("Read test successfull!\n");
-		} else {
-			print_dbg("Read test failed!\n");
-		}
-
-		auto& msg = *msgs[1];
-		print_dbg("Read data:\n");
-		for(auto& byte : msg) {
-			print_dbg("Read byte: %u\n", byte);
-		}
-
-		lwiot_sleep(500);
-	}
-
-	virtual void run(void *arg) override
+	virtual void operator()() override
 	{
 		size_t freesize;
 		auto algo = new lwiot::SoftwareI2CAlgorithm(23, 22, 100000U);
@@ -109,6 +62,17 @@ protected:
 
 		print_dbg("Testing I2C bus..\n");
 		algo->test();
+
+		FUNC_THREAD(td, "functp", []() -> void {
+			int idx = 0;
+
+			while(idx++ < 5) {
+				print_dbg("[ftp] Thread ping..\n");
+				lwiot_sleep(750);
+			}
+		});
+
+		td.start();
 
 		while(true) {
 			lwiot::Vector<lwiot::I2CMessage*> msgs;
@@ -157,6 +121,52 @@ protected:
 			lwiot_sleep(500);
 		}
 	}
+
+private:
+	void testSingle(lwiot::I2CBus& bus)
+	{
+		lwiot::I2CMessage wr(1);
+
+		wr.setAddress(0x5B, false, false);
+		wr.write(1);
+
+		if(bus.transfer(wr)) {
+			print_dbg("Single test successfull!\n");
+		} else {
+			print_dbg("Single test failed!\n");
+		}
+
+		lwiot_sleep(500);
+	}
+
+	void testRead(lwiot::I2CBus& bus)
+	{
+		lwiot::I2CMessage wr(1), rd(3);
+		lwiot::Vector<lwiot::I2CMessage*> msgs;
+
+		wr.setAddress(0x5B, false, false);
+		wr.write(1);
+		wr.setRepeatedStart(true);
+
+		rd.setAddress(0x5B, false, true);
+
+		msgs.pushback(&wr);
+		msgs.pushback(&rd);
+
+		if(bus.transfer(msgs)) {
+			print_dbg("Read test successfull!\n");
+		} else {
+			print_dbg("Read test failed!\n");
+		}
+
+		auto& msg = *msgs[1];
+		print_dbg("Read data:\n");
+		for(auto& byte : msg) {
+			print_dbg("Read byte: %u\n", byte);
+		}
+
+		lwiot_sleep(500);
+	}
 };
 
 class TestThread : public lwiot::Thread {
@@ -176,20 +186,14 @@ protected:
 	}
 };
 
-static MainThread *mt;
-static TestThread *tp1, *tp2;
-static const char *arg = "Hello, World! [FROM main-thread]";
-
+static TestThread *tp;
 extern "C" void main_start(void)
 {
-	printf("Creating main thread..");
-	mt = new MainThread(arg);
-	tp1 = new TestThread("tst-1", nullptr);
-	tp2 = new TestThread("tst-2", nullptr);
+	I2CTestApplication runner;
+	lwiot::Application app(runner);
 
-	printf(" [DONE]\n");
-	mt->start();
-	tp1->start();
-	tp2->start();
+	tp = new TestThread("tst-1", nullptr);
+	tp->start();
+	app.start();
 }
 
