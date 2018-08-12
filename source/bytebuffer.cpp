@@ -17,7 +17,7 @@ namespace lwiot
 	{
 	}
 
-	ByteBuffer::ByteBuffer(const size_t& size) : Countable(size), _index(0)
+	ByteBuffer::ByteBuffer(const size_t& size, bool exactfit) : Countable(size), _index(0), _exactfit(exactfit)
 	{
 		this->_data = (uint8_t*)lwiot_mem_alloc(size);
 		memset(this->_data, 0, size);
@@ -31,7 +31,8 @@ namespace lwiot
 	}
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-	ByteBuffer::ByteBuffer(ByteBuffer&& other)
+	ByteBuffer::ByteBuffer(ByteBuffer&& other) noexcept :
+		Countable(other.count()), _index(0), _data(nullptr), _exactfit(other._exactfit)
 	{
 		this->move(other);
 	}
@@ -43,7 +44,7 @@ namespace lwiot
 	}
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-	ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other)
+	ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other) noexcept
 	{
 		this->move(other);
 		return *this;
@@ -117,8 +118,17 @@ namespace lwiot
 
 	void ByteBuffer::write(const uint8_t* bytes, size_t num)
 	{
-		if(this->_index + num > this->count())
-			this->grow(num + 10);
+		size_t needed, avail;
+
+		if(this->_index + num > this->count()) {
+			if(this->_exactfit) {
+				avail = this->count() - this->_index;
+				needed = num - avail;
+				this->grow(needed);
+			} else {
+				this->grow(num + 10);
+			}
+		}
 
 		if(num == 1) {
 			this->_data[this->_index++] = *bytes;

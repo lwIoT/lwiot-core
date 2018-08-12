@@ -22,8 +22,8 @@ namespace lwiot
 	{
 	}
 
-	I2CMessage::I2CMessage(uint16_t addr, bool is10bit, const size_t& size) : ByteBuffer(size),
-		_addr(addr), _is_10bit(is10bit), _readop(false)
+	I2CMessage::I2CMessage(uint16_t addr, bool is10bit, const size_t& size) : ByteBuffer(size, true),
+		_addr(addr), _is_10bit(is10bit), _readop(false), _repstart(false)
 	{
 	}
 
@@ -31,11 +31,10 @@ namespace lwiot
 	{
 	}
 
-	I2CMessage::I2CMessage(const I2CMessage& other) : ByteBuffer(other)
+	I2CMessage::I2CMessage(const I2CMessage& other) : ByteBuffer(other),
+		_addr(other.address()), _is_10bit(other.is10Bit()),
+		_readop(other.isRead()), _repstart(other._repstart)
 	{
-		this->_addr = other.address();
-		this->_is_10bit = other.is10Bit();
-		this->_readop = other.isRead();
 	}
 
 	uint16_t I2CMessage::address() const

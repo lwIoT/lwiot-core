@@ -20,16 +20,16 @@ namespace lwiot
 	class ByteBuffer : public Countable<uint8_t> {
 	public:
 		explicit ByteBuffer();
-		explicit ByteBuffer(const size_t& size);
+		explicit ByteBuffer(const size_t& size, bool exactfit = false);
 		explicit ByteBuffer(const ByteBuffer& other);
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-		explicit ByteBuffer(ByteBuffer&& other);
+		explicit ByteBuffer(ByteBuffer&& other) noexcept;
 #endif
 		virtual ~ByteBuffer();
 
-		virtual ByteBuffer& operator =(const ByteBuffer& other);
+		ByteBuffer& operator =(const ByteBuffer& other);
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-		virtual ByteBuffer& operator =(ByteBuffer&& other);
+		ByteBuffer& operator =(ByteBuffer&& other) noexcept;
 #endif
 
 		virtual const uint8_t& operator[] (const size_t& idx) const override;
@@ -37,7 +37,7 @@ namespace lwiot
 
 		const uint8_t *begin() const;
 		const uint8_t *end() const;
-		uint8_t *data() { return this->_data; }
+		uint8_t *data() const { return this->_data; }
 
 		void setIndex(size_t index) { this->_index = index; }
 
@@ -63,6 +63,7 @@ namespace lwiot
 
 	private:
 		uint8_t *_data;
+		bool _exactfit;
 	};
 }
 #endif
