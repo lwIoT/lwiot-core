@@ -80,30 +80,29 @@ void lwiot_mem_free(void *ptr)
 	vPortFree(ptr);
 }
 
-#define STACK_DEPTH CONFIG_STACK_SIZE
-#define TASK_PRIO CONFIG_TASK_PRIO
-int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
+int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attributes *attrs)
 {
 	BaseType_t bt;
 
 	assert(tp);
-	assert(handle);
+	assert(attrs);
 
-	tp->handle = handle;
-	tp->arg = arg;
+	tp->handle = attrs->handle;
+	tp->arg = attrs->argument;
 
 #ifdef ESP32
-	BaseType_t coreID = esp32_get_next_coreid();
+	BaseType_t coreid = esp32_get_next_coreid();
 	bt = xTaskCreatePinnedToCore(
-		vPortTaskStarter,
-		tp->name,
-		STACK_DEPTH,
-		tp, TASK_PRIO,
-		&tp->task,
-		coreID
+		vPortTaskStarter, tp->name,
+		attrs->stacksize, tp,
+		attrs->priority, &tp->task, coreid
 	);
 #else
-	bt = xTaskCreate(vPortTaskStarter, tp->name, STACK_DEPTH, tp, TASK_PRIO, &tp->task);
+	bt = xTaskCreate(
+		vPortTaskStarter, tp->name,
+		attrs->stacksize, attrs->argument,
+		attrs->priority, &tp->task
+	);
 #endif
 
 	if(bt == pdPASS)
@@ -111,6 +110,20 @@ int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 	
 	print_dbg("Could not create task!\n");
 	return -EINVALID;
+}
+
+#define STACK_DEPTH CONFIG_STACK_SIZE
+#define TASK_PRIO CONFIG_TASK_PRIO
+int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
+{
+	struct lwiot_thread_attributes attrs;
+
+	attrs.priority = TASK_PRIO;
+	attrs.stacksize = STACK_DEPTH;
+	attrs.handle = handle;
+	attrs.argument = arg;
+
+	return lwiot_thread_create_raw(tp, &attrs);
 }
 
 int lwiot_thread_destroy(lwiot_thread_t *tp)

@@ -80,6 +80,12 @@ void lwiot_thread_yield()
 	pthread_yield();
 }
 
+int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attributes *attrs)
+{
+	assert(attrs);
+	return lwiot_thread_create(tp, attrs->handle, attrs->argument);
+}
+
 int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 {
 	int rv;

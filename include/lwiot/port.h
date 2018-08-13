@@ -39,7 +39,18 @@ CDECL
 #define MTX_RECURSIVE 1U
 
 typedef void (*thread_handle_t)(void *arg);
+
+struct lwiot_thread_attributes {
+	char *name;
+	thread_handle_t handle;
+	void *argument;
+
+	int priority;
+	size_t stacksize;
+};
+
 extern DLL_EXPORT int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg);
+extern DLL_EXPORT int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attributes *attrs);
 extern DLL_EXPORT int lwiot_thread_destroy(lwiot_thread_t *tp);
 extern DLL_EXPORT void lwiot_thread_yield();
 
