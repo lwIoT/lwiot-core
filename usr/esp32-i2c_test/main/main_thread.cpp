@@ -171,7 +171,7 @@ private:
 
 class TestThread : public lwiot::Thread {
 public:
-	explicit TestThread(const char *name, const char *arg) : Thread(name, (void*)arg)
+	explicit TestThread(const char *name, const char *arg) : Thread(name, 4, 2048, (void*)arg)
 	{ }
 
 protected:

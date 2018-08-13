@@ -12,6 +12,7 @@ namespace lwiot {
 	public:
 		explicit Thread(const char *name, void *argument = nullptr);
 		explicit Thread(const String& name, void *argument = nullptr);
+		explicit Thread(const String& name, int priority, size_t stacksize, void *argument = nullptr);
 		virtual ~Thread();
 
 		void stop();
@@ -36,6 +37,9 @@ namespace lwiot {
 		void *argument;
 		bool running;
 		lwiot_thread_t internal;
+
+		int prio;
+		size_t stacksize;
 	};
 
 }
