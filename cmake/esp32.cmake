@@ -1,29 +1,29 @@
-set(CMAKE_SYSTEM_NAME "Generic")
+#
+# ESP32 build file.
+#
+# @Author: Michel Megens
+# @Email:  dev@bietje.net
+#
 
 include(CMakeForceCompiler)
+SET(CMAKE_SYSTEM_NAME Generic)
 
-set(XTENSA_GCC_COMPILER "xtensa-esp32-elf-gcc${CMAKE_EXECUTABLE_SUFFIX}")
-set(XTENSA_GXX_COMPILER "xtensa-esp32-elf-g++${CMAKE_EXECUTABLE_SUFFIX}")
 set(HAVE_BIG_ENDIAN False)
 
 if(NOT DEFINED ESP32_TOOLCHAIN_PATH)
-    # Check if GCC is reachable.
-    find_path(ESP32_TOOLCHAIN_PATH bin/${XTENSA_GCC_COMPILER})
-
-    if(NOT ESP32_TOOLCHAIN_PATH)
-        # Set default path.
-        set(ESP32_TOOLCHAIN_PATH /opt/Espressif/crosstool-NG/builds/xtensa-esp32-elf)
-        message(STATUS "GCC not found, default path will be used: ${ESP32_TOOLCHAIN_PATH}")
-    endif()
+    # Set default path.
+    set(ESP32_TOOLCHAIN_PATH /opt/xtensa-esp32-elf)
+	SET(CMAKE_FIND_ROOT_PATH  /opt/xtensa-esp32-elf)
+    message(STATUS "GCC not found, default path will be used: ${ESP32_TOOLCHAIN_PATH}")
 else()
     message(STATUS "Toolchain path: ${ESP32_TOOLCHAIN_PATH}")
+	SET(CMAKE_FIND_ROOT_PATH ${ESP32_TOOLCHAIN_PATH})
 endif()
 
-SET(CMAKE_C_COMPILER ${XTENSA_GCC_COMPILER} )
-SET(CMAKE_CXX_COMPILER ${XTENSA_GXX_COMPILER} )
 
-#cmake_force_c_compiler(${ESP32_TOOLCHAIN_PATH}/bin/${XTENSA_GCC_COMPILER} GNU)
-#cmake_force_cxx_compiler(${ESP32_TOOLCHAIN_PATH}/bin/${XTENSA_GXX_COMPILER} GNU)
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PATH "")
 
@@ -105,25 +105,23 @@ SET(LWIOT_PORT_SRCS
 SET(LWIOT_PORT_HEADERS
 		${LWIOT_PORT_DIR}/lwiot_arch.h)
 		
-SET(ESP32 True)
+SET(ESP32 True CACHE BOOL "Build for the ESP32 SoC.")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin \
+set(PORT_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin \
 	-Wno-implicit-function-declaration -Wl,-EL,--gc-sections -fno-inline-functions \
 	-nostdlib -mlongcalls -mtext-section-literals \
-    -ffunction-sections" CACHE FORCE "")
+    -ffunction-sections" CACHE STRING "C flags")
 
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)
 SET(RTTI False CACHE BOOL "Enable/disable runtime type identification.")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
-
 IF(RTTI)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -frtti -Wno-comment -fno-builtin \
+set(PORT_CXX_FLAGS "-frtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections" CACHE FORCE "")
+	-mtext-section-literals -ffunction-sections" CACHE STRING "C++ flags")
 ELSE()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -Wno-comment -fno-builtin \
+set(PORT_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections" CACHE FORCE "")
+	-mtext-section-literals -ffunction-sections" CACHE STRING "C++ flags")
 ENDIF()

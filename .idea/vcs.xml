@@ -2,5 +2,33 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/aws_iot/aws-iot-device-sdk-embedded-C" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/bt/lib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/coap/libcoap" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/esp32/lib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/esptool_py/esptool" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/json/cJSON" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/libsodium/libsodium" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/micro-ecc/micro-ecc" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2/third-party/mruby" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2/third-party/neverbleed" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/spiffs/spiffs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/bootloader/rboot" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/bearssl/BearSSL" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/crc_generic/crc_lib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/http-parser/http-parser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/jsmn/jsmn" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/libesphttpd/libesphttpd" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/libesphttpd/libesphttpd/lib/heatshrink" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/mbedtls/mbedtls" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/multipwm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/spiffs/spiffs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/lwip/lwip" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/tests/fs-test" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/tests/unity" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/matplotlib-cpp" vcs="Git" />
   </component>
 </project>

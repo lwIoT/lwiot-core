@@ -2,19 +2,14 @@ set(CMAKE_SYSTEM_NAME "Generic")
 
 include(CMakeForceCompiler)
 
-set(XTENSA_GCC_COMPILER "xtensa-lx106-elf-gcc${CMAKE_EXECUTABLE_SUFFIX}")
-set(XTENSA_GXX_COMPILER "xtensa-lx106-elf-g++${CMAKE_EXECUTABLE_SUFFIX}")
+#set(XTENSA_GCC_COMPILER "xtensa-lx106-elf-gcc${CMAKE_EXECUTABLE_SUFFIX}")
+#set(XTENSA_GXX_COMPILER "xtensa-lx106-elf-g++${CMAKE_EXECUTABLE_SUFFIX}")
 set(HAVE_BIG_ENDIAN False)
 
 if(NOT DEFINED ESP8266_TOOLCHAIN_PATH)
-    # Check if GCC is reachable.
-    find_path(ESP8266_TOOLCHAIN_PATH bin/${XTENSA_GCC_COMPILER})
-
-    if(NOT ESP8266_TOOLCHAIN_PATH)
-        # Set default path.
-        set(ESP8266_TOOLCHAIN_PATH /opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf)
-        message(STATUS "GCC not found, default path will be used: ${ESP8266_TOOLCHAIN_PATH}")
-    endif()
+# Set default path.
+    set(ESP8266_TOOLCHAIN_PATH /opt/esp8266-open-sdk/xtensa-lx106-elf)
+    message(STATUS "GCC not found, default path will be used: ${ESP8266_TOOLCHAIN_PATH}")
 else()
     message(STATUS "Toolchain path: ${ESP8266_TOOLCHAIN_PATH}")
 endif()
@@ -32,7 +27,7 @@ set(CMAKE_OBJCOPY ${ESP8266_TOOLCHAIN_PATH}/bin/xtensa-lx106-elf-objcopy CACHE P
 #########################
 
 if(NOT DEFINED ESP8266_OPEN_RTOS_PATH)
-    set(ESP8266_SDK_PATH /opt/Espressif/esp-rtos-sdk)
+    set(ESP8266_OPEN_RTOS_PATH ${PROJECT_SOURCE_DIR}/external/esp8266-open-rtos)
     message(STATUS "Default SDK location will be used: ${ESP8266_OPEN_RTOS_PATH}")
 else()
     message(STATUS "ESP8266 SDK path: ${ESP8266_OPEN_RTOS_PATH}")
@@ -80,10 +75,10 @@ SET(LWIOT_PORT_HEADERS
         ${LWIOT_PORT_DIR}/lwiot_arch.h
 )
 
-set(CMAKE_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections" CACHE FORCE "")
-set(CMAKE_CXX_FLAGS "-fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
     -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
 
 SET(HAVE_RTOS True)
