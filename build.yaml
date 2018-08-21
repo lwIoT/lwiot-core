@@ -7,6 +7,8 @@ esp8266:
         - FREERTOS_MANUAL=True
         - ESP8266_TOOLCHAIN_PATH=~/usr/xtensa
         - ESP8266_OPEN_RTOS_PATH=~/usr/esp-open-rtos
+        - CMAKE_C_COMPILER=xtensa-lx106-elf-gcc
+        - CMAKE_CXX_COMPILER=xtensa-lx106-elf-g++
 
 esp32:
     defs:
@@ -16,6 +18,8 @@ esp32:
         - FREERTOS=True
         - FREERTOS_MANUAL=True
         - ESP32_TOOLCHAIN_PATH=/opt/xtensa-esp32-elf
+        - CMAKE_C_COMPILER=xtensa-esp32-elf-gcc
+        - CMAKE_CXX_COMPILER=xtensa-esp32-elf-g++
 
 freertos:
     defs:
@@ -42,6 +46,8 @@ atmega2560:
         - FREERTOS_MANUAL=True
         - AVR=True
         - F_CPU=16000000
+        - CMAKE_C_COMPILER=avr-gcc
+        - CMAKE_CXX_COMPILER=avr-g++
 
 atmega328:
     defs:
@@ -55,3 +61,5 @@ atmega328:
         - NO_OS=True
         - AVR=True
         - F_CPU=16000000
+        - CMAKE_C_COMPILER=avr-gcc
+        - CMAKE_CXX_COMPILER=avr-g++

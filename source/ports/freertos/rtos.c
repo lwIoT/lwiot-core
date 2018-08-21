@@ -100,7 +100,7 @@ int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attrib
 #else
 	bt = xTaskCreate(
 		vPortTaskStarter, tp->name,
-		attrs->stacksize, attrs->argument,
+		attrs->stacksize, tp,
 		attrs->priority, &tp->task
 	);
 #endif

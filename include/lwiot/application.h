@@ -9,7 +9,6 @@
 
 #include <lwiot/functor.h>
 #include <lwiot/lwiot.h>
-#include <lwiot/thread.h>
 #include <lwiot/types.h>
 
 namespace lwiot

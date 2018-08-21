@@ -1,8 +1,14 @@
+#
+# AVR toolchain file
+#
+
 SET(CMAKE_SYSTEM_NAME Generic)
-SET(CMAKE_SYSTEM_VERISON 1)
+
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.6.0")
+	set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+endif()
 
 set(HAVE_BIG_ENDIAN False)
-
 
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -56,7 +62,7 @@ SET(LWIOT_PORT_HEADERS
 		${LWIOT_PORT_DIR}/lwiot_arch.h
 )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmcu=${MCU}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmcu=${MCU} -fno-rtti -std=gnu++14")
+set(PORT_C_FLAGS "-mmcu=${MCU}")
+set(PORT_CXX_FLAGS "-mmcu=${MCU} -fno-rtti -std=gnu++14")
 
 SET(HAVE_LIBTIME True)

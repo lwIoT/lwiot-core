@@ -10,7 +10,6 @@
 #include <lwiot.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/thread.h>
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/application.h>

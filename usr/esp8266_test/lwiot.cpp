@@ -24,39 +24,21 @@
 #include <lwip/api.h>
 
 static lwiot::Thread *tp;
-static volatile int irqs = 0;
-
-static void IRAM irq_handler(void)
-{
-	irqs++;
-}
-
 
 class TestThread : public lwiot::Thread {
 public:
-	explicit TestThread() : Thread("test-thread")
+	explicit TestThread() : Thread("tst-thr")
 	{ }
 
 protected:
 	void run(void *argument) override
 	{
-		auto& ap = lwiot::WifiAccessPoint::instance();
-		lwiot::GpioPin outPin = gpio[5];
-		lwiot::IPAddress local(10, 0, 0, 1);
-		lwiot::IPAddress gateway(10, 0, 0, 1);
-		lwiot::IPAddress subnet(255, 255, 255, 0);
 		lwiot::Lock lock(false);
-		ip4_addr_t first;
+		lwiot::GpioPin outPin = 5;
 
-		ap.config(local, gateway, subnet);
-		ap.begin("Test-AP", "12345678", 5, false, 4);
-		while(!ap);
-		IP4_ADDR(&first, 10, 0, 0, 2);
-		dhcpserver_start(&first, 15);
+		print_dbg("Main thread started..\n");
 
 		wdt.enable(2000);
-		gpio.attachIrqHandler(14, irq_handler, lwiot::IrqRisingFalling);
-		outPin.setOpenDrain();
 
 		FUNC_THREAD(tp, "fthread", [&lock](void) -> void {
 			lwiot::ScopedLock slock(lock);
@@ -81,7 +63,7 @@ protected:
 				lwiot_sleep(500);
 
 				wdt.reset();
-				printf("IRQs: %i\n", irqs);
+				print_dbg("Ping..\n");
 				lock.unlock();
 				lwiot::Thread::yield();
 			}

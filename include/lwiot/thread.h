@@ -1,5 +1,8 @@
 /*
+ * lwIoT thread definition.
  *
+ * @author Michel Megens
+ * @email  dev@bietje.net
  */
 
 #pragma once

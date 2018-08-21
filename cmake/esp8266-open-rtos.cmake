@@ -1,9 +1,16 @@
 set(CMAKE_SYSTEM_NAME "Generic")
 
-include(CMakeForceCompiler)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.6.0")
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+else()
+    include(CMakeForceCompiler)
 
-#set(XTENSA_GCC_COMPILER "xtensa-lx106-elf-gcc${CMAKE_EXECUTABLE_SUFFIX}")
-#set(XTENSA_GXX_COMPILER "xtensa-lx106-elf-g++${CMAKE_EXECUTABLE_SUFFIX}")
+    set(XTENSA_GCC_COMPILER "xtensa-lx106-elf-gcc${CMAKE_EXECUTABLE_SUFFIX}")
+    set(XTENSA_GXX_COMPILER "xtensa-lx106-elf-g++${CMAKE_EXECUTABLE_SUFFIX}")
+    cmake_force_c_compiler(xtensa-lx106-elf-gcc GNU)
+    cmake_force_cxx_compiler(xtensa-lx106-elf-g++ GNU)
+endif()
+
 set(HAVE_BIG_ENDIAN False)
 
 if(NOT DEFINED ESP8266_TOOLCHAIN_PATH)
@@ -13,12 +20,6 @@ if(NOT DEFINED ESP8266_TOOLCHAIN_PATH)
 else()
     message(STATUS "Toolchain path: ${ESP8266_TOOLCHAIN_PATH}")
 endif()
-
-SET(CMAKE_C_COMPILER ${XTENSA_GCC_COMPILER} )
-SET(CMAKE_CXX_COMPILER ${XTENSA_GXX_COMPILER} )
-
-#cmake_force_c_compiler(${ESP8266_TOOLCHAIN_PATH}/bin/${XTENSA_GCC_COMPILER} GNU)
-#cmake_force_cxx_compiler(${ESP8266_TOOLCHAIN_PATH}/bin/${XTENSA_GXX_COMPILER} GNU)
 
 set(CMAKE_OBJCOPY ${ESP8266_TOOLCHAIN_PATH}/bin/xtensa-lx106-elf-objcopy CACHE PATH "")
 
@@ -69,17 +70,16 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/soc/esp8266.c
 )
 
-SET(ESP8266 True)
-
 SET(LWIOT_PORT_HEADERS
         ${LWIOT_PORT_DIR}/lwiot_arch.h
 )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
+set(PORT_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
-    -ffunction-sections" CACHE FORCE "")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
-    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections" CACHE FORCE "")
+    -ffunction-sections")
+set(PORT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
+    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections")
 
+SET(ESP8266 True CACHE BOOL "Target the ESP8266 SoC")
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)

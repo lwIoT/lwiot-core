@@ -8,7 +8,6 @@ include(CheckCSourceCompiles)
 include(TestBigEndian)
 include(${PROJECT_SOURCE_DIR}/cmake/config.cmake)
 
-
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(HAVE_DEBUG True)
 endif ()
@@ -30,8 +29,8 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
         set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -Os")
     endif()
 
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} -Wall -std=gnu11")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} -Wall")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} ${PORT_C_FLAGS} -Wall -std=gnu11")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} ${PORT_CXX_FLAGS} -Wall")
 
 	if(UNIX)
 		TEST_BIG_ENDIAN(HAVE_BIG_ENDIAN)

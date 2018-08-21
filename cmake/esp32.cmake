@@ -5,8 +5,11 @@
 # @Email:  dev@bietje.net
 #
 
-include(CMakeForceCompiler)
 SET(CMAKE_SYSTEM_NAME Generic)
+
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.6.0")
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+endif()
 
 set(HAVE_BIG_ENDIAN False)
 
@@ -107,21 +110,22 @@ SET(LWIOT_PORT_HEADERS
 		
 SET(ESP32 True CACHE BOOL "Build for the ESP32 SoC.")
 
-set(PORT_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin \
-	-Wno-implicit-function-declaration -Wl,-EL,--gc-sections -fno-inline-functions \
-	-nostdlib -mlongcalls -mtext-section-literals \
-    -ffunction-sections" CACHE STRING "C flags")
-
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)
 SET(RTTI False CACHE BOOL "Enable/disable runtime type identification.")
 
 IF(RTTI)
-set(PORT_CXX_FLAGS "-frtti -Wno-comment -fno-builtin \
+	set(PORT_CXX_FLAGS "-frtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections" CACHE STRING "C++ flags")
+	-mtext-section-literals -ffunction-sections")
 ELSE()
-set(PORT_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin \
+	set(PORT_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections" CACHE STRING "C++ flags")
+	-mtext-section-literals -ffunction-sections")
 ENDIF()
+
+set(PORT_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin \
+	-Wno-implicit-function-declaration -Wl,-EL,--gc-sections -fno-inline-functions \
+	-nostdlib -mlongcalls -mtext-section-literals \
+    -ffunction-sections" )
+

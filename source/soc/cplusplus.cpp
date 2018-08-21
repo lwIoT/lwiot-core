@@ -17,6 +17,18 @@ __extension__ typedef int __guard __attribute__((mode (__DI__)));
 
 extern "C" {
 #ifdef AVR
+#if __cplusplus >= 201402L
+	void __attribute__((weak)) operator delete(void *ptr, size_t size) noexcept
+	{
+		::operator delete(ptr);
+	}
+
+	void __attribute__((weak)) operator delete[](void *ptr, size_t size) noexcept
+	{
+		::operator delete(ptr);
+	}
+#endif
+
 void *operator new(size_t num)
 {
 	auto ptr = lwiot_mem_alloc(num);
