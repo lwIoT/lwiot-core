@@ -18,6 +18,7 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
+#include <lwiot/wifiaccesspoint.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -42,13 +43,23 @@ protected:
 		channel.reload();
 	}
 
+	void startAP(const lwiot::String& ssid, const lwiot::String& passw)
+	{
+		auto& ap = lwiot::WifiAccessPoint::instance();
+		lwiot::IPAddress local(192, 168, 1, 1);
+		lwiot::IPAddress subnet(255, 255, 255, 0);
+		lwiot::IPAddress gw(192, 168, 1, 1);
+
+		ap.config(local, gw, subnet);
+		ap.begin(ssid, passw, 4);
+	}
+
 	virtual void run(void *arg) override
 	{
 		lwiot::GpioPin out = 22;
 		lwiot::GpioPin out2 = 23;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		size_t freesize;
-		bool value;
 
 		printf("Main thread started!\n");
 		this->startPwm(timer);
@@ -62,8 +73,8 @@ protected:
 		wdt.enable();
 
 		print_dbg("Free heap size: %u\n", freesize);
-
-		value = true;
+		this->startAP("lwIoT test", "testap1234");
+		wdt.reset();
 
 		while(true) {
 			int i = 0;
