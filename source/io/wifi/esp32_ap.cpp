@@ -110,4 +110,27 @@ namespace lwiot
 	{
 		return this->_local != static_cast<uint32_t>(0);
 	}
+
+	const String& WifiAccessPoint::hostname() const
+	{
+		return this->_host;
+	}
+
+	void WifiAccessPoint::setHostname(const lwiot::String &host)
+	{
+		this->_host = host;
+	}
+
+	String WifiAccessPoint::mac() const
+	{
+		char addr[6] = {0};
+		esp_err_t err;
+
+		err = esp_efuse_mac_get_default((uint8_t*)addr);
+		if(unlikely(err != ESP_OK))
+			return String();
+
+		auto rv = String(addr);
+		return rv;
+	}
 }

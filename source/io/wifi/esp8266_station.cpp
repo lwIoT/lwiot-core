@@ -66,4 +66,14 @@ namespace lwiot
 	{
 		return this->_status == WL_CONNECTED;
 	}
+
+	wireless_status_t WifiStation::status() const
+	{
+		return this->_status;
+	}
+
+	const IPAddress& WifiStation::address() const
+	{
+		return this->addr;
+	}
 }

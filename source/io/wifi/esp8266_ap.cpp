@@ -81,4 +81,14 @@ namespace lwiot
 	{
 		return this->_local != static_cast<uint32_t>(0);
 	}
+
+	const String& WifiAccessPoint::hostname() const
+	{
+		return this->_host;
+	}
+
+	void WifiAccessPoint::setHostname(const lwiot::String &host)
+	{
+		this->_host = host;
+	}
 }
