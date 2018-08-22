@@ -21,6 +21,7 @@ namespace lwiot
 	class SoftwareI2CAlgorithm : public I2CAlgorithm {
 	public:
 		explicit SoftwareI2CAlgorithm(int sda, int scl, uint32_t frequency = 100000);
+		explicit SoftwareI2CAlgorithm(const GpioPin& sda, const GpioPin& scl, uint32_t frequency = 100000);
 		virtual ~SoftwareI2CAlgorithm();
 
 		virtual ssize_t transfer(I2CMessage& msg) override;

@@ -27,11 +27,16 @@
 namespace lwiot
 {
 	SoftwareI2CAlgorithm::SoftwareI2CAlgorithm(int sda, int scl, uint32_t frequency) :
-		I2CAlgorithm(I2CAlgorithm::DefaultRetryDelay, frequency), _sda(sda), _scl(scl),
-		_udelay(0), _lock(false), log("software-i2c")
+		SoftwareI2CAlgorithm(GpioPin(sda), GpioPin(scl), frequency)
 	{
-		this->_scl.setOpenDrain();
+	}
+
+	SoftwareI2CAlgorithm::SoftwareI2CAlgorithm(const lwiot::GpioPin &sda, const lwiot::GpioPin &scl, uint32_t frequency) :
+		I2CAlgorithm(I2CAlgorithm::DefaultRetryDelay, frequency), _sda(sda), _scl(scl), _udelay(0), _lock(false),
+		log("software-i2c")
+	{
 		this->_sda.setOpenDrain();
+		this->_scl.setOpenDrain();
 
 		this->_scl(true);
 		this->_sda(true);
