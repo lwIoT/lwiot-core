@@ -6,6 +6,13 @@ SET(CMAKE_SYSTEM_NAME Generic)
 
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.6.0")
 	set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+else()
+	include(CMakeForceCompiler)
+
+	set(XTENSA_GCC_COMPILER "avr-gcc${CMAKE_EXECUTABLE_SUFFIX}")
+	set(XTENSA_GXX_COMPILER "avr-g++${CMAKE_EXECUTABLE_SUFFIX}")
+	cmake_force_c_compiler(avr-gcc GNU)
+	cmake_force_cxx_compiler(avr-g++ GNU)
 endif()
 
 set(HAVE_BIG_ENDIAN False)
