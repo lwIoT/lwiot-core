@@ -23,6 +23,7 @@
 #include <lwiot/softwarei2calgorithm.h>
 
 #define READ_FLAG 0x1U
+#define BUSY_WAIT 10
 
 namespace lwiot
 {
@@ -139,6 +140,22 @@ namespace lwiot
 		this->sclhi();
 		this->_sda << true;
 		lwiot_udelay(this->_udelay);
+	}
+
+	bool SoftwareI2CAlgorithm::busy() const
+	{
+		bool sda, scl;
+
+		this->_sda >> sda;
+		this->_scl >> scl;
+
+		if(sda || scl) {
+			lwiot_udelay(BUSY_WAIT);
+			this->_scl >> scl;
+			this->_sda >> sda;
+		}
+
+		return scl && sda;
 	}
 
 	int RAM_ATTR SoftwareI2CAlgorithm::acknack(bool ack) const
@@ -341,6 +358,9 @@ namespace lwiot
 		bool first;
 		ScopedLock lock(this->_lock);
 
+		if(!this->busy())
+			return -ETRYAGAIN;
+
 		total = 0L;
 		first = true;
 		rv = -EOK;
@@ -402,6 +422,9 @@ namespace lwiot
 		ssize_t total = msg.count();
 		ssize_t rv;
 		ScopedLock lock(this->_lock);
+
+		if(!this->busy())
+			return -ETRYAGAIN;
 
 		enter_critical();
 		this->start();

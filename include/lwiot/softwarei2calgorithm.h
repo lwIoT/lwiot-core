@@ -50,6 +50,8 @@ namespace lwiot
 		bool begin(const I2CMessage& msg);
 		int begin(uint8_t addr, int retries);
 
+		bool busy() const;
+
 		void repstart() const;
 		void start() const;
 		void stop() const;
