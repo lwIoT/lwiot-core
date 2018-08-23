@@ -19,6 +19,7 @@ namespace lwiot
 	public:
 		explicit I2CMessage();
 		explicit I2CMessage(uint16_t addr, bool is10bit, const size_t& size = 8);
+		explicit I2CMessage(const ByteBuffer& buffer);
 		explicit I2CMessage(const size_t& size);
 		explicit I2CMessage(const I2CMessage& other);
 		virtual ~I2CMessage() = default;

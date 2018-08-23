@@ -37,6 +37,11 @@ namespace lwiot
 	{
 	}
 
+	I2CMessage::I2CMessage(const lwiot::ByteBuffer &buffer) :
+		ByteBuffer(buffer), _addr(0), _is_10bit(false), _readop(false), _repstart(false)
+	{
+	}
+
 	uint16_t I2CMessage::address() const
 	{
 		return this->_addr;
