@@ -65,6 +65,7 @@ set(GENERIC_HEADERS
 	lwiot/datetime.h
 	lwiot/dhtbus.h
 	lwiot/dhtsensor.h
+	lwiot/eeprom24c02.h
 	lwiot/error.h
 	lwiot/event.h
 	lwiot/functionalthread.h
