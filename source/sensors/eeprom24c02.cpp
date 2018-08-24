@@ -55,11 +55,59 @@ namespace lwiot
 
 	ssize_t Eeprom24C02::write(uint8_t addr, const void *data, size_t length)
 	{
-		return -1;
+		size_t current, idx;
+		uint8_t  address;
+		const uint8_t *ptr;
+
+		current = length < Eeprom24C02::PageSize ? length : Eeprom24C02::PageSize;
+		length -= current;
+		address = addr;
+		ptr = static_cast<const uint8_t *>(data);
+		idx = 0UL;
+
+		do {
+			I2CMessage msg(current + 1);
+
+			msg.write(address);
+			for(auto i = 0UL; i < current; i++) {
+				msg.write(ptr[idx++]);
+			}
+
+			msg.setAddress(Eeprom24C02::SlaveAddress, false, false);
+			if(!this->_bus.transfer(msg)) {
+				print_dbg("Unable to write bytes to 24C02 chip!\n");
+				return -EINVALID;
+			}
+
+			address += current;
+			current = length < Eeprom24C02::PageSize ? length : Eeprom24C02::PageSize;
+			length -= current;
+			lwiot_sleep(10);
+		} while(current > 0);
+
+		return length;
 	}
 
 	ssize_t Eeprom24C02::read(uint8_t addr, void *data, size_t length)
 	{
-		return -1;
+		I2CMessage tx(1), rx(length);
+		Vector<I2CMessage *> msgs;
+		ScopedLock lock(this->_lock);
+
+		tx.setRepeatedStart(true);
+		tx.setAddress(Eeprom24C02::SlaveAddress, false, false);
+		tx.write(addr);
+		rx.setAddress(Eeprom24C02::SlaveAddress, false, true);
+
+		msgs.pushback(&tx);
+		msgs.pushback(&rx);
+
+		if(!this->_bus.transfer(msgs) || rx.length() != length) {
+			print_dbg("Failed to read from 24C02. Received length: %lu\n", rx.length());
+			return -EINVALID;
+		}
+
+		memcpy(data, rx.data(), rx.length());
+		return rx.length();
 	}
 }

@@ -30,7 +30,7 @@ namespace lwiot
 		I2CBus& _bus;
 		Lock _lock;
 
-		static constexpr int PageSize = 8;
+		static constexpr int PageSize = 4;
 		static constexpr int8_t SlaveAddress = 0x50;
 	};
 }
