@@ -12,7 +12,7 @@
 
 #include <ArduinoJson/Arduino/Printer.hpp>
 
-namespace lwiot
+namespace lwiot { namespace json
 {
 	Printer::Printer()
 	{ }
@@ -70,4 +70,5 @@ namespace lwiot
 	{
 		return write('\r') + write('\n');
 	}
+}
 }

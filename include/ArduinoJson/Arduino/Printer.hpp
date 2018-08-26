@@ -22,20 +22,25 @@
 #endif
 
 // This class reproduces Arduino's Print class
-namespace lwiot
+namespace lwiot { namespace json
 {
-class Printer {
- public:
-  explicit Printer();
-  virtual ~Printer() = default;
+	class Printer {
+	public:
+		explicit Printer();
 
-  virtual size_t write(uint8_t) = 0;
+		virtual ~Printer() = default;
 
-  size_t print(const char* s);
-  size_t print(ArduinoJson::Internals::JsonFloat value, int digits = 2);
-  size_t print(ArduinoJson::Internals::JsonInteger value);
-  size_t println();
-};
+		virtual size_t write(uint8_t) = 0;
+
+		size_t print(const char *s);
+
+		size_t print(ArduinoJson::Internals::JsonFloat value, int digits = 2);
+
+		size_t print(ArduinoJson::Internals::JsonInteger value);
+
+		size_t println();
+	};
+}
 }
 
-typedef lwiot::Printer Print;
+typedef lwiot::json::Printer Print;
