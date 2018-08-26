@@ -7,3 +7,7 @@ endif()
 SET(HAVE_DEBUG False CACHE BOOL "Enable debug output.")
 SET(CONFIG_BUILD_TESTS False CACHE BOOL "Build unit tests.")
 SET(CONFIG_PIN_VECTOR False CACHE BOOL "Build a vector of pins the the GPIO chip.")
+
+SET(CONFIG_SSD1306_128_64 True CACHE BOOL "SSD1306 in 128x64 mode")
+SET(CONFIG_SSD1306_128_32 False CACHE BOOL "SSD1306 in 128x32 mode")
+SET(CONFIG_SSD1306_96_16 False CACHE BOOL "SSD1306 in 96x16 mode")

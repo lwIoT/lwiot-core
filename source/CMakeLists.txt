@@ -88,6 +88,7 @@ set(GENERIC_HEADERS
 	lwiot/softwarei2calgorithm.h
 	lwiot/spibus.h
 	lwiot/spimessage.h
+	lwiot/ssd1306display.h
 	lwiot/stream.h
 	lwiot/string.h
 	lwiot/system.h
@@ -100,6 +101,8 @@ set(GENERIC_HEADERS
 	lwiot/watchdog.h
 	lwiot/wifiaccesspoint.h
 	lwiot/wifistation.h
+	lwiot/printer.h
+	lwiot/gfxbase.h
 )
 
 # Include timer implementation on UNIX and Windows builds

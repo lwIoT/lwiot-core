@@ -21,6 +21,17 @@
 #cmakedefine CONFIG_HW_BARRIER 1
 #cmakedefine NO_OS
 
+/* SSD1306 options */
+#cmakedefine CONFIG_SSD1306_128_64
+
+#ifndef CONFIG_SSD1306_128_64
+#cmakedefine CONFIG_SSD1306_128_32
+#endif
+
+#if !defined(CONFIG_SSD1306_128_64) && !defined(CONFIG_SSD1306_128_32)
+#cmakedefine CONFIG_SSD1306_96_16
+#endif
+
 #cmakedefine CONFIG_TASK_PRIO ${CONFIG_TASK_PRIO}
 #cmakedefine CONFIG_STACK_SIZE ${CONFIG_STACK_SIZE}
 

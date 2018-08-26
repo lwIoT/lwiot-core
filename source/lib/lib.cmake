@@ -68,8 +68,13 @@ endif()
 SET(LIB_SOURCES
 	lib/streams/bufferedstream.cpp
 	lib/streams/stream.cpp
+	lib/streams/printer.cpp
+
+	lib/gfx/gfxbase.cpp
+	lib/gfx/ssd1306display.cpp
 
 	lib/net/ipaddress.cpp
+
 	${JSON_SOURCES}
 	${TIME_SOURCES}
 )

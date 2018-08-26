@@ -40,7 +40,8 @@ namespace lwiot
 
 	ByteBuffer::~ByteBuffer()
 	{
-		lwiot_mem_free(this->_data);
+		if(this->_data)
+			lwiot_mem_free(this->_data);
 	}
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
