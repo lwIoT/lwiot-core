@@ -103,6 +103,9 @@ set(GENERIC_HEADERS
 	lwiot/wifistation.h
 	lwiot/printer.h
 	lwiot/gfxbase.h
+	lwiot/bmpsensor.h
+	lwiot/bmp085sensor.h
+	lwiot/bmp280sensor.h
 )
 
 # Include timer implementation on UNIX and Windows builds
