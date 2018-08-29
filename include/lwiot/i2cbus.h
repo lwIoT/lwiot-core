@@ -27,8 +27,8 @@ namespace lwiot
 		bool transfer(I2CMessage& msg);
 		bool transfer(Vector<I2CMessage*>& msgs);
 
-		bool send(int8_t  sla, ByteBuffer& buffer);
-		bool send(int8_t sla, void *buffer, size_t size);
+		bool send(int8_t  sla, const ByteBuffer& buffer);
+		bool send(int8_t sla, const void *buffer, size_t size);
 
 		void setFrequency(const uint32_t& freq);
 		void setAlgorithm(I2CAlgorithm& algo);

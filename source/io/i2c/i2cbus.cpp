@@ -77,7 +77,7 @@ namespace lwiot
 		this->_algo = algo;
 	}
 
-	bool I2CBus::send(int8_t sla, lwiot::ByteBuffer &buffer)
+	bool I2CBus::send(int8_t sla, const lwiot::ByteBuffer &buffer)
 	{
 		I2CMessage msg(buffer);
 
@@ -86,13 +86,13 @@ namespace lwiot
 		return this->transfer(msg);
 	}
 
-	bool I2CBus::send(int8_t sla, void *buffer, size_t size)
+	bool I2CBus::send(int8_t sla, const void *buffer, size_t size)
 	{
 		I2CMessage msg(size);
 
 		msg.setAddress(sla, false, false);
 		msg.setRepeatedStart(false);
-		msg.write(static_cast<uint8_t *>(buffer), size);
+		msg.write(static_cast<const uint8_t *>(buffer), size);
 		return this->transfer(msg);
 	}
 }
