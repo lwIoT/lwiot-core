@@ -127,6 +127,11 @@ namespace lwiot
 		return this->_chip.read(this->_pin);
 	}
 
+	bool RAM_ATTR GpioPin::operator!() const
+	{
+		return !this->_chip.read(this->_pin);
+	}
+
 	int GpioPin::pin() const
 	{
 		return this->_pin;

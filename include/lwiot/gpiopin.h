@@ -40,7 +40,8 @@ namespace lwiot
 		bool read() const;
 		GpioPin& operator >>(bool& value);
 		bool operator ()(void) const;
-		operator bool() const;
+		explicit operator bool() const;
+		bool operator !() const;
 
 		void input();
 		void output();
