@@ -344,11 +344,11 @@ namespace lwiot
 			return -ETMO;
 		}
 
-		ack = this->_sda;
+		ack = !this->_sda;
 		this->scllow();
 
 		/* SCL is low and SDA is undefined at this point */
-		return !ack;
+		return ack;
 	}
 
 	ssize_t SoftwareI2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
