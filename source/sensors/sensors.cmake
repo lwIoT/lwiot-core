@@ -4,4 +4,5 @@ SET(SENSOR_SOURCES
 	sensors/bmpsensor.cpp
 	sensors/bmp085sensor.cpp
 	sensors/bmp280sensor.cpp
+	sensors/ccs811sensor.cpp
 )

@@ -106,6 +106,7 @@ set(GENERIC_HEADERS
 	lwiot/bmpsensor.h
 	lwiot/bmp085sensor.h
 	lwiot/bmp280sensor.h
+	lwiot/ccs811sensor.h
 )
 
 # Include timer implementation on UNIX and Windows builds
