@@ -16,6 +16,7 @@
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/lock.h>
+#include <lwiot/function.h>
 #include <lwiot/count.h>
 #include <lwiot/log.h>
 #include <lwiot/watchdog.h>
@@ -255,12 +256,13 @@ namespace lwiot
 	int RAM_ATTR SoftwareI2CAlgorithm::read(uint8_t& byte)
 	{
 		uint8_t value;
+		Function<int(*)(int)> reader;
 		int rv;
 
 		value = 0;
 		this->sdahi();
 
-		auto reader = [&](const ssize_t bit) -> int {
+		reader = [&](const ssize_t bit) -> int {
 			bool bitvalue;
 			int delay;
 
@@ -300,10 +302,11 @@ namespace lwiot
 
 	int RAM_ATTR SoftwareI2CAlgorithm::write(uint8_t byte)
 	{
-		bool ack;
+		Function<int(*)(int)> writer;
 		int rv;
+		bool ack;
 
-		auto writer = [&](const ssize_t& idx) -> int {
+		writer = [&](const ssize_t& idx) -> int {
 			bool readback;
 			bool bit;
 

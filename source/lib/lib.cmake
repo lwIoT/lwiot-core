@@ -75,6 +75,8 @@ SET(LIB_SOURCES
 
 	lib/net/ipaddress.cpp
 
+	lib/count.cpp
+
 	${JSON_SOURCES}
 	${TIME_SOURCES}
 )
