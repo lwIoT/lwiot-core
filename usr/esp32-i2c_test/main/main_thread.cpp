@@ -81,13 +81,13 @@ public:
 			lwiot::I2CMessage rd2(32);
 
 			wr.setRepeatedStart(true);
-			wr.setAddress(0x5B, false, false);
+			wr.setAddress(0x6B, false, false);
 			wr.write(2);
 			msgs.pushback(&wr);
 
-			rd.setAddress(0x5B, false, false);
+			rd.setAddress(0x6B, false, false);
 			rd.setRepeatedStart(true);
-			rd2.setAddress(0x5B, false, false);
+			rd2.setAddress(0x6B, false, false);
 			rd2.setRepeatedStart(false);
 
 			for(int i = 0; i < 16; i++) {
@@ -127,7 +127,7 @@ private:
 	{
 		lwiot::I2CMessage wr(1);
 
-		wr.setAddress(0x5B, false, false);
+		wr.setAddress(0x6B, false, false);
 		wr.write(1);
 
 		if(bus.transfer(wr)) {
@@ -144,11 +144,11 @@ private:
 		lwiot::I2CMessage wr(1), rd(3);
 		lwiot::Vector<lwiot::I2CMessage*> msgs;
 
-		wr.setAddress(0x5B, false, false);
+		wr.setAddress(0x6B, false, false);
 		wr.write(1);
 		wr.setRepeatedStart(true);
 
-		rd.setAddress(0x5B, false, true);
+		rd.setAddress(0x6B, false, true);
 
 		msgs.pushback(&wr);
 		msgs.pushback(&rd);

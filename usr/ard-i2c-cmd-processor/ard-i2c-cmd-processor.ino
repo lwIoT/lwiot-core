@@ -7,7 +7,7 @@
 
 #include <Wire.h>
 
-#define SLAVE_ADDRESS 0x5B
+#define SLAVE_ADDRESS 0x6B
 #define TIME_OUT 100
 
 #define STATE_IDLE 0
