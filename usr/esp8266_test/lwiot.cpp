@@ -40,7 +40,8 @@ protected:
 
 		wdt.enable(2000);
 
-		FUNC_THREAD(tp, "fthread", [&lock](void) -> void {
+		lwiot::FunctionalThread tp("fthread");
+		lwiot::Function<void(*)(void)> f = [&lock](void) -> void {
 			lwiot::ScopedLock slock(lock);
 			int i = 0;
 
@@ -49,8 +50,9 @@ protected:
 				wdt.reset();
 				lwiot_sleep(750);
 			}
-		});
+		};
 
+		tp = f;
 		tp.start();
 
 		while(true) {

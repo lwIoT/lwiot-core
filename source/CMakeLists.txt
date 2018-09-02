@@ -14,6 +14,7 @@ include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 if(NOT NO_OS)
 SET(WRAPPER_SOURCES
 	ports/thread.cpp
+	ports/functionalthread.cpp
 	ports/lock.cpp
 	ports/event.cpp
 	ports/timer.cpp

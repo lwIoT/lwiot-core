@@ -109,6 +109,11 @@ namespace lwiot
 			}
 		}
 
+		bool valid() const
+		{
+			return this->_callable != nullptr;
+		}
+
 	private:
 		Callable<_ReturnType, Args...> *_callable;
 	};
@@ -122,6 +127,15 @@ namespace lwiot
 		Function(_ReturnType(_ClassType::*method)(Args...)) : _method(method)
 		{ }
 
+		Function() : _method(nullptr)
+		{ }
+
+		Function& operator=(_ReturnType(_ClassType::*method)(Args...))
+		{
+			this->_method = method;
+			return *this;
+		}
+
 		_ReturnType operator ()(_ClassType *object, Args... args)
 		{
 			if(IsVoid<_ReturnType>::value) {
@@ -130,6 +144,11 @@ namespace lwiot
 			}
 
 			return (object->*_method)(args...);
+		}
+
+		bool valid() const
+		{
+			return this->_callable != nullptr;
 		}
 
 	private:
@@ -144,6 +163,15 @@ namespace lwiot
 		Function(R(C::*method)(Args...) const) : _method(method)
 		{ }
 
+		Function() : _method(nullptr)
+		{ }
+
+		Function& operator=(R(C::*method)(Args...) const)
+		{
+			this->_method = method;
+			return *this;
+		}
+
 		R operator ()(C *object, Args... args) const
 		{
 			if(IsVoid<R>::value) {
@@ -152,6 +180,11 @@ namespace lwiot
 			}
 
 			return (object->*_method)(args...);
+		}
+
+		bool valid() const
+		{
+			return this->_callable != nullptr;
 		}
 
 	private:

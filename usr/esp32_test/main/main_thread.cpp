@@ -19,6 +19,10 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
 #include <lwiot/wifiaccesspoint.h>
+#include <lwiot/bmp280sensor.h>
+#include <lwiot/softwarei2calgorithm.h>
+#include <lwiot/i2cbus.h>
+#include <lwiot/ccs811sensor.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -56,16 +60,12 @@ protected:
 
 	virtual void run(void *arg) override
 	{
-		lwiot::GpioPin out = 22;
-		lwiot::GpioPin out2 = 23;
-		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		size_t freesize;
+		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 
-		printf("Main thread started!\n");
-		this->startPwm(timer);
-		out.setOpenDrain();
-		out2.setOpenDrain();
 		lwiot_sleep(1000);
+		this->startPwm(timer);
+		printf("Main thread started!\n");
 
 		lwiot::DateTime dt;
 		print_dbg("Time: %s\n", dt.toString().c_str());
@@ -77,21 +77,9 @@ protected:
 		wdt.reset();
 
 		while(true) {
-			int i = 0;
-
-			enter_critical();
-			while(i++ < 1600) {
-				out << true;
-				out2 << false;
-				lwiot_udelay(3);
-
-				out << false;
-				out2 << true;
-				lwiot_udelay(3);
-			}
-			exit_critical();
-
+			print_dbg("MT ping\n");
 			wdt.reset();
+			lwiot_sleep(1000);
 		}
 	}
 };

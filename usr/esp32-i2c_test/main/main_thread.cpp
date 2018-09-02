@@ -63,7 +63,7 @@ public:
 		print_dbg("Testing I2C bus..\n");
 		algo->test();
 
-		FUNC_THREAD(td, "functp", []() -> void {
+		lwiot::Function<void(*)(void)> func([]() -> void {
 			int idx = 0;
 
 			while(idx++ < 5) {
@@ -72,6 +72,7 @@ public:
 			}
 		});
 
+		lwiot::FunctionalThread td("functp", func);
 		td.start();
 
 		while(true) {

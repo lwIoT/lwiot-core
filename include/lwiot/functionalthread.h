@@ -12,30 +12,26 @@
 #include <lwiot.h>
 
 #include <lwiot/thread.h>
-
-#define FUNC_THREAD(__id__, __name__, __lambda__) \
-	auto lambda = __lambda__; \
-	::lwiot::FunctionalThread<decltype(lambda)> __id__(__name__, lambda)
+#include <lwiot/string.h>
+#include <lwiot/function.h>
 
 namespace lwiot
 {
-	template <class Func>
 	class FunctionalThread : public Thread {
 	public:
-		explicit FunctionalThread(const String& name, Func f) : Thread(name), _func(f)
-		{
-		}
+		typedef Function<void(*)(void)> Runner;
 
-		explicit FunctionalThread(const char *name, Func f) : Thread(name), _func(f)
-		{ }
+		explicit FunctionalThread(const String& name);
+		explicit FunctionalThread(const char* name);
+		FunctionalThread(const String& name, Runner& runner);
+		virtual ~FunctionalThread() = default;
+
+		FunctionalThread& operator=(Runner& runner);
 
 	protected:
-		virtual void run(void *arg) override
-		{
-			this->_func();
-		}
+		virtual void run(void *argument) override;
 
 	private:
-		Func _func;
+		Runner _runner;
 	};
 }
