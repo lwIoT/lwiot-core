@@ -37,7 +37,7 @@ protected:
 
 static void main_thread(void *arg)
 {
-	auto lambda = [](void) -> void {
+	lwiot::Function<void(*)(void)> lambda = [](void) -> void {
 		int i = 0;
 		while(i++ <= 5) {
 			print_dbg("Lambda thread ping!\n");
@@ -45,7 +45,7 @@ static void main_thread(void *arg)
 		}
 	};
 
-	lwiot::FunctionalThread<decltype(lambda)> tp("fn-thread", lambda);
+	lwiot::FunctionalThread tp("ft-tp", lambda);
 	tp.start();
 
 	lwiot_sleep(6000);
