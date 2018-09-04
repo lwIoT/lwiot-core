@@ -83,3 +83,5 @@ set(PORT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -Wno-comment -f
 SET(ESP8266 True CACHE BOOL "Target the ESP8266 SoC")
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)
+SET(HAVE_LWIP True)
+SET(HAVE_NETWORKING True)
