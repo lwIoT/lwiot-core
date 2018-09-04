@@ -8,8 +8,9 @@
 #ifndef LWIOT_DNS_H
 #define LWIOT_DNS_H
 
+#include <lwiot/lwiot.h>
 #include <lwiot/types.h>
 
-extern int hostname_to_ip(const char *host, uint32_t *addr);
+extern DLL_EXPORT int hostname_to_ip(const char *host, uint32_t *addr);
 
 #endif //LWIOT_DNS_H

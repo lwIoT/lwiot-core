@@ -8,6 +8,7 @@ include(CheckCSourceCompiles)
 include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
 include(${PROJECT_SOURCE_DIR}/source/lib/lib.cmake)
 include(${PROJECT_SOURCE_DIR}/source/sensors/sensors.cmake)
+include(${PROJECT_SOURCE_DIR}/source/net/net.cmake)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
@@ -40,6 +41,13 @@ SET(SOURCES
     ${LIB_SOURCES}
     ${SENSOR_SOURCES}
 )
+
+if(HAVE_NETWORKING)
+	set(SOURCES
+		${SOURCES}
+		${NET_SOURCES}
+)
+endif()
 
 set(GENERIC_HEADERS
     asm/avr/cpu.h
@@ -109,6 +117,8 @@ set(GENERIC_HEADERS
 	lwiot/bmp280sensor.h
 	lwiot/ccs811sensor.h
 	lwiot/function.h
+	lwiot/tcpclient.h
+	lwiot/tcpserver.h
 )
 
 # Include timer implementation on UNIX and Windows builds

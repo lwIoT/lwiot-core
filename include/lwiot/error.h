@@ -21,6 +21,7 @@ typedef enum error_code {
 	ETMO,
 	ETRYAGAIN,
 	EISCONNECTED,
+	ENOTFOUND
 } lwiot_error_t;
 
 #define ETIMEOUT ETMO
