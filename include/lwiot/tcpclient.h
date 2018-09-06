@@ -38,6 +38,8 @@ namespace lwiot
 		explicit TcpClient(const String& host, uint16_t port);
 		virtual ~TcpClient();
 
+		static TcpClient fromDescriptor(int clientfd);
+
 		TcpClient& operator =(const TcpClient& client);
 
 		bool operator ==(const TcpClient& other);

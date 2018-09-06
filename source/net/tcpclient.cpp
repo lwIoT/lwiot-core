@@ -22,7 +22,7 @@
 #endif
 
 extern "C" {
-#include "dns.h"
+#include "lwiot/dns.h"
 }
 
 namespace lwiot
@@ -45,6 +45,16 @@ namespace lwiot
 	{
 		if(this->connected())
 			this->close();
+	}
+
+	TcpClient TcpClient::fromDescriptor(int clientfd)
+	{
+		TcpClient c;
+
+		c._remote_port = 0;
+		c._remote_addr = 0U;
+		c.fd = clientfd;
+		return c;
 	}
 
 	TcpClient& TcpClient::operator=(const lwiot::TcpClient &client)
