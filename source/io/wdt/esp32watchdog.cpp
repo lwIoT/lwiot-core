@@ -37,7 +37,7 @@ namespace lwiot { namespace esp32
 
 	bool Watchdog::disable()
 	{
-		Watchdog::disable();
+		lwiot::Watchdog::disable();
 		return esp_task_wdt_deinit() == ESP_OK;
 	}
 
