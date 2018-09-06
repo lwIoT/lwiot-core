@@ -19,10 +19,7 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
 #include <lwiot/wifiaccesspoint.h>
-#include <lwiot/bmp280sensor.h>
-#include <lwiot/softwarei2calgorithm.h>
-#include <lwiot/i2cbus.h>
-#include <lwiot/ccs811sensor.h>
+#include <lwiot/tcpserver.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -62,6 +59,8 @@ protected:
 	{
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
+		lwiot::TcpServer server;
+		uint8_t buffer[128];
 
 		lwiot_sleep(1000);
 		this->startPwm(timer);
@@ -70,15 +69,26 @@ protected:
 		lwiot::DateTime dt;
 		print_dbg("Time: %s\n", dt.toString().c_str());
 		freesize = heap_caps_get_free_size(0);
-		wdt.enable();
 
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
-		wdt.reset();
+
+		assert(server.bind(lwiot::IPAddress(0,0,0,0), 5555));
+		lwiot_sleep(5000);
+
+		wdt.enable();
+		print_dbg("Starting server...\n");
 
 		while(true) {
+			wdt.disable();
+			auto client = server.accept();
+			wdt.enable();
+
+			auto num = client.read(buffer, sizeof buffer);
+			client.write(buffer, num);
+			client.close();
+
 			print_dbg("MT ping\n");
-			wdt.reset();
 			lwiot_sleep(1000);
 		}
 	}

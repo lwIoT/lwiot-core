@@ -9,5 +9,8 @@ if(HAVE_RTOS)
 	link_directories(${FREERTOS_LIB_DIR})
 endif()
 
-add_executable(tcp-test tcp_test.cpp)
-target_link_libraries(tcp-test lwiot ${LWIOT_SYSTEM_LIBS})
+add_executable(tcp-client_test tcp-client_test.cpp)
+target_link_libraries(tcp-client_test lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(tcp-server_test tcp-server_test.cpp)
+target_link_libraries(tcp-server_test lwiot ${LWIOT_SYSTEM_LIBS})
