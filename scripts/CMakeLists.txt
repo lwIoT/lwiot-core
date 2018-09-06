@@ -8,5 +8,7 @@ ENDIF()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/bot)
 add_executable(byteordertool ${BOT_SRC})
 
+add_executable(tcp-client tcpecho/client.c)
+
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/scripts/ci-runner.py ${CMAKE_BINARY_DIR}/scripts/ci-runner.py COPYONLY)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/scripts/utest.py ${CMAKE_BINARY_DIR}/scripts/utest.py COPYONLY)
