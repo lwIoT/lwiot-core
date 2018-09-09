@@ -25,9 +25,18 @@ namespace lwiot
 	{
 	}
 
+	I2CBus::I2CBus() : _algo(nullptr), _lock(false)
+	{
+	}
+
 	void I2CBus::setFrequency(const uint32_t& freq)
 	{
 		this->_algo->setFrequency(freq);
+	}
+
+	I2CAlgorithm* I2CBus::algorithm() const
+	{
+		return this->_algo.get();
 	}
 
 	bool I2CBus::transfer(Vector<I2CMessage*>& msgs)

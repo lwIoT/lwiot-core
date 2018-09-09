@@ -22,6 +22,7 @@ namespace lwiot
 {
 	class I2CBus {
 	public:
+		explicit I2CBus();
 		explicit I2CBus(I2CAlgorithm *algo);
 
 		bool transfer(I2CMessage& msg);
@@ -32,6 +33,8 @@ namespace lwiot
 
 		void setFrequency(const uint32_t& freq);
 		void setAlgorithm(I2CAlgorithm* algo);
+
+		I2CAlgorithm *algorithm() const;
 
 	private:
 		SharedPointer<I2CAlgorithm> _algo;
