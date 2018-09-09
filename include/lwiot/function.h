@@ -12,7 +12,9 @@
 #include <stdio.h>
 
 #include <lwiot/lwiot.h>
+#include <lwiot/log.h>
 #include <lwiot/types.h>
+#include <lwiot/sharedpointer.h>
 
 namespace lwiot
 {
@@ -35,11 +37,18 @@ namespace lwiot
 	template <typename _ClosureType, typename _ReturnType, typename ...Args>
 	struct Closure : public Callable<_ReturnType, Args...> {
 		typedef _ClosureType ClosureType;
+		typedef Closure<_ClosureType, _ReturnType, Args...> SelfType;
 
-		const _ClosureType handler;
+		_ClosureType handler;
 
 		Closure(const _ClosureType& handler) : handler(handler)
 		{ }
+
+		Closure(const Callable<_ReturnType, Args...> *callable)
+		{
+			const Closure<ClosureType , _ReturnType, Args...> *closure = (const SelfType *)callable;
+			this->handler = closure->handler;
+		}
 
 		virtual ~Closure() = default;
 
@@ -66,37 +75,57 @@ namespace lwiot
 
 		template <typename _ClosureType> Function(const _ClosureType& func) :
 			_callable(new Closure<decltype(func), _ReturnType, Args...>(func))
-		{ }
+		{
+		}
 
 		Function(_ReturnType(*func)(Args...)) :
 			_callable(new Closure<SignatureType, _ReturnType, Args...>(func))
-		{ }
+		{
+		}
 
 		Function() : _callable(nullptr)
 		{ }
 
 		virtual ~Function()
 		{
-			if(this->_callable)
-				delete this->_callable;
 		}
+
+//		Function(const SelfType& func)
+//		{
+//			if(func._callable == nullptr) {
+//				this->_callable = nullptr;
+//				return;
+//			}
+//
+//			this->_callable = new Closure<SignatureType , _ReturnType, Args...>(func._callable);
+//
+//			this->_callable = func._callable;
+//		}
+
+//		Function& operator =(const SelfType& func)
+//		{
+//			if(func._callable == nullptr) {
+//				this->_callable = nullptr;
+//				return *this;
+//			}
+//
+//			this->_callable = new Closure<SignatureType , _ReturnType, Args...>(func._callable);
+//			return *this;
+//		}
 
 		Function& operator=(_ReturnType(*func)(Args...))
 		{
 			if(this->_callable)
 				delete this->_callable;
 
-			this->_callable = new Closure<SignatureType, _ReturnType, Args...>(func);
+			this->_callable.reset( new Closure<SignatureType, _ReturnType, Args...>(func));
 			return *this;
 		}
 
 		template <typename _ClosureType>
 		Function& operator=(const _ClosureType& func)
 		{
-			if(this->_callable)
-				delete this->_callable;
-
-			this->_callable = new Closure<decltype(func), _ReturnType, Args...>(func);
+			this->_callable.reset( new Closure<decltype(func), _ReturnType, Args...>(func));
 			return *this;
 		}
 
@@ -109,13 +138,25 @@ namespace lwiot
 			}
 		}
 
+		operator bool() const
+		{
+			return this->valid();
+		}
+
+		bool operator !() const
+		{
+			return !this->valid();
+		}
+
 		bool valid() const
 		{
-			return this->_callable != nullptr;
+			return this->_callable.get() != nullptr;
 		}
 
 	private:
-		Callable<_ReturnType, Args...> *_callable;
+//		Callable<_ReturnType, Args...> *_callable;
+//		std::shared_ptr<Callable<_ReturnType, Args...>> _callable;
+		lwiot::SharedPointer<Callable<_ReturnType, Args...>> _callable;
 	};
 
 	template <typename _ClassType, typename _ReturnType, typename... Args>
