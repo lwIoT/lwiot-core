@@ -58,6 +58,11 @@ set(GENERIC_HEADERS
 	lwiot.h
 	ArduinoJson.h
 
+	lwiot/httpserver.h
+	lwiot/requesthandler.h
+	lwiot/base64.h
+	lwiot/sharedpointer.h
+	lwiot/uniquepointer.h
 	lwiot/application.h
 	lwiot/adcchip.h
 	lwiot/adcpin.h
