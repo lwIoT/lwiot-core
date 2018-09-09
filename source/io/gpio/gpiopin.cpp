@@ -72,11 +72,7 @@ namespace lwiot
 
 	void GpioPin::mode(const PinMode& mode)
 	{
-		if(mode == OUTPUT_OPEN_DRAIN)
-			this->_open_drain = true;
-		else
-			this->_open_drain = false;
-
+		this->_open_drain = mode == OUTPUT_OPEN_DRAIN;
 		this->_chip.mode(this->_pin, mode);
 	}
 
