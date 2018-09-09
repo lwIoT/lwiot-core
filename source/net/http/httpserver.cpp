@@ -73,6 +73,7 @@ namespace lwiot
 
 	bool HttpServer::begin()
 	{
+		this->_server.connect();
 		return this->_server.bind();
 	}
 

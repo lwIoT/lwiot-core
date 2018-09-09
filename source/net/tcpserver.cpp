@@ -58,6 +58,14 @@ namespace lwiot
 		return *this;
 	}
 
+	void TcpServer::connect()
+	{
+		if(this->_fd)
+			this->close();
+
+		this->_fd = socket(AF_INET, SOCK_STREAM, 0);
+	}
+
 	bool TcpServer::operator==(const lwiot::TcpServer &other)
 	{
 		return this->_fd == other._fd;

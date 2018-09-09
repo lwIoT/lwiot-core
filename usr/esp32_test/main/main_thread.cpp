@@ -89,6 +89,7 @@ protected:
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		lwiot::IPAddress addr((uint32_t)0);
+		lwiot::HttpServer server(addr, 80);
 
 		lwiot_sleep(1000);
 		this->startPwm(timer);
@@ -101,7 +102,6 @@ protected:
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
 
-		lwiot::HttpServer server(addr, 8000);
 		server.on("/", handle_root);
 		assert(server.begin());
 

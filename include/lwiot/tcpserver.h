@@ -46,6 +46,8 @@ namespace lwiot
 		bool bind(const IPAddress& addr, uint16_t port);
 		bool bind() const;
 
+		void connect();
+
 		TcpClient accept() const;
 		void close();
 

@@ -70,12 +70,14 @@ namespace lwiot
 		ssize_t read(uint8_t *output, const size_t &length) override;
 		ssize_t read(void *output, const size_t &length);
 
+		using Stream::write;
 		void write(uint8_t byte) override;
 		void write(const void *bytes, const size_t& length);
 		void write(const uint8_t *bytes, const size_t &length) override;
 
 		bool connectTo(const IPAddress& addr, uint16_t port);
 		bool connectTo(const String& host, uint16_t port);
+
 		void close();
 
 		const IPAddress& remote() const;
