@@ -42,4 +42,27 @@ namespace lwiot {
 	{
 		this->write((const uint8_t*)data.c_str(), (ssize_t)data.length());
 	}
+
+	String Stream::readString()
+	{
+		String retval;
+
+		this->read(retval);
+		return retval;
+	}
+
+	String Stream::readStringUntil(char terminator)
+	{
+		String retval;
+		int c;
+
+		c = this->read();
+		while(c >= 0 && c != terminator) {
+			retval += (char)c;
+			c = this->read();
+		}
+
+
+		return retval;
+	}
 }

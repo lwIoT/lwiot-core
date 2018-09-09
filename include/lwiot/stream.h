@@ -42,6 +42,8 @@ namespace lwiot {
 		virtual uint8_t read() = 0;
 		virtual ssize_t read(uint8_t *output, const size_t& length) = 0;
 		virtual ssize_t read(String& output);
+		virtual String readString();
+		virtual String readStringUntil(char terminator);
 
 		virtual void write(uint8_t byte) = 0;
 		virtual void write(const uint8_t *bytes, const size_t& length) = 0;
