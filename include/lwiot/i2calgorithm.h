@@ -23,6 +23,7 @@ namespace lwiot
 	public:
 		explicit I2CAlgorithm(int delay, uint32_t frequency);
 		explicit I2CAlgorithm();
+		virtual ~I2CAlgorithm() = default;
 
 		const uint32_t& frequency() const;
 		int delay() const;

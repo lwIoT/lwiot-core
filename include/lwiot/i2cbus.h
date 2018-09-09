@@ -16,12 +16,12 @@
 #include <lwiot/vector.h>
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/lock.h>
+#include <lwiot/sharedpointer.h>
 
 namespace lwiot
 {
 	class I2CBus {
 	public:
-		explicit I2CBus(I2CAlgorithm& algo);
 		explicit I2CBus(I2CAlgorithm *algo);
 
 		bool transfer(I2CMessage& msg);
@@ -31,10 +31,10 @@ namespace lwiot
 		bool send(int8_t sla, const void *buffer, size_t size);
 
 		void setFrequency(const uint32_t& freq);
-		void setAlgorithm(I2CAlgorithm& algo);
+		void setAlgorithm(I2CAlgorithm* algo);
 
 	private:
-		I2CAlgorithm& _algo;
+		SharedPointer<I2CAlgorithm> _algo;
 		Lock _lock;
 	};
 }

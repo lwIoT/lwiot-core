@@ -21,17 +21,13 @@
 
 namespace lwiot
 {
-	I2CBus::I2CBus(I2CAlgorithm *algo) : _algo(*algo), _lock(false)
-	{
-	}
-
-	I2CBus::I2CBus(I2CAlgorithm& algo) : _algo(algo), _lock(false)
+	I2CBus::I2CBus(I2CAlgorithm *algo) : _algo(algo), _lock(false)
 	{
 	}
 
 	void I2CBus::setFrequency(const uint32_t& freq)
 	{
-		this->_algo.setFrequency(freq);
+		this->_algo->setFrequency(freq);
 	}
 
 	bool I2CBus::transfer(Vector<I2CMessage*>& msgs)
@@ -40,10 +36,10 @@ namespace lwiot
 		ScopedLock lock(this->_lock);
 
 		for(int i = 0; i < MAX_RETRIES; i++) {
-			rv = this->_algo.transfer(msgs);
+			rv = this->_algo->transfer(msgs);
 
 			if(rv == -ETRYAGAIN) {
-				lwiot_sleep(this->_algo.delay());
+				lwiot_sleep(this->_algo->delay());
 				continue;
 			} else {
 				break;
@@ -59,10 +55,10 @@ namespace lwiot
 		ScopedLock lock(this->_lock);
 
 		for(int i = 0; i < MAX_RETRIES; i++) {
-			rv = this->_algo.transfer(msg);
+			rv = this->_algo->transfer(msg);
 
 			if(rv == -ETRYAGAIN) {
-				lwiot_sleep(this->_algo.delay());
+				lwiot_sleep(this->_algo->delay());
 				continue;
 			} else {
 				break;
@@ -72,9 +68,9 @@ namespace lwiot
 		return rv > 0;
 	}
 
-	void I2CBus::setAlgorithm(I2CAlgorithm& algo)
+	void I2CBus::setAlgorithm(I2CAlgorithm* algo)
 	{
-		this->_algo = algo;
+		this->_algo.reset(algo);
 	}
 
 	bool I2CBus::send(int8_t sla, const lwiot::ByteBuffer &buffer)
