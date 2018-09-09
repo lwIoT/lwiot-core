@@ -34,14 +34,9 @@ namespace lwiot
 		this->_fd = socket(AF_INET, SOCK_STREAM, 0);
 	}
 
-	TcpServer::TcpServer(const lwiot::IPAddress &addr, uint16_t port) : _fd(-1)
+	TcpServer::TcpServer(const lwiot::IPAddress &addr, uint16_t port) : _bind_addr(addr), _bind_port(port), _fd(-1)
 	{
 		this->_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-		if(this->_fd < 0)
-			return;
-
-		this->bind(addr, port);
 	}
 
 	TcpServer::~TcpServer()

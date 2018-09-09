@@ -65,10 +65,13 @@ namespace lwiot
 		Stream &operator<<(const String &str) override;
 		Stream &operator<<(const char *cstr) override;
 
+		using Stream::read;
 		uint8_t read() override;
 		ssize_t read(uint8_t *output, const size_t &length) override;
+		ssize_t read(void *output, const size_t &length);
 
 		void write(uint8_t byte) override;
+		void write(const void *bytes, const size_t& length);
 		void write(const uint8_t *bytes, const size_t &length) override;
 
 		bool connectTo(const IPAddress& addr, uint16_t port);

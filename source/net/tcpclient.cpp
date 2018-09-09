@@ -16,6 +16,8 @@
 #include <lwiot/error.h>
 
 #if !defined(HAVE_LWIP) && !defined(WIN32)
+
+#include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -36,15 +38,13 @@ namespace lwiot
 		this->connectTo(addr, port);
 	}
 
-	TcpClient::TcpClient(const lwiot::String &host, uint16_t port) : _remote_addr((uint32_t)0), _remote_port(port), fd(-1)
+	TcpClient::TcpClient(const lwiot::String &host, uint16_t port) :_remote_addr((uint32_t)0), _remote_port(port), fd(-1)
 	{
 		this->connectTo(host, port);
 	}
 
 	TcpClient::~TcpClient()
 	{
-		if(this->connected())
-			this->close();
 	}
 
 	TcpClient TcpClient::fromDescriptor(int clientfd)
@@ -132,6 +132,7 @@ namespace lwiot
 #else
 		::close(this->fd);
 #endif
+		this->fd = -1;
 	}
 
 	const IPAddress& TcpClient::remote() const
@@ -142,6 +143,11 @@ namespace lwiot
 	uint16_t TcpClient::port() const
 	{
 		return this->_remote_port;
+	}
+
+	void TcpClient::write(const void *bytes, const size_t &length)
+	{
+		this->write(reinterpret_cast<const uint8_t *>(bytes), length);
 	}
 
 	size_t TcpClient::available() const
@@ -166,6 +172,11 @@ namespace lwiot
 			return 0;
 
 		return tmp;
+	}
+
+	ssize_t TcpClient::read(void *output, const size_t &length)
+	{
+		return this->read(reinterpret_cast<uint8_t *>(output), length);
 	}
 
 	void TcpClient::write(uint8_t byte)
