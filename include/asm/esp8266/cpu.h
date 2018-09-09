@@ -21,3 +21,5 @@ extern void exit_critical();
 #ifdef __cplusplus
 }
 #endif
+
+#define HAVE_STL

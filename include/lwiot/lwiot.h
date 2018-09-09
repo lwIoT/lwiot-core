@@ -26,3 +26,26 @@
 #endif
 
 #define BITS_PER_BYTE 8U
+
+#ifdef __cplusplus
+namespace lwiot
+{
+	namespace lib
+	{
+		template <typename T>
+		static inline T& move(T& obj)
+		{
+			return obj;
+		}
+
+		template <typename T>
+		static inline void swap(T& a, T& b)
+		{
+			T tmp = move(a);
+
+			a = b;
+			b = tmp;
+		}
+	}
+}
+#endif

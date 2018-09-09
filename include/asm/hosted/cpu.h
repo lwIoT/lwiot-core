@@ -21,3 +21,5 @@ extern void exit_critical();
 #endif
 
 #define lwiot_udelay(__us) udelay(__us)
+
+#define HAVE_STL
