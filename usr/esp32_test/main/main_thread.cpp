@@ -19,9 +19,38 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
 #include <lwiot/wifiaccesspoint.h>
-#include <lwiot/tcpserver.h>
+#include <lwiot/httpserver.h>
 
 #include <lwiot/esp32/esp32pwm.h>
+
+static void handle_root(lwiot::HttpServer& server)
+{
+	char temp[400];
+	int sec = lwiot_tick_ms() / 1000;
+	int min = sec / 60;
+	int hr = min / 60;
+
+	snprintf(temp, 400,
+	         "<html>\
+  <head>\
+    <meta http-equiv='refresh' content='5'/>\
+    <title>ESP8266 Demo</title>\
+    <style>\
+      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+    </style>\
+  </head>\
+  <body>\
+    <h1>Hello from ESP8266!</h1>\
+    <p>Uptime: %02d:%02d:%02d</p>\
+    <img src=\"/test.svg\" />\
+  </body>\
+</html>",
+
+	         hr, min % 60, sec % 60
+	);
+
+	server.send(200, "text/html", temp);
+}
 
 class MainThread : public lwiot::Thread {
 public:
@@ -59,8 +88,7 @@ protected:
 	{
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
-		lwiot::TcpServer server;
-		uint8_t buffer[128];
+		lwiot::IPAddress addr((uint32_t)0);
 
 		lwiot_sleep(1000);
 		this->startPwm(timer);
@@ -73,20 +101,17 @@ protected:
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
 
-		assert(server.bind(lwiot::IPAddress(0,0,0,0), 5555));
-		lwiot_sleep(5000);
+		lwiot::HttpServer server(addr, 8000);
+		server.on("/", handle_root);
+		assert(server.begin());
 
 		wdt.enable();
 		print_dbg("Starting server...\n");
 
 		while(true) {
 			wdt.disable();
-			auto client = server.accept();
+			server.handleClient();
 			wdt.enable();
-
-			auto num = client.read(buffer, sizeof buffer);
-			client.write(buffer, num);
-			client.close();
 
 			print_dbg("MT ping\n");
 			lwiot_sleep(1000);

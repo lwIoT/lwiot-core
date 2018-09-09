@@ -98,8 +98,10 @@ namespace lwiot
 		struct sockaddr_in server;
 		int optvalue = 1;
 
-		if(this->_fd < 0)
+		if(this->_fd < 0) {
+			print_dbg("Invalid socket descriptor, unable to bind!\n");
 			return false;
+		}
 
 		memset(server.sin_zero, 0, sizeof(server.sin_zero));
 		server.sin_port = htons(this->_bind_port);

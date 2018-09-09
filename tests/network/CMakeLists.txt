@@ -14,3 +14,6 @@ target_link_libraries(tcp-client_test lwiot ${LWIOT_SYSTEM_LIBS})
 
 add_executable(tcp-server_test tcp-server_test.cpp)
 target_link_libraries(tcp-server_test lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(http-server_test http-server_test.cpp)
+target_link_libraries(http-server_test lwiot ${LWIOT_SYSTEM_LIBS})
