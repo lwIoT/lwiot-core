@@ -83,24 +83,17 @@ namespace lwiot {
 		// is left unchanged).  if the argument is null or invalid, the
 		// concatenation is considered unsucessful.
 		unsigned char concat(const String &str);
-
 		unsigned char concat(const char *cstr);
-
 		unsigned char concat(char c);
-
 		unsigned char concat(unsigned char c);
-
 		unsigned char concat(int num);
-
 		unsigned char concat(unsigned int num);
-
 		unsigned char concat(long num);
-
 		unsigned char concat(unsigned long num);
-
 		unsigned char concat(float num);
-
 		unsigned char concat(double num);
+
+		bool equalsConstantTime(const String &s) const;
 
 		// if there's not enough memory for the concatenated value, the string
 		// will be left unchanged (but this isn't signalled in any way)

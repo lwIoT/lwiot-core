@@ -143,6 +143,8 @@ namespace lwiot {
 
 	String::~String()
 	{
+		if(buffer == nullptr)
+			return;
 		lwiot_mem_free(buffer);
 	}
 
@@ -814,5 +816,30 @@ namespace lwiot {
 		if(buffer)
 			return atof(buffer);
 		return 0;
+	}
+
+	bool String::equalsConstantTime(const lwiot::String &s2) const
+	{
+		if(len != s2.len)
+			return false;
+
+		if(len == 0)
+			return true;
+		const char *p1 = buffer;
+		const char *p2 = s2.buffer;
+		unsigned int equalchars = 0;
+		unsigned int diffchars = 0;
+		while(*p1) {
+			if(*p1 == *p2)
+				++equalchars;
+			else
+				++diffchars;
+			++p1;
+			++p2;
+		}
+		//the following should force a constant time eval of the condition without a compiler "logical shortcut"
+		auto equalcond = (equalchars == len);
+		auto diffcond = (diffchars == 0);
+		return (equalcond & diffcond);
 	}
 }
