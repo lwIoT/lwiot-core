@@ -10,6 +10,7 @@
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/esptool_py/esptool" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/json/cJSON" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/libsodium/libsodium" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/mbedtls/mbedtls" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/micro-ecc/micro-ecc" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2/third-party/mruby" vcs="Git" />
