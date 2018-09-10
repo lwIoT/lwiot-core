@@ -17,7 +17,7 @@ namespace lwiot
 		explicit IPAddress();
 		explicit IPAddress(uint8_t first, uint8_t second, uint8_t third, uint8_t forth);
 		explicit IPAddress(const uint8_t *address);
-		explicit IPAddress(uint32_t address);
+		IPAddress(uint32_t address);
 		virtual ~IPAddress() = default;
 
 		virtual String toString() const;
