@@ -14,6 +14,7 @@
 #include <lwiot/thread.h>
 #include <lwiot/functionalthread.h>
 #include <lwiot/test.h>
+#include <lwiot/lock.h>
 
 class ThreadTest : public lwiot::Thread {
 public:
@@ -29,7 +30,6 @@ protected:
 
 		while(i++ <= 5) {
 			print_dbg("[%s] Thread is running!\n", arg);
-
 			lwiot_sleep(1000);
 		}
 	}
@@ -37,19 +37,38 @@ protected:
 
 static void main_thread(void *arg)
 {
-	lwiot::Function<void(*)(void)> lambda = [](void) -> void {
+	lwiot::Lock lock(false);
+
+	lwiot::Function<void(*)(void)> lambda1 = [&]() -> void {
 		int i = 0;
+
+		lock.lock();
 		while(i++ <= 5) {
-			print_dbg("Lambda thread ping!\n");
+			print_dbg("Lambda thread 1 ping!\n");
 			lwiot_sleep(750);
 		}
+		lock.unlock();
 	};
 
-	lwiot::FunctionalThread tp("ft-tp", lambda);
-	tp.start();
+	lwiot::Function<void(*)(void)> lambda2 = [&]() -> void {
+		int i = 0;
+
+		lock.lock();
+		while(i++ <= 5) {
+			print_dbg("Lambda thread 2 ping!\n");
+			lwiot_sleep(750);
+		}
+		lock.unlock();
+	};
+
+	lwiot::FunctionalThread tp1("ft-tp1", lambda1);
+	lwiot::FunctionalThread tp2("ft-tp2", lambda2);
+	tp1.start();
+	tp2.start();
 
 	lwiot_sleep(6000);
-	tp.stop();
+	tp1.stop();
+	tp2.stop();
 #ifdef HAVE_RTOS
 	vTaskEndScheduler();
 #endif
