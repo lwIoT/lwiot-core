@@ -15,76 +15,36 @@
 #include <lwiot/error.h>
 
 namespace lwiot {
-#ifndef NO_OS
-	Lock::Lock(bool recursive)
+	Lock::Lock(bool recursive) : _mtx(new LockValue(recursive))
 	{
-		if(recursive)
-			lwiot_mutex_create(&this->mtx, MTX_RECURSIVE);
-		else
-			lwiot_mutex_create(&this->mtx, 0);
+	}
+
+	Lock::Lock(lwiot::Lock &other) : _mtx(other._mtx)
+	{
 	}
 
 	Lock::~Lock()
 	{
-		lwiot_mutex_destroy(&this->mtx);
+	}
+
+	Lock& Lock::operator=(lwiot::Lock &lock)
+	{
+		this->_mtx = lock._mtx;
+		return *this;
 	}
 
 	void Lock::lock()
 	{
-		lwiot_mutex_lock(&this->mtx, FOREVER);
+		this->_mtx->lock();
 	}
 
 	bool Lock::try_lock(int tmo)
 	{
-		return lwiot_mutex_lock(&this->mtx, tmo) == -EOK;
+		return this->_mtx->try_lock(tmo);
 	}
 
 	void Lock::unlock()
 	{
-		lwiot_mutex_unlock(&this->mtx);
+		this->_mtx->unlock();
 	}
-#else /* No OS definitions */
-	Lock::Lock(bool recursive) : _lockval(false)
-	{
-	}
-
-	void Lock::lock()
-	{
-		bool value = true;
-
-		while(value) {
-			enter_critical();
-			value = this->_lockval;
-			exit_critical();
-
-			lwiot_sleep(1);
-		}
-
-		enter_critical();
-		this->_lockval = true;
-		exit_critical();
-	}
-
-	void Lock::unlock()
-	{
-		enter_critical();
-		this->_lockval = false;
-		exit_critical();
-	}
-
-	bool Lock::try_lock(int tmo)
-	{
-		bool cache;
-
-		enter_critical();
-		cache = this->_lockval;
-		exit_critical();
-
-		if(cache)
-			return false;
-
-		this->lock();
-		return true;
-	}
-#endif
 }

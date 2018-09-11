@@ -18,6 +18,10 @@
 
 #include <pthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef DLL_EXPORT struct mutex {
 	pthread_mutex_t mtx;
 #define HAVE_MUTEX
@@ -50,5 +54,9 @@ typedef DLL_EXPORT struct timer {
 	timer_state_t state;
 #define HAVE_TIMER
 } lwiot_timer_t;
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif

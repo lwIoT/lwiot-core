@@ -17,6 +17,10 @@
 
 #include <lwiot/list.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct DLL_EXPORT mutex {
 	HANDLE mtx;
 #define HAVE_MUTEX
@@ -50,3 +54,7 @@ typedef DLL_EXPORT struct timer {
 	timer_state_t state;
 #define HAVE_TIMER
 } lwiot_timer_t;
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */

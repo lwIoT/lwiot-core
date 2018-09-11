@@ -18,47 +18,45 @@
 
 class ThreadTest : public lwiot::Thread {
 public:
-	explicit ThreadTest(const char *arg) : Thread("Testing thread", (void*)arg)
+	explicit ThreadTest(lwiot::Lock *lock) : Thread("Testing thread", (void*)lock)
 	{
 	}
 
 protected:
 	void run(void *_argument) override
 	{
-		const char *arg = (const char *)_argument;
+		auto *lock = (lwiot::Lock*) _argument;
+
+		const char *arg = "test-tp";
 		int i = 0;
 
+		lock->lock();
 		while(i++ <= 5) {
 			print_dbg("[%s] Thread is running!\n", arg);
 			lwiot_sleep(1000);
 		}
+		lock->unlock();
 	}
 };
 
 static void main_thread(void *arg)
 {
-	lwiot::Lock lock(false);
-
 	lwiot::Function<void(*)(void)> lambda1 = [&]() -> void {
 		int i = 0;
 
-		lock.lock();
 		while(i++ <= 5) {
 			print_dbg("Lambda thread 1 ping!\n");
 			lwiot_sleep(750);
 		}
-		lock.unlock();
 	};
 
 	lwiot::Function<void(*)(void)> lambda2 = [&]() -> void {
 		int i = 0;
 
-		lock.lock();
 		while(i++ <= 5) {
 			print_dbg("Lambda thread 2 ping!\n");
 			lwiot_sleep(750);
 		}
-		lock.unlock();
 	};
 
 	lwiot::FunctionalThread tp1("ft-tp1", lambda1);
@@ -79,10 +77,11 @@ int main(int argc, char **argv)
 	lwiot_thread_t tp;
 
 	lwiot_init();
+
+	lwiot::Lock lock(false);
 	print_dbg("Creating threads..\n");
 
-	ThreadTest t1("Thread 1"),
-		t2("Thread 2");
+	ThreadTest t1(&lock), t2(&lock);
 	
 	strcpy(tp.name, "main");
 	tp.name[sizeof("main")] = '\0';
@@ -95,6 +94,7 @@ int main(int argc, char **argv)
 	vTaskStartScheduler();
 #endif
 
+	lwiot_sleep(8000);
 	t1.stop();
 	t2.stop();
 	lwiot_thread_destroy(&tp);

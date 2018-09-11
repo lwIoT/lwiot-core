@@ -61,10 +61,16 @@ typedef xTimerHandle TimerHandle_t;
 #include <lwiot/compiler.h>
 #include <lwiot/lwiot.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct thread {
 	char name[16];
 	void *arg;
+
 	void (*handle)(void *arg);
+
 	TaskHandle_t task;
 #define HAVE_THREAD
 } lwiot_thread_t;
@@ -85,11 +91,17 @@ typedef struct timer {
 	TickType_t period;
 	time_t expiry;
 	void *arg;
+
 	void (*handle)(struct timer *timer, void *arg);
+
 	bool oneshot;
 	timer_state_t state;
 	bool created;
 #define HAVE_TIMER
 } lwiot_timer_t;
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif

@@ -44,13 +44,14 @@ namespace lwiot
 		}
 
 		template<class U>
-		void release(U *p) throw()
+		void release(U *p) noexcept
 		{
 			if(this->count != nullptr) {
 				--(*this->count);
 
 				if(0 == *this->count) {
-					delete p;
+					if(p)
+						delete p;
 					delete this->count;
 				}
 
@@ -67,7 +68,7 @@ namespace lwiot
 	public:
 		typedef T PointerType;
 
-		SharedPointer(void) throw() : ptr(nullptr), pn()
+		SharedPointer() noexcept : ptr(nullptr), pn()
 		{
 		}
 
@@ -83,30 +84,45 @@ namespace lwiot
 		}
 
 		template<class U>
-		SharedPointer(const SharedPointer<U> &ptr) throw() : pn(ptr.pn)
+		explicit SharedPointer(const SharedPointer<U> &ptr) noexcept : pn(ptr.pn)
 		{
-			SHARED_ASSERT((NULL == ptr.ptr) ||
-			              (0 != ptr.pn.useCount()));
+			SHARED_ASSERT((NULL == ptr.ptr) || (0 != ptr.pn.useCount()));
+
 			acquire(static_cast<typename SharedPointer<T>::PointerType *>(ptr.ptr));
 		}
 
-		SharedPointer(const SharedPointer &ptr) throw() : pn(ptr.pn)
+		SharedPointer(const SharedPointer &ptr) noexcept : pn(ptr.pn)
 		{
 			acquire(ptr.ptr);
 		}
 
-		SharedPointer &operator=(SharedPointer ptr) throw()
+		SharedPointer &operator=(SharedPointer ptr) noexcept
 		{
+			if(ptr == *this) {
+				return *this;
+			}
+
+			release();
 			swap(ptr);
+
 			return *this;
 		}
 
-		inline ~SharedPointer(void) throw()
+		template <typename U>
+		SharedPointer& operator=(SharedPointer<U> other)
+		{
+			release();
+			swap(other);
+
+			return *this;
+		}
+
+		inline ~SharedPointer() noexcept
 		{
 			release();
 		}
 
-		inline void reset(void) throw()
+		inline void reset() noexcept
 		{
 			release();
 		}
@@ -118,40 +134,40 @@ namespace lwiot
 			acquire(p);
 		}
 
-		void swap(SharedPointer &lhs) throw()
+		void swap(SharedPointer &lhs) noexcept
 		{
 			lwiot::lib::swap(this->ptr, lhs.ptr);
 			pn.swap(lhs.pn);
 		}
 
-		inline operator bool() const throw()
+		inline operator bool() const noexcept
 		{
 			return (0 < pn.useCount());
 		}
 
-		inline bool unique(void) const throw()
+		inline bool unique() const noexcept
 		{
 			return (1 == pn.useCount());
 		}
 
-		long useCount(void) const throw()
+		long useCount(void) const noexcept
 		{
 			return pn.useCount();
 		}
 
-		inline T &operator*() const throw()
+		inline T &operator*() const noexcept
 		{
 			SHARED_ASSERT(NULL != ptr);
 			return *ptr;
 		}
 
-		inline T *operator->() const throw()
+		inline T *operator->() const noexcept
 		{
 			SHARED_ASSERT(NULL != ptr);
 			return ptr;
 		}
 
-		inline T *get(void) const throw()
+		inline T *get() const noexcept
 		{
 			return ptr;
 		}
@@ -163,14 +179,12 @@ namespace lwiot
 			ptr = p;
 		}
 
-		inline void release(void) throw()
+		inline void release() noexcept
 		{
 			pn.release(ptr);
 			ptr = NULL;
 		}
 
-		// This allow pointer_cast functions to share the
-		// reference counter between different SharedPointer types
 		template<class U>
 		friend
 		class SharedPointer;
@@ -179,27 +193,27 @@ namespace lwiot
 		SharedPointerCount pn;
 	};
 
-	template<class T, class U> inline bool operator==(const SharedPointer<T>& l, const SharedPointer<U>& r) throw()
+	template<class T, class U> inline bool operator==(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() == r.get());
 	}
-	template<class T, class U> inline bool operator!=(const SharedPointer<T>& l, const SharedPointer<U>& r) throw()
+	template<class T, class U> inline bool operator!=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() != r.get());
 	}
-	template<class T, class U> inline bool operator<=(const SharedPointer<T>& l, const SharedPointer<U>& r) throw()
+	template<class T, class U> inline bool operator<=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() <= r.get());
 	}
-	template<class T, class U> inline bool operator<(const SharedPointer<T>& l, const SharedPointer<U>& r) throw()
+	template<class T, class U> inline bool operator<(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() < r.get());
 	}
-	template<class T, class U> inline bool operator>=(const SharedPointer<T>& l, const SharedPointer<U>& r) throw()
+	template<class T, class U> inline bool operator>=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() >= r.get());
 	}
-	template<class T, class U> inline bool operator>(const SharedPointer<T>& l, const SharedPointer<U>& r) throw()
+	template<class T, class U> inline bool operator>(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() > r.get());
 	}
