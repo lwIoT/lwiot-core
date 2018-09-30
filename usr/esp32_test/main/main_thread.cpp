@@ -20,18 +20,32 @@
 #include <lwiot/datetime.h>
 #include <lwiot/wifiaccesspoint.h>
 #include <lwiot/httpserver.h>
+#include <lwiot/softwarei2calgorithm.h>
+#include <lwiot/i2cbus.h>
+#include <lwiot/i2cmessage.h>
+#include <lwiot/apds9301sensor.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
-static void handle_root(lwiot::HttpServer& server)
-{
-	char temp[400];
-	int sec = lwiot_tick_ms() / 1000;
-	int min = sec / 60;
-	int hr = min / 60;
+static double luxdata = 0x0;
 
-	snprintf(temp, 400,
-	         "<html>\
+class MainThread : public lwiot::Thread {
+public:
+	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
+		_bus(new lwiot::SoftwareI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1)
+	{ }
+
+protected:
+	lwiot::I2CBus _bus;
+	lwiot::Apds9301Sensor _sensor;
+	double lux;
+
+	void setup_server(lwiot::HttpServer& server)
+	{
+		server.on("/", [=](lwiot::HttpServer& _server) -> void {
+			char temp[500];
+			snprintf(temp, 500,
+			         "<html>\
   <head>\
     <meta http-equiv='refresh' content='5'/>\
     <title>ESP8266 Demo</title>\
@@ -40,24 +54,17 @@ static void handle_root(lwiot::HttpServer& server)
     </style>\
   </head>\
   <body>\
-    <h1>Hello from ESP8266!</h1>\
-    <p>Uptime: %02d:%02d:%02d</p>\
+    <h1>Hello from ESP32!</h1>\
+    <p>Lux: %f</p>\
     <img src=\"/test.svg\" />\
   </body>\
-</html>",
+</html>", luxdata
+			);
 
-	         hr, min % 60, sec % 60
-	);
+			_server.send(200, "text/html", temp);
+		});
+	}
 
-	server.send(200, "text/html", temp);
-}
-
-class MainThread : public lwiot::Thread {
-public:
-	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg)
-	{ }
-
-protected:
 	void startPwm(lwiot::esp32::PwmTimer& timer)
 	{
 		auto& channel = timer[0];
@@ -102,14 +109,20 @@ protected:
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
 
-		server.on("/", handle_root);
+		this->setup_server(server);
 		assert(server.begin());
+
+		assert(_sensor.begin());
+		lwiot_sleep(1000);
+		assert(this->_sensor.getLux(lux));
+		printf("Lux: %f\n", lux);
 
 		wdt.enable();
 		print_dbg("Starting server...\n");
 
 		while(true) {
 			wdt.disable();
+			assert(this->_sensor.getLux(luxdata));
 			server.handleClient();
 			wdt.enable();
 
