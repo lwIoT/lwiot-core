@@ -76,6 +76,7 @@ SET(LIB_SOURCES
 	lib/net/ipaddress.cpp
 
 	lib/count.cpp
+	lib/measurementvector.cpp
 	lib/sharedpointercount.cpp
 
 	${JSON_SOURCES}

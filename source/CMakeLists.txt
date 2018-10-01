@@ -64,6 +64,7 @@ set(GENERIC_HEADERS
 	lwiot/sharedpointer.h
 	lwiot/uniquepointer.h
 	lwiot/apds9301sensor.h
+	lwiot/measurementvector.h
 	lwiot/application.h
 	lwiot/adcchip.h
 	lwiot/adcpin.h
