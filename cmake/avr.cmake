@@ -56,8 +56,8 @@ SET(LWIOT_PORT_SRCS
 	${PROJECT_SOURCE_DIR}/source/io/wdt/avrwatchdog.cpp
 
 	${PROJECT_SOURCE_DIR}/source/io/spi/avr/avrspi.c
-	${PROJECT_SOURCE_DIR}/source/io/i2c/avr-i2c.c
-	${PROJECT_SOURCE_DIR}/source/io/i2c/avri2calgorithm.cpp
+	${PROJECT_SOURCE_DIR}/source/io/i2c/avr/avr-i2c.c
+	${PROJECT_SOURCE_DIR}/source/io/i2c/avr/avri2calgorithm.cpp
 
 	${PROJECT_SOURCE_DIR}/source/soc/avr.c
 	${PROJECT_SOURCE_DIR}/source/soc/avrsystem.cpp

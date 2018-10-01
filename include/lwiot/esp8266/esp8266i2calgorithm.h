@@ -23,11 +23,11 @@ namespace lwiot { namespace esp8266
 	public:
 		explicit I2CAlgorithm(int sda, int scl, uint32_t freq = 100000, uint8_t bus = 0);
 		explicit I2CAlgorithm();
-		virtual ~I2CAlgorithm();
+		~I2CAlgorithm() override;
 
-		virtual ssize_t transfer(I2CMessage& msg) override;
-		virtual ssize_t transfer(Vector<I2CMessage*>& msgs) override;
-		virtual void setFrequency(const uint32_t& freq) override;
+		ssize_t transfer(I2CMessage& msg) override;
+		ssize_t transfer(Vector<I2CMessage*>& msgs) override;
+		void setFrequency(const uint32_t& freq) override;
 
 	private:
 		GpioPin _sda;

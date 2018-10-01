@@ -65,7 +65,7 @@ SET(LWIOT_PORT_SRCS
     ${PROJECT_SOURCE_DIR}/source/io/wdt/esp8266watchdog.cpp
     ${PROJECT_SOURCE_DIR}/source/io/wifi/esp8266_station.cpp
     ${PROJECT_SOURCE_DIR}/source/io/wifi/esp8266_ap.cpp
-    ${PROJECT_SOURCE_DIR}/source/io/i2c/esp8266i2calgorithm.cpp
+	${PROJECT_SOURCE_DIR}/source/io/i2c/esp8266/esp8266i2calgorithm.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/cplusplus.cpp
 	${PROJECT_SOURCE_DIR}/source/soc/esp8266.c
 )
