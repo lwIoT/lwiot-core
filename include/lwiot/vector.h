@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <lwiot/lwiot.h>
+#include <lwiot/types.h>
+
 #ifdef __cplusplus
 template <typename T>
 void *operator new(size_t s, T *v)
@@ -49,13 +52,21 @@ namespace lwiot
 		{
 		}
 
-		Vector(const int s) : sz(0), elem(nullptr), space(0)
+		explicit Vector(const size_t& s) : sz(0), elem(nullptr), space(0)
 		{
 			this->reserve(s);
 		}
 
-		Vector(const Vector&) = delete;
-		Vector& operator=(const Vector&);	//copy assignment
+		Vector<T, A>& operator=(const Vector& a);
+
+		Vector(const Vector<T, A>& other) : sz(0), elem(nullptr), space(0)
+		{
+			this->reserve(other.capacity());
+
+			for(auto& idx : other) {
+				this->pushback(idx);
+			}
+		}
 
 		virtual ~Vector()
 		{
@@ -90,9 +101,9 @@ namespace lwiot
 		T& operator[](int n) { return elem[n]; }
 		const T& operator[](int n) const { return elem[n]; }
 
-		int size() const { return sz; }
-		int capacity() const { return space; }
-		int length() const { return this->size(); }
+		size_t size() const { return sz; }
+		size_t capacity() const { return space; }
+		size_t length() const { return this->size(); }
 
 		void reserve(int newalloc);
 		void pushback(const T& val);
@@ -123,19 +134,19 @@ namespace lwiot
 	{
 		if(this == &a) return *this;
 
-		if(a.size() <= space) {
-			for(int i = 0; i<a.size(); ++i) elem[i] = a[i];
+		if(a.size() <= (size_t)space) {
+			for(int i = 0; (size_t)i<a.size(); ++i) elem[i] = a[i];
 			sz = a.size();
 			return *this;
 		}
 
 		T* p = alloc.allocate(a.size());
 
-		for(int i = 0; i<a.size(); ++i) {
+		for(size_t i = 0; i < a.size(); ++i) {
 			alloc.construct(&p[i], a[i]);
 		}
 
-		for(int i = 0; i<sz; ++i)
+		for(size_t i = 0; i < this->size(); ++i)
 			alloc.destroy(&elem[i]);
 
 		space = sz = a.size();
