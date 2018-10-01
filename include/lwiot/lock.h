@@ -19,8 +19,8 @@ namespace lwiot {
 		explicit Lock(bool recursive = false);
 		virtual ~Lock();
 
-		explicit Lock(Lock& lock);
-		Lock& operator =(Lock& lock);
+		explicit Lock(Lock& lock) = delete;
+		Lock& operator =(Lock& lock) = delete;
 
 		void lock();
 		bool try_lock(int tmo = 100);

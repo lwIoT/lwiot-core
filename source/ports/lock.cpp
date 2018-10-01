@@ -19,19 +19,7 @@ namespace lwiot {
 	{
 	}
 
-	Lock::Lock(lwiot::Lock &other) : _mtx(other._mtx)
-	{
-	}
-
-	Lock::~Lock()
-	{
-	}
-
-	Lock& Lock::operator=(lwiot::Lock &lock)
-	{
-		this->_mtx = lock._mtx;
-		return *this;
-	}
+	Lock::~Lock() = default;
 
 	void Lock::lock()
 	{
