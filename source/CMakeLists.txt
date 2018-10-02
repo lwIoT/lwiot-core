@@ -101,7 +101,6 @@ set(GENERIC_HEADERS
 	lwiot/port.h
 	lwiot/pwm.h
 	lwiot/scopedlock.h
-	lwiot/softwarei2calgorithm.h
 	lwiot/spibus.h
 	lwiot/spimessage.h
 	lwiot/ssd1306display.h
