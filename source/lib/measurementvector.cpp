@@ -64,6 +64,11 @@ namespace lwiot
 		this->_measurements.add(data);
 	}
 
+	void MeasurementVector::clear()
+	{
+		this->_measurements.clear();
+	}
+
 	double MeasurementVector::smooth() const
 	{
 		double data;
