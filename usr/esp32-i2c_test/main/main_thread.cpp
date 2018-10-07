@@ -19,7 +19,7 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
 #include <lwiot/i2cbus.h>
-#include <lwiot/softwarei2calgorithm.h>
+#include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/application.h>
 #include <lwiot/functionalthread.h>
 
@@ -46,10 +46,11 @@ public:
 	virtual void operator()() override
 	{
 		size_t freesize;
-		auto algo = new lwiot::SoftwareI2CAlgorithm(23, 22, 100000U);
+		auto algo = new lwiot::GpioI2CAlgorithm(23, 22, 100000U);
 		lwiot::I2CBus bus(algo);
 
 		printf("Main thread started!\n");
+		algo->test();
 		lwiot_sleep(1000);
 
 		lwiot::DateTime dt;
@@ -58,10 +59,9 @@ public:
 		wdt.enable();
 
 		print_dbg("Free heap size: %u\n", freesize);
-		print_dbg("Software I2C udelay value: %i\n", calculate_udelay_test(100000UL));
+		print_dbg("GPIO I2C udelay value: %i\n", calculate_udelay_test(100000UL));
 
 		print_dbg("Testing I2C bus..\n");
-		algo->test();
 
 		lwiot::Function<void(*)(void)> func([]() -> void {
 			int idx = 0;

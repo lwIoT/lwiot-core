@@ -20,7 +20,7 @@
 #include <lwiot/datetime.h>
 #include <lwiot/wifiaccesspoint.h>
 #include <lwiot/i2cbus.h>
-#include <lwiot/softwarei2calgorithm.h>
+#include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/ssd1306display.h>
 
 #include <lwiot/esp32/esp32pwm.h>
@@ -146,7 +146,7 @@ protected:
 	virtual void run(void *arg) override
 	{
 		size_t freesize;
-		auto algo = new lwiot::SoftwareI2CAlgorithm(23, 22, 100000U);
+		auto algo = new lwiot::GpioI2CAlgorithm(23, 22, 100000U);
 		lwiot::I2CBus bus(algo);
 		lwiot::Ssd1306Display display(bus);
 

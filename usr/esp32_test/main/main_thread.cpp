@@ -20,7 +20,7 @@
 #include <lwiot/datetime.h>
 #include <lwiot/wifiaccesspoint.h>
 #include <lwiot/httpserver.h>
-#include <lwiot/softwarei2calgorithm.h>
+#include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/apds9301sensor.h>
@@ -32,7 +32,7 @@ static double luxdata = 0x0;
 class MainThread : public lwiot::Thread {
 public:
 	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
-		_bus(new lwiot::SoftwareI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1)
+		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1)
 	{ }
 
 protected:
