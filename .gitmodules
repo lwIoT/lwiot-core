@@ -1,9 +1,6 @@
 [submodule "external/esp32-idf"]
 	path = external/esp32-idf
 	url = https://github.com/espressif/esp-idf.git
-[submodule "external/esp8266-open-rtos"]
-	path = external/esp8266-open-rtos
-	url = https://github.com/SuperHouse/esp-open-rtos.git
 [submodule "external/matplotlib-cpp"]
 	path = external/matplotlib-cpp
 	url = https://github.com/bietje/matplotlib-cpp.git
