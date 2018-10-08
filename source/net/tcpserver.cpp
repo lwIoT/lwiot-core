@@ -81,8 +81,8 @@ namespace lwiot
 		if(this->_fd < 0)
 			return;
 
-#ifdef ESP8266
-		lwip_close(this->_fd);
+#ifdef HAVE_LWIP
+		::lwip_close(this->_fd);
 #else
 		::close(this->_fd);
 #endif
