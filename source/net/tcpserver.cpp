@@ -82,7 +82,7 @@ namespace lwiot
 			return;
 
 #ifdef ESP8266
-		lwip_close(this->fd);
+		lwip_close(this->_fd);
 #else
 		::close(this->_fd);
 #endif
@@ -121,7 +121,7 @@ namespace lwiot
 
 		setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR, &optvalue, sizeof optvalue);
 #ifdef HAVE_LWIP
-		auto err = lwip_bind(this->_fd, (struct sockaddr*)&server, sizeof server);
+		auto err = ::lwip_bind(this->_fd, (struct sockaddr*)&server, sizeof server);
 #else
 		auto err = ::bind(this->_fd, (struct sockaddr*)&server, sizeof server);
 #endif
@@ -144,7 +144,6 @@ namespace lwiot
 
 		print_dbg("Server binded [fd: %i] [err: %i]\n", this->_fd, err);
 		return err >= 0;
-
 	}
 
 	TcpClient TcpServer::accept() const
@@ -158,7 +157,7 @@ namespace lwiot
 
 		len = sizeof(client);
 #ifdef HAVE_LWIP
-		fd = lwip_accept(this->_fd, (struct sockaddr*) &client, &len);
+		fd = ::lwip_accept(this->_fd, (struct sockaddr*) &client, &len);
 #else
 		fd = ::accept(this->_fd, (struct sockaddr*) &client, &len);
 #endif

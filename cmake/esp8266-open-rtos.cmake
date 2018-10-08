@@ -45,7 +45,7 @@ set(LWIOT_PORT_INCLUDE_DIRECTORIES
         ${ESP8266_OPEN_RTOS_PATH}/FreeRTOS/Source/portable/esp8266
         ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include
         ${ESP8266_OPEN_RTOS_PATH}/lwip/include
-        ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/compat/posix
+		${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/compat/posix
         ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4
         ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4/lwip
         ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/lwip
