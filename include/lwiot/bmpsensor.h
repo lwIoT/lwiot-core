@@ -33,7 +33,7 @@ namespace lwiot
 
 	private:
 		uint8_t _addr;
-		I2CBus& _bus;
+		I2CBus _bus;
 
 		bool read(uint8_t reg, uint8_t *rv, size_t num);
 	};

@@ -57,15 +57,15 @@ namespace lwiot
 
 		void stopScroll();
 
-		virtual void drawPixel(int16_t x, int16_t y, uint16_t color) override;
-		virtual void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) override;
-		virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
+		void drawPixel(int16_t x, int16_t y, uint16_t color) override;
+		void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) override;
+		void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
 
 	protected:
 		void writeCommand(uint8_t cmd);
 
 	private:
-		I2CBus& _bus;
+		I2CBus _bus;
 		uint8_t _i2caddr;
 		static constexpr uint8_t SlaveAddress = 0x3C;
 

@@ -36,7 +36,7 @@ namespace lwiot
 		bool setIntegrationTime(integration_time_t time);
 
 	private:
-		I2CBus& _bus;
+		I2CBus _bus;
 		uint8_t _addr;
 
 		static constexpr int SlaveAddress = 0x39;

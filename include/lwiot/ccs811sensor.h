@@ -101,7 +101,7 @@ namespace lwiot
 
 
 	private:
-		I2CBus& _bus;
+		I2CBus _bus;
 		float _temp_offset;
 		uint16_t _tvoc;
 		uint16_t _eco2;
