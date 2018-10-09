@@ -21,12 +21,25 @@
 
 namespace lwiot
 {
-	I2CBus::I2CBus(I2CAlgorithm *algo) : _algo(algo), _lock(false)
+	I2CBus::I2CBus(const lwiot::I2CBus &bus)
+	{
+		this->_lock = bus._lock;
+		this->_algo = bus._algo;
+	}
+
+	I2CBus::I2CBus(I2CAlgorithm *algo) : _algo(algo), _lock(new Lock(false))
 	{
 	}
 
-	I2CBus::I2CBus() : _algo(nullptr), _lock(false)
+	I2CBus::I2CBus() : I2CBus(nullptr)
 	{
+	}
+
+	I2CBus& I2CBus::operator=(const lwiot::I2CBus &bus)
+	{
+		this->_lock = bus._lock;
+		this->_algo = bus._algo;
+		return *this;
 	}
 
 	void I2CBus::setFrequency(const uint32_t& freq)
@@ -42,7 +55,7 @@ namespace lwiot
 	bool I2CBus::transfer(Vector<I2CMessage*>& msgs)
 	{
 		int rv = -EINVALID;
-		ScopedLock lock(this->_lock);
+		ScopedLock lock(*this->_lock);
 
 		for(int i = 0; i < MAX_RETRIES; i++) {
 			rv = this->_algo->transfer(msgs);
@@ -61,7 +74,7 @@ namespace lwiot
 	bool I2CBus::transfer(I2CMessage& msg)
 	{
 		int rv = -EINVALID;
-		ScopedLock lock(this->_lock);
+		ScopedLock lock(*this->_lock);
 
 		for(int i = 0; i < MAX_RETRIES; i++) {
 			rv = this->_algo->transfer(msg);

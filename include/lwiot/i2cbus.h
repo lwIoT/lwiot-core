@@ -23,7 +23,10 @@ namespace lwiot
 	class I2CBus {
 	public:
 		explicit I2CBus();
+		I2CBus(const I2CBus& bus);
 		explicit I2CBus(I2CAlgorithm *algo);
+
+		I2CBus& operator=(const I2CBus& bus);
 
 		bool transfer(I2CMessage& msg);
 		bool transfer(Vector<I2CMessage*>& msgs);
@@ -38,6 +41,6 @@ namespace lwiot
 
 	private:
 		SharedPointer<I2CAlgorithm> _algo;
-		Lock _lock;
+		SharedPointer<Lock> _lock;
 	};
 }
