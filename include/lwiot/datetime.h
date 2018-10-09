@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+#pragma once
+
 #include <lwiot.h>
 #include <stdlib.h>
 #include <time.h>
