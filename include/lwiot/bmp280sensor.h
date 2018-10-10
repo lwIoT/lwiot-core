@@ -93,6 +93,6 @@ namespace lwiot
 
 		/* Methods */
 		int32_t computeTemperature(int32_t input) const;
-		float computePressure(int32_t input);
+		int32_t computePressure(int32_t input);
 	};
 }

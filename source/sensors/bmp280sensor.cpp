@@ -88,7 +88,7 @@ namespace lwiot
 		temperature = this->_temperature;
 	}
 
-	float Bmp280Sensor::computePressure(int32_t input)
+	int32_t Bmp280Sensor::computePressure(int32_t input)
 	{
 		int64_t var1, var2, p;
 
@@ -112,7 +112,7 @@ namespace lwiot
 		var2 = (((int64_t)this->_data.dig_P8) * p) >> 19;
 
 		p = ((p + var1 + var2) >> 8) + (((int64_t)this->_data.dig_P7)<<4);
-		return (float)p/256;
+		return static_cast<int32_t>((float)p/256.0);
 	}
 
 	int32_t Bmp280Sensor::computeTemperature(int32_t adc_T) const
