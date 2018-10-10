@@ -35,8 +35,8 @@ namespace lwiot
 		virtual const uint8_t& operator[] (const size_t& idx) const override;
 		virtual uint8_t& operator[] (const size_t& idx) override;
 
-		const uint8_t *begin() const;
-		const uint8_t *end() const;
+		uint8_t *begin() const;
+		uint8_t *end() const;
 		uint8_t *data() const { return this->_data; }
 
 		void setIndex(size_t index) { this->_index = index; }
