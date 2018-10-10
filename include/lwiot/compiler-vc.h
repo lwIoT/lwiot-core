@@ -13,6 +13,10 @@
 #define __compiler_likely(x) (x)
 #define __compiler_unlikely(x) (x)
 
+#ifndef __never_inline
+#define __never_inline
+#endif
+
 #define __compiler_co(addr, type, field) ((type *)((char*)(addr) - offsetof(type, field)))
 
 #define __maybe

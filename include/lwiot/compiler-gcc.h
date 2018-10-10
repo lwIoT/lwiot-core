@@ -29,6 +29,10 @@ typedef unsigned char u_char;
 
 #define __compiler_barrier() __sync_synchronize()
 
+#ifndef __never_inline
+#define __never_inline __attribute__((noinline))
+#endif
+
 #ifdef ESP32
 #include <esp_attr.h>
 #define RAM_ATTR IRAM_ATTR
