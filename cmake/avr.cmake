@@ -70,6 +70,6 @@ SET(LWIOT_PORT_HEADERS
 )
 
 set(PORT_C_FLAGS "-mmcu=${MCU}")
-set(PORT_CXX_FLAGS "-mmcu=${MCU} -fno-rtti -std=gnu++14")
+set(PORT_CXX_FLAGS "-mmcu=${MCU} -fno-rtti")
 
 SET(HAVE_LIBTIME True)
