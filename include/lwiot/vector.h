@@ -82,6 +82,9 @@ namespace lwiot
 			for(int i = 0; i < sz; ++i) {
 				alloc.destroy(&elem[i]);
 			}
+
+			if(this->elem != nullptr)
+				this->alloc.deallocate(elem, this->space);
 		}
 
 		void clear()
@@ -194,6 +197,9 @@ namespace lwiot
 			alloc.destroy(&elem[i]);
 		}
 
+		if(this->elem != nullptr)
+			alloc.deallocate(this->elem, this->space);
+
 		space = sz = a.size();
 		elem = p;
 		return *this;
@@ -216,6 +222,7 @@ namespace lwiot
 
 		if(this->elem)
 			alloc.deallocate(elem, space);
+
 		this->elem = p;
 		this->space = newalloc;
 	}
