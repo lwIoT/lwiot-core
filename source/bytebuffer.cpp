@@ -102,12 +102,12 @@ namespace lwiot
 		return this->_data[idx];
 	}
 
-	const uint8_t* ByteBuffer::begin() const
+	uint8_t* ByteBuffer::begin() const
 	{
 		return this->_data;
 	}
 
-	const uint8_t* ByteBuffer::end() const
+	uint8_t* ByteBuffer::end() const
 	{
 		return this->_data + this->_index;
 	}
