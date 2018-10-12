@@ -13,6 +13,7 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
+#include <lwiot/atomic.h>
 #include <lwiot/log.h>
 
 #ifndef SHARED_ASSERT
@@ -24,8 +25,7 @@ namespace lwiot
 	class SharedPointerCount {
 	public:
 		SharedPointerCount();
-
-		explicit SharedPointerCount(const SharedPointerCount &count);
+		SharedPointerCount(const SharedPointerCount &count);
 
 		void swap(SharedPointerCount &count) noexcept;
 
@@ -35,32 +35,23 @@ namespace lwiot
 		void acquire(T *p)
 		{
 			if(p != nullptr) {
-				if(this->count == nullptr) {
-					this->count = new long(1);
-				} else {
-					++(*this->count);
-				}
+				this->count.add(1);
 			}
 		}
 
 		template<class U>
 		void release(U *p) noexcept
 		{
-			if(this->count != nullptr) {
-				--(*this->count);
+			this->count.substract(1);
 
-				if(0 == *this->count) {
-					if(p)
-						delete p;
-					delete this->count;
-				}
-
-				this->count = nullptr;
+			if(this->count.value() == 0L) {
+				if(p)
+					delete p;
 			}
 		}
 
 	private:
-		long *count;
+		Atomic<long> count;
 	};
 
 	template<typename T>
@@ -140,7 +131,7 @@ namespace lwiot
 			pn.swap(lhs.pn);
 		}
 
-		inline operator bool() const noexcept
+		inline explicit operator bool() const noexcept
 		{
 			return (0 < pn.useCount());
 		}
@@ -150,7 +141,7 @@ namespace lwiot
 			return (1 == pn.useCount());
 		}
 
-		long useCount(void) const noexcept
+		long useCount() const noexcept
 		{
 			return pn.useCount();
 		}

@@ -15,13 +15,11 @@
 
 namespace lwiot
 {
-	SharedPointerCount::SharedPointerCount() : count(nullptr)
+	SharedPointerCount::SharedPointerCount() : count(0)
 	{
 	}
 
-	SharedPointerCount::SharedPointerCount(const lwiot::SharedPointerCount &count) : count(count.count)
-	{
-	}
+	SharedPointerCount::SharedPointerCount(const lwiot::SharedPointerCount &count) = default;
 
 	void SharedPointerCount::swap(lwiot::SharedPointerCount &count) noexcept
 	{
@@ -30,11 +28,6 @@ namespace lwiot
 
 	long SharedPointerCount::useCount() const
 	{
-		auto rv = 0L;
-
-		if(this->count != nullptr)
-			rv = *this->count;
-
-		return rv;
+		return this->count.value();
 	}
 }
