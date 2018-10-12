@@ -89,6 +89,9 @@ set(GENERIC_HEADERS
 	lwiot/gpiopin.h
 	lwiot/i2calgorithm.h
 	lwiot/gpioi2calgorithm.h
+	lwiot/realtimeclock.h
+	lwiot/dsrealtimeclock.h
+	lwiot/atomic.h
 	lwiot/i2cbus.h
 	lwiot/i2cmessage.h
 	lwiot/ipaddress.h
