@@ -13,36 +13,64 @@
 #include <lwiot/httpserver.h>
 #include <lwiot/test.h>
 
-static void handle_root(lwiot::HttpServer& server)
+static const char INDEX_HTML[] =
+		"<!DOCTYPE HTML>"
+		"<html>"
+		"<head>"
+		"<meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
+		"<title>ESP8266 Web Form Demo</title>"
+		"<style>"
+		"\"body { background-color: #808080; font-family: Arial, Helvetica, Sans-Serif; Color: #000000; }\""
+		"</style>"
+		"</head>"
+		"<body>"
+		"<h1>ESP8266 Web Form Demo</h1>"
+		"<FORM action=\"/\" method=\"post\">"
+		"<P>"
+		"LED<br>"
+		"<INPUT type=\"radio\" name=\"LED\" value=\"1\">On<BR>"
+		"<INPUT type=\"radio\" name=\"LED\" value=\"0\">Off<BR>"
+		"<INPUT type=\"submit\" value=\"Send\"> <INPUT type=\"reset\">"
+		"</P>"
+		"</FORM>"
+		"</body>"
+		"</html>";
+
+void returnFail(lwiot::HttpServer& server, const lwiot::String& msg)
 {
-	char temp[400];
-	int sec = lwiot_tick_ms() / 1000;
-	int min = sec / 60;
-	int hr = min / 60;
-
-	snprintf(temp, 400,
-	         "<html>\
-  <head>\
-    <meta http-equiv='refresh' content='5'/>\
-    <title>ESP8266 Demo</title>\
-    <style>\
-      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-    </style>\
-  </head>\
-  <body>\
-    <h1>Hello from ESP8266!</h1>\
-    <p>Uptime: %02d:%02d:%02d</p>\
-    <img src=\"/test.svg\" />\
-  </body>\
-</html>",
-
-	         hr, min % 60, sec % 60
-	);
-
-	server.send(200, "text/html", temp);
+	server.sendHeader("Connection", "close");
+	server.sendHeader("Access-Control-Allow-Origin", "*");
+	server.send(500, "text/plain", msg + "\r\n");
 }
 
-static void test_httpserver(void)
+static void handleSubmit(lwiot::HttpServer& server)
+{
+	lwiot::String LEDvalue;
+
+	if (!server.hasArg("LED")) return returnFail(server, "BAD ARGS");
+	LEDvalue = server.arg("LED");
+	if (LEDvalue == "1") {
+		server.send(200, "text/html", INDEX_HTML);
+	}
+	else if (LEDvalue == "0") {
+		server.send(200, "text/html", INDEX_HTML);
+	}
+	else {
+		returnFail(server,"Bad LED value");
+	}
+}
+
+static void handle_root(lwiot::HttpServer& server)
+{
+	if(server.hasArg("LED")) {
+		printf("Page submitted");
+		handleSubmit(server);
+	} else {
+		server.send(200, "text/html", INDEX_HTML);
+	}
+}
+
+static void test_httpserver()
 {
 	lwiot::IPAddress addr(127,0,0,1);
 	lwiot::HttpServer server(addr, 8000);
@@ -50,9 +78,9 @@ static void test_httpserver(void)
 	server.on("/", handle_root);
 	assert(server.begin());
 	print_dbg("HttpServer started!\n");
+
 	while(true)
 		server.handleClient();
-	server.close();
 }
 
 int main(int argc, char **argv)

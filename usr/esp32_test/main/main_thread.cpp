@@ -24,6 +24,7 @@
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/apds9301sensor.h>
+#include <lwiot/dsrealtimeclock.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -32,17 +33,19 @@ static double luxdata = 0x0;
 class MainThread : public lwiot::Thread {
 public:
 	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
-		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1)
-	{ }
+		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1), rtc(_bus)
+	{
+	}
 
 protected:
 	lwiot::I2CBus _bus;
 	lwiot::Apds9301Sensor _sensor;
 	double lux;
+	lwiot::DsRealTimeClock rtc;
 
 	void setup_server(lwiot::HttpServer& server)
 	{
-		server.on("/", [=](lwiot::HttpServer& _server) -> void {
+		server.on("/", [](lwiot::HttpServer& _server) -> void {
 			char temp[500];
 			snprintf(temp, 500,
 			         "<html>\
@@ -97,12 +100,12 @@ protected:
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		lwiot::IPAddress addr((uint32_t)0);
 		lwiot::HttpServer server(addr, 80);
+		lwiot::DateTime dt(1539189832);
 
 		lwiot_sleep(1000);
 		this->startPwm(timer);
 		printf("Main thread started!\n");
 
-		lwiot::DateTime dt;
 		print_dbg("Time: %s\n", dt.toString().c_str());
 		freesize = heap_caps_get_free_size(0);
 
@@ -112,6 +115,7 @@ protected:
 		this->setup_server(server);
 		assert(server.begin());
 
+		this->rtc.set(dt);
 		assert(_sensor.begin());
 		lwiot_sleep(1000);
 		assert(this->_sensor.getLux(lux));
@@ -122,6 +126,8 @@ protected:
 
 		while(true) {
 			wdt.disable();
+			auto time = this->rtc.now();
+			print_dbg("Time: %s\n", time.toString().c_str());
 			assert(this->_sensor.getLux(luxdata));
 			server.handleClient();
 			wdt.enable();
