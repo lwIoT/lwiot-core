@@ -86,32 +86,7 @@ namespace lwiot
 		Function() : _callable(nullptr)
 		{ }
 
-		virtual ~Function()
-		{
-		}
-
-//		Function(const SelfType& func)
-//		{
-//			if(func._callable == nullptr) {
-//				this->_callable = nullptr;
-//				return;
-//			}
-//
-//			this->_callable = new Closure<SignatureType , _ReturnType, Args...>(func._callable);
-//
-//			this->_callable = func._callable;
-//		}
-
-//		Function& operator =(const SelfType& func)
-//		{
-//			if(func._callable == nullptr) {
-//				this->_callable = nullptr;
-//				return *this;
-//			}
-//
-//			this->_callable = new Closure<SignatureType , _ReturnType, Args...>(func._callable);
-//			return *this;
-//		}
+		virtual ~Function() = default;
 
 		Function& operator=(_ReturnType(*func)(Args...))
 		{
@@ -165,7 +140,7 @@ namespace lwiot
 		typedef Function<_ReturnType(_ClassType::*)(Args...)> SelfType;
 		typedef _ReturnType(_ClassType::*SignatureType)(Args...);
 
-		Function(_ReturnType(_ClassType::*method)(Args...)) : _method(method)
+		explicit Function(_ReturnType(_ClassType::*method)(Args...)) : _method(method)
 		{ }
 
 		Function() : _method(nullptr)

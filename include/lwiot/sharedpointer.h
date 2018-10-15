@@ -28,30 +28,39 @@ namespace lwiot
 		SharedPointerCount(const SharedPointerCount &count);
 
 		void swap(SharedPointerCount &count) noexcept;
-
 		long useCount() const;
 
 		template<typename T>
 		void acquire(T *p)
 		{
 			if(p != nullptr) {
-				this->count.add(1);
+				if(this->count == nullptr) {
+					this->count = new Atomic<long>(1L);
+				} else {
+					this->count->add(1);
+				}
 			}
 		}
 
 		template<class U>
 		void release(U *p) noexcept
 		{
-			this->count.substract(1);
+			if(this->count != nullptr) {
+				this->count->substract(1);
 
-			if(this->count.value() == 0L) {
-				if(p)
-					delete p;
+				if(this->count->value() == 0L) {
+					if(p)
+						delete p;
+
+					delete this->count;
+				}
+
+				this->count = nullptr;
 			}
 		}
 
 	private:
-		Atomic<long> count;
+		Atomic<long> *count;
 	};
 
 	template<typename T>

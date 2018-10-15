@@ -26,91 +26,90 @@ namespace lwiot
 	public:
 		using PointerType = T;
 
-		UniquePointer(void) throw() :
-				px(NULL)
+		UniquePointer() noexcept : px(NULL)
 		{
 		}
 
-		explicit UniquePointer(T *p) throw() : px(p)
+		explicit UniquePointer(T *p) noexcept : px(p)
 		{
 		}
 
 		template<class U>
-		UniquePointer(const UniquePointer<U> &ptr) throw() : px(
+		explicit UniquePointer(const UniquePointer<U> &ptr) noexcept : px(
 				static_cast<typename UniquePointer<T>::PointerType *>(ptr.px))
 		{
 			const_cast<UniquePointer<U> &>(ptr).px = NULL;
 		}
 
-		UniquePointer(const UniquePointer &ptr) throw() :
+		UniquePointer(const UniquePointer &ptr) noexcept :
 				px(ptr.px)
 		{
 			const_cast<UniquePointer &>(ptr).px = NULL;
 		}
 
-		UniquePointer &operator=(UniquePointer ptr) throw()
+		UniquePointer &operator=(UniquePointer ptr) noexcept
 		{
 			swap(ptr);
 			return *this;
 		}
 
-		inline ~UniquePointer(void) throw()
+		inline ~UniquePointer() noexcept
 		{
 			destroy();
 		}
 
-		inline void reset(void) throw()
+		inline void reset() noexcept
 		{
 			destroy();
 		}
 
-		void reset(T *p) throw()
+		void reset(T *p) noexcept
 		{
 			SHARED_ASSERT((NULL == p) || (px != p));
 			destroy();
 			px = p;
 		}
 
-		void swap(UniquePointer &lhs) throw()
+		void swap(UniquePointer &lhs) noexcept
 		{
 			lwiot::lib::swap(px, lhs.px);
 		}
 
-		inline void release(void) throw()
+		inline void release() noexcept
 		{
 			px = NULL;
 		}
 
-		inline operator bool() const throw()
+		inline explicit operator bool() const noexcept
 		{
 			return (nullptr != px);
 		}
 
-		inline T &operator*() const throw()
+		inline T &operator*() const noexcept
 		{
 			SHARED_ASSERT(NULL != px);
 			return *px;
 		}
 
-		inline T *operator->() const throw()
+		inline T *operator->() const noexcept
 		{
 			SHARED_ASSERT(NULL != px);
 			return px;
 		}
 
-		inline T *get(void) const throw()
+		inline T *get() const noexcept
 		{
 			return px;
 		}
 
 	private:
-		inline void destroy(void) throw()
+		inline void destroy() noexcept
 		{
 			delete px;
 			px = NULL;
 		}
 
-		inline void release(void) const throw()
+		inline void release() const noexcept
 		{
 			px = NULL;
 		}
@@ -120,37 +119,37 @@ namespace lwiot
 	};
 
 	template<class T, class U>
-	inline bool operator==(const UniquePointer <T> &l, const UniquePointer <U> &r) throw()
+	inline bool operator==(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
 		return (l.get() == r.get());
 	}
 
 	template<class T, class U>
-	inline bool operator!=(const UniquePointer <T> &l, const UniquePointer <U> &r) throw()
+	inline bool operator!=(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
 		return (l.get() != r.get());
 	}
 
 	template<class T, class U>
-	inline bool operator<=(const UniquePointer <T> &l, const UniquePointer <U> &r) throw()
+	inline bool operator<=(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
 		return (l.get() <= r.get());
 	}
 
 	template<class T, class U>
-	inline bool operator<(const UniquePointer <T> &l, const UniquePointer <U> &r) throw()
+	inline bool operator<(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
 		return (l.get() < r.get());
 	}
 
 	template<class T, class U>
-	inline bool operator>=(const UniquePointer <T> &l, const UniquePointer <U> &r) throw()
+	inline bool operator>=(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
 		return (l.get() >= r.get());
 	}
 
 	template<class T, class U>
-	inline bool operator>(const UniquePointer <T> &l, const UniquePointer <U> &r) throw()
+	inline bool operator>(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
 		return (l.get() > r.get());
 	}

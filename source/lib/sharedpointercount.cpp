@@ -15,7 +15,7 @@
 
 namespace lwiot
 {
-	SharedPointerCount::SharedPointerCount() : count(0)
+	SharedPointerCount::SharedPointerCount() : count(nullptr)
 	{
 	}
 
@@ -28,6 +28,6 @@ namespace lwiot
 
 	long SharedPointerCount::useCount() const
 	{
-		return this->count.value();
+		return this->count->value();
 	}
 }
