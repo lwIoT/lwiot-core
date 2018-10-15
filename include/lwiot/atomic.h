@@ -84,6 +84,13 @@ namespace lwiot
 			return v;
 		}
 
+		void set(const T& value)
+		{
+			enter_critical();
+			this->_value = value;
+			exit_critical();
+		}
+
 	private:
 		T _value;
 	};
