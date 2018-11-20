@@ -21,15 +21,21 @@ public:
 	{ }
 
 protected:
+	void startAP(const lwiot::String& ssid, const lwiot::String& passw)
+	{
+		auto& ap = lwiot::WifiAccessPoint::instance();
+		lwiot::IPAddress local(192, 168, 1, 1);
+		lwiot::IPAddress subnet(255, 255, 255, 0);
+		lwiot::IPAddress gw(192, 168, 1, 1);
+
+		ap.start();
+		ap.config(local, gw, subnet);
+		ap.begin(ssid, passw, 4);
+	}
+
 	void run(void *arg)
 	{
-		//auto& ap = lwiot::WifiAccessPoint::instance();
-		auto& sta = lwiot::WifiStation::instance();
-
-		printf("Main thread started!\n");
-		sta.connectTo("Intranet", "plofkip01");
-		//ap.begin("ESP-TEST", "12345678", 4, false, 4);
-
+		this->startAP("Silence of the LAN", "SecretPass");
 		while(true) {
 			print_dbg("Main thread ping\n");
 			lwiot_sleep(1000);

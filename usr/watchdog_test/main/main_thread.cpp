@@ -9,6 +9,8 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/log.h>
 
+#include <lwiot/esp32/esp32watchdog.h>
+
 class MainThread : public lwiot::Thread {
 public:
 	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg)
@@ -17,15 +19,7 @@ public:
 protected:
 	void run(void *arg)
 	{
-		TaskHandle_t handle;
-		print_dbg("Main thread started!\n");
-
-		if(esp_task_wdt_reset() == ESP_OK)
-			return;
-
-		handle = xTaskGetCurrentTaskHandle();
-		esp_task_wdt_add(handle);
-		esp_task_wdt_reset();
+		wdt.enable(5000);
 
 		while(true) {
 			wdt.reset();
