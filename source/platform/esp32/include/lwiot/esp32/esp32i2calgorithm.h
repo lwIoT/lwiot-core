@@ -17,6 +17,10 @@
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/gpiopin.h>
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/ringbuf.h>
+
 #include <driver/i2c.h>
 
 namespace lwiot { namespace esp32

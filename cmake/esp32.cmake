@@ -70,6 +70,8 @@ SET(PORT_INCLUDE_DIR
 	${ESP32_IDF_PATH}/components/cxx/include
 	${ESP32_IDF_PATH}/components/driver/include
 	${ESP32_IDF_PATH}/components/esp32/include
+	${ESP32_IDF_PATH}/components/spi_flash/include
+	${ESP32_IDF_PATH}/components/esp_ringbuf/include
 	${ESP32_IDF_PATH}/components/freertos/include
 	${ESP32_IDF_PATH}/components/heap/include
 	${ESP32_IDF_PATH}/components/nvs_flash/include

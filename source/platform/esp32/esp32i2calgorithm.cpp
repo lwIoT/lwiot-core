@@ -20,6 +20,7 @@
 
 #include <lwiot/esp32/esp32i2calgorithm.h>
 
+
 #include <driver/i2c.h>
 
 #define ACK I2C_MASTER_ACK
