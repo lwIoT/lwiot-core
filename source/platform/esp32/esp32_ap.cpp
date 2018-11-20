@@ -9,9 +9,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <lwiot.h>
 #include <esp_err.h>
 #include <esp_wifi.h>
-#include <lwiot.h>
 
 #include <lwiot/log.h>
 #include <lwiot/wifiaccesspoint.h>

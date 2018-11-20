@@ -16,7 +16,7 @@ namespace lwiot {
 		explicit Event(int length = 4);
 		virtual ~Event();
 
-		const lwiot_event_t& getEvent() const;
+		const lwiot_event_t* getEvent() const;
 
 		void wait();
 		bool wait(int tmo);
@@ -24,6 +24,6 @@ namespace lwiot {
 		void signal();
 
 	private:
-		lwiot_event_t _event;
+		lwiot_event_t* _event;
 	};
 }

@@ -39,10 +39,11 @@ namespace lwiot {
 
 		void *argument;
 		bool running;
-		lwiot_thread_t internal;
+		lwiot_thread_t *internal;
 
 		int prio;
 		size_t stacksize;
+		String _name;
 	};
 
 }

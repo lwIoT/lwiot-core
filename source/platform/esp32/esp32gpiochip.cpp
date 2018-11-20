@@ -6,9 +6,9 @@
  */
 
 #include <stdlib.h>
+#include <lwiot.h>
 #include <esp_intr.h>
 #include <esp_attr.h>
-#include <lwiot.h>
 
 #include <lwiot/gpiochip.h>
 #include <lwiot/log.h>

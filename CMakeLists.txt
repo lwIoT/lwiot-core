@@ -29,7 +29,7 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
         set(CFLAGS_EXTRA "${CFLAGS_EXTRA} -Os")
     endif()
 
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} ${PORT_C_FLAGS} -Wall -Wno-strict-alias -std=gnu11")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} ${PORT_C_FLAGS} -Wall -std=gnu11")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} ${PORT_CXX_FLAGS} -fstrict-enums -Wall -Wno-strict-alias")
 
 	if(UNIX)

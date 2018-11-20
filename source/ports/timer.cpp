@@ -32,33 +32,33 @@ namespace lwiot {
 	Timer::Timer(const char *name, unsigned long ms, uint32_t flags, void *arg)
 		: argument(arg)
 	{
-		lwiot_timer_create(&this->timer, name, (int)ms, flags, this, run_timer);
+		this->timer = lwiot_timer_create(name, (int)ms, flags, this, run_timer);
 	}
 
 	Timer::~Timer()
 	{
-		lwiot_timer_stop(&this->timer);
-		lwiot_timer_destroy(&this->timer);
+		lwiot_timer_stop(this->timer);
+		lwiot_timer_destroy(this->timer);
 	}
 
 	time_t Timer::expiry()
 	{
-		return lwiot_timer_get_expiry(&this->timer);
+		return lwiot_timer_get_expiry(this->timer);
 	}
 
 	void Timer::start()
 	{
-		lwiot_timer_start(&this->timer);
+		lwiot_timer_start(this->timer);
 	}
 
 	void Timer::stop()
 	{
-		lwiot_timer_stop(&this->timer);
+		lwiot_timer_stop(this->timer);
 	}
 
 	bool Timer::isExpired()
 	{
-		auto expiry = lwiot_timer_get_expiry(&this->timer);
+		auto expiry = lwiot_timer_get_expiry(this->timer);
 		return expiry <= lwiot_tick();
 	}
 }

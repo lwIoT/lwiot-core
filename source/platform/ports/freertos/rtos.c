@@ -6,25 +6,13 @@
  * Email:  dev@bietje.net
  */
 
+#include "lwiot_arch.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
 #include <lwiot.h>
-
-#ifdef ESP32
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <freertos/queue.h>
-#include <freertos/semphr.h>
-#include <freertos/timers.h>
-#else
-#include <FreeRTOS.h>
-#include <task.h>
-#include <queue.h>
-#include <semphr.h>
-#include <timers.h>
-#endif
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>
@@ -80,15 +68,24 @@ void lwiot_mem_free(void *ptr)
 	vPortFree(ptr);
 }
 
-int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attributes *attrs)
+#ifdef ESP32
+extern BaseType_t esp32_get_next_coreid();
+#endif
+
+lwiot_thread_t* lwiot_thread_create_raw(const struct lwiot_thread_attributes *attrs)
 {
 	BaseType_t bt;
+	lwiot_thread_t *tp;
 
+	tp = lwiot_mem_zalloc(sizeof(*tp));
 	assert(tp);
 	assert(attrs);
 
 	tp->handle = attrs->handle;
 	tp->arg = attrs->argument;
+
+	memset((void*)tp->name, 0, sizeof(tp->name));
+	memcpy((void*)tp->name,(void*) attrs->name, strlen(attrs->name));
 
 #ifdef ESP32
 	BaseType_t coreid = esp32_get_next_coreid();
@@ -105,16 +102,17 @@ int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attrib
 	);
 #endif
 
-	if(bt == pdPASS)
-		return -EOK;
-	
-	print_dbg("Could not create task!\n");
-	return -EINVALID;
+	if(bt != pdPASS) {
+		print_dbg("Could not create task!\n");
+		return NULL;
+	}
+
+	return tp;	
 }
 
 #define STACK_DEPTH CONFIG_STACK_SIZE
 #define TASK_PRIO CONFIG_TASK_PRIO
-int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
+lwiot_thread_t* lwiot_thread_create(thread_handle_t handle, const char *name, void *arg)
 {
 	struct lwiot_thread_attributes attrs;
 
@@ -122,8 +120,9 @@ int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 	attrs.stacksize = STACK_DEPTH;
 	attrs.handle = handle;
 	attrs.argument = arg;
+	attrs.name = name;
 
-	return lwiot_thread_create_raw(tp, &attrs);
+	return lwiot_thread_create_raw(&attrs);
 }
 
 int lwiot_thread_destroy(lwiot_thread_t *tp)
@@ -135,6 +134,7 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
 		tp->task = NULL;
 	}
 
+	lwiot_mem_free(tp);
 	return -EOK;
 }
 
@@ -143,16 +143,19 @@ void lwiot_thread_yield()
 	taskYIELD();
 }
 
-int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
+lwiot_mutex_t* lwiot_mutex_create(const uint32_t flags)
 {
+	lwiot_mutex_t *mtx;
+
+	mtx = lwiot_mem_zalloc(sizeof(*mtx));
 	assert(mtx);
 	mtx->sem = xSemaphoreCreateMutex();
 
 	if(!mtx->sem)
-		return -EINVALID;
+		return NULL;
 
 	mtx->recursive = (flags & MTX_RECURSIVE) != 0;
-	return -EOK;
+	return mtx;
 }
 
 int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
@@ -161,6 +164,7 @@ int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
 	assert(mtx->sem);
 
 	vQueueDelete(mtx->sem);
+	lwiot_mem_free(mtx);
 	return -EOK;
 }
 
@@ -207,9 +211,15 @@ void lwiot_sleep(int ms)
 	vTaskDelay(ms / portTICK_PERIOD_MS);
 }
 
-void lwiot_event_create(lwiot_event_t *event, int length)
+lwiot_event_t* lwiot_event_create(int length)
 {
+	lwiot_event_t *event;
+
+	event = lwiot_mem_alloc(sizeof(*event));
+	assert(event);
+
 	event->evq = xQueueCreate(length, sizeof(void*));
+	return event;
 }
 
 int lwiot_event_wait(lwiot_event_t *event, int tmo)
@@ -246,7 +256,9 @@ void lwiot_event_signal(lwiot_event_t *event)
 
 void lwiot_event_destroy(lwiot_event_t *e)
 {
+	assert(e);
 	vQueueDelete(e->evq);
+	lwiot_mem_free(e);
 }
 
 /*
@@ -275,9 +287,12 @@ static void vTimerCallbackHook(TimerHandle_t xTimer)
 	}
 }
 
-void lwiot_timer_create(lwiot_timer_t *timer, const char *name, int ms,
-	uint32_t flags, void *arg, void (*cb)(lwiot_timer_t *timer, void *arg))
+lwiot_timer_t* lwiot_timer_create(const char *name, int ms, uint32_t flags, void *arg, void (*cb)(lwiot_timer_t *timer, void *arg))
 {
+	lwiot_timer_t* timer;
+
+	timer = lwiot_mem_zalloc(sizeof(*timer));
+	assert(timer);
 	timer->handle = cb;
 	timer->period = ms / portTICK_PERIOD_MS;
 	timer->arg = arg;
@@ -290,6 +305,7 @@ void lwiot_timer_create(lwiot_timer_t *timer, const char *name, int ms,
 	timer->timer = xTimerCreate(name, ms / portTICK_PERIOD_MS, !timer->oneshot, timer, vTimerCallbackHook);
 	timer->created = true;
 	timer->state = TIMER_CREATED;
+	return timer;
 }
 
 int lwiot_timer_start(lwiot_timer_t *timer)
@@ -338,6 +354,7 @@ int lwiot_timer_destroy(lwiot_timer_t *timer)
 
 	timer->state = TIMER_STOPPED;
 	timer->created = false;
+	lwiot_mem_free(timer);
 	return -EOK;
 }
 

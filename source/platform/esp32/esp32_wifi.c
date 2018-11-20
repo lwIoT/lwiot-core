@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <lwiot.h>
 
 #include <esp_system.h>
 #include <esp_wifi.h>

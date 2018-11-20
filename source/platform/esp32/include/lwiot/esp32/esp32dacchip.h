@@ -13,6 +13,9 @@
 
 #include <lwiot/dacchip.h>
 
+#include <driver/gpio.h>
+#include <driver/dac.h>
+
 namespace lwiot { namespace esp32
 {
 	class DacChip : public lwiot::DacChip {

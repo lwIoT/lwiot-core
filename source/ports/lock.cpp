@@ -8,7 +8,6 @@
 
 #include <stdlib.h>
 #include <lwiot.h>
-#include <cpu.h>
 
 #include <lwiot/lock.h>
 #include <lwiot/log.h>

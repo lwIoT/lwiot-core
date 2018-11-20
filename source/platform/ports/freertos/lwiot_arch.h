@@ -6,14 +6,11 @@
  * Email:  dev@bietje.net
  */
 
-#ifndef __PORT_H__
-#error "Do not include this file directly, use \"ports.h\" instead!"
-#endif
-
 #ifndef __RTOS_PORT_H__
 #define __RTOS_PORT_H__
 
 #include <lwiot_opts.h>
+#include <lwiot/types.h>
 
 #ifdef ESP32
 #include <freertos/FreeRTOS.h>
@@ -57,9 +54,6 @@ typedef xTimerHandle TimerHandle_t;
 #ifndef portTICK_RATE_MS
 #define portTICK_RATE_MS portTICK_PERIOD_MS
 #endif
-
-#include <lwiot/compiler.h>
-#include <lwiot/lwiot.h>
 
 #ifdef __cplusplus
 extern "C" {

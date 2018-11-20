@@ -20,27 +20,19 @@ namespace lwiot
 		ctx->run(ctx->argument);
 	}
 
-	Thread::Thread(const char *name, void *argument) : internal(), prio(-1), stacksize(0)
+	Thread::Thread(const char *name, void *argument) : internal(), prio(-1), stacksize(0), _name(name)
 	{
 		this->running = false;
 		this->argument = argument;
-
-		memset((void*)this->internal.name, 0, sizeof(this->internal.name));
-		memcpy((void*)this->internal.name, name, strlen(name));
 
 		print_dbg("Creating thread [%s]!\n", name);
 	}
 
-	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) :
-		internal(), prio(priority), stacksize(stacksize)
+	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) : internal(), prio(priority), stacksize(stacksize), _name(name)
 	{
 		this->running = false;
 		this->argument = argument;
-
-		memset((void*)this->internal.name, 0, sizeof(this->internal.name));
-		memcpy((void*)this->internal.name, name.c_str(), name.length());
 	}
-
 
 	Thread::Thread(const lwiot::String &name, void *argument) : Thread(name.c_str(), argument)
 	{
@@ -59,21 +51,21 @@ namespace lwiot
 		this->running = true;
 
 		if(this->prio >= 0 && this->stacksize > 0UL) {
-			attrs.name = this->internal.name;
+			attrs.name = this->_name.c_str();
 			attrs.argument = this;
 			attrs.priority = this->prio;
 			attrs.stacksize = this->stacksize;
 			attrs.handle = thread_starter;
 
-			lwiot_thread_create_raw(&this->internal, &attrs);
+			this->internal = lwiot_thread_create_raw(&attrs);
 		} else {
-			lwiot_thread_create(&this->internal, thread_starter, this);
+			this->internal = lwiot_thread_create(thread_starter, this->_name.c_str(), this);
 		}
 	}
 
 	void Thread::stop()
 	{
 		this->running = false;
-		lwiot_thread_destroy(&this->internal);
+		lwiot_thread_destroy(this->internal);
 	}
 }

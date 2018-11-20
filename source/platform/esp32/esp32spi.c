@@ -5,6 +5,7 @@
  * @email  dev@bietje.net
  */
 
+#include <lwiot.h>
 #include <esp_attr.h>
 #include <esp_intr.h>
 

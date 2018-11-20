@@ -21,7 +21,7 @@
 
 #define CXX __cplusplus
 
-#ifndef BIT
+#if !defined(BIT) && !defined(ESP32)
 #define BIT(__x) (1U << __x)
 #endif
 

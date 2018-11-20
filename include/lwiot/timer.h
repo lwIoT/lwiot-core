@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <lwiot/string.h>
 #include <lwiot/port.h>
 #include <lwiot/string.h>
 #include <lwiot/types.h>
@@ -31,6 +32,6 @@ namespace lwiot {
 	private:
 		friend void run_timer(lwiot_timer_t *t, void *argument);
 		void *argument;
-		lwiot_timer_t timer;
+		lwiot_timer_t* timer;
 	};
 }

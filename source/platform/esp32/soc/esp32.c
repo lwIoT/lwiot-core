@@ -21,7 +21,12 @@ static portMUX_TYPE xCoreMutex[] = {
 #endif
 };
 
-void enter_critical()
+void RAM_ATTR lwiot_udelay(uint32_t us)
+{
+	ets_delay_us(us);
+}
+
+void RAM_ATTR enter_critical()
 {
 	int id;
 
@@ -29,7 +34,7 @@ void enter_critical()
 	portENTER_CRITICAL(&xCoreMutex[id]);
 }
 
-void exit_critical()
+void RAM_ATTR exit_critical()
 {
 	int id;
 

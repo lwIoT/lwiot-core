@@ -35,10 +35,8 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PATH "")
-
 #########################
-### ESP32 SDK setup ###
+###  ESP32 SDK setup  ###
 #########################
 
 if(NOT DEFINED ESP32_IDF_PATH)
@@ -48,73 +46,58 @@ else()
     message(STATUS "ESP32 SDK path: ${ESP32_IDF_PATH}")
 endif()
 
-set(CMAKE_LIBRARY_PATH ${ESP32_IDF_PATH}/lib/)
-SET(CONFIG_APP_CFG_PATH ${PROJECT_SOURCE_DIR}/usr/esp32_test CACHE STRING "Application Kconfig directory")
+set(CMAKE_LIBRARY_PATH ${ESP32_IDF_PATH}/lib)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+	SET(DEFAULT_CONFIG_PATH ${PROJECT_SOURCE_DIR}/source/platform/esp32/config/Debug)
+else()
+	SET(DEFAULT_CONFIG_PATH ${PROJECT_SOURCE_DIR}/source/platform/esp32/config/Release)
+endif()
+
+SET(CONFIG_APP_CFG_PATH ${DEFAULT_CONFIG_PATH} CACHE STRING "Application Kconfig directory")
 
 if(NOT IS_ABSOLUTE ${CONFIG_APP_CFG_PATH})
 	SET(APP_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG_APP_CFG_PATH}")
 else()
 	SET(APP_CONFIG "${CONFIG_APP_CFG_PATH}")
 endif()
-
 message( STATUS "Config path: ${APP_CONFIG}")
 
-set(LWIOT_PORT_INCLUDE_DIRECTORIES
-        ${PROJECT_SOURCE_DIR}/source/ports/freertos
-		${PROJECT_SOURCE_DIR}/include/asm/esp32
+set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PATH "")
 
-		${ESP32_IDF_PATH}/components/cxx/include
-		${ESP32_IDF_PATH}/components/driver/include
-		${ESP32_IDF_PATH}/components/esp32/include
-		${ESP32_IDF_PATH}/components/freertos/include
-		${ESP32_IDF_PATH}/components/heap/include
-		${ESP32_IDF_PATH}/components/nvs_flash/include
-		${ESP32_IDF_PATH}/components/lwip/include/lwip
-		${ESP32_IDF_PATH}/components/lwip/include/lwip/port
-		${ESP32_IDF_PATH}/components/lwip/include/lwip/posix
-		${ESP32_IDF_PATH}/components/lwip/apps/ping
-		${ESP32_IDF_PATH}/components/mbedtls/port/include
-		${ESP32_IDF_PATH}/components/mbedtls/include
-		${ESP32_IDF_PATH}/components/mdns/include
-		${ESP32_IDF_PATH}/components/newlib/platform_include
-		${ESP32_IDF_PATH}/components/newlib/include
-		${ESP32_IDF_PATH}/components/vfs/include
-		${ESP32_IDF_PATH}/components/tcpip_adapter/include
-		${ESP32_IDF_PATH}/components/soc/esp32/include
-		${ESP32_IDF_PATH}/components/soc/include
-		${ESP32_IDF_PATH}/components/freertos/include/freertos
-		${APP_CONFIG}/build/include
+SET(PORT_INCLUDE_DIR
+	${PROJECT_SOURCE_DIR}/source/platform/esp32/include
+
+	${ESP32_IDF_PATH}/components/cxx/include
+	${ESP32_IDF_PATH}/components/driver/include
+	${ESP32_IDF_PATH}/components/esp32/include
+	${ESP32_IDF_PATH}/components/freertos/include
+	${ESP32_IDF_PATH}/components/heap/include
+	${ESP32_IDF_PATH}/components/nvs_flash/include
+	${ESP32_IDF_PATH}/components/lwip/include/lwip
+	${ESP32_IDF_PATH}/components/lwip/include/lwip/port
+	${ESP32_IDF_PATH}/components/lwip/include/lwip/posix
+	${ESP32_IDF_PATH}/components/lwip/apps/ping
+	${ESP32_IDF_PATH}/components/mbedtls/port/include
+	${ESP32_IDF_PATH}/components/mbedtls/include
+	${ESP32_IDF_PATH}/components/mdns/include
+	${ESP32_IDF_PATH}/components/newlib/platform_include
+	${ESP32_IDF_PATH}/components/newlib/include
+	${ESP32_IDF_PATH}/components/vfs/include
+	${ESP32_IDF_PATH}/components/tcpip_adapter/include
+	${ESP32_IDF_PATH}/components/soc/esp32/include
+	${ESP32_IDF_PATH}/components/soc/include
+	${ESP32_IDF_PATH}/components/freertos/include/freertos
+
+	${APP_CONFIG}
 )
 
-SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
-SET(LWIOT_PORT_SRCS
-	${LWIOT_PORT_DIR}/rtos.c
-	${PROJECT_SOURCE_DIR}/source/soc/esp32.c
-	${PROJECT_SOURCE_DIR}/source/soc/esp32system.cpp
-	${PROJECT_SOURCE_DIR}/source/io/wifi/esp32_station.cpp
-	${PROJECT_SOURCE_DIR}/source/io/wifi/esp32_ap.cpp
-	${PROJECT_SOURCE_DIR}/source/io/wifi/esp32_wifi.c
-	${PROJECT_SOURCE_DIR}/source/io/gpio/esp32gpiochip.cpp
-	${PROJECT_SOURCE_DIR}/source/io/adc/esp32dacchip.cpp
-	${PROJECT_SOURCE_DIR}/source/io/adc/esp32adcchip.cpp
-	${PROJECT_SOURCE_DIR}/source/io/adc/esp32primaryadc.cpp
-	${PROJECT_SOURCE_DIR}/source/io/adc/esp32secondaryadc.cpp
+SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp32)
 
-	${PROJECT_SOURCE_DIR}/source/io/uart/esp32uart.cpp
-	${PROJECT_SOURCE_DIR}/source/io/wdt/esp32watchdog.cpp
-
-	${PROJECT_SOURCE_DIR}/source/io/pwm/esp32/esp32pwmchannel.cpp
-	${PROJECT_SOURCE_DIR}/source/io/pwm/esp32/esp32pwmtimer.cpp
-
-	${PROJECT_SOURCE_DIR}/source/io/spi/esp32/esp32spibus.cpp
-	${PROJECT_SOURCE_DIR}/source/io/spi/esp32/esp32spi.c
-
-	${PROJECT_SOURCE_DIR}/source/io/i2c/esp32/esp32i2calgorithm.cpp
+set(LWIOT_CORE_INCLUDE_DIRECTORIES
+	${ESP32_IDF_PATH}/components/newlib/include
+	${ESP32_IDF_PATH}/components/newlib/platform_include
 )
 
-SET(LWIOT_PORT_HEADERS
-		${LWIOT_PORT_DIR}/lwiot_arch.h)
-		
 SET(ESP32 True CACHE BOOL "Build for the ESP32 SoC.")
 
 SET(HAVE_RTOS True)

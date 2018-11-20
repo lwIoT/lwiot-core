@@ -21,8 +21,9 @@ SET(LWIOT_PORT_INCLUDE_DIRECTORIES
 
 SET(LWIOT_SYSTEM_LIBS freertos)
 
-if(${PORT} MATCHES "unix")
+if(${PORT} MATCHES "unix" || UNIX)
 	SET(LWIOT_PORT_SRCS ${LWIOT_PORT_SRCS} ${LWIOT_PORT_DIR}/unix.c)
 	find_package(Threads REQUIRED)
 	SET(LWIOT_SYSTEM_LIBS ${CMAKE_THREAD_LIBS_INIT} ${LWIOT_SYSTEM_LIBS})
+    link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
 endif()

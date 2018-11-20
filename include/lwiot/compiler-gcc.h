@@ -34,11 +34,9 @@ typedef unsigned char u_char;
 #endif
 
 #ifdef ESP32
-#include <esp_attr.h>
-#define RAM_ATTR IRAM_ATTR
+#define RAM_ATTR __attribute__((section(".iram1")))
 #elif defined(ESP8266)
-#include <common_macros.h>
-#define RAM_ATTR IRAM
+#define RAM_ATTR __attribute__((section(".iram1.text")))
 #else
 #define RAM_ATTR
 #endif

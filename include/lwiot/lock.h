@@ -78,32 +78,32 @@ namespace lwiot {
 			explicit LockValue(bool recursive)
 			{
 				if(recursive)
-					lwiot_mutex_create(&this->_lock, MTX_RECURSIVE);
+					this->_lock = lwiot_mutex_create(MTX_RECURSIVE);
 				else
-					lwiot_mutex_create(&this->_lock, 0);
+					this->_lock = lwiot_mutex_create(0);
 			}
 
 			~LockValue()
 			{
-				lwiot_mutex_destroy(&this->_lock);
+				lwiot_mutex_destroy(this->_lock);
 			}
 
 			void lock()
 			{
-				lwiot_mutex_lock(&this->_lock, FOREVER);
+				lwiot_mutex_lock(this->_lock, FOREVER);
 			}
 
 			bool try_lock(int tmo)
 			{
-				return lwiot_mutex_lock(&this->_lock, tmo) == -EOK;
+				return lwiot_mutex_lock(this->_lock, tmo) == -EOK;
 			}
 
 			void unlock()
 			{
-				lwiot_mutex_unlock(&this->_lock);
+				lwiot_mutex_unlock(this->_lock);
 			}
 
-			lwiot_mutex_t _lock;
+			lwiot_mutex_t* _lock;
 #endif
 		};
 

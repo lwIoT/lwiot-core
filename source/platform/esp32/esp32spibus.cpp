@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <lwiot.h>
 #include <esp_system.h>
 
 #include <lwiot/spibus.h>

@@ -26,17 +26,17 @@ endif()
 
 SET(SOURCES
     init.c
-    log.c
-	bytebuffer.cpp
-    datetime.cpp
-	log.cpp
-    scopedlock.cpp
-	application.cpp
-    string.cpp
-	vector.cpp
-    system.cpp
+    application.cpp
+
+    util/log.c
+    util/bytebuffer.cpp
+    util/datetime.cpp
+    util/log.cpp
+    util/scopedlock.cpp
+    util/string.cpp
+    util/vector.cpp
+    util/system.cpp
     ${WRAPPER_SOURCES}
-    ${LWIOT_PORT_SRCS}
 	${IO_SOURCES}
     ${LIB_SOURCES}
     ${SENSOR_SOURCES}
@@ -51,7 +51,6 @@ endif()
 
 set(GENERIC_HEADERS
     asm/avr/cpu.h
-    asm/esp32/cpu.h
     asm/esp8266/cpu.h
     asm/hosted/cpu.h
 
@@ -155,18 +154,14 @@ ENDFUNCTION()
 prepend_path(GENERIC_HEADERS ${INCLUDE_DIR})
 
 include_directories(
-    ${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${EXTRA_INCLUDE_DIRECTORIES}
-    ${LWIOT_PORT_INCLUDE_DIRECTORIES}
+	${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${EXTRA_INCLUDE_DIRECTORIES}
+	${LWIOT_CORE_INCLUDE_DIRECTORIES}
 )
-
-if(EXTRA_LINK_DIRECTORIES)
-    link_directories(${EXTRA_LINK_DIRECTORIES})
-endif()
 
 SET(${SOURCES} ${SOURCES})
 
-add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} ${LWIOT_PORT_HEADERS})
-link_directories(${PROJECT_SOURCE_DIR}/external/freertos/lib)
+add_subdirectory(${PLATFORM_DIRECTORY})
+add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} )
 
 CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
 
@@ -176,8 +171,8 @@ foreach(source IN LISTS ${SOURCES})
     source_group("${source_path_msvc}" FILES "${source}")
 endforeach()
 
+
 # Install targets
 INSTALL(TARGETS lwiot DESTINATION lib)
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
-INSTALL(FILES ${LWIOT_PORT_HEADERS} DESTINATION include)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/lwiot_opts.h DESTINATION include)

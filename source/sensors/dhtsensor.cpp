@@ -13,6 +13,8 @@
 #include <lwiot/dhtbus.h>
 #include <lwiot/dhtsensor.h>
 
+#define BIT(x) (1UL << x)
+
 namespace lwiot
 {
 	DhtSensor::DhtSensor(const GpioPin& pin, dht_type_t type) : _io(pin), _type(type)

@@ -15,15 +15,15 @@
 namespace lwiot {
 	Event::Event(int length)
 	{
-		lwiot_event_create(&this->_event, length);
+		this->_event = lwiot_event_create(length);
 	}
 
 	Event::~Event()
 	{
-		lwiot_event_destroy(&this->_event);
+		lwiot_event_destroy(this->_event);
 	}
 
-	const lwiot_event_t& Event::getEvent() const
+	const lwiot_event_t* Event::getEvent() const
 	{
 		return this->_event;
 	}
@@ -35,16 +35,16 @@ namespace lwiot {
 
 	bool Event::wait(int tmo)
 	{
-		return lwiot_event_wait(&this->_event, tmo) == -EOK;
+		return lwiot_event_wait(this->_event, tmo) == -EOK;
 	}
 
 	void Event::signal()
 	{
-		lwiot_event_signal(&this->_event);
+		lwiot_event_signal(this->_event);
 	}
 
 	void Event::signalFromIrq()
 	{
-		lwiot_event_signal_irq(&this->_event);
+		lwiot_event_signal_irq(this->_event);
 	}
 }
