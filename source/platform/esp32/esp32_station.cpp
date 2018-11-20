@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <lwiot.h>
 
+#include <lwip/ip_addr.h>
 #include <lwiot/log.h>
 #include <lwiot/wifistation.h>
 #include <lwiot/types.h>

@@ -67,6 +67,17 @@ set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PAT
 SET(PORT_INCLUDE_DIR
 	${PROJECT_SOURCE_DIR}/source/platform/esp32/include
 
+	#${ESP32_IDF_PATH}/components/lwip/lwip/src/include
+	#${ESP32_IDF_PATH}/components/lwip/port/esp32/include
+	#${ESP32_IDF_PATH}/components/lwip/include
+	#${ESP32_IDF_PATH}/components/lwip/include_compat
+	#${ESP32_IDF_PATH}/components/lwip/lwip/src/include/posix
+
+	${ESP32_IDF_PATH}/components/lwip/include/lwip
+	${ESP32_IDF_PATH}/components/lwip/include/lwip/port
+	${ESP32_IDF_PATH}/components/lwip/include/lwip/posix
+	${ESP32_IDF_PATH}/components/lwip/apps/ping
+
 	${ESP32_IDF_PATH}/components/cxx/include
 	${ESP32_IDF_PATH}/components/driver/include
 	${ESP32_IDF_PATH}/components/esp32/include
@@ -75,16 +86,18 @@ SET(PORT_INCLUDE_DIR
 	${ESP32_IDF_PATH}/components/freertos/include
 	${ESP32_IDF_PATH}/components/heap/include
 	${ESP32_IDF_PATH}/components/nvs_flash/include
-	${ESP32_IDF_PATH}/components/lwip/include/lwip
-	${ESP32_IDF_PATH}/components/lwip/include/lwip/port
-	${ESP32_IDF_PATH}/components/lwip/include/lwip/posix
-	${ESP32_IDF_PATH}/components/lwip/apps/ping
+
 	${ESP32_IDF_PATH}/components/mbedtls/port/include
 	${ESP32_IDF_PATH}/components/mbedtls/include
 	${ESP32_IDF_PATH}/components/mdns/include
 	${ESP32_IDF_PATH}/components/newlib/platform_include
 	${ESP32_IDF_PATH}/components/newlib/include
 	${ESP32_IDF_PATH}/components/vfs/include
+	${ESP32_IDF_PATH}/components/log/include
+	${ESP32_IDF_PATH}/components/wpa_supplicant/port/include
+	${ESP32_IDF_PATH}/components/wpa_supplicant/include
+	${ESP32_IDF_PATH}/components/smartconfig_ack/include
+	${ESP32_IDF_PATH}/components/esp_event/include
 	${ESP32_IDF_PATH}/components/tcpip_adapter/include
 	${ESP32_IDF_PATH}/components/soc/esp32/include
 	${ESP32_IDF_PATH}/components/soc/include

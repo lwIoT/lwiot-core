@@ -29,6 +29,8 @@ namespace lwiot
 		WifiAccessPoint(const WifiAccessPoint&) = delete;
 		void operator =(const WifiAccessPoint&) = delete;
 
+		void start();
+
 		void begin(const String& ssid, const String& pass = "", int chan = 1, bool hidden = false, int max = 4);
 		void config(const IPAddress& local, const IPAddress& gw, const IPAddress& sn);
 		operator bool() const;

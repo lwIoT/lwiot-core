@@ -18,6 +18,7 @@
 #include <lwiot/types.h>
 
 #include <lwip/err.h>
+#include <lwip/ip_addr.h>
 #include <lwip/dns.h>
 
 #include <apps/dhcpserver.h>
@@ -49,12 +50,16 @@ namespace lwiot
 {
 	WifiAccessPoint::WifiAccessPoint()
 	{
-		esp32_wifi_subsys_init();
 	}
 
 	void WifiAccessPoint::begin(const String& ssid, const String& pass, int chan, bool hidden, int max)
 	{
 		esp32_wifi_init_softap(ssid.c_str(), pass.c_str(), max, hidden, chan);
+	}
+
+	void WifiAccessPoint::start()
+	{
+		esp32_wifi_subsys_init();
 	}
 
 	void WifiAccessPoint::config(const IPAddress& local, const IPAddress& gw, const IPAddress& sn)

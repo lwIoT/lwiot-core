@@ -53,7 +53,7 @@ static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
         break;
 
     case SYSTEM_EVENT_STA_DISCONNECTED:
-        esp_wifi_disconnect();
+		esp_wifi_connect();
         xEventGroupClearBits(wifi_events, WIFI_CONNECTED);
 		esp32_wifi_station_event(event);
         break;
@@ -66,8 +66,8 @@ static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
 
 void esp32_wifi_subsys_init(void)
 {
-	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	esp_err_t ret;
+	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 
 	if(initialised)
 		return;
@@ -79,9 +79,9 @@ void esp32_wifi_subsys_init(void)
 	}
 
 	ESP_ERROR_CHECK(ret);
+	tcpip_adapter_init();
 
 	wifi_events = xEventGroupCreate();
-	tcpip_adapter_init();
 	esp_event_loop_init(wifi_event_handler, NULL);
 	esp_wifi_init(&cfg);
 	initialised = true;
