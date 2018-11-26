@@ -8,6 +8,7 @@
  */
 
 #include <string.h>
+#include <esp8266.h>
 #include <lwiot.h>
 
 #include <espressif/esp_common.h>
@@ -20,9 +21,16 @@
 
 extern void lwiot_setup();
 
+static void vTaskMain(void *pvparam)
+{
+    printf("Main task started..\n");
+    lwiot_setup();
+}
+
 void user_init(void)
 {
+    TaskHandle_t xHandle = NULL;
+
     uart_set_baud(0, 115200);
-    lwiot_init();
-    lwiot_setup();
+    xTaskCreate( vTaskMain, "main", CONFIG_STACK_SIZE, NULL, CONFIG_TASK_PRIO, &xHandle );
 }

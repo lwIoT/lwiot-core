@@ -7,10 +7,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <esp8266.h>
 #include <lwiot.h>
 
+extern "C" {
 #include <espressif/esp_common.h>
 #include <espressif/esp8266/esp8266.h>
+#include <esp/interrupts.h>
+}
 
 #include <lwiot/watchdog.h>
 #include <lwiot/esp8266/esp8266watchdog.h>
@@ -40,7 +44,7 @@ namespace lwiot { namespace esp8266
 		/* First, disable timer IRQ 1 */
 		timer_set_interrupts(FRC1, false);
 		timer_set_run(FRC1, false);
-		_xt_isr_attach(INUM_TIMER_FRC1, wdt_timer_irq_handler, (void*)this);
+		//_xt_isr_attach(INUM_TIMER_FRC1, wdt_timer_irq_handler, (void*)this);
 
 		divider = 1.0f / WDT_FREQ;
 		auto tick = static_cast<uint32_t>(divider * 1000.0f);

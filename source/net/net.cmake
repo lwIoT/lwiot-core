@@ -2,7 +2,7 @@ SET(NET_SOURCES
 	#net/tcpclient.cpp
 	#net/tcpserver.cpp
 	#net/dns.c
-	net/base64.c
+	net/util/base64.c
 
 	#net/http/httpserver.cpp
 	#net/http/mimetable.cpp

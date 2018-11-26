@@ -5,8 +5,8 @@
  * @email  dev@bietje.net
  */
 
-#include <lwiot.h>
 #include <esp8266.h>
+#include <lwiot.h>
 
 #include <esp/rtc_regs.h>
 #include <esp/gpio.h>
@@ -89,7 +89,7 @@ namespace lwiot { namespace esp8266
 		}
 	}
 
-	void GpioChip::write(int pin, bool value)
+	void IRAM GpioChip::write(int pin, bool value)
 	{
 		uint8_t _pin = pin;
 

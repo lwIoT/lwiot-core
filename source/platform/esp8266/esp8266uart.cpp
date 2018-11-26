@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <esp8266.h>
 #include <lwiot.h>
 
 #include <lwiot/gpiopin.h>

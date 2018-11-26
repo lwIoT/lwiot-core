@@ -1,4 +1,5 @@
 
+#include <esp8266.h>
 #include <lwiot.h>
 
 #include <lwiot/string.h>
@@ -7,6 +8,7 @@
 #include <lwiot/stream.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
+
 #include <lwiot/esp8266/esp8266uart.h>
 
 static const char *name = "tst-tp";
@@ -41,18 +43,7 @@ static TestThread *tp;
 
 extern "C" void lwiot_setup()
 {
-	lwiot_init();
 	printf("Starting..\n");
 	tp = new TestThread();
 	tp->start();
-}
-
-extern "C" void __cxa_pure_virtual()
-{
-	fprintf(stderr, "Pure virtual not implemented!\n");
-}
-
-extern "C" void __gxx_personality_v0()
-{
-	
 }

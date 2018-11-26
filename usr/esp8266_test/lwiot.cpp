@@ -5,8 +5,9 @@
  * @email  dev@bietje.net
  */
 
+#include <esp8266.h>
+#include <math.h>
 #include <lwiot.h>
-#include <dhcpserver.h>
 
 #include <lwiot/string.h>
 #include <lwiot/scopedlock.h>
@@ -18,56 +19,36 @@
 #include <lwiot/watchdog.h>
 #include <lwiot/ipaddress.h>
 #include <lwiot/wifistation.h>
+#include <lwiot/measurementvector.h>
 #include <lwiot/wifiaccesspoint.h>
+#include <lwiot/application.h>
 #include <lwiot/functionalthread.h>
 
 #include <lwip/api.h>
+#include <lwip/ip_addr.h>
 
-static lwiot::Thread *tp;
+#include <dhcpserver.h>
 
-class TestThread : public lwiot::Thread {
+class EspTestApplication : public lwiot::Functor {
 public:
-	explicit TestThread() : Thread("tst-thr")
-	{ }
-
-protected:
-	void run(void *argument) override
+	virtual void operator()() override
 	{
-		lwiot::Lock lock(false);
-		lwiot::GpioPin outPin = 5;
+		bool value = false;
 
 		print_dbg("Main thread started..\n");
 
+		lwiot::GpioPin outPin = 5;
+		outPin.mode(lwiot::PinMode::OUTPUT);
 		wdt.enable(2000);
-
-		lwiot::FunctionalThread tp("fthread");
-		lwiot::Function<void(*)(void)> f = [&lock](void) -> void {
-			lwiot::ScopedLock slock(lock);
-			int i = 0;
-
-			while(i++ <= 10) {
-				print_dbg("Lambda thread ping!\n");
-				wdt.reset();
-				lwiot_sleep(750);
-			}
-		};
-
-		tp = f;
-		tp.start();
 
 		while(true) {
 			int i = 0;
 			while(i++ < 20) {
-				lock.lock();
-				outPin.write(true);
-				lwiot_sleep(500);
-				outPin.write(false);
-				lwiot_sleep(500);
+				outPin.write(value);
+				value = !value;
 
 				wdt.reset();
-				print_dbg("Ping..\n");
-				lock.unlock();
-				lwiot::Thread::yield();
+				lwiot_sleep(50);
 			}
 		}
 	}
@@ -75,7 +56,8 @@ protected:
 
 extern "C" void lwiot_setup()
 {
-	printf("Starting..\n");
-	tp = new TestThread();
-	tp->start();
+	EspTestApplication runner;
+	lwiot::Application app(runner);
+
+	app.start();
 }

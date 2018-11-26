@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <esp8266.h>
 #include <lwiot.h>
 #include <lwiot/gpiochip.h>
 

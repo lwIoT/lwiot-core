@@ -13,7 +13,9 @@
 #include <lwiot/dhtbus.h>
 #include <lwiot/dhtsensor.h>
 
+#ifndef BIT
 #define BIT(x) (1UL << x)
+#endif
 
 namespace lwiot
 {

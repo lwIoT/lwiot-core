@@ -5,8 +5,8 @@ esp8266:
         - CONFIG_NO_SYS=True
         - FREERTOS=True
         - FREERTOS_MANUAL=True
-        - ESP8266_TOOLCHAIN_PATH=~/usr/xtensa
-        - ESP8266_OPEN_RTOS_PATH=~/usr/esp-open-rtos
+        - ESP8266_TOOLCHAIN_PATH=~/usr/xtensa-lx106-elf
+        - ESP8266_OPEN_RTOS_PATH=~/usr/esp8266-open-rtos
         - CMAKE_C_COMPILER=xtensa-lx106-elf-gcc
         - CMAKE_CXX_COMPILER=xtensa-lx106-elf-g++
 

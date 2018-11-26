@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <esp8266.h>
 
 #include <lwiot/lwiot.h>
 #include <lwiot/wifistation.h>

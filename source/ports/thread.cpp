@@ -20,15 +20,15 @@ namespace lwiot
 		ctx->run(ctx->argument);
 	}
 
-	Thread::Thread(const char *name, void *argument) : internal(), prio(-1), stacksize(0), _name(name)
+	Thread::Thread(const char *name, void *argument) :prio(-1), stacksize(0), _name(name)
 	{
+		print_dbg("Creating thread [%s]!\n", name);
+
 		this->running = false;
 		this->argument = argument;
-
-		print_dbg("Creating thread [%s]!\n", name);
 	}
 
-	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) : internal(), prio(priority), stacksize(stacksize), _name(name)
+	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) : prio(priority), stacksize(stacksize), _name(name)
 	{
 		this->running = false;
 		this->argument = argument;

@@ -5,8 +5,11 @@
  * @email  dev@bietje.net
  */
 
+#include <lwiot.h>
+
 #include <lwiot/gpiopin.h>
 #include <lwiot/gpiochip.h>
+#include <lwiot/log.h>
 
 namespace lwiot
 {

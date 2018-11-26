@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <esp8266.h>
 
 #include <lwiot/log.h>
 #include <lwiot/uart.h>

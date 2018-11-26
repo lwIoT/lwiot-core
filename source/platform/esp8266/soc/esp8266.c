@@ -3,8 +3,16 @@
  */
 
 #include <stdlib.h>
+#include <esp8266.h>
 #include <lwiot.h>
+
 #include <FreeRTOS.h>
+#include <task.h>
+
+void RAM_ATTR lwiot_udelay(uint32_t delay)
+{
+	sdk_os_delay_us((uint16_t)delay);
+}
 
 void enter_critical()
 {

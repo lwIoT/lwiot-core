@@ -25,6 +25,10 @@ namespace lwiot
 	{
 	}
 
+	void WifiAccessPoint::start()
+	{
+	}
+
 	void WifiAccessPoint::begin(const String& ssid, const String& pass, int chan, bool hidden, int max)
 	{
 		auto mode = sdk_wifi_get_opmode();

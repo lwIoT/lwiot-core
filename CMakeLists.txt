@@ -30,7 +30,7 @@ if(UNIX OR CMAKE_SYSTEM_NAME MATCHES Generic)
     endif()
 
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS_EXTRA} ${PORT_C_FLAGS} -Wall -std=gnu11")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} ${PORT_CXX_FLAGS} -fstrict-enums -Wall -Wno-strict-alias")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CFLAGS_EXTRA} ${PORT_CXX_FLAGS} -fstrict-enums -Wall")
 
 	if(UNIX)
 		TEST_BIG_ENDIAN(HAVE_BIG_ENDIAN)

@@ -7,6 +7,7 @@
  * This example code is in the public domain.
  */
 
+#include <esp8266.h>
 #include <string.h>
 #include <lwiot.h>
 
