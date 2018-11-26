@@ -5,12 +5,10 @@
 
 PROJECT_NAME := esp32-display-test
 
-PORT_PATH = $(LWIOT_PATH)/source/ports/freertos
-FREERTOS_PATH = $(IDF_PATH)/components/freertos/include/freertos
-BUILD_DIR = $(LWIOT_PATH)/build/esp32-release
+PORT_PATH = $(LWIOT_PATH)/source/platform/esp32/include
+BUILD_DIR = $(LWIOT_PATH)/build/esp32
 
-EXTRA_CFLAGS = -I$(BUILD_DIR) -I$(LWIOT_PATH)/include -I$(FREERTOS_PATH) -I$(PORT_PATH) \
-	       -I$(LWIOT_PATH)/include/asm/esp32
+EXTRA_CFLAGS = -I$(BUILD_DIR) -I$(LWIOT_PATH)/include -I$(PORT_PATH)
 EXTRA_CXXFLAGS = $(EXTRA_CFLAGS)
 
 include $(IDF_PATH)/make/project.mk

@@ -54,6 +54,7 @@ protected:
 		lwiot::IPAddress subnet(255, 255, 255, 0);
 		lwiot::IPAddress gw(192, 168, 1, 1);
 
+		ap.start();
 		ap.config(local, gw, subnet);
 		ap.begin(ssid, passw, 4);
 	}
@@ -155,9 +156,9 @@ protected:
 		}
 
 		printf("Main thread started!\n");
-		wdt.enable(5000);
+		wdt.enable(8000);
 
-		freesize = heap_caps_get_free_size(0);
+		freesize = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
 		print_dbg("Free heap size: %u\n", freesize);
 		
 		this->startAP("lwIoT test", "testap1234");
