@@ -56,7 +56,8 @@ namespace lwiot
 	}
 
 #define INIT_DELAY 250000U
-#define START_DELAY 10000U
+#define START_DELAY 50000U
+
 	bool DhtBus::_read(Vector<bool>& bits)
 	{
 		uint32_t low, high;
@@ -64,11 +65,11 @@ namespace lwiot
 		this->_pin.mode(PinMode::OUTPUT);
 		this->_pin.write(true);
 
-		lwiot_udelay(50*1000);
-		lwiot_udelay(50*1000);
-		lwiot_udelay(50*1000);
-		lwiot_udelay(50*1000);
-		lwiot_udelay(50*1000);
+		lwiot_udelay(START_DELAY);
+		lwiot_udelay(START_DELAY);
+		lwiot_udelay(START_DELAY);
+		lwiot_udelay(START_DELAY);
+		lwiot_udelay(START_DELAY);
 
 		this->_pin.write(false);
 		lwiot_udelay(10 * 1000);

@@ -183,17 +183,17 @@ namespace lwiot { namespace avr
 			*irqmsk &= ~value;
 	}
 
-	inline void Uart::delay(uint16_t _delay) const
+	inline void Uart::delay(uint16_t delay) const
 	{
 		uint8_t tmp = 0;
 
 		asm volatile("sbiw    %0, 0x01 \n\t"
 			"ldi %1, 0xFF \n\t"
 			"cpi %A0, 0xFF \n\t"
-			"cpc %B0, %1 \n\t"
-			"brne .-10 \n\t"
-			: "+z" (_delay), "+a" (tmp)
-			: "0" (_delay)
+ 		   	"cpc %B0, %1 \n\t"
+ 		   	"brne .-10 \n\t"
+    		: "=z" (delay), "=a" (tmp)
+    		: "0" (delay)
 		);
 	}
 

@@ -14,7 +14,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-void __attribute__((optimize("Os")))  udelay(uint32_t us)
+void __attribute__((optimize("Os")))  lwiot_udelay(uint32_t us)
 {
 #if F_CPU >= 24000000L
 	if(!us)

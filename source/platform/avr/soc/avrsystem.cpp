@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <FreeRTOS.h>
 #include <lwiot.h>
 
 #include <lwiot/types.h>

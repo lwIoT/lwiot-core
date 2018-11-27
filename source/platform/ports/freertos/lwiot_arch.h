@@ -9,8 +9,8 @@
 #ifndef __RTOS_PORT_H__
 #define __RTOS_PORT_H__
 
-#include <lwiot_opts.h>
 #include <lwiot/types.h>
+#include <lwiot/compiler.h>
 
 #ifdef ESP32
 #include <freertos/FreeRTOS.h>

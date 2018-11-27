@@ -9,8 +9,8 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.6.0")
 else()
 	include(CMakeForceCompiler)
 
-	set(XTENSA_GCC_COMPILER "avr-gcc${CMAKE_EXECUTABLE_SUFFIX}")
-	set(XTENSA_GXX_COMPILER "avr-g++${CMAKE_EXECUTABLE_SUFFIX}")
+	set(AVR_GCC_COMPILER "avr-gcc${CMAKE_EXECUTABLE_SUFFIX}")
+	set(AVR_GXX_COMPILER "avr-g++${CMAKE_EXECUTABLE_SUFFIX}")
 	cmake_force_c_compiler(avr-gcc GNU)
 	cmake_force_cxx_compiler(avr-g++ GNU)
 endif()
@@ -27,49 +27,22 @@ SET(NO_OS False CACHE BOOL "Build without RTOS")
 SET(MCU "atmega2560" CACHE STRING "AVR MCU type")
 
 if(NO_OS)
-SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/no-os)
-set(LWIOT_PORT_INCLUDE_DIRECTORIES
-	${PROJECT_SOURCE_DIR}/source/ports/no-os
-	${PROJECT_SOURCE_DIR}/include/asm/avr
-	${PROJECT_SOURCE_DIR}/source/lib/time
-)
-SET(RTOS_SOURCES
-	${PROJECT_SOURCE_DIR}/source/ports/no-os/avr.c
-)
 else()
-SET(LWIOT_PORT_DIR ${PROJECT_SOURCE_DIR}/source/ports/freertos)
-set(LWIOT_PORT_INCLUDE_DIRECTORIES
-		${PROJECT_SOURCE_DIR}/source/ports/freertos
-		${PROJECT_SOURCE_DIR}/external/avr-freertos/include
-		${PROJECT_SOURCE_DIR}/include/asm/avr
-)
-SET(RTOS_SOURCES
-	${PROJECT_SOURCE_DIR}/source/ports/freertos/rtos.c
+set(PORT_INCLUDE_DIR
+	${PROJECT_SOURCE_DIR}/external/avr-freertos/include
+	${PROJECT_SOURCE_DIR}/source/platform/avr/include
 )
 endif()
 
-SET(LWIOT_PORT_SRCS
-	${PROJECT_SOURCE_DIR}/source/io/gpio/avr.c
-	${PROJECT_SOURCE_DIR}/source/io/gpio/avrgpiochip.cpp
-	${PROJECT_SOURCE_DIR}/source/io/adc/avradcchip.cpp
-	${PROJECT_SOURCE_DIR}/source/io/uart/avruart.cpp
-	${PROJECT_SOURCE_DIR}/source/io/wdt/avrwatchdog.cpp
-
-	${PROJECT_SOURCE_DIR}/source/io/spi/avr/avrspi.c
-	${PROJECT_SOURCE_DIR}/source/io/i2c/avr/avr-i2c.c
-	${PROJECT_SOURCE_DIR}/source/io/i2c/avr/avri2calgorithm.cpp
-
-	${PROJECT_SOURCE_DIR}/source/soc/avr.c
-	${PROJECT_SOURCE_DIR}/source/soc/avrsystem.cpp
-	${PROJECT_SOURCE_DIR}/source/soc/cplusplus.cpp
-	${RTOS_SOURCES}
+set(LWIOT_CORE_INCLUDE_DIRECTORIES
+	${PROJECT_SOURCE_DIR}/source/lib/time
 )
 
-SET(LWIOT_PORT_HEADERS
-		${LWIOT_PORT_DIR}/lwiot_arch.h
-)
+SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/avr)
 
-set(PORT_C_FLAGS "-mmcu=${MCU}")
-set(PORT_CXX_FLAGS "-mmcu=${MCU} -fno-rtti")
+SET(F_CPU 16000000 CACHE STRING "AVR CPU frequency")
+
+set(PORT_C_FLAGS "-mmcu=${MCU} -DF_CPU=${F_CPU}")
+set(PORT_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=${F_CPU} -fno-rtti")
 
 SET(HAVE_LIBTIME True)
