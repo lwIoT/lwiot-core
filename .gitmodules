@@ -4,3 +4,6 @@
 [submodule "external/matplotlib-cpp"]
 	path = external/matplotlib-cpp
 	url = https://github.com/bietje/matplotlib-cpp.git
+[submodule "external/esp8266-open-rtos"]
+	path = external/esp8266-open-rtos
+	url = https://github.com/lwIoT/esp-open-rtos.git
