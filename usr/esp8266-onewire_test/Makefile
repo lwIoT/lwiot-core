@@ -5,8 +5,8 @@ EXTRA_COMPONENTS=extras/dhcpserver
 #ESP_OPEN_RTOS_PATH=$(LWIOT_PATH)/external/esp8266-open-rtos
 BASE := $(LWIOT_PATH)
 INCLUDE := $(BASE)/include
-BIN := $(BASE)/build/esp8266
-LIBDIR := $(BASE)/build/esp8266/source
+BIN := $(BASE)/build/esp8266-debug
+LIBDIR := $(BASE)/build/esp8266-debug/source
 PLATFORMDIR := $(BIN)/source/platform/esp8266
 PLATFORMDIR_INC := $(BASE)/source/platform/esp8266
 

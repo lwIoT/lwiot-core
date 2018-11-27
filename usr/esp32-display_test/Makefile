@@ -6,7 +6,7 @@
 PROJECT_NAME := esp32-display-test
 
 PORT_PATH = $(LWIOT_PATH)/source/platform/esp32/include
-BUILD_DIR = $(LWIOT_PATH)/build/esp32
+BUILD_DIR = $(LWIOT_PATH)/build/esp32-debug
 
 EXTRA_CFLAGS = -I$(BUILD_DIR) -I$(LWIOT_PATH)/include -I$(PORT_PATH)
 EXTRA_CXXFLAGS = $(EXTRA_CFLAGS)

@@ -7,7 +7,7 @@ PROJECT_NAME := esp32-test
 
 PORT_PATH = $(LWIOT_PATH)/source/platform/esp32/include
 FREERTOS_PATH = $(IDF_PATH)/components/freertos/include/freertos
-BUILD_DIR = $(LWIOT_PATH)/build/esp32
+BUILD_DIR = $(LWIOT_PATH)/build/esp32-debug
 
 EXTRA_CFLAGS = -I$(BUILD_DIR) -I$(LWIOT_PATH)/include -I$(FREERTOS_PATH) -I$(PORT_PATH)
 EXTRA_CXXFLAGS = $(EXTRA_CFLAGS)
