@@ -13,9 +13,10 @@ SET(FREERTOS_LIB_DIR "${FREERTOS_DIR}/lib")
 SET(HAVE_RTOS True CACHE BOOL "Build as RTOS")
 
 SET(PORT_INCLUDE_DIR
-        ${FREERTOS_CONFIG_DIR}
-        ${FREERTOS_DIR}/Source/include
-        ${FREERTOS_DIR}/Source/portable/${COMPILER}/${PORT}
+	${FREERTOS_CONFIG_DIR}
+	${FREERTOS_DIR}/Source/include
+	${FREERTOS_DIR}/Source/portable/${COMPILER}/${PORT}
+	${PROJECT_SOURCE_DIR}/source/platform/hosted/include
 )
 
 SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/unix-rtos)

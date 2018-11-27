@@ -6,6 +6,8 @@
  * Email:  dev@bietje.net
  */
 
+#include <lwiot_arch.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -19,18 +21,18 @@
 #include <lwiot/log.h>
 
 static struct list_head timers = STATIC_INIT_LIST_HEAD(timers);
-static lwiot_mutex_t timer_lock;
-static lwiot_thread_t timer_thread;
+static lwiot_mutex_t *timer_lock;
+static lwiot_thread_t *timer_thread;
 static volatile bool running;
 
 static inline void timers_lock(void)
 {
-	lwiot_mutex_lock(&timer_lock, 0);
+	lwiot_mutex_lock(timer_lock, 0);
 }
 
 static inline void timers_unlock(void)
 {
-	lwiot_mutex_unlock(&timer_lock);
+	lwiot_mutex_unlock(timer_lock);
 }
 
 static void timer_thread_handle(void *arg)
@@ -75,13 +77,12 @@ void lwiot_timers_init(void)
 {
 	const char *tmp = "timer-thread";
 
-	lwiot_mutex_create(&timer_lock, 0);
-	memset((void*)timer_thread.name, 0, sizeof(timer_thread.name));
-	memcpy((void*)timer_thread.name, tmp, strlen(tmp));
+	timer_lock = lwiot_mutex_create(0);
 	timers_lock();
 	running = true;
 	timers_unlock();
-	lwiot_thread_create(&timer_thread, timer_thread_handle, NULL);
+
+	timer_thread = lwiot_thread_create(timer_thread_handle, tmp, NULL);
 }
 
 void lwiot_timers_destroy(void)
@@ -89,12 +90,17 @@ void lwiot_timers_destroy(void)
 	timers_lock();
 	running = false;
 	timers_unlock();
-	lwiot_thread_destroy(&timer_thread);
-	lwiot_mutex_destroy(&timer_lock);
+	lwiot_thread_destroy(timer_thread);
+	lwiot_mutex_destroy(timer_lock);
 }
 
 lwiot_timer_t* lwiot_timer_create(const char *name, int ms, uint32_t flags, void *arg, void (*cb)(lwiot_timer_t *timer, void *arg))
 {
+	lwiot_timer_t *timer;
+
+	timer = lwiot_mem_zalloc(sizeof(*timer));
+	assert(timer);
+
 	timer->handle = cb;
 	timer->tmo = ms * 1000U;
 	timer->arg = arg;
@@ -106,6 +112,8 @@ lwiot_timer_t* lwiot_timer_create(const char *name, int ms, uint32_t flags, void
 
 	list_head_init(&timer->entry);
 	timer->state = TIMER_CREATED;
+
+	return timer;
 }
 
 int lwiot_timer_start(lwiot_timer_t *timer)

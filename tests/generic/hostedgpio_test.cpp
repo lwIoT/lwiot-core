@@ -46,7 +46,6 @@ int main(int argc, char **argv)
 	hosted.write(1, true);
 
 	std::cout << "Rendering plot.." << std::endl;
-	hosted.plot("output.png", true, 1, 2);
 
 	lwiot_destroy();
 	return -EXIT_SUCCESS;

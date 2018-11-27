@@ -6,6 +6,8 @@
  * Email:  dev@bietje.net
  */
 
+#include <lwiot_arch.h>
+
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +17,7 @@
 #include <lwiot.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sched.h>
 
 #include <sys/time.h>
 
@@ -77,27 +80,28 @@ static void *unix_thread_starter(void *arg)
 
 void lwiot_thread_yield()
 {
-	pthread_yield();
+	sched_yield();
 }
 
 lwiot_thread_t* lwiot_thread_create_raw(const struct lwiot_thread_attributes *attrs)
 {
 	assert(attrs);
-	return lwiot_thread_create(tp, attrs->handle, attrs->argument);
+	return lwiot_thread_create(attrs->handle, attrs->name, attrs->argument);
 }
 
 lwiot_thread_t* lwiot_thread_create(thread_handle_t handle, const char *name, void *arg)
 {
-	int rv;
+	lwiot_thread_t *tp;
 
+	tp = lwiot_mem_zalloc(sizeof(*tp));
 	assert(tp);
 	assert(handle);
 
 	tp->arg = arg;
 	tp->handle = handle;
-	rv = pthread_create(&tp->tid, NULL, unix_thread_starter, tp);
+	pthread_create(&tp->tid, NULL, unix_thread_starter, tp);
 
-	return rv;
+	return tp;
 }
 
 int lwiot_thread_destroy(lwiot_thread_t *tp)
@@ -107,6 +111,7 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
 	pthread_join(tp->tid, NULL);
 	tp->handle = NULL;
 	tp->arg = NULL;
+	lwiot_mem_free(tp);
 
 	return -EOK;
 }
@@ -117,8 +122,10 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
 
 lwiot_mutex_t* lwiot_mutex_create(const uint32_t flags)
 {
+	lwiot_mutex_t *mtx;
 	pthread_mutexattr_t attr;
 
+	mtx = lwiot_mem_zalloc(sizeof(*mtx));
 	assert(mtx);
 	pthread_mutexattr_init(&attr);
 
@@ -129,7 +136,7 @@ lwiot_mutex_t* lwiot_mutex_create(const uint32_t flags)
 	}
 
 	pthread_mutex_init(&mtx->mtx, &attr);
-	return -EOK;
+	return mtx;
 }
 
 int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
@@ -137,6 +144,7 @@ int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
 	assert(mtx);
 
 	pthread_mutex_destroy(&mtx->mtx);
+	lwiot_mem_free(mtx);
 	return -EOK;
 }
 
@@ -165,13 +173,19 @@ void lwiot_sleep(int ms)
 
 lwiot_event_t* lwiot_event_create(int length)
 {
+	lwiot_event_t *event;
+
+	event = lwiot_mem_zalloc(sizeof(*event));
 	assert(event);
 
 	event->size = length;
 	event->length = 0;
 	event->signalled = false;
+
 	pthread_mutex_init(&event->mtx, NULL);
 	pthread_cond_init(&event->cond, NULL);
+
+	return event;
 }
 
 #define NANOSECOND (1000 * 1000 * 1000)
@@ -246,6 +260,8 @@ void lwiot_event_destroy(lwiot_event_t *e)
 	pthread_mutex_destroy(&e->mtx);
 	e->signalled = false;
 	e->size = 0;
+
+	lwiot_mem_free(e);
 }
 
 void enter_critical()

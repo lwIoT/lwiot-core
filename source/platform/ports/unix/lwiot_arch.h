@@ -6,10 +6,6 @@
  * Email:  dev@bietje.net
  */
 
-#ifndef __PORT_H__
-#error "Do not include this file directly, use \"ports.h\" instead!"
-#endif
-
 #ifndef __UNIX_PORT_H__
 #define __UNIX_PORT_H__
 
