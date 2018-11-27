@@ -13,7 +13,6 @@ SET(FREERTOS_LIB_DIR "${FREERTOS_DIR}/lib")
 SET(HAVE_RTOS True CACHE BOOL "Build as RTOS")
 
 SET(PORT_INCLUDE_DIR
-        ${PROJECT_SOURCE_DIR}/source/ports/freertos
         ${FREERTOS_CONFIG_DIR}
         ${FREERTOS_DIR}/Source/include
         ${FREERTOS_DIR}/Source/portable/${COMPILER}/${PORT}

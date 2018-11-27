@@ -23,7 +23,7 @@
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/http-parser/http-parser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/jsmn/jsmn" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/libesphttpd/libesphttpd" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/libesphttpd/libesphttpd/lib/heatshrink" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/libesphttpd/libesphttpd/lib/heatshrink" vcs="" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/mbedtls/mbedtls" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/multipwm" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/extras/spiffs/spiffs" vcs="Git" />

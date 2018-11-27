@@ -6,16 +6,17 @@
 # @date   04/05/2018
 #
 
-import sys
 import argparse
 import os
 import StringIO
 
 from yaml import load
+
 try:
-	from yaml import CLoader as Loader
+    from yaml import CLoader as Loader
 except:
-	from yaml import Loader
+    from yaml import Loader
+
 
 class ArgumentParser(object):
     def __init__(self):
@@ -23,9 +24,13 @@ class ArgumentParser(object):
         self.target = None
         self.define = []
         self.buildtype = 'Debug'
+        self.text = False
+
 
 class ConfigParser(object):
     def __init__(self, config):
+        self.args = ''
+
         try:
             with open(config.config) as f:
                 data = load(f, Loader)
@@ -35,9 +40,8 @@ class ConfigParser(object):
                 self.build_arguments(config)
         except KeyError, e:
             print 'Unable to parse build configuration. Definition not found: %s' % e.message
-        except IOError, e:
+        except IOError:
             print 'Unable to open configuration file %s' % config.config
-
 
     def build_arguments(self, config):
         argbuilder = StringIO.StringIO()
@@ -61,6 +65,12 @@ def build(parser, config):
     os.system('cmake %s' % parser.args)
 
 
+def fake_build(parser, config):
+    print("Relative build directory: build/%s" % config.target)
+    print("CMake configuration command:")
+    print("cmake %s" % parser.args)
+
+
 def main():
     args = ArgumentParser()
     parser = argparse.ArgumentParser(description='lwIoT build configurator')
@@ -69,10 +79,15 @@ def main():
     parser.add_argument('-t', '--target', metavar='TARGET', help='build target', required=True)
     parser.add_argument('-c', '--config', metavar='PATH', help='build configuration file', required=True)
     parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.0.1')
+    parser.add_argument('-T', '--text', help='output CMake command to terminal', action='store_true')
     parser.parse_args(namespace=args)
 
     conf = ConfigParser(args)
-    build(conf, args)
+    if args.text:
+        fake_build(conf, args)
+    else:
+        build(conf, args)
+
 
 if __name__ == "__main__":
-	main()
+    main()
