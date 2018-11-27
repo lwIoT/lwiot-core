@@ -12,24 +12,10 @@
 #include <time.h>
 #include <assert.h>
 #include <lwiot.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include <sys/time.h>
-
-time_t lwiot_tick(void)
-{
-	time_t rv;
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	rv = (time_t) (tv.tv_sec * 1000000ULL);
-	rv += tv.tv_usec;
-	return rv;
-}
-
-time_t lwiot_tick_ms(void)
-{
-	return lwiot_tick() / 1000ULL;
-}
 
 void __maybe vApplicationMallocFailedHook(void)
 {

@@ -382,7 +382,6 @@ time_t lwiot_timer_get_expiry(lwiot_timer_t *timer)
 	return timer->expiry;
 }
 
-#ifdef CONFIG_NO_SYS
 time_t lwiot_tick(void)
 {
 	time_t ticks;
@@ -400,4 +399,3 @@ time_t lwiot_tick_ms(void)
 	ticks *= (double)1/configTICK_RATE_HZ * 1000ULL;
 	return ticks;
 }
-#endif

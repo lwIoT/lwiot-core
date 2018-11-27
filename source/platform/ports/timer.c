@@ -93,8 +93,7 @@ void lwiot_timers_destroy(void)
 	lwiot_mutex_destroy(&timer_lock);
 }
 
-void lwiot_timer_create(lwiot_timer_t *timer, const char *name, int ms,
-	uint32_t flags, void *arg, void (*cb)(lwiot_timer_t *timer, void *arg))
+lwiot_timer_t* lwiot_timer_create(const char *name, int ms, uint32_t flags, void *arg, void (*cb)(lwiot_timer_t *timer, void *arg))
 {
 	timer->handle = cb;
 	timer->tmo = ms * 1000U;

@@ -9,6 +9,11 @@
 #include <assert.h>
 #include <lwiot.h>
 
+#ifdef HAVE_RTOS
+#include <FreeRTOS.h>
+#include <task.h>
+#endif
+
 #include <lwiot/timer.h>
 #include <lwiot/thread.h>
 #include <lwiot/log.h>

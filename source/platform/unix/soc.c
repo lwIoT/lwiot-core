@@ -11,7 +11,7 @@
 
 #include <lwiot/types.h>
 
-void udelay(uint32_t us)
+void lwiot_udelay(uint32_t us)
 {
 	usleep(us);
 }

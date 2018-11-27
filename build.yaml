@@ -23,6 +23,7 @@ esp32:
 
 freertos:
     defs:
+        - UNIX=True
         - FREERTOS=True
         - CONFIG_NO_SYS=False
         - PORT=unix

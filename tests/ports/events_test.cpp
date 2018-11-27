@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
+#ifdef HAVE_RTOS
+#include <FreeRTOS.h>
+#include <task.h>
+#endif
+
 #include <lwiot/event.h>
 #include <lwiot/log.h>
 #include <lwiot/thread.h>
@@ -53,7 +58,7 @@ static void main_thread(void *arg)
 
 int main(int argc, char **argv)
 {
-	lwiot_thread_t tp;
+	lwiot_thread_t *tp;
 
 	lwiot_init();
 	print_dbg("Creating threads..\n");
@@ -62,12 +67,9 @@ int main(int argc, char **argv)
 	ThreadTest t1("Thread 1", e),
 		t2("Thread 2", e);
 
-	strcpy(tp.name, "main");
-	tp.name[sizeof("main")] = '\0';
-
 	t1.start();
 	t2.start();
-	lwiot_thread_create(&tp, main_thread, &e);
+	tp = lwiot_thread_create(main_thread, "main" , nullptr);
 
 #ifdef HAVE_RTOS
 	vTaskStartScheduler();
@@ -75,7 +77,7 @@ int main(int argc, char **argv)
 
 	t1.stop();
 	t2.stop();
-	lwiot_thread_destroy(&tp);
+	lwiot_thread_destroy(tp);
 	lwiot_destroy();
 
 	wait_close();

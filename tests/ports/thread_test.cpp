@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
+#ifdef HAVE_RTOS
+#include <FreeRTOS.h>
+#include <task.h>
+#endif
+
 #include <lwiot/log.h>
 #include <lwiot/thread.h>
 #include <lwiot/functionalthread.h>
@@ -74,7 +79,7 @@ static void main_thread(void *arg)
 
 int main(int argc, char **argv)
 {
-	lwiot_thread_t tp;
+	lwiot_thread_t *tp;
 
 	lwiot_init();
 
@@ -83,9 +88,7 @@ int main(int argc, char **argv)
 
 	ThreadTest t1(&lock), t2(&lock);
 	
-	strcpy(tp.name, "main");
-	tp.name[sizeof("main")] = '\0';
-	lwiot_thread_create(&tp, main_thread, NULL);
+	tp = lwiot_thread_create(main_thread, "main" , nullptr);
 
 	t1.start();
 	t2.start();
@@ -97,7 +100,7 @@ int main(int argc, char **argv)
 	lwiot_sleep(8000);
 	t1.stop();
 	t2.stop();
-	lwiot_thread_destroy(&tp);
+	lwiot_thread_destroy(tp);
 
 	lwiot_destroy();
 	wait_close();

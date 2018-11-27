@@ -130,13 +130,6 @@ set(GENERIC_HEADERS
 	lwiot/tcpserver.h
 )
 
-# Include timer implementation on UNIX and Windows builds
-IF(NOT CMAKE_SYSTEM_NAME MATCHES Generic)
-SET(SOURCES
-${SOURCES}
-ports/timer.c)
-ENDIF()
-
 set(BASE_HDRS
     ${PROJECT_SOURCE_DIR}/include/lwiot.h
     ${PROJECT_BINARY_DIR}/lwiot_opts.h

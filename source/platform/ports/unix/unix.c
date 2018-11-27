@@ -80,13 +80,13 @@ void lwiot_thread_yield()
 	pthread_yield();
 }
 
-int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attributes *attrs)
+lwiot_thread_t* lwiot_thread_create_raw(const struct lwiot_thread_attributes *attrs)
 {
 	assert(attrs);
 	return lwiot_thread_create(tp, attrs->handle, attrs->argument);
 }
 
-int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
+lwiot_thread_t* lwiot_thread_create(thread_handle_t handle, const char *name, void *arg)
 {
 	int rv;
 
@@ -115,7 +115,7 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
  * MUTEX FUNCTIONS
  */
 
-int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
+lwiot_mutex_t* lwiot_mutex_create(const uint32_t flags)
 {
 	pthread_mutexattr_t attr;
 
@@ -163,7 +163,7 @@ void lwiot_sleep(int ms)
 	usleep((__useconds_t) us);
 }
 
-void lwiot_event_create(lwiot_event_t *event, int length)
+lwiot_event_t* lwiot_event_create(int length)
 {
 	assert(event);
 

@@ -13,13 +13,13 @@ SET(LWIOT_PORT_HEADERS
 	${LWIOT_PORT_DIR}/lwiot_arch.h
 )
 
-SET(LWIOT_PORT_INCLUDE_DIRECTORIES
-	${PROJECT_SOURCE_DIR}/source/ports/unix
+SET(PORT_INCLUDE_DIR
 	${PYTHON_INCLUDE_DIRS}
 	${PYTHON_NUMPY_INCLUDE_DIR}
-	${PROJECT_SOURCE_DIR}/include/asm/hosted
 	${PROJECT_SOURCE_DIR}/external/matplotlib-cpp
 )
+
+SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/unix)
 
 find_package(Threads REQUIRED)
 SET(UNIX True)
