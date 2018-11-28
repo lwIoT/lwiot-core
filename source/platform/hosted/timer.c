@@ -148,6 +148,7 @@ int lwiot_timer_stop(lwiot_timer_t *timer)
 int lwiot_timer_destroy(lwiot_timer_t *timer)
 {
 	lwiot_timer_stop(timer);
+	lwiot_mem_free(timer);
 	return -EOK;
 }
 

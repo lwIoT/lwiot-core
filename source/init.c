@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <lwiot.h>
 
 #include <lwiot/lwiot.h>
 #include <lwiot/log.h>

@@ -21,6 +21,10 @@
 #cmakedefine CONFIG_HW_BARRIER 1
 #cmakedefine NO_OS
 
+#ifdef NO_OS
+#define CONFIG_NO_OS 1
+#endif
+
 #cmakedefine HAVE_LWIP
 
 /* SSD1306 options */

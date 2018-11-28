@@ -42,7 +42,7 @@ SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/avr)
 
 SET(F_CPU 16000000 CACHE STRING "AVR CPU frequency")
 
-set(PORT_C_FLAGS "-mmcu=${MCU} -DF_CPU=${F_CPU}")
-set(PORT_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=${F_CPU} -fno-rtti")
+set(PORT_C_FLAGS "-mmcu=${MCU} -DF_CPU=${F_CPU} -fdata-sections -ffunction-sections")
+set(PORT_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=${F_CPU} -fno-rtti -fdata-sections -ffunction-sections")
 
 SET(HAVE_LIBTIME True)

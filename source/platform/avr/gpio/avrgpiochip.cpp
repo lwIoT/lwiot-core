@@ -127,7 +127,6 @@ namespace lwiot { namespace avr
 			return;
 
 		out = portOutputRegister(port);
-
 		old = SREG;
 		cli();
 

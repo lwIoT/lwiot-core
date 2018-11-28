@@ -14,12 +14,13 @@
 #include <lwiot/log.h>
 
 #include <lwiot/avr/avrspibus.h>
+#include <lwiot/avr/avr.h>
 
-#ifdef ARDUINO_MEGA
+#if defined(ARDUINO_MEGA)
 #define MOSI 51
 #define MISO 50
 #define SCK  52
-#elif ARDUINO_UNO
+#elif defined( ARDUINO_UNO)
 #define MOSI 11
 #define MISO 12
 #define SCK  13

@@ -6,6 +6,9 @@
  */
 
 #pragma once
+
+#include <lwiot.h>
+
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 

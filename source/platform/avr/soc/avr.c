@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <lwiot.h>
 
+#include <lwiot/avr/extmem.h>
+
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>

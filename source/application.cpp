@@ -14,7 +14,6 @@
 #include <lwiot/log.h>
 #include <lwiot/application.h>
 #include <lwiot/functor.h>
-#include <lwiot/functionalthread.h>
 
 namespace lwiot
 {

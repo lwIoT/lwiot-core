@@ -43,10 +43,6 @@ struct lwiot_thread_attributes {
 	size_t stacksize;
 };
 
-extern DLL_EXPORT void enter_critical();
-extern DLL_EXPORT void exit_critical();
-extern DLL_EXPORT RAM_ATTR void lwiot_udelay(uint32_t us);
-
 extern DLL_EXPORT lwiot_thread_t* lwiot_thread_create(thread_handle_t handle, const char *name, void *arg);
 extern DLL_EXPORT lwiot_thread_t* lwiot_thread_create_raw(const struct lwiot_thread_attributes *attrs);
 extern DLL_EXPORT int lwiot_thread_destroy(lwiot_thread_t *tp);
@@ -91,6 +87,14 @@ extern DLL_EXPORT void lwiot_mutex_unlock(lwiot_mutex_t *mtx);
 extern DLL_EXPORT void lwiot_sleep(int ms);
 
 extern DLL_EXPORT int lwiot_hostname_to_ip(const char *host, uint32_t *addr);
+
+extern DLL_EXPORT void enter_critical();
+extern DLL_EXPORT void exit_critical();
+extern DLL_EXPORT RAM_ATTR void lwiot_udelay(uint32_t us);
+
+#ifdef NO_OS
+extern DLL_EXPORT void no_os_init();
+#endif
 
 #define FOREVER 0
 CDECL_END

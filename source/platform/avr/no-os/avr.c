@@ -6,8 +6,11 @@
  * Email:  dev@bietje.net
  */
 
+#include "lwiot_arch.h"
+
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <lwiot.h>
 
 #include <lwiot/types.h>
@@ -16,6 +19,23 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+
+#define raw_enter_critical() \
+	__asm__ __volatile__( \
+		"in __tmp_reg__, __SREG__"	"\n\t" \
+		"cli"						"\n\t" \
+		"push __tmp_reg__"          "\n\t"\
+		: \
+		: \
+	);
+
+#define raw_exit_critical() \
+	__asm__ __volatile__( \
+		"pop __tmp_reg__" "\n\t" \
+		"out __SREG__, __tmp_reg__" "\n\t" \
+		: \
+		: \
+	);
 
 void lwiot_mem_free(void *ptr)
 {
@@ -78,14 +98,21 @@ ISR(TIMER0_OVF_vect)
 }
 #endif
 
-int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
+lwiot_mutex_t* lwiot_mutex_create(const uint32_t flags)
 {
+	lwiot_mutex_t* mtx;
+
+	mtx = lwiot_mem_zalloc(sizeof(*mtx));
+	assert(mtx);
 	mtx->lock = 0;
-	return -EOK;
+
+	return mtx;
 }
 
 int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
 {
+	assert(mtx);
+	lwiot_mem_free(mtx);
 	return -EOK;
 }
 
@@ -94,23 +121,23 @@ int lwiot_mutex_lock(lwiot_mutex_t *mtx, int tmo)
 	uint8_t value = 1;
 
 	while(value) {
-		enter_critical();
+		raw_enter_critical();
 		value = mtx->lock;
-		exit_critical();
+		raw_exit_critical();
 
 		lwiot_sleep(1);
 	}
 
-	enter_critical();
+	raw_enter_critical();
 	mtx->lock = 1;
-	exit_critical();
+	raw_exit_critical();
 
 	return -EOK;
 }
 
 void lwiot_mutex_unlock(lwiot_mutex_t *mtx)
 {
-	enter_critical();
+	raw_enter_critical();
 	mtx->lock = 0;
-	exit_critical();
+	raw_exit_critical();
 }
