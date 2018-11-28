@@ -17,10 +17,18 @@ namespace lwiot
 	ScopedLock::ScopedLock(Lock& lock) : _lock(lock)
 	{
 		this->_lock.lock();
+		this->_locked = true;
 	}
 
 	ScopedLock::~ScopedLock()
 	{
+		if(this->_locked)
+			this->_lock.unlock();
+	}
+
+	void ScopedLock::unlock() const
+	{
+		this->_locked = false;
 		this->_lock.unlock();
 	}
 }

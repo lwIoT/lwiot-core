@@ -20,7 +20,10 @@ namespace lwiot
 
 		ScopedLock& operator=(const ScopedLock& lock) = delete;
 
+		void unlock() const;
+
 	private:
 		Lock& _lock;
+		mutable bool _locked;
 	};
 }
