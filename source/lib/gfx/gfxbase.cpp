@@ -325,7 +325,8 @@ namespace lwiot
 
 	void GfxBase::writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 	{
-		int16_t steep = abs(y1 - y0) > abs(x1 - x0);
+		auto steep = static_cast<int16_t>(abs(y1 - y0) > abs(x1 - x0));
+
 		if(steep) {
 			_swap_int16_t(x0, y0);
 			_swap_int16_t(x1, y1);
@@ -338,7 +339,7 @@ namespace lwiot
 
 		int16_t dx, dy;
 		dx = x1 - x0;
-		dy = abs(y1 - y0);
+		dy = (int16_t)abs(y1 - y0);
 
 		int16_t err = dx / 2;
 		int16_t ystep;

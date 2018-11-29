@@ -55,11 +55,11 @@ namespace lwiot
 
 	ssize_t Eeprom24C02::write(uint8_t addr, const void *data, size_t length)
 	{
-		size_t current, idx;
-		uint8_t  address;
+		size_t idx;
+		uint8_t  address, current;
 		const uint8_t *ptr;
 
-		current = length < Eeprom24C02::PageSize ? length : Eeprom24C02::PageSize;
+		current = length < Eeprom24C02::PageSize ? static_cast<uint8_t>(length) : Eeprom24C02::PageSize;
 		length -= current;
 		address = addr;
 		ptr = static_cast<const uint8_t *>(data);
@@ -80,7 +80,7 @@ namespace lwiot
 			}
 
 			address += current;
-			current = length < Eeprom24C02::PageSize ? length : Eeprom24C02::PageSize;
+			current = length < Eeprom24C02::PageSize ? static_cast<uint8_t>(length) : Eeprom24C02::PageSize;
 			length -= current;
 			lwiot_sleep(10);
 		} while(current > 0);

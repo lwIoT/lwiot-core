@@ -10,6 +10,8 @@
  * do, get yourself a bucket now, puking is inevitable. YOU HAVE BEEN WARNED.
  */
 
+#include "lwiot_arch.h"
+ 
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
@@ -78,18 +80,25 @@ static DWORD WINAPI EStackThreadStarter(LPVOID lpParam)
 	return TRUE;
 }
 
-int lwiot_thread_create_raw(lwiot_thread_t *tp, const struct lwiot_thread_attributes *attrs)
+lwiot_thread_t* lwiot_thread_create_raw(const struct lwiot_thread_attributes *attrs)
 {
-	return lwiot_thread_create(tp, attrs->handle, attrs->argument);
+	return lwiot_thread_create(attrs->handle, attrs->name, attrs->argument);
 }
 
-int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
+lwiot_thread_t* lwiot_thread_create(thread_handle_t handle, const char *name, void *arg)
 {
+	lwiot_thread_t *tp;
+
+	tp = lwiot_mem_zalloc(sizeof(*tp));
 	assert(tp);
 	assert(handle);
 
 	tp->handle = handle;
 	tp->arg = arg;
+
+	memset(tp->name, 0, sizeof(tp->name));
+	memcpy(tp->name, name, strlen(name));
+
 	tp->tp = CreateThread(
 		NULL,
 		0,
@@ -101,10 +110,10 @@ int lwiot_thread_create(lwiot_thread_t *tp, thread_handle_t handle, void *arg)
 
 	if(!tp->tp) {
 		print_dbg("Couldn't create thread!\n");
-		return -EINVALID;
+		return NULL;
 	}
 
-	return -EOK;
+	return tp;
 }
 
 int lwiot_thread_destroy(lwiot_thread_t *tp)
@@ -116,6 +125,7 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
 	tp->tp = NULL;
 	tp->arg = NULL;
 	tp->tid = 0;
+	lwiot_mem_free(tp);
 
 	return -EOK;
 }
@@ -124,8 +134,11 @@ int lwiot_thread_destroy(lwiot_thread_t *tp)
  * MUTEX FUNCTIONS
  */
 
-int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
+lwiot_mutex_t* lwiot_mutex_create(const uint32_t flags)
 {
+	lwiot_mutex_t *mtx;
+
+	mtx = lwiot_mem_zalloc(sizeof(*mtx));
 	assert(mtx);
 
 	if(flags & MTX_RECURSIVE) {
@@ -135,10 +148,10 @@ int lwiot_mutex_create(lwiot_mutex_t *mtx, const uint32_t flags)
 	mtx->mtx = CreateMutex(NULL, FALSE, NULL);
 	if(!mtx->mtx) {
 		print_dbg("Couldn't create mutex object\n");
-		return -EINVALID;
+		return NULL;
 	}
 
-	return -EOK;
+	return mtx;
 }
 
 void lwiot_thread_yield()
@@ -151,6 +164,7 @@ int lwiot_mutex_destroy(lwiot_mutex_t *mtx)
 	assert(mtx);
 
 	CloseHandle(mtx->mtx);
+	lwiot_mem_free(mtx);
 	return -EOK;
 }
 
@@ -199,8 +213,11 @@ void lwiot_sleep(int ms)
  * EVENT / WAIT QUEUE HANDLING
  */
 
-void lwiot_event_create(lwiot_event_t *event, int length)
+lwiot_event_t* lwiot_event_create(int length)
 {
+	lwiot_event_t* event;
+
+	event = lwiot_mem_zalloc(sizeof(*event));
 	assert(event);
 
 	event->size = length;
@@ -208,15 +225,21 @@ void lwiot_event_create(lwiot_event_t *event, int length)
 	event->signalled = false;
 	InitializeConditionVariable(&event->cond);
 	InitializeCriticalSection(&event->cs);
+	return event;
 }
 
 void lwiot_event_destroy(lwiot_event_t *e)
 {
+	assert(e);
+
 	WakeAllConditionVariable(&e->cond);
 	DeleteCriticalSection(&e->cs);
+
 	e->size = 0;
 	e->length = 0;
 	e->signalled = false;
+
+	lwiot_mem_free(e);
 }
 
 void lwiot_event_signal(lwiot_event_t *event)
@@ -242,7 +265,8 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 	assert(event);
 
 	EnterCriticalSection(&event->cs);
-	assert(++event->length < event->size);
+	event->length++;
+	assert(event->length < event->size);
 
 	if(tmo == FOREVER)
 		tmo = INFINITE;

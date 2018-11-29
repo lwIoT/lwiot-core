@@ -96,14 +96,14 @@ namespace lwiot
 			acquire(ptr.ptr);
 		}
 
-		SharedPointer &operator=(SharedPointer ptr) noexcept
+		SharedPointer &operator=(SharedPointer pointer) noexcept
 		{
-			if(ptr == *this) {
+			if(pointer == *this) {
 				return *this;
 			}
 
 			release();
-			swap(ptr);
+			swap(pointer);
 
 			return *this;
 		}

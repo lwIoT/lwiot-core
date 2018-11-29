@@ -5,10 +5,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifdef WIN32
+#include <WinSock2.h>
+#else
 #include <unistd.h>
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#endif
 
 int main(int argc, char **argv) {
 	const char* server_name;

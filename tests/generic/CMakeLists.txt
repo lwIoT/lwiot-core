@@ -1,10 +1,15 @@
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR} ${PORT_INCLUDE_DIR})
-SET (PLATFORM -Wl,--whole-archive lwiot-platform -Wl,--no-whole-archive lwiot)
 
 if(HAVE_RTOS)
 	link_directories(${FREERTOS_LIB_DIR})
+endif()
+
+if(WIN32)
+	SET (PLATFORM lwiot-platform)
+else()
+	SET (PLATFORM -Wl,--whole-archive lwiot-platform -Wl,--no-whole-archive)
 endif()
 
 add_executable(string-test string_test.cpp)

@@ -25,7 +25,7 @@ namespace lwiot
 	class Printable
 	{
 	public:
-		virtual ~Printable() {}
+		virtual ~Printable() = default;
 		virtual size_t printTo(Printer& p) const = 0;
 	};
 
@@ -35,7 +35,7 @@ namespace lwiot
 		{
 		}
 
-		virtual ~Printer() {}
+		virtual ~Printer() = default;
 
 		int getWriteError()
 		{
@@ -64,7 +64,11 @@ namespace lwiot
 			return write((const uint8_t *) buffer, size);
 		}
 
+#ifdef WIN32
+		size_t printf(const char * format, ...);
+#else
 		size_t printf(const char * format, ...)  __attribute__ ((format (printf, 2, 3)));
+#endif
 		size_t print(const String &);
 		size_t print(const char[]);
 		size_t print(char);

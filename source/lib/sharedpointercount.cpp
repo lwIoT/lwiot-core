@@ -21,9 +21,9 @@ namespace lwiot
 
 	SharedPointerCount::SharedPointerCount(const lwiot::SharedPointerCount &count) = default;
 
-	void SharedPointerCount::swap(lwiot::SharedPointerCount &count) noexcept
+	void SharedPointerCount::swap(lwiot::SharedPointerCount &cnt) noexcept
 	{
-		lwiot::lib::swap(this->count, count.count);
+		lwiot::lib::swap(this->count, cnt.count);
 	}
 
 	long SharedPointerCount::useCount() const

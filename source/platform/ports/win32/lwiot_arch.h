@@ -6,15 +6,12 @@
  * Email:  dev@bietje.net
  */
 
-#ifndef __PORT_H__
-#error "Do not include this file directly, use \"ports.h\" instead!"
-#endif
-
 #pragma once
 
 #include <WinSock2.h>
 #include <Windows.h>
 
+#include <lwiot/types.h>
 #include <lwiot/list.h>
 
 #ifdef __cplusplus

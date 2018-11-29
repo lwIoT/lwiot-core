@@ -35,6 +35,9 @@ unix:
 win32:
     defs:
         - CONFIG_NO_SYS=False
+        - CONFIG_PIN_VECTOR=True
+        - HAVE_DEBUG=True
+        - CONFIG_BUILD_TESTS=True
         
 atmega2560:
     defs:

@@ -8,7 +8,7 @@
 
 import argparse
 import os
-import StringIO
+import io
 
 from yaml import load
 
@@ -38,13 +38,13 @@ class ConfigParser(object):
                 self.defs = target['defs']
                 self.config = config
                 self.build_arguments(config)
-        except KeyError, e:
-            print 'Unable to parse build configuration. Definition not found: %s' % e.message
+        except KeyError as e:
+            print ('Unable to parse build configuration. Definition not found: %s' % e.message)
         except IOError:
-            print 'Unable to open configuration file %s' % config.config
+            print ('Unable to open configuration file %s' % config.config)
 
     def build_arguments(self, config):
-        argbuilder = StringIO.StringIO()
+        argbuilder = io.StringIO()
         for definition in self.defs:
             argbuilder.write('-D%s ' % definition)
 
