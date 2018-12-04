@@ -1,6 +1,6 @@
 /*
  * I2C serial bus wrapper.
- * 
+ *
  * @author Michel Megens
  * @email  dev@bietje.net
  */
