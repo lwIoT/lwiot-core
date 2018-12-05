@@ -9,6 +9,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/string.h>
+#include <lwiot/stdnet.h>
 
 namespace lwiot
 {
@@ -17,7 +18,7 @@ namespace lwiot
 		explicit IPAddress();
 		explicit IPAddress(uint8_t first, uint8_t second, uint8_t third, uint8_t forth);
 		explicit IPAddress(const uint8_t *address);
-		IPAddress(uint32_t address);
+		explicit IPAddress(uint32_t address);
 		virtual ~IPAddress() = default;
 
 		virtual String toString() const;
@@ -36,11 +37,16 @@ namespace lwiot
 		IPAddress& operator =(uint32_t addr);
 		IPAddress& operator =(const IPAddress& addr);
 
+		void toRemoteAddress(remote_addr_t& remote) const;
+
+		int version() const { return this->_version; }
+
 	private:
 		union {
 			uint8_t bytes[4];
 			uint32_t dword;
 		} _address;
+		int _version;
 
 		const uint8_t *raw() const;
 	};

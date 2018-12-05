@@ -17,7 +17,7 @@ namespace lwiot {
 	class Stream {
 	public:
 		explicit Stream();
-		Stream(const time_t& timeout);
+		explicit Stream(const time_t& timeout);
 		virtual ~Stream() = default;
 
 		virtual size_t available() const = 0;
@@ -42,6 +42,7 @@ namespace lwiot {
 		virtual uint8_t read() = 0;
 		virtual ssize_t read(uint8_t *output, const size_t& length) = 0;
 		virtual ssize_t read(String& output);
+
 		virtual String readString();
 		virtual String readStringUntil(char terminator);
 

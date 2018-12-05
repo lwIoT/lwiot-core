@@ -18,15 +18,16 @@
 #include <lwiot/types.h>
 #include <lwiot/string.h>
 #include <lwiot/ipaddress.h>
+#include <lwiot/stdnet.h>
 
 namespace lwiot
 {
-	IPAddress::IPAddress()
+	IPAddress::IPAddress() : _version(4)
 	{
 		this->_address.dword = 0;
 	}
 
-	IPAddress::IPAddress(uint8_t first, uint8_t second, uint8_t third, uint8_t forth)
+	IPAddress::IPAddress(uint8_t first, uint8_t second, uint8_t third, uint8_t forth) : _version(4)
 	{
 		this->_address.bytes[0] = first;
 		this->_address.bytes[1] = second;
@@ -34,9 +35,9 @@ namespace lwiot
 		this->_address.bytes[3] = forth;
 	}
 
-	IPAddress::IPAddress(uint32_t addr)
+	IPAddress::IPAddress(uint32_t addr) : _version(4)
 	{
-		this->_address.dword = addr;
+		this->_address.dword = to_netorderl(addr);
 	}
 
 	IPAddress::IPAddress(const uint8_t *addr) : IPAddress(addr[0], addr[1], addr[2], addr[3])
@@ -147,5 +148,13 @@ namespace lwiot
 			return this->_address.bytes[0];
 
 		return this->_address.bytes[idx];
+	}
+
+	void IPAddress::toRemoteAddress(remote_addr_t& remote) const
+	{
+		if(this->_version == 4) {
+			remote.addr.ip4_addr.ip = this->_address.dword;
+			remote.version = this->version();
+		}
 	}
 }

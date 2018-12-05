@@ -91,7 +91,7 @@ if(CMAKE_SYSTEM_NAME MATCHES Generic)
 endif()
 
 
-if( NOT CMAKE_SYSTEM_NAME MATCHES Generic OR PORT MATCHES unix )
+if(WIN32 OR UNIX)
     add_subdirectory(scripts)
 
     if(CONFIG_BUILD_TESTS)

@@ -16,18 +16,7 @@
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
 #include <lwiot/ipaddress.h>
-
-#ifdef WIN32
-#else
-#ifdef HAVE_LWIP
-extern "C" {
-#include <lwip/sys.h>
-#include <lwip/sockets.h>
-};
-#else
-#include <netinet/in.h>
-#endif
-#endif
+#include <lwiot/stdnet.h>
 
 namespace lwiot
 {
@@ -36,19 +25,17 @@ namespace lwiot
 		explicit TcpClient();
 		explicit TcpClient(const IPAddress& addr, uint16_t port);
 		explicit TcpClient(const String& host, uint16_t port);
-		virtual ~TcpClient();
-
-		static TcpClient fromDescriptor(int clientfd);
+		~TcpClient() override = default;
 
 		TcpClient& operator =(const TcpClient& client);
 
-		bool operator ==(const TcpClient& other);
-		bool operator !=(const TcpClient& other);
+		virtual bool operator ==(const TcpClient& other);
+		virtual bool operator !=(const TcpClient& other);
 
-		operator bool() const;
-		bool connected() const;
+		virtual explicit operator bool() const = 0;
+		virtual bool connected() const = 0;
 
-		size_t available() const override;
+		using Stream::available;
 
 		Stream &operator<<(char x) override;
 		Stream &operator<<(short x) override;
@@ -68,26 +55,23 @@ namespace lwiot
 		using Stream::read;
 		uint8_t read() override;
 		ssize_t read(uint8_t *output, const size_t &length) override;
-		ssize_t read(void *output, const size_t &length);
+		virtual ssize_t read(void *output, const size_t &length) = 0;
 
 		using Stream::write;
 		void write(uint8_t byte) override;
-		void write(const void *bytes, const size_t& length);
+		virtual void write(const void *bytes, const size_t& length) = 0;
 		void write(const uint8_t *bytes, const size_t &length) override;
 
-		bool connectTo(const IPAddress& addr, uint16_t port);
-		bool connectTo(const String& host, uint16_t port);
+		virtual bool connect(const IPAddress& addr, uint16_t port) = 0;
+		virtual bool connect(const String& host, uint16_t port)    = 0;
 
-		void close();
+		virtual void close() = 0;
 
 		const IPAddress& remote() const;
 		uint16_t port() const;
 
-	private:
+	protected:
 		IPAddress _remote_addr;
 		uint16_t _remote_port;
-		struct sockaddr_in _them;
-
-		int fd;
 	};
 }

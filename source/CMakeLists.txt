@@ -50,10 +50,6 @@ if(HAVE_NETWORKING)
 endif()
 
 set(GENERIC_HEADERS
-    asm/avr/cpu.h
-    asm/esp8266/cpu.h
-    asm/hosted/cpu.h
-
 	lwiot.h
 	ArduinoJson.h
 

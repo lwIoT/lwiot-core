@@ -65,6 +65,11 @@ message( STATUS "Config path: ${APP_CONFIG}")
 set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PATH "")
 
 SET(PORT_INCLUDE_DIR
+)
+
+SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp32)
+
+set(LWIOT_CORE_INCLUDE_DIRECTORIES
 	${PROJECT_SOURCE_DIR}/source/platform/esp32/include
 
 	#${ESP32_IDF_PATH}/components/lwip/lwip/src/include
@@ -104,13 +109,6 @@ SET(PORT_INCLUDE_DIR
 	${ESP32_IDF_PATH}/components/freertos/include/freertos
 
 	${APP_CONFIG}
-)
-
-SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp32)
-
-set(LWIOT_CORE_INCLUDE_DIRECTORIES
-	${ESP32_IDF_PATH}/components/newlib/include
-	${ESP32_IDF_PATH}/components/newlib/platform_include
 )
 
 SET(ESP32 True CACHE BOOL "Build for the ESP32 SoC.")
