@@ -8,27 +8,15 @@
 #pragma once
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <lwiot.h>
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/tcpclient.h>
-
-#ifdef WIN32
-#else
-#ifdef HAVE_LWIP
-extern "C" {
-#include <lwip/sys.h>
-#include <lwip/sockets.h>
-};
-#else
-#include <netinet/in.h>
-#endif
-#endif
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/tcpclient.h>
+#include <lwiot/uniquepointer.h>
 
 namespace lwiot
 {
@@ -36,30 +24,32 @@ namespace lwiot
 	public:
 		explicit TcpServer();
 		explicit TcpServer(const IPAddress& addr, uint16_t port);
-		virtual ~TcpServer();
+		virtual ~TcpServer() = default;
 
 		TcpServer& operator =(const TcpServer& other);
 
 		bool operator ==(const TcpServer& other);
 		bool operator !=(const TcpServer& other);
 
-		bool bind(const IPAddress& addr, uint16_t port);
-		bool bind() const;
+		virtual bool bind(const IPAddress& addr, uint16_t port) = 0;
+		virtual bool bind() const = 0;
 
-		void connect();
+		virtual void connect() = 0;
 
-		TcpClient accept() const;
-		void close();
+		virtual UniquePointer<TcpClient> accept() = 0;
+		virtual void close() = 0;
+
+		const IPAddress& address() const { return this->_bind_addr; }
+		uint16_t port() const { return this->_bind_port; }
 
 #ifdef HAVE_LWIP
-		static constexpr int BacklogSize = 2;
+		static constexpr int BacklogSize = 4;
 #else
 		static constexpr int BacklogSize = 128;
 #endif
 
-	private:
+	protected:
 		IPAddress _bind_addr;
 		uint16_t _bind_port;
-		int _fd;
 	};
 }

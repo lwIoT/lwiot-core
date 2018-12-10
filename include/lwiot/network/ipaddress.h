@@ -9,7 +9,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/string.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {
@@ -40,6 +40,7 @@ namespace lwiot
 		void toRemoteAddress(remote_addr_t& remote) const;
 
 		int version() const { return this->_version; }
+		bool isIPv6() const { return this->_version == 6; }
 
 	private:
 		union {

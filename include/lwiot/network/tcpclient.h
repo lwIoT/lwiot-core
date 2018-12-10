@@ -15,8 +15,8 @@
 #include <lwiot/log.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {

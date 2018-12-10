@@ -8,7 +8,7 @@
 #pragma once
 
 #include <lwiot/string.h>
-#include <lwiot/ipaddress.h>
+#include <lwiot/network/ipaddress.h>
 
 namespace lwiot
 {

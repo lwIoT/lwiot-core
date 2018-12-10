@@ -15,15 +15,16 @@
 #include <lwiot/log.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/stdnet.h>
-#include <lwiot/tcpclient.h>
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/stdnet.h>
+#include <lwiot/network/tcpclient.h>
 
 namespace lwiot
 {
 	class SocketTcpClient : public TcpClient {
 	public:
 		explicit SocketTcpClient();
+		explicit SocketTcpClient(socket_t* raw);
 		explicit SocketTcpClient(const IPAddress& addr, uint16_t port);
 		explicit SocketTcpClient(const String& host, uint16_t port);
 		~SocketTcpClient() override;
