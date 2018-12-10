@@ -14,8 +14,10 @@
 #include <esp_wifi.h>
 
 #include <lwiot/log.h>
-#include <lwiot/wifiaccesspoint.h>
 #include <lwiot/types.h>
+
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/wifiaccesspoint.h>
 
 #include <lwip/err.h>
 #include <lwip/ip_addr.h>

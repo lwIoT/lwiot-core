@@ -53,7 +53,14 @@ set(GENERIC_HEADERS
 	lwiot.h
 	ArduinoJson.h
 
+	lwiot/network/tcpclient.h
+	lwiot/network/tcpserver.h
+	lwiot/network/ipaddress.h
+	lwiot/network/wifiaccesspoint.h
+	lwiot/network/wifistation.h
+
 	lwiot/httpserver.h
+
 	lwiot/requesthandler.h
 	lwiot/base64.h
 	lwiot/sharedpointer.h
@@ -89,7 +96,6 @@ set(GENERIC_HEADERS
 	lwiot/atomic.h
 	lwiot/i2cbus.h
 	lwiot/i2cmessage.h
-	lwiot/ipaddress.h
 	lwiot/json.h
 	lwiot/list.h
 	lwiot/lock.h
@@ -113,8 +119,6 @@ set(GENERIC_HEADERS
 	lwiot/uart.h
 	lwiot/vector.h
 	lwiot/watchdog.h
-	lwiot/wifiaccesspoint.h
-	lwiot/wifistation.h
 	lwiot/printer.h
 	lwiot/gfxbase.h
 	lwiot/bmpsensor.h
@@ -122,8 +126,6 @@ set(GENERIC_HEADERS
 	lwiot/bmp280sensor.h
 	lwiot/ccs811sensor.h
 	lwiot/function.h
-	lwiot/tcpclient.h
-	lwiot/tcpserver.h
 )
 
 set(BASE_HDRS

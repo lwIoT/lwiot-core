@@ -15,7 +15,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/stdnet.h>
 
 #include <sys/ioctl.h>
 #include <netinet/in.h>

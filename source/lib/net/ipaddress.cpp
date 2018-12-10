@@ -17,8 +17,8 @@
 
 #include <lwiot/types.h>
 #include <lwiot/string.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {

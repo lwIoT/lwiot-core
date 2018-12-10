@@ -10,8 +10,8 @@
 #include <assert.h>
 
 #include <lwiot/log.h>
-#include <lwiot/tcpclient.h>
-#include <lwiot/sockettcpclient.h>
+#include <lwiot/network/tcpclient.h>
+#include <lwiot/network/sockettcpclient.h>
 #include <lwiot/test.h>
 
 static void test_tcpclient()

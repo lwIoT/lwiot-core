@@ -10,7 +10,8 @@ SET(NET_SOURCES
 	${SOCKETS}
 	net/tcp/tcpclient.cpp
 	net/tcp/sockettcpclient.cpp
-	#net/tcpserver.cpp
+	net/tcp/tcpserver.cpp
+	net/tcp/sockettcpserver.cpp
 	#net/dns.c
 	net/util/base64.c
 

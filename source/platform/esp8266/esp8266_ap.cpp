@@ -11,7 +11,7 @@
 #include <lwiot.h>
 
 #include <lwiot/log.h>
-#include <lwiot/wifiaccesspoint.h>
+#include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/types.h>
 
 #include <lwip/err.h>

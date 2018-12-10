@@ -15,7 +15,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/error.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/stdnet.h>
 
 #include <lwip/sockets.h>
 #include <lwip/inet.h>

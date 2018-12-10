@@ -11,9 +11,9 @@
 
 #include <lwiot/thread.h>
 #include <lwiot/string.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/wifiaccesspoint.h>
-#include <lwiot/wifistation.h>
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/wifiaccesspoint.h>
+#include <lwiot/network/wifistation.h>
 
 class MainThread : public lwiot::Thread {
 public:

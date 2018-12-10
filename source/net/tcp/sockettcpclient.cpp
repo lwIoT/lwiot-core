@@ -13,9 +13,9 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/string.h>
-#include <lwiot/sockettcpclient.h>
+#include <lwiot/network/sockettcpclient.h>
 #include <lwiot/error.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {
@@ -31,6 +31,11 @@ namespace lwiot
 	SocketTcpClient::SocketTcpClient(const lwiot::String &host, uint16_t port) : TcpClient(host, port), _socket(nullptr)
 	{
 		this->connect(host, port);
+	}
+
+	SocketTcpClient::SocketTcpClient(socket_t *raw) : TcpClient()
+	{
+		this->_socket = raw;
 	}
 
 	SocketTcpClient::~SocketTcpClient()
@@ -129,7 +134,7 @@ namespace lwiot
 	void SocketTcpClient::write(const void *bytes, const size_t &length)
 	{
 		auto sent = tcp_socket_send(this->_socket, bytes, length);
-		assert(sent = length);
+		assert(sent == static_cast<ssize_t>(length));
 	}
 
 	ssize_t SocketTcpClient::read(void *output, const size_t &length)

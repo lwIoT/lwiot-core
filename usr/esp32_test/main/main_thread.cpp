@@ -18,7 +18,7 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
-#include <lwiot/wifiaccesspoint.h>
+#include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/httpserver.h>
 #include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>

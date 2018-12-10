@@ -14,10 +14,10 @@
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
 #include <lwiot/requesthandler.h>
-#include <lwiot/ipaddress.h>
+#include <lwiot/network/ipaddress.h>
 #include <lwiot/function.h>
-#include <lwiot/tcpserver.h>
-#include <lwiot/tcpclient.h>
+#include <lwiot/network/tcpserver.h>
+#include <lwiot/network/tcpclient.h>
 #include <lwiot/httpserver.h>
 #include <lwiot/thread.h>
 #include <lwiot/base64.h>

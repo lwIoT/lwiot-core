@@ -11,7 +11,7 @@
 #include <esp8266.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/wifistation.h>
+#include <lwiot/network/wifistation.h>
 
 #include <espressif/esp_common.h>
 

@@ -17,10 +17,10 @@
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/wifistation.h>
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/wifistation.h>
 #include <lwiot/measurementvector.h>
-#include <lwiot/wifiaccesspoint.h>
+#include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/application.h>
 #include <lwiot/functionalthread.h>
 

@@ -12,9 +12,9 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/string.h>
-#include <lwiot/tcpclient.h>
+#include <lwiot/network/tcpclient.h>
 #include <lwiot/error.h>
-#include <lwiot/stdnet.h>
+#include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {

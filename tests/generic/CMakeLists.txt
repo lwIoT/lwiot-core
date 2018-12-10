@@ -45,3 +45,6 @@ target_link_libraries(i2cmessage-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${P
 
 add_executable(function-test function_test.cpp)
 target_link_libraries(function-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(typetraits-test typetraits_test.cpp)
+target_link_libraries(typetraits-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
