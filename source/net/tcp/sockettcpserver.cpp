@@ -36,15 +36,30 @@ namespace lwiot
 		this->_socket = server_socket_create(SOCKET_STREAM, false);
 	}
 
-	SocketTcpServer::SocketTcpServer(const lwiot::IPAddress &addr, uint16_t port) : TcpServer(addr, port)
+	SocketTcpServer::SocketTcpServer(BindAddress  addr, uint16_t port) : TcpServer(IPAddress(), port)
 	{
-		this->_socket = server_socket_create(SOCKET_STREAM, addr.isIPv6());
+		this->_socket = server_socket_create(SOCKET_STREAM, this->_bind_addr.isIPv6());
+	}
+
+	SocketTcpServer::SocketTcpServer(SocketTcpServer &&other) : TcpServer(other._bind_addr, other._bind_port), _socket(other._socket)
+	{
+		other._socket = nullptr;
 	}
 
 	SocketTcpServer::~SocketTcpServer()
 	{
 		if(this->_socket != nullptr)
 			this->close();
+	}
+
+	SocketTcpServer& SocketTcpServer::operator=(lwiot::SocketTcpServer &&other)
+	{
+		this->_bind_addr = other._bind_addr;
+		this->_bind_port = other._bind_port;
+		this->_socket = other._socket;
+		other._socket = nullptr;
+
+		return *this;
 	}
 
 	SocketTcpServer& SocketTcpServer::operator=(const lwiot::SocketTcpServer &server)
@@ -85,10 +100,20 @@ namespace lwiot
 		this->_socket = nullptr;
 	}
 
-	bool SocketTcpServer::bind(const lwiot::IPAddress &addr, uint16_t port)
+	/*bool SocketTcpServer::bind(const lwiot::IPAddress &addr, uint16_t port)
 	{
 		this->_bind_port = port;
 		this->_bind_addr = addr;
+
+		if(this->_socket == nullptr)
+			this->connect();
+
+		return this->bind();
+	}*/
+
+	bool SocketTcpServer::bind(BindAddress addr, uint16_t port)
+	{
+		TcpServer::bind(IPAddress::fromBindAddress(addr), port);
 
 		if(this->_socket == nullptr)
 			this->connect();
@@ -135,4 +160,5 @@ namespace lwiot
 
 		return wrapped;
 	}
+
 }

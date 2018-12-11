@@ -31,7 +31,6 @@ namespace lwiot
 		bool operator ==(const TcpServer& other);
 		bool operator !=(const TcpServer& other);
 
-		virtual bool bind(const IPAddress& addr, uint16_t port) = 0;
 		virtual bool bind() const = 0;
 
 		virtual void connect() = 0;
@@ -51,5 +50,7 @@ namespace lwiot
 	protected:
 		IPAddress _bind_addr;
 		uint16_t _bind_port;
+
+		bool bind(const IPAddress& addr, uint16_t port);
 	};
 }

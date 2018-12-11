@@ -14,6 +14,7 @@
 #include <lwiot/error.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
+
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/tcpserver.h>
 
@@ -52,6 +53,14 @@ namespace lwiot
 		auto port = this->_bind_port == other._bind_port;
 
 		return addr && port;
+	}
+
+	bool TcpServer::bind(const lwiot::IPAddress &addr, uint16_t port)
+	{
+		this->_bind_addr = addr;
+		this->_bind_port = port;
+
+		return true;
 	}
 
 	bool TcpServer::operator!=(const lwiot::TcpServer &other)

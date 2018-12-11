@@ -71,8 +71,8 @@ extern DLL_EXPORT ssize_t tcp_socket_send(socket_t* socket, const void* data, si
 extern DLL_EXPORT ssize_t tcp_socket_read(socket_t* socket, void* data, size_t length);
 extern DLL_EXPORT size_t tcp_socket_available(socket_t* socket);
 extern DLL_EXPORT socket_t* udp_socket_create(remote_addr_t* remote);
-extern DLL_EXPORT ssize_t udp_sendto(socket_t* socket, const void *data, size_t length, remote_addr_t* remote);
-extern DLL_EXPORT ssize_t udp_recvfrom(socket_t* socket, void *data, size_t length, remote_addr_t* remote);
+extern DLL_EXPORT ssize_t udp_send_to(socket_t* socket, const void *data, size_t length, remote_addr_t* remote);
+extern DLL_EXPORT ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t* remote);
 
 extern DLL_EXPORT void socket_close(socket_t* socket);
 

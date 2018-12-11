@@ -15,6 +15,7 @@
 #include <lwiot/log.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
+
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/tcpclient.h>
 #include <lwiot/network/stdnet.h>
@@ -26,16 +27,18 @@ namespace lwiot
 	class SocketTcpServer : public TcpServer {
 	public:
 		explicit SocketTcpServer();
-		explicit SocketTcpServer(const IPAddress& addr, uint16_t port);
+		explicit SocketTcpServer(BindAddress addr, uint16_t port);
+		SocketTcpServer(SocketTcpServer&& server);
 		~SocketTcpServer() override;
 
 		SocketTcpServer& operator =(const SocketTcpServer& other);
+		SocketTcpServer& operator =(SocketTcpServer&& other);
 
 		bool operator ==(const SocketTcpServer& other);
 		bool operator !=(const SocketTcpServer& other);
 
-		bool bind(const IPAddress& addr, uint16_t port) override;
 		bool bind() const override;
+		bool bind(BindAddress addr, uint16_t port);
 
 		void connect() override;
 		UniquePointer<TcpClient> accept() override;

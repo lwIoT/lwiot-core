@@ -17,6 +17,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/string.h>
+
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/stdnet.h>
 
@@ -24,7 +25,7 @@ namespace lwiot
 {
 	IPAddress::IPAddress() : _version(4)
 	{
-		this->_address.dword = 0;
+		this->_address.dword[0] = 0;
 	}
 
 	IPAddress::IPAddress(uint8_t first, uint8_t second, uint8_t third, uint8_t forth) : _version(4)
@@ -37,7 +38,7 @@ namespace lwiot
 
 	IPAddress::IPAddress(uint32_t addr) : _version(4)
 	{
-		this->_address.dword = to_netorderl(addr);
+		this->_address.dword[0] = to_netorderl(addr);
 	}
 
 	IPAddress::IPAddress(const uint8_t *addr) : IPAddress(addr[0], addr[1], addr[2], addr[3])
@@ -88,6 +89,7 @@ namespace lwiot
 			return retval;
 
 		retval._address.bytes[3] = (uint8_t)acc;
+		retval._version = 4;
 		return retval;
 	}
 
@@ -104,13 +106,15 @@ namespace lwiot
 
 	IPAddress& IPAddress::operator=(uint32_t address)
 	{
-		this->_address.dword = address;
+		this->_address.dword[0] = address;
+		this->_version = 4;
 		return *this;
 	}
 
 	IPAddress& IPAddress::operator=(const IPAddress& addr)
 	{
-		this->_address.dword = addr._address.dword;
+		memcpy(this->_address.bytes, addr._address.bytes, sizeof(_address.bytes));
+		this->_version = addr._version;
 		return *this;
 	}
 
@@ -121,7 +125,7 @@ namespace lwiot
 
 	bool IPAddress::operator==(const uint32_t& other) const
 	{
-		return this->_address.dword == other;
+		return this->_address.dword[0] == other;
 	}
 
 	bool IPAddress::operator==(const IPAddress& addr) const
@@ -131,7 +135,7 @@ namespace lwiot
 
 	IPAddress::operator uint32_t() const
 	{
-		return this->_address.dword;
+		return this->_address.dword[0];
 	}
 
 	uint8_t IPAddress::operator [](int idx) const
@@ -153,8 +157,41 @@ namespace lwiot
 	void IPAddress::toRemoteAddress(remote_addr_t& remote) const
 	{
 		if(this->_version == 4) {
-			remote.addr.ip4_addr.ip = this->_address.dword;
+			remote.addr.ip4_addr.ip = this->_address.dword[0];
 			remote.version = this->version();
 		}
+	}
+
+	IPAddress IPAddress::fromBindAddress(lwiot::BindAddress addr)
+	{
+		IPAddress ip;
+
+		switch(addr) {
+		case BIND_ADDR_ANY:
+			ip._address.dword[0] = 0U;
+			break;
+
+		case BIND_ADDR_LB:
+			ip._address.dword[0] = 0U;
+			ip._address.bytes[0] = 127;
+			ip._address.bytes[3] = 1;
+			break;
+
+		case BIND6_ADDR_ANY:
+			bzero(ip._address.bytes, sizeof(ip._address.bytes));
+		case BIND6_ADDR_LB:
+#ifdef HAVE_BIG_ENDIAN
+			uint32_t raw = 1;
+#else
+			uint32_t raw = 16777216;
+#endif
+			ip._address.dword[0] = raw;
+			ip._address.dword[1] = 0;
+			ip._address.dword[2] = 0;
+			ip._address.dword[3] = 0;
+			break;
+		}
+
+		return ip;
 	}
 }

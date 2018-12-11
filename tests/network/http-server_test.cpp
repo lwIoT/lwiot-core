@@ -73,8 +73,7 @@ static void handle_root(lwiot::HttpServer& server)
 
 static void test_httpserver()
 {
-	lwiot::IPAddress addr(127,0,0,1);
-	lwiot::SocketTcpServer* srv = new lwiot::SocketTcpServer(addr, 8080);
+	lwiot::SocketTcpServer* srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
 	lwiot::HttpServer server(srv);
 	bool running = true;
 

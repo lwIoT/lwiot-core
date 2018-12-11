@@ -127,7 +127,7 @@ socket_t* udp_socket_create(remote_addr_t* remote)
 	return sock;
 }
 
-ssize_t udp_sendto(socket_t* socket, const void *data, size_t length, remote_addr_t* remote)
+ssize_t udp_send_to(socket_t* socket, const void *data, size_t length, remote_addr_t* remote)
 {
 	struct sockaddr_in ip;
 	struct sockaddr_in6 ip6;
@@ -148,7 +148,7 @@ ssize_t udp_sendto(socket_t* socket, const void *data, size_t length, remote_add
 	return rv;
 }
 
-ssize_t udp_recvfrom(socket_t* socket, void *data, size_t length, remote_addr_t* remote)
+ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t* remote)
 {
 	struct sockaddr_in ip;
 	struct sockaddr_in6 ip6;

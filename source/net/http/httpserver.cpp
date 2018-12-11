@@ -52,11 +52,10 @@ namespace lwiot
 		_server->close();
 
 		delete[]_currentHeaders;
-
-
 		delete[] _currentArgs;
 
 		RequestHandler *handler = _firstHandler;
+
 		while(handler) {
 			RequestHandler *next = handler->next();
 			delete handler;
@@ -96,6 +95,7 @@ namespace lwiot
 		} else {
 			_srealm = String(realm);
 		}
+
 		if(mode == BASIC_AUTH) {
 			sendHeader(String(FPSTR(WWW_Authenticate)), String(F("Basic realm=\"")) + _srealm + String(F("\"")));
 		} else {
@@ -161,10 +161,9 @@ namespace lwiot
 		if(_currentClient->connected()) {
 			switch(_currentStatus) {
 			case HC_NONE:
-				// No-op to avoid C++ compiler warning
 				break;
+
 			case HC_WAIT_READ:
-				// Wait for data from client to become available
 				if(this->_currentClient->available()) {
 					if(_parseRequest(*_currentClient)) {
 						//_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
@@ -177,7 +176,7 @@ namespace lwiot
 							keepCurrentClient = true;
 						}
 					}
-				} else { // !_currentClient->available()
+				} else {
 					if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_DATA_WAIT) {
 						keepCurrentClient = true;
 					}
@@ -185,7 +184,6 @@ namespace lwiot
 				}
 				break;
 			case HC_WAIT_CLOSE:
-				// Wait for client to close the connection
 				if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_CLOSE_WAIT) {
 					keepCurrentClient = true;
 					callYield = true;

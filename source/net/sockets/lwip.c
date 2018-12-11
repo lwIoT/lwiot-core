@@ -136,7 +136,7 @@ socket_t* udp_socket_create(remote_addr_t* remote)
 	return sock;
 }
 
-ssize_t udp_sendto(socket_t* socket, const void *data, size_t length, remote_addr_t* remote)
+ssize_t udp_send_to(socket_t* socket, const void *data, size_t length, remote_addr_t* remote)
 {
 	struct sockaddr_in ip;
 	struct sockaddr_in6 ip6;
@@ -157,7 +157,7 @@ ssize_t udp_sendto(socket_t* socket, const void *data, size_t length, remote_add
 	return rv;
 }
 
-ssize_t udp_recvfrom(socket_t* socket, void *data, size_t length, remote_addr_t* remote)
+ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t* remote)
 {
 	struct sockaddr_in ip;
 	struct sockaddr_in6 ip6;
@@ -307,9 +307,10 @@ socket_t* server_socket_accept(socket_t* socket)
 }
 
 /* DNS */
-/*int dns_resolve_host(const char *host, remote_addr_t* addr)
+int dns_resolve_host(const char *host, remote_addr_t* addr)
 {
-	struct addrinfo hints, *res, *p;
+	return -1;
+	/*struct addrinfo hints, *res, *p;
 	int ai_family;
 
 	ai_family = addr->version == 6 ? AF_INET6 : AF_INET;
@@ -335,5 +336,5 @@ socket_t* server_socket_accept(socket_t* socket)
 	}
 
 	freeaddrinfo(res); // free the linked list
-	return -EOK;
-}*/
+	return -EOK;*/
+}

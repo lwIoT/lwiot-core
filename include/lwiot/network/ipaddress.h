@@ -9,10 +9,13 @@
 
 #include <lwiot/types.h>
 #include <lwiot/string.h>
+
 #include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {
+	using BindAddress = bind_addr_t;
+
 	class IPAddress {
 	public:
 		explicit IPAddress();
@@ -42,10 +45,12 @@ namespace lwiot
 		int version() const { return this->_version; }
 		bool isIPv6() const { return this->_version == 6; }
 
+		static IPAddress fromBindAddress(BindAddress addr);
+
 	private:
 		union {
-			uint8_t bytes[4];
-			uint32_t dword;
+			uint8_t bytes[16];
+			uint32_t dword[4];
 		} _address;
 		int _version;
 
