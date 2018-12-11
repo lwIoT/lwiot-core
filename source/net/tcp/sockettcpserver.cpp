@@ -82,6 +82,7 @@ namespace lwiot
 			return;
 
 		socket_close(this->_socket);
+		this->_socket = nullptr;
 	}
 
 	bool SocketTcpServer::bind(const lwiot::IPAddress &addr, uint16_t port)

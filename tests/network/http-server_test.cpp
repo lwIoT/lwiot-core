@@ -12,6 +12,7 @@
 #include <lwiot/log.h>
 #include <lwiot/httpserver.h>
 #include <lwiot/test.h>
+#include <lwiot/network/sockettcpserver.h>
 
 static const char INDEX_HTML[] =
 		"<!DOCTYPE HTML>"
@@ -73,14 +74,18 @@ static void handle_root(lwiot::HttpServer& server)
 static void test_httpserver()
 {
 	lwiot::IPAddress addr(127,0,0,1);
-	lwiot::HttpServer server(addr, 8000);
+	lwiot::SocketTcpServer* srv = new lwiot::SocketTcpServer(addr, 8080);
+	lwiot::HttpServer server(srv);
+	bool running = true;
 
 	server.on("/", handle_root);
 	assert(server.begin());
 	print_dbg("HttpServer started!\n");
 
-	while(true)
+	while(running) {
 		server.handleClient();
+		running = server.hasClient();
+	}
 }
 
 int main(int argc, char **argv)

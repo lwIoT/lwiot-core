@@ -205,9 +205,9 @@ socket_t* server_socket_create(socket_type_t type, bool ipv6)
 		domain = PF_INET;
 
 	if(type == SOCKET_DGRAM) {
-		fd = socket(domain, SOCKET_DGRAM, 0);
+		fd = socket(domain, SOCK_DGRAM, 0);
 	} else {
-		fd = socket(domain, SOCKET_STREAM, 0);
+		fd = socket(domain, SOCK_STREAM, 0);
 	}
 
 	if(fd < 0) {

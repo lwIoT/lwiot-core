@@ -23,7 +23,7 @@
 
 namespace lwiot
 {
-	class SocketTcpServer : TcpServer {
+	class SocketTcpServer : public TcpServer {
 	public:
 		explicit SocketTcpServer();
 		explicit SocketTcpServer(const IPAddress& addr, uint16_t port);

@@ -26,7 +26,7 @@ namespace lwiot
 	public:
 		using PointerType = T;
 
-		UniquePointer() noexcept : px(NULL)
+		UniquePointer() noexcept : px(nullptr)
 		{
 		}
 
@@ -38,13 +38,25 @@ namespace lwiot
 		explicit UniquePointer(const UniquePointer<U> &ptr) noexcept : px(
 				static_cast<typename UniquePointer<T>::PointerType *>(ptr.px))
 		{
-			const_cast<UniquePointer<U> &>(ptr).px = NULL;
+			const_cast<UniquePointer<U> &>(ptr).px = nullptr;
 		}
 
 		UniquePointer(const UniquePointer &ptr) noexcept :
 				px(ptr.px)
 		{
-			const_cast<UniquePointer &>(ptr).px = NULL;
+			const_cast<UniquePointer &>(ptr).px = nullptr;
+		}
+
+		UniquePointer(UniquePointer&& ptr) noexcept : px(ptr.px)
+		{
+			ptr.px = nullptr;
+		}
+
+		template<class U>
+		explicit UniquePointer(UniquePointer<U> &&ptr) noexcept
+		{
+			this->px = ptr.px;
+			ptr.px = nullptr;
 		}
 
 		UniquePointer &operator=(UniquePointer ptr) noexcept
@@ -65,7 +77,7 @@ namespace lwiot
 
 		void reset(T *p) noexcept
 		{
-			SHARED_ASSERT((NULL == p) || (px != p));
+			SHARED_ASSERT((nullptr == p) || (px != p));
 			destroy();
 			px = p;
 		}
@@ -77,7 +89,7 @@ namespace lwiot
 
 		inline void release() noexcept
 		{
-			px = NULL;
+			px = nullptr;
 		}
 
 		inline explicit operator bool() const noexcept
@@ -87,13 +99,13 @@ namespace lwiot
 
 		inline T &operator*() const noexcept
 		{
-			SHARED_ASSERT(NULL != px);
+			SHARED_ASSERT(nullptr != px);
 			return *px;
 		}
 
 		inline T *operator->() const noexcept
 		{
-			SHARED_ASSERT(NULL != px);
+			SHARED_ASSERT(nullptr != px);
 			return px;
 		}
 
@@ -106,12 +118,12 @@ namespace lwiot
 		inline void destroy() noexcept
 		{
 			delete px;
-			px = NULL;
+			px = nullptr;
 		}
 
 		inline void release() const noexcept
 		{
-			px = NULL;
+			px = nullptr;
 		}
 
 	private:

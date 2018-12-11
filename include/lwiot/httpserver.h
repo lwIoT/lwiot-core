@@ -16,8 +16,9 @@
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
 #include <lwiot/requesthandler.h>
-#include <lwiot/network/ipaddress.h>
 #include <lwiot/function.h>
+
+#include <lwiot/network/ipaddress.h>
 #include <lwiot/network/tcpserver.h>
 #include <lwiot/network/tcpclient.h>
 #include <lwiot/uniquepointer.h>
@@ -26,8 +27,7 @@ namespace lwiot
 {
 	class HttpServer {
 	public:
-		HttpServer(IPAddress addr, int port = 80);
-		HttpServer(int port = 80);
+		explicit HttpServer(TcpServer* server);
 		virtual ~HttpServer();
 
 		virtual bool begin();
@@ -37,7 +37,7 @@ namespace lwiot
 
 		void stop();
 
-		void requestAuthentication(HTTPAuthMethod mode = BASIC_AUTH, const char *realm = NULL,
+		void requestAuthentication(HTTPAuthMethod mode = BASIC_AUTH, const char *realm = nullptr,
 		                           const String &authFailMsg = String(""));
 
 		using THandlerFunction = Function<void(*)(HttpServer& server)>;
@@ -61,22 +61,18 @@ namespace lwiot
 			return _currentMethod;
 		}
 
-		virtual TcpClient client()
-		{
-			return _currentClient;
-		}
-
 		HTTPUpload &upload()
 		{
 			return *_currentUpload;
 		}
 
+		bool hasClient() const;
 		String arg(String name);        // get request argument value by name
 		String arg(int i);              // get request argument value by number
 		String argName(int i);          // get request argument name by number
 		int args();                     // get arguments count
 		bool hasArg(String name);       // check if argument exists
-		void collectHeaders(const char *headerKeys[], const size_t headerKeysCount); // set the request headers to collect
+		void collectHeaders(const char *headerKeys[], size_t headerKeysCount); // set the request headers to collect
 		String header(String name);      // get request header value by name
 		String header(int i);              // get request header value by number
 		String headerName(int i);          // get request header name by number
@@ -85,12 +81,12 @@ namespace lwiot
 
 		String hostHeader();            // get request host header if available or empty String if not
 
-		void send(int code, const char *content_type = NULL, const String &content = String(""));
+		void send(int code, const char *content_type = nullptr, const String &content = String(""));
 		void send(int code, char *content_type, const String &content);
 		void send(int code, const String &content_type, const String &content);
 
 
-		void setContentLength(const size_t contentLength);
+		void setContentLength(size_t contentLength);
 		void sendHeader(const String &name, const String &value, bool first = false);
 		void sendContent(const String &content);
 
@@ -100,53 +96,44 @@ namespace lwiot
 		size_t streamFile(T &file, const String &contentType)
 		{
 			_streamFileCore(file.size(), file.name(), contentType);
-			return _currentClient.write(file);
+			return _currentClient->write(file);
 		}
 
 	protected:
 		virtual size_t _currentClientWrite(const char *b, size_t l)
 		{
-			_currentClient.write(b, l);
+			_currentClient->write(b, l);
 			return l;
 		}
 
 		void _addRequestHandler(RequestHandler *handler);
-
 		void _handleRequest();
-
 		void _finalizeResponse();
-
 		bool _parseRequest(TcpClient &client);
-
 		void _parseArguments(String data);
 
 		static String _responseCodeToString(int code);
 
 		bool _parseForm(TcpClient &client, String boundary, uint32_t len);
-
 		bool _parseFormUploadAborted();
-
 		void _uploadWriteByte(uint8_t b);
-
 		uint8_t _uploadReadByte(TcpClient &client);
 
 		void _prepareHeader(String &response, int code, const char *content_type, size_t contentLength);
-
 		bool _collectHeader(const char *headerName, const char *headerValue);
 
-		void _streamFileCore(const size_t fileSize, const String &fileName, const String &contentType);
+		void _streamFileCore(size_t fileSize, const String &fileName, const String &contentType);
 		String _getRandomHexString();
-
-		String _extractParam(String &authReq, const String &param, const char delimit = '"');
+		String _extractParam(String &authReq, const String &param, char delimit = '"');
 
 		struct RequestArgument {
 			String key;
 			String value;
 		};
 
-		TcpServer _server;
+		UniquePointer<TcpServer> _server;
+		UniquePointer<TcpClient> _currentClient;
 
-		TcpClient _currentClient;
 		HTTPMethod _currentMethod;
 		String _currentUri;
 		uint8_t _currentVersion;

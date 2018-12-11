@@ -196,9 +196,9 @@ socket_t* server_socket_create(socket_type_t type, bool ipv6)
 		domain = PF_INET;
 
 	if(type == SOCKET_DGRAM) {
-		fd = socket(domain, SOCKET_DGRAM, 0);
+		fd = socket(domain, SOCK_DGRAM, 0);
 	} else {
-		fd = socket(domain, SOCKET_STREAM, 0);
+		fd = socket(domain, SOCK_STREAM, 0);
 	}
 
 	if(fd < 0) {
@@ -220,7 +220,7 @@ static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
 	assert(fd >= 0);
 
 	server.sin_port = port;
-	server.sin_family = AF_INET6;
+	server.sin_family = AF_INET;
 
 	if(addr == BIND_ADDR_ANY) {
 		server.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -228,7 +228,14 @@ static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
 		server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	}
 
-	return bind(fd, (struct sockaddr*)addr, sizeof(server)) < 0 ? false : true;
+	int result = bind(fd, (struct sockaddr*)&server, sizeof(server));
+
+	if(result < 0) {
+		print_dbg("Unable to bind to socket address!\n");
+		return false;
+	}
+
+	return true;
 }
 
 static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
@@ -248,7 +255,7 @@ static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
 		server.sin6_addr = in6addr_loopback;
 	}
 
-	return bind(fd, (struct sockaddr*)addr, sizeof(server)) < 0 ? false : true;
+	return bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
 }
 
 size_t tcp_socket_available(socket_t* socket)
@@ -269,6 +276,7 @@ bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port)
 {
 	assert(sock);
 
+	port = htons(port);
 	switch(addr) {
 	case BIND_ADDR_ANY:
 	case BIND_ADDR_LB:
