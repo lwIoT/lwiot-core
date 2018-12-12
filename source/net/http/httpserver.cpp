@@ -145,7 +145,7 @@ namespace lwiot
 	{
 		if(_currentStatus == HC_NONE) {
 			UniquePointer<TcpClient> client = lwiot::stl::move(this->_server->accept());
-			if(!*client) {
+			if(client.get() == nullptr) {
 				return;
 			}
 

@@ -1,5 +1,5 @@
 /*
- * Standard socket implementation for LWIP builds.
+ * Standard socket implementation for lwIP builds.
  *
  * @author Michel Megens
  * @email  dev@bietje.net
@@ -20,12 +20,15 @@
 #include <lwip/sockets.h>
 #include <lwip/inet.h>
 #include <lwip/ip_addr.h>
+#include <lwip/dns.h>
 
 #define IP6_SIZE 16
 
 #ifndef CONFIG_CLIENT_QUEUE_LENGTH
 #define CONFIG_CLIENT_QUEUE_LENGTH 10
 #endif
+
+lwiot_event_t* lwiot_dns_event;
 
 static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 {
@@ -56,11 +59,12 @@ static bool ip6_connect(socket_t* sock, remote_addr_t* addr)
 
 size_t tcp_socket_available(socket_t* socket)
 {
-	size_t count;
+	int count;
 
 	count = 0;
 	assert(socket);
 	ioctlsocket(*socket, FIONREAD, &count);
+
 	return count;
 }
 
@@ -229,7 +233,8 @@ static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
 	assert(fd >= 0);
 
 	server.sin_port = port;
-	server.sin_family = AF_INET6;
+	server.sin_family = AF_INET;
+	server.sin_len = sizeof(server);
 
 	if(addr == BIND_ADDR_ANY) {
 		server.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -237,7 +242,7 @@ static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
 		server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	}
 
-	return bind(fd, (struct sockaddr*)addr, sizeof(server)) < 0 ? false : true;
+	return lwip_bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
 }
 
 static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
@@ -251,6 +256,7 @@ static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
 
 	server.sin6_port = port;
 	server.sin6_family = AF_INET6;
+	server.sin6_len = sizeof(server);
 
 	if(addr == BIND6_ADDR_ANY) {
 		server.sin6_addr = in6addr_any;
@@ -258,18 +264,18 @@ static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
 		server.sin6_addr = loopback;
 	}
 
-	return bind(fd, (struct sockaddr*)addr, sizeof(server)) < 0 ? false : true;
+	return bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
 }
 
 bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port)
 {
 	assert(sock);
 
+	port = htons(port);
 	switch(addr) {
 	case BIND_ADDR_ANY:
 	case BIND_ADDR_LB:
 		return bind_ipv4(sock, addr, port);
-
 
 	case BIND6_ADDR_ANY:
 	case BIND6_ADDR_LB:
@@ -293,9 +299,12 @@ socket_t* server_socket_accept(socket_t* socket)
 {
 	int sock;
 	socket_t *client;
+	struct sockaddr addr;
+	socklen_t length;
 
 	assert(socket);
-	sock = accept(*socket, NULL, NULL);
+	sock = lwip_accept(*socket, &addr, &length);
+	//sock = accept(*socket, NULL, NULL);
 
 	if(sock < 0)
 		return NULL;
@@ -306,35 +315,51 @@ socket_t* server_socket_accept(socket_t* socket)
 	return client;
 }
 
+static void dns_host_found_cb(const char *cb, const ip_addr_t* ip, void *arg)
+{
+	remote_addr_t *addr;
+
+	addr = arg;
+	assert(arg);
+
+	if(ip->type == IPADDR_TYPE_V4 || ip->type == IPADDR_TYPE_ANY) {
+		addr->version = 4;
+		addr->addr.ip4_addr.ip = ip->u_addr.ip4.addr;
+	} else {
+		addr->version = 6;
+		memcpy(addr->addr.ip6_addr.ip, ip->u_addr.ip6.addr, sizeof(addr->addr.ip6_addr.ip));
+	}
+}
+
 /* DNS */
 int dns_resolve_host(const char *host, remote_addr_t* addr)
 {
-	return -1;
-	/*struct addrinfo hints, *res, *p;
-	int ai_family;
+	ip_addr_t ip;
+	int rv;
 
-	ai_family = addr->version == 6 ? AF_INET6 : AF_INET;
-	ai_family = addr->version == 0 ? AF_UNSPEC : ai_family;
+	assert(lwiot_dns_event != NULL);
+	rv = dns_gethostbyname(host, &ip, dns_host_found_cb, addr);
 
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = ai_family;
-	hints.ai_socktype = SOCK_STREAM;
+	switch(rv) {
+	case ERR_OK:
+		if(ip.type == IPADDR_TYPE_V4 || ip.type == IPADDR_TYPE_ANY) {
+			addr->version = 4;
+			addr->addr.ip4_addr.ip = ip.u_addr.ip4.addr;
+		} else {
+			addr->version = 6;
+			memcpy(addr->addr.ip6_addr.ip, ip.u_addr.ip6.addr, sizeof(addr->addr.ip6_addr.ip));
+		}
 
-	if (getaddrinfo(host, NULL, &hints, &res) != 0) {
-		return -1;
+		rv = -EOK;
+		break;
+
+	case ERR_INPROGRESS:
+		rv = lwiot_event_wait(lwiot_dns_event, FOREVER);
+		break;
+
+	default:
+		return -EINVALID;
 	}
 
-	p = res;
-	if (p->ai_family == AF_INET) { // IPv4
-		struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
-		addr->addr.ip4_addr.ip = ipv4->sin_addr.s_addr;
-		addr->version = 4;
-	} else { // IPv6
-		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
-		memcpy(addr->addr.ip6_addr.ip, ipv6->sin6_addr.__in6_u.__u6_addr8, IP6_SIZE);
-		addr->version = 6;
-	}
-
-	freeaddrinfo(res); // free the linked list
-	return -EOK;*/
+	return rv;
 }

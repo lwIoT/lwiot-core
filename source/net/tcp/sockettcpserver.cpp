@@ -36,7 +36,7 @@ namespace lwiot
 		this->_socket = server_socket_create(SOCKET_STREAM, false);
 	}
 
-	SocketTcpServer::SocketTcpServer(BindAddress  addr, uint16_t port) : TcpServer(IPAddress(), port)
+	SocketTcpServer::SocketTcpServer(BindAddress addr, uint16_t port) : TcpServer(IPAddress::fromBindAddress(addr), port)
 	{
 		this->_socket = server_socket_create(SOCKET_STREAM, this->_bind_addr.isIPv6());
 	}

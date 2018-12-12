@@ -133,8 +133,7 @@ namespace lwiot
 
 	void SocketTcpClient::write(const void *bytes, const size_t &length)
 	{
-		auto sent = tcp_socket_send(this->_socket, bytes, length);
-		assert(sent == static_cast<ssize_t>(length));
+		tcp_socket_send(this->_socket, bytes, length);
 	}
 
 	ssize_t SocketTcpClient::read(void *output, const size_t &length)
