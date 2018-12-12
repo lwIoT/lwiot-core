@@ -18,13 +18,15 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
-#include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/httpserver.h>
 #include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/apds9301sensor.h>
 #include <lwiot/dsrealtimeclock.h>
+
+#include <lwiot/network/sockettcpserver.h>
+#include <lwiot/network/wifiaccesspoint.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -59,7 +61,6 @@ protected:
   <body>\
     <h1>Hello from ESP32!</h1>\
     <p>Lux: %f</p>\
-    <img src=\"/test.svg\" />\
   </body>\
 </html>", luxdata
 			);
@@ -90,6 +91,7 @@ protected:
 		lwiot::IPAddress subnet(255, 255, 255, 0);
 		lwiot::IPAddress gw(192, 168, 1, 1);
 
+		ap.start();
 		ap.config(local, gw, subnet);
 		ap.begin(ssid, passw, 4);
 	}
@@ -98,8 +100,6 @@ protected:
 	{
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
-		lwiot::IPAddress addr((uint32_t)0);
-		lwiot::HttpServer server(addr, 80);
 		lwiot::DateTime dt(1539189832);
 
 		lwiot_sleep(1000);
@@ -112,28 +112,16 @@ protected:
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
 
+		auto srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
+		lwiot::HttpServer server(srv);
+
 		this->setup_server(server);
-		assert(server.begin());
-
-		this->rtc.set(dt);
-		assert(_sensor.begin());
-		lwiot_sleep(1000);
-		assert(this->_sensor.getLux(lux));
-		printf("Lux: %f\n", lux);
-
-		wdt.enable();
-		print_dbg("Starting server...\n");
+		server.begin();
 
 		while(true) {
-			wdt.disable();
-			auto time = this->rtc.now();
-			print_dbg("Time: %s\n", time.toString().c_str());
-			assert(this->_sensor.getLux(luxdata));
 			server.handleClient();
-			wdt.enable();
 
-			print_dbg("MT ping\n");
-			lwiot_sleep(1000);
+			wdt.reset();
 		}
 	}
 };
@@ -148,4 +136,5 @@ extern "C" void main_start(void)
 	printf(" [DONE]\n");
 	mt->start();
 }
+
 

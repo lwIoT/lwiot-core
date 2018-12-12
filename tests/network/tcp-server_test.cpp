@@ -23,10 +23,9 @@
 static void test_tcpserver()
 {
 	lwiot::SocketTcpServer server;
-	lwiot::IPAddress addr(0,0,0,0);
 	unsigned char buffer[1024];
 
-	assert(server.bind(addr, 5555));
+	assert(server.bind(BIND_ADDR_ANY, 5555));
 	lwiot::UniquePointer<lwiot::TcpClient> client = lwiot::stl::move(server.accept());
 	assert(client->connected());
 
