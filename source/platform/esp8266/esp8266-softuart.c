@@ -175,7 +175,7 @@ bool esp_softuart_open(uint8_t uart_no, uint32_t baudrate, uint8_t rx_pin, uint8
     // Setup the interrupt handler to get the start bit
     gpio_set_interrupt(rx_pin, GPIO_INTTYPE_EDGE_NEG, handle_rx);
 
-    sdk_os_delay_us(1000); // TODO: not sure if it really needed
+    sdk_os_delay_us(1000);
 
     return true;
 }

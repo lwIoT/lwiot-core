@@ -1051,8 +1051,6 @@ namespace lwiot
 				yo16 = yo;
 			}
 
-			// Todo: Add character clipping here
-
 			// NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS.
 			// THIS IS ON PURPOSE AND BY DESIGN.  The background color feature
 			// has typically been used with the 'classic' font to overwrite old

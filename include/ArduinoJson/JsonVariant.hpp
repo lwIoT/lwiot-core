@@ -162,7 +162,6 @@ class JsonVariant : public JsonVariantBase<JsonVariant> {
   // Serialize the variant to a JsonWriter
   void writeTo(Internals::JsonWriter &writer) const;
 
-  // TODO: rename
   template <typename T>
   static T invalid();
 

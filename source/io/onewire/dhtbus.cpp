@@ -85,13 +85,11 @@ namespace lwiot
 		}
 
 		if(!this->await(DhtBus::PhaseTwo, true, low)) {
-			/* TODO: log output */
 			print_dbg("[DHT]: P2 fail\n");
 			return false;
 		}
 
 		if(!this->await(DhtBus::PhaseThree, false, low)) {
-			/* TODO: log output */
 			print_dbg("[DHT]: P3 fail\n");
 			return false;
 		}
