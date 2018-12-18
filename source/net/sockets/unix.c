@@ -33,7 +33,7 @@ static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 	struct sockaddr_in sockaddr;
 
 	sockaddr.sin_family = AF_INET;
-	sockaddr.sin_port = htons(addr->port);
+	sockaddr.sin_port = addr->port;
 	sockaddr.sin_addr.s_addr = addr->addr.ip4_addr.ip;
 	bzero(&sockaddr.sin_zero, sizeof(sockaddr.sin_zero));
 
@@ -124,6 +124,8 @@ socket_t* udp_socket_create(remote_addr_t* remote)
 		return NULL;
 	}
 
+	*sock = fd;
+
 	return sock;
 }
 
@@ -156,6 +158,7 @@ ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t
 	socklen_t socklen;
 
 	if(remote->version == 6) {
+		socklen = sizeof(ip6);
 		rv = recvfrom(*socket, data, length, 0, (struct sockaddr*)&ip6, &socklen);
 
 		if(rv < 0)
@@ -164,6 +167,7 @@ ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t
 		remote->port = ip6.sin6_port;
 		memcpy(remote->addr.ip6_addr.ip, ip6.sin6_addr.__in6_u.__u6_addr8, IP6_SIZE);
 	} else {
+		socklen = sizeof(ip);
 		rv = recvfrom(*socket, data, length, 0, (struct sockaddr*)&ip, &socklen);
 
 		if(rv < 0)
@@ -276,7 +280,6 @@ bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port)
 {
 	assert(sock);
 
-	port = htons(port);
 	switch(addr) {
 	case BIND_ADDR_ANY:
 	case BIND_ADDR_LB:

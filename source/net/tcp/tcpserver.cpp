@@ -25,7 +25,7 @@
 #endif
 
 extern "C" {
-#include "lwiot/dns.h"
+#include "lwiot/network/dns.h"
 }
 
 namespace lwiot
@@ -34,7 +34,7 @@ namespace lwiot
 	{
 	}
 
-	TcpServer::TcpServer(const lwiot::IPAddress &addr, uint16_t port) : _bind_addr(addr), _bind_port(port)
+	TcpServer::TcpServer(const lwiot::IPAddress &addr, uint16_t port) : _bind_addr(addr), _bind_port(to_netorders(port))
 	{
 	}
 

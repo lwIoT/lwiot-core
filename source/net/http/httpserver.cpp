@@ -13,11 +13,11 @@
 #include <lwiot/log.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/requesthandler.h>
+#include <lwiot/network/requesthandler.h>
 #include <lwiot/function.h>
-#include <lwiot/httpserver.h>
+#include <lwiot/network/httpserver.h>
 #include <lwiot/thread.h>
-#include <lwiot/base64.h>
+#include <lwiot/network/base64.h>
 
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/tcpserver.h>

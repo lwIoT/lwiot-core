@@ -26,7 +26,7 @@
 #endif
 
 extern "C" {
-#include "lwiot/dns.h"
+#include "lwiot/network/dns.h"
 }
 
 namespace lwiot
@@ -160,5 +160,4 @@ namespace lwiot
 
 		return wrapped;
 	}
-
 }

@@ -15,7 +15,7 @@
 #include <lwiot/log.h>
 #include <lwiot/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/requesthandler.h>
+#include <lwiot/network/requesthandler.h>
 #include <lwiot/function.h>
 
 #include <lwiot/network/ipaddress.h>

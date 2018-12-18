@@ -16,7 +16,7 @@
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/tcpserver.h>
 #include <lwiot/network/tcpclient.h>
-#include <lwiot/httpserver.h>
+#include <lwiot/network/httpserver.h>
 
 #include "mimetable.h"
 

@@ -43,7 +43,7 @@ static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 	if(*sock < 0)
 		return false;
 
-	if(connect(*sock, (struct sockaddr*) &sockaddr, sizeof(struct sockaddr)) < 0) {
+	if(connect(*sock, (struct sockaddr*) &sockaddr, sizeof(sockaddr)) < 0) {
 		close(*sock);
 		return false;
 	}
@@ -53,8 +53,27 @@ static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 
 static bool ip6_connect(socket_t* sock, remote_addr_t* addr)
 {
-	print_dbg("IPv6 not yet supported!");
-	return false;
+	struct sockaddr_in6 ip;
+	int sockfd;
+
+	assert(sock);
+	sockfd = socket(PF_INET6, SOCK_STREAM, 0);
+	if(sockfd < 0)
+		return false;
+
+	*sock = sockfd;
+
+	memcpy(ip.sin6_addr.un.u8_addr, addr->addr.ip6_addr.ip, sizeof(ip.sin6_addr.un.u8_addr));
+	ip.sin6_len = sizeof(ip);
+	ip.sin6_family = AF_INET6;
+	ip.sin6_port = addr->port;
+
+	if(connect(sockfd, (const struct sockaddr*)&ip, sizeof(ip)) < 0) {
+		close(sockfd);
+		return false;
+	}
+
+	return true;
 }
 
 size_t tcp_socket_available(socket_t* socket)
@@ -137,6 +156,7 @@ socket_t* udp_socket_create(remote_addr_t* remote)
 		return NULL;
 	}
 
+	*sock = fd;
 	return sock;
 }
 
@@ -169,6 +189,7 @@ ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t
 	socklen_t socklen;
 
 	if(remote->version == 6) {
+		socklen = sizeof(ip6);
 		rv = recvfrom(*socket, data, length, 0, (struct sockaddr*)&ip6, &socklen);
 
 		if(rv < 0)
@@ -177,6 +198,7 @@ ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t
 		remote->port = ip6.sin6_port;
 		memcpy(remote->addr.ip6_addr.ip, ip6.sin6_addr.un.u8_addr, IP6_SIZE);
 	} else {
+		socklen = sizeof(ip);
 		rv = recvfrom(*socket, data, length, 0, (struct sockaddr*)&ip, &socklen);
 
 		if(rv < 0)
@@ -271,7 +293,6 @@ bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port)
 {
 	assert(sock);
 
-	port = htons(port);
 	switch(addr) {
 	case BIND_ADDR_ANY:
 	case BIND_ADDR_LB:

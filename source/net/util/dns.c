@@ -12,7 +12,9 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/dns.h>
+
+#include <lwiot/network/stdnet.h>
+#include <lwiot/network/dns.h>
 
 #ifdef WIN32
 #else
@@ -282,7 +284,7 @@ static void captive_portal_task(void *argument)
 	uint32_t portal_addr;
 	struct sockaddr_in from;
 	socklen_t fromlen;
-	int nNetTimeout = 10000;// 10 Sec
+	int nNetTimeout = 10000;
 	char *udp_msg = (char *) lwiot_mem_zalloc(DNS_LEN);
 
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -325,11 +327,19 @@ static void captive_portal_task(void *argument)
 	}
 }
 
+static lwiot_thread_t *tp;
 void dns_start_captive_portal(uint32_t *addr)
 {
-	static lwiot_thread_t tp;
 	const char *name = "capt-dns";
 
-	memcpy(tp.name, name, strlen(name));
-	lwiot_thread_create(&tp, captive_portal_task, addr);
+	tp = lwiot_thread_create(captive_portal_task, name, addr);
+	//lwiot_thread_create(&tp, captive_portal_task, addr);
+}
+
+void dns_stop_captive_portal(void)
+{
+	if(!tp)
+		return;
+
+	lwiot_thread_destroy(tp);
 }

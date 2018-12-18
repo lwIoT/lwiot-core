@@ -26,7 +26,7 @@ namespace lwiot
 	{
 	}
 
-	TcpClient::TcpClient(const lwiot::String &host, uint16_t port) :_remote_addr((uint32_t)0), _remote_port(to_netorders(port))
+	TcpClient::TcpClient(const lwiot::String &host, uint16_t port) : _remote_addr((uint32_t)0), _remote_port(to_netorders(port))
 	{
 	}
 

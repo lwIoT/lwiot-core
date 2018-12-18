@@ -44,6 +44,18 @@ namespace lwiot
 	IPAddress::IPAddress(const uint8_t *addr) : IPAddress(addr[0], addr[1], addr[2], addr[3])
 	{ }
 
+	IPAddress::IPAddress(const remote_addr_t& remote)
+	{
+		if(remote.version == 6) {
+			memcpy(this->_address.bytes, remote.addr.ip6_addr.ip, sizeof(remote.addr.ip6_addr.ip));
+			this->_version = 6;
+		} else {
+			this->_address.dword[0] = remote.addr.ip4_addr.ip;
+			this->_version = 4;
+		}
+
+	}
+
 	const uint8_t *IPAddress::raw() const
 	{
 		return (const uint8_t*)this->_address.bytes;
@@ -158,8 +170,11 @@ namespace lwiot
 	{
 		if(this->_version == 4) {
 			remote.addr.ip4_addr.ip = this->_address.dword[0];
-			remote.version = this->version();
+		} else {
+			memcpy(remote.addr.ip6_addr.ip, this->_address.bytes, sizeof(remote.addr.ip6_addr.ip));
 		}
+
+		remote.version = this->version();
 	}
 
 	IPAddress IPAddress::fromBindAddress(lwiot::BindAddress addr)

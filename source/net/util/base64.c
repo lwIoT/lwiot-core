@@ -11,7 +11,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/base64.h>
+#include <lwiot/network/base64.h>
 
 static int base64_decode_value_signed(int8_t value_in)
 {

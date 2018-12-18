@@ -12,7 +12,13 @@ SET(NET_SOURCES
 	net/tcp/sockettcpclient.cpp
 	net/tcp/tcpserver.cpp
 	net/tcp/sockettcpserver.cpp
-	#net/dns.c
+
+	net/udp/udpclient.cpp
+	net/udp/udpserver.cpp
+	net/udp/socketudpclient.cpp
+	net/udp/socketudpserver.cpp
+
+	net/util/dns.c
 	net/util/base64.c
 
 	net/http/httpserver.cpp

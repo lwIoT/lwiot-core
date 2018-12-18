@@ -31,12 +31,14 @@ static inline uint32_t to_netorderl(uint32_t ip)
 
 static inline uint32_t to_netorders(uint16_t s)
 {
-#ifndef HAVE_BIG_ENDIAN
+#ifdef HAVE_BIG_ENDIAN
 	return s;
 #else
 	return _HTONS(s);
 #endif
 }
+
+#define to_hostorders(_x) to_netorders(_x)
 
 typedef struct {
 	union {

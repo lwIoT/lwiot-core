@@ -58,11 +58,11 @@ set(GENERIC_HEADERS
 	lwiot/network/ipaddress.h
 	lwiot/network/wifiaccesspoint.h
 	lwiot/network/wifistation.h
+	lwiot/network/httpserver.h
+	lwiot/network/requesthandler.h
+	lwiot/network/base64.h
 
-	lwiot/httpserver.h
 
-	lwiot/requesthandler.h
-	lwiot/base64.h
 	lwiot/sharedpointer.h
 	lwiot/uniquepointer.h
 	lwiot/apds9301sensor.h
