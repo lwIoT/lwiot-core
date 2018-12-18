@@ -14,3 +14,9 @@ target_link_libraries(tcp-server_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(http-server_test http-server_test.cpp)
 target_link_libraries(http-server_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
+add_executable(udp-server_test udp-server_test.cpp)
+target_link_libraries(udp-server_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
+add_executable(udp-client_test udp-client_test.cpp)
+target_link_libraries(udp-client_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})

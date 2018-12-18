@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include <lwiot/log.h>
-#include <lwiot/dns.h>
+#include <lwiot/network/dns.h>
 #include <lwiot/test.h>
 
 #include <lwiot/network/tcpclient.h>

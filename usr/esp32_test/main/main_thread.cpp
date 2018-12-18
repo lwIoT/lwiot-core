@@ -18,15 +18,20 @@
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
-#include <lwiot/httpserver.h>
 #include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/apds9301sensor.h>
 #include <lwiot/dsrealtimeclock.h>
 
+#include <lwiot/network/httpserver.h>
+#include <lwiot/network/socketudpserver.h>
+#include <lwiot/network/udpserver.h>
+#include <lwiot/network/udpclient.h>
 #include <lwiot/network/sockettcpserver.h>
 #include <lwiot/network/wifiaccesspoint.h>
+
+#include <lwiot/stl/move.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -44,6 +49,26 @@ protected:
 	lwiot::Apds9301Sensor _sensor;
 	double lux;
 	lwiot::DsRealTimeClock rtc;
+
+	void testUdpServer()
+	{
+		char buffer[256];
+		bool test;
+		int length;
+		lwiot::SocketUdpServer udp(BIND_ADDR_ANY, 5000);
+		lwiot::UniquePointer<lwiot::UdpClient> client;
+
+		test = udp.bind();
+		assert(test);
+		bzero(buffer, sizeof(buffer));
+		client = lwiot::stl::move( udp.recv(buffer, sizeof(buffer)) );
+
+		length = strlen(buffer);
+		assert(length > 0);
+		print_dbg("Received from client: %s\n", buffer);
+		client->write(buffer, strlen(buffer));
+		client->close();
+	}
 
 	void setup_server(lwiot::HttpServer& server)
 	{
@@ -117,6 +142,8 @@ protected:
 
 		this->setup_server(server);
 		server.begin();
+		this->testUdpServer();
+		wdt.enable(10000);
 
 		while(true) {
 			server.handleClient();

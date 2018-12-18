@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include <lwiot/log.h>
-#include <lwiot/httpserver.h>
+#include <lwiot/network/httpserver.h>
 #include <lwiot/test.h>
 #include <lwiot/network/sockettcpserver.h>
 
