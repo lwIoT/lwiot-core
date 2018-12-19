@@ -65,11 +65,6 @@ message( STATUS "Config path: ${APP_CONFIG}")
 set(CMAKE_OBJCOPY ${ESP32_TOOLCHAIN_PATH}/bin/xtensa-esp32-elf-objcopy CACHE PATH "")
 
 SET(PORT_INCLUDE_DIR
-)
-
-SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp32)
-
-set(LWIOT_CORE_INCLUDE_DIRECTORIES
 	${PROJECT_SOURCE_DIR}/source/platform/esp32/include
 
 	#${ESP32_IDF_PATH}/components/lwip/lwip/src/include
@@ -95,8 +90,6 @@ set(LWIOT_CORE_INCLUDE_DIRECTORIES
 	${ESP32_IDF_PATH}/components/mbedtls/port/include
 	${ESP32_IDF_PATH}/components/mbedtls/include
 	${ESP32_IDF_PATH}/components/mdns/include
-	${ESP32_IDF_PATH}/components/newlib/platform_include
-	${ESP32_IDF_PATH}/components/newlib/include
 	${ESP32_IDF_PATH}/components/vfs/include
 	${ESP32_IDF_PATH}/components/log/include
 	${ESP32_IDF_PATH}/components/wpa_supplicant/port/include
@@ -107,8 +100,15 @@ set(LWIOT_CORE_INCLUDE_DIRECTORIES
 	${ESP32_IDF_PATH}/components/soc/esp32/include
 	${ESP32_IDF_PATH}/components/soc/include
 	${ESP32_IDF_PATH}/components/freertos/include/freertos
+	${ESP32_IDF_PATH}/components/newlib/platform_include
 
 	${APP_CONFIG}
+)
+
+SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp32)
+
+set(LWIOT_CORE_INCLUDE_DIRECTORIES
+	${ESP32_IDF_PATH}/components/newlib/include
 )
 
 SET(ESP32 True CACHE BOOL "Build for the ESP32 SoC.")

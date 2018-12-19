@@ -17,6 +17,11 @@
 typedef long socket_t;
 #endif
 
+static inline uint32_t __bswap_32 (uint32_t __bsx)
+{
+	return __builtin_bswap32 (__bsx);
+}
+
 #define _HTONS(n) (((((unsigned short)(n) & 0xFF)) << 8) | (((unsigned short)(n) & 0xFF00) >> 8))
 
 static inline uint32_t to_netorderl(uint32_t ip)
@@ -24,8 +29,7 @@ static inline uint32_t to_netorderl(uint32_t ip)
 #ifdef HAVE_BIG_ENDIAN
 	return ip;
 #else
-	const uint8_t* s = (uint8_t *)&ip;
-	return (uint32_t) (s[0] << 24 | s[1] << 16 | s[2] << 8 | s[3]);
+	return __bswap_32(ip);
 #endif
 }
 

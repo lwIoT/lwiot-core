@@ -51,6 +51,13 @@ set(PORT_INCLUDE_DIR
     ${ESP8266_OPEN_RTOS_PATH}/extras
     ${ESP8266_OPEN_RTOS_PATH}/open_esplibs/include
 
+    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include
+    ${ESP8266_OPEN_RTOS_PATH}/lwip/include
+    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/compat/posix
+    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4
+    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4/lwip
+    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/lwip
+
     ${PROJECT_SOURCE_DIR}/source/platform/esp8266/include
 )
 
@@ -59,13 +66,6 @@ set(LWIOT_CORE_INCLUDE_DIRECTORIES
     ${ESP8266_OPEN_RTOS_PATH}/libc/xtensa-lx106-elf/include
     ${ESP8266_OPEN_RTOS_PATH}/core/include
     ${ESP8266_OPEN_RTOS_PATH}/open_esplibs/include
-
-    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include
-    ${ESP8266_OPEN_RTOS_PATH}/lwip/include
-    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/compat/posix
-    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4
-    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/ipv4/lwip
-    ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/lwip
 )
 
 SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp8266)
