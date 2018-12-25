@@ -20,3 +20,6 @@ target_link_libraries(udp-server_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(udp-client_test udp-client_test.cpp)
 target_link_libraries(udp-client_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
+add_executable(captiveportal_test captiveportal_test.cpp)
+target_link_libraries(captiveportal_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
