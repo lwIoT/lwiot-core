@@ -23,7 +23,8 @@ namespace lwiot
 		void close() override;
 		bool bind() override;
 		bool bind(bind_addr_t addr, uint16_t port) override;
-		UniquePointer<UdpClient> recv(void *buffer, size_t length) override;
+		UniquePointer<UdpClient> recv(void *buffer, size_t& length) override;
+		void setTimeout(int tmo) override;
 
 	private:
 		socket_t* _socket;

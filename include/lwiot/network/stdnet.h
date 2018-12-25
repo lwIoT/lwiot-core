@@ -17,7 +17,7 @@
 typedef long socket_t;
 #endif
 
-static inline uint32_t __bswap_32 (uint32_t __bsx)
+static inline uint32_t lwiot_bswap_32 (uint32_t __bsx)
 {
 	return __builtin_bswap32 (__bsx);
 }
@@ -29,7 +29,7 @@ static inline uint32_t to_netorderl(uint32_t ip)
 #ifdef HAVE_BIG_ENDIAN
 	return ip;
 #else
-	return __bswap_32(ip);
+	return lwiot_bswap_32(ip);
 #endif
 }
 
@@ -81,6 +81,7 @@ extern DLL_EXPORT ssize_t udp_send_to(socket_t* socket, const void *data, size_t
 extern DLL_EXPORT ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t* remote);
 
 extern DLL_EXPORT void socket_close(socket_t* socket);
+extern DLL_EXPORT void socket_set_timeout(socket_t *sock, int tmo);
 
 /* SERVER OPS */
 extern DLL_EXPORT socket_t* server_socket_create(socket_type_t type, bool ipv6);

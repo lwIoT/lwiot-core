@@ -80,6 +80,7 @@ static void *unix_thread_starter(void *arg)
 
 void lwiot_thread_yield()
 {
+	usleep(1);
 	sched_yield();
 }
 

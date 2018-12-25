@@ -38,8 +38,11 @@ namespace lwiot
 
 	void SocketUdpServer::close()
 	{
-		assert(this->_socket != nullptr);
+		if(this->_socket == nullptr)
+			return;
+
 		socket_close(this->_socket);
+		this->_socket = nullptr;
 	}
 
 	bool SocketUdpServer::bind(bind_addr_t addr, uint16_t port)
@@ -57,16 +60,23 @@ namespace lwiot
 		return server_socket_bind(this->_socket, this->bindaddr(), this->port());
 	}
 
-	UniquePointer<UdpClient> SocketUdpServer::recv(void *buffer, size_t length)
+	void SocketUdpServer::setTimeout(int tmo)
+	{
+		assert(this->_socket);
+		socket_set_timeout(this->_socket, tmo);
+	}
+
+	UniquePointer<UdpClient> SocketUdpServer::recv(void *buffer, size_t& length)
 	{
 		remote_addr_t remote;
 		UniquePointer<UdpClient> client;
 
 		remote.version = this->address().version();
-		if(udp_recv_from(this->_socket, buffer, length, &remote) < 0) {
+		auto num = udp_recv_from(this->_socket, buffer, length, &remote);
+		if(num < 0)
 			return client;
-		}
 
+		length = static_cast<size_t>(num);
 		/* Convert to host order, as UdpClient expects the port number to be supplied in host order */
 		remote.port = to_hostorders(remote.port);
 		auto raw = new SocketUdpClient(IPAddress(remote), remote.port, this->_socket);

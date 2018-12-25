@@ -17,6 +17,7 @@ SET(NET_SOURCES
 	net/udp/socketudpserver.cpp
 
 	net/util/base64.c
+	net/util/captiveportal.cpp
 
 	net/http/httpserver.cpp
 	net/http/mimetable.cpp

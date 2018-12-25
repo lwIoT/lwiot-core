@@ -30,7 +30,8 @@ static void start_and_run_server()
 	test = udp.bind();
 	assert(test);
 	bzero(buffer, sizeof(buffer));
-	client = lwiot::stl::move( udp.recv(buffer, sizeof(buffer)) );
+	auto size = sizeof(buffer);
+	client = lwiot::stl::move( udp.recv(buffer, size) );
 
 	length = strlen(buffer);
 	assert(length > 0);

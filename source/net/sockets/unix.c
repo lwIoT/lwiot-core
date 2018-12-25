@@ -76,6 +76,12 @@ socket_t* tcp_socket_create(remote_addr_t* remote)
 	return sock;
 }
 
+void socket_set_timeout(socket_t *sock, int tmo)
+{
+	assert(sock);
+	setsockopt(*sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &tmo, sizeof(int));
+}
+
 ssize_t tcp_socket_send(socket_t* socket, const void* data, size_t length)
 {
 	int fd;

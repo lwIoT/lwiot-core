@@ -21,7 +21,8 @@ namespace lwiot
 		virtual void close() = 0;
 		virtual bool bind() = 0;
 		virtual bool bind(bind_addr_t addr, uint16_t port);
-		virtual UniquePointer<UdpClient> recv(void *buffer, size_t length) = 0;
+		virtual UniquePointer<UdpClient> recv(void *buffer, size_t& length) = 0;
+		virtual void setTimeout(int tmo) = 0;
 
 		const IPAddress& address() const;
 		uint16_t port() const;

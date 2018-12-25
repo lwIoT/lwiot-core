@@ -218,6 +218,12 @@ void socket_close(socket_t* socket)
 	lwiot_mem_free(socket);
 }
 
+void socket_set_timeout(socket_t *sock, int tmo)
+{
+	assert(sock);
+	setsockopt(*sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &tmo, sizeof(int));
+}
+
 /* SERVER OPS */
 socket_t* server_socket_create(socket_type_t type, bool ipv6)
 {
