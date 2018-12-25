@@ -1,6 +1,4 @@
-if(HAVE_LWIP)
-	SET(SOCKETS net/sockets/lwip.c)
-elseif(UNIX)
+if(UNIX)
 	SET(SOCKETS net/sockets/unix.c)
 elseif(WIN32)
 	SET(SOCKETS net/sockets/win32.c)
@@ -18,8 +16,11 @@ SET(NET_SOURCES
 	net/udp/socketudpclient.cpp
 	net/udp/socketudpserver.cpp
 
-	net/util/dns.c
 	net/util/base64.c
+
+	net/802.15.4/xbee.cpp
+	net/802.15.4/xbeeresponse.cpp
+	net/802.15.4/xbeerequest.cpp
 
 	net/http/httpserver.cpp
 	net/http/mimetable.cpp
