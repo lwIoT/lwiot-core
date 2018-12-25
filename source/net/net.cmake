@@ -1,6 +1,4 @@
-if(HAVE_LWIP)
-	SET(SOCKETS net/sockets/lwip.c)
-elseif(UNIX)
+if(UNIX)
 	SET(SOCKETS net/sockets/unix.c)
 elseif(WIN32)
 	SET(SOCKETS net/sockets/win32.c)
@@ -18,7 +16,6 @@ SET(NET_SOURCES
 	net/udp/socketudpclient.cpp
 	net/udp/socketudpserver.cpp
 
-	net/util/dns.c
 	net/util/base64.c
 
 	net/http/httpserver.cpp
