@@ -15,6 +15,7 @@
 #include <lwiot/esp32/esp32uart.h>
 
 #define UART_BUFFER_SIZE 512
+#define FLOW_CTL_THRESH 128
 
 namespace lwiot { namespace esp32
 {
@@ -41,11 +42,6 @@ namespace lwiot { namespace esp32
 			break;
 		}
 
-		this->_setup.baud_rate = baud;
-		this->_setup.stop_bits = UART_STOP_BITS_1;
-		this->_setup.parity = UART_PARITY_DISABLE;
-		this->_setup.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
-
 		switch(config) {
 		case SERIAL_7N1:
 			this->_setup.data_bits = UART_DATA_7_BITS;
@@ -59,9 +55,14 @@ namespace lwiot { namespace esp32
 			break;
 		}
 
+		this->_setup.baud_rate = baud;
+		this->_setup.stop_bits = UART_STOP_BITS_1;
+		this->_setup.parity = UART_PARITY_DISABLE;
+		this->_setup.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
+		this->_setup.rx_flow_ctrl_thresh = UART_FIFO_LEN - 1;
+
 		uart_param_config(_uart_num, &this->_setup);
-		uart_set_pin(_uart_num, this->_tx.pin(), this->_rx.pin(),
-			UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+		uart_set_pin(_uart_num, this->_tx.pin(), this->_rx.pin(), UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 		uart_driver_install(_uart_num, UART_BUFFER_SIZE * 2, 0, 0, NULL, 0);
 	}
 
