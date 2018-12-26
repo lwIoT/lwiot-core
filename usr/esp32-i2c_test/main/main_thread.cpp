@@ -42,8 +42,8 @@ static int calculate_udelay_test(const uint32_t& frequency)
 }
 
 class I2CTestApplication : public lwiot::Functor {
-public:
-	virtual void operator()() override
+protected:
+	void run() override
 	{
 		size_t freesize;
 		auto algo = new lwiot::GpioI2CAlgorithm(23, 22, 100000U);

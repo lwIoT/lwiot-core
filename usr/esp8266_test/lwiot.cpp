@@ -31,7 +31,7 @@
 
 class EspTestApplication : public lwiot::Functor {
 public:
-	virtual void operator()() override
+	void run() override
 	{
 		bool value = false;
 

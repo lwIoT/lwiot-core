@@ -14,6 +14,12 @@ namespace lwiot
 		explicit Functor() = default;
 		virtual ~Functor() = default;
 
-		virtual void operator()() = 0;
+		void operator()()
+		{
+			this->run();
+		}
+
+	protected:
+		virtual void run() = 0;
 	};
 }
