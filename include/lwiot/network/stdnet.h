@@ -72,6 +72,7 @@ typedef enum {
 } bind_addr_t;
 
 CDECL
+#ifndef HAVE_SOCKET_DEFINITION
 extern DLL_EXPORT socket_t* tcp_socket_create(remote_addr_t* remote);
 extern DLL_EXPORT ssize_t tcp_socket_send(socket_t* socket, const void* data, size_t length);
 extern DLL_EXPORT ssize_t tcp_socket_read(socket_t* socket, void* data, size_t length);
@@ -91,4 +92,5 @@ extern DLL_EXPORT socket_t* server_socket_accept(socket_t* socket);
 
 /* DNS */
 extern DLL_EXPORT int dns_resolve_host(const char *host, remote_addr_t* addr);
+#endif
 CDECL_END
