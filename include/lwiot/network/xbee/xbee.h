@@ -48,7 +48,6 @@ namespace lwiot
 
 		bool available();
 		uint8_t read();
-		void flush();
 		void write(uint8_t val);
 		void sendByte(uint8_t b, bool escape);
 		void resetResponse();

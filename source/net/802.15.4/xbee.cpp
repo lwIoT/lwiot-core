@@ -30,6 +30,59 @@ namespace lwiot
 		_response.setFrameData(_responseFrameData);
 	}
 
+	void XBee::resetResponse()
+	{
+		_pos = 0;
+		_escape = false;
+		_checksumTotal = 0;
+		_response.reset();
+	}
+
+	void XBee::send(XBeeRequest &request)
+	{
+		// the new new deal
+
+		sendByte(START_BYTE, false);
+
+		// send length
+		uint8_t msbLen = ((request.getFrameDataLength() + 2) >> 8) & 0xff;
+		uint8_t lsbLen = (request.getFrameDataLength() + 2) & 0xff;
+
+		sendByte(msbLen, true);
+		sendByte(lsbLen, true);
+
+		// api id
+		sendByte(request.getApiId(), true);
+		sendByte(request.getFrameId(), true);
+
+		uint8_t checksum = 0;
+
+		// compute checksum, start at api id
+		checksum += request.getApiId();
+		checksum += request.getFrameId();
+
+		for(int i = 0; i < request.getFrameDataLength(); i++) {
+			sendByte(request.getFrameData(i), true);
+			checksum += request.getFrameData(i);
+		}
+
+		// perform 2s complement
+		checksum = 0xff - checksum;
+
+		// send checksum
+		sendByte(checksum, true);
+	}
+
+	void XBee::sendByte(uint8_t b, bool escape)
+	{
+		if(escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
+			write(ESCAPE);
+			write(b ^ 0x20);
+		} else {
+			write(b);
+		}
+	}
+
 	uint8_t XBee::getNextFrameId()
 	{
 		_nextFrameId++;
