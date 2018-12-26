@@ -30,6 +30,7 @@
 #include <lwiot/network/udpclient.h>
 #include <lwiot/network/sockettcpserver.h>
 #include <lwiot/network/wifiaccesspoint.h>
+#include <lwiot/network/captiveportal.h>
 
 #include <lwiot/stl/move.h>
 
@@ -37,37 +38,24 @@
 
 static double luxdata = 0x0;
 
-class MainThread : public lwiot::Thread {
+class HttpServerThread : public lwiot::Thread {
 public:
-	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
-		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1), rtc(_bus)
+	explicit HttpServerThread(const char *arg) : Thread("http-thread", (void*)arg)
 	{
 	}
 
 protected:
-	lwiot::I2CBus _bus;
-	lwiot::Apds9301Sensor _sensor;
-	double lux;
-	lwiot::DsRealTimeClock rtc;
-
-	void testUdpServer()
+	void run(void *arg) override
 	{
-		char buffer[256];
-		bool test;
-		int length;
-		lwiot::SocketUdpServer udp(BIND_ADDR_ANY, 5000);
-		lwiot::UniquePointer<lwiot::UdpClient> client;
+		auto srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
+		lwiot::HttpServer server(srv);
 
-		test = udp.bind();
-		assert(test);
-		bzero(buffer, sizeof(buffer));
-		client = lwiot::stl::move( udp.recv(buffer, sizeof(buffer)) );
+		this->setup_server(server);
+		server.begin();
 
-		length = strlen(buffer);
-		assert(length > 0);
-		print_dbg("Received from client: %s\n", buffer);
-		client->write(buffer, strlen(buffer));
-		client->close();
+		while(true) {
+			server.handleClient();
+		}
 	}
 
 	void setup_server(lwiot::HttpServer& server)
@@ -93,6 +81,19 @@ protected:
 			_server.send(200, "text/html", temp);
 		});
 	}
+};
+
+class MainThread : public lwiot::Thread {
+public:
+	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
+		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), rtc(_bus)
+	{
+	}
+
+protected:
+	lwiot::I2CBus _bus;
+	lwiot::Apds9301Sensor _sensor;
+	lwiot::DsRealTimeClock rtc;
 
 	void startPwm(lwiot::esp32::PwmTimer& timer)
 	{
@@ -137,18 +138,20 @@ protected:
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
 
-		auto srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
-		lwiot::HttpServer server(srv);
+		lwiot::SocketUdpServer* udp = new lwiot::SocketUdpServer();
+		lwiot::CaptivePortal portal(lwiot::IPAddress(192,168,1,1));
+		portal.begin(udp, 53);
+		wdt.enable(2000);
 
-		this->setup_server(server);
-		server.begin();
-		this->testUdpServer();
-		wdt.enable(10000);
+		this->_sensor.begin();
+		auto http = new HttpServerThread(nullptr);
+		http->start();
 
 		while(true) {
-			server.handleClient();
-
+			print_dbg("PING!\n");
 			wdt.reset();
+			this->_sensor.getLux(luxdata);
+			lwiot_sleep(1000);
 		}
 	}
 };
