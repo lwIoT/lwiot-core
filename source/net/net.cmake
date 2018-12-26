@@ -19,6 +19,10 @@ SET(NET_SOURCES
 	net/util/base64.c
 	net/util/captiveportal.cpp
 
+	net/802.15.4/xbee.cpp
+	net/802.15.4/xbeeresponse.cpp
+	net/802.15.4/xbeerequest.cpp
+
 	net/http/httpserver.cpp
 	net/http/mimetable.cpp
 	net/http/mimetable.h

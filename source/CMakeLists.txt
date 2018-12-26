@@ -62,6 +62,9 @@ set(GENERIC_HEADERS
 	lwiot/network/requesthandler.h
 	lwiot/network/base64.h
 
+	lwiot/network/xbee/constants.h
+	lwiot/network/xbee/xbeeresponse.h
+
 
 	lwiot/sharedpointer.h
 	lwiot/uniquepointer.h
