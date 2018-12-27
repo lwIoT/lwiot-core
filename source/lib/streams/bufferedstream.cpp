@@ -105,7 +105,7 @@ namespace lwiot {
 		return this->_data[this->rd_idx++];
 	}
 
-	ssize_t BufferedStream::read(uint8_t *buffer, const size_t& length)
+	ssize_t BufferedStream::read(void *buffer, const size_t& length)
 	{
 		auto max = this->length();
 		size_t to_read;
@@ -135,7 +135,7 @@ namespace lwiot {
 		*this << byte;
 	}
 
-	void BufferedStream::write(const uint8_t *data, const size_t& length)
+	void BufferedStream::write(const void *data, const size_t& length)
 	{
 		this->append((const void*)data, length);
 	}

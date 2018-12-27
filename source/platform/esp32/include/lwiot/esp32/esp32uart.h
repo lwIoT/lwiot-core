@@ -24,11 +24,11 @@ namespace lwiot { namespace esp32
 		virtual ~Uart();
 
 		virtual uint8_t read() override;
-		virtual ssize_t read(uint8_t *buffer, const size_t& length) override;
+		virtual ssize_t read(void *buffer, const size_t& length) override;
 		using lwiot::Uart::read;
 
 		void write(uint8_t byte) override;
-		void write(const uint8_t *buffer, const size_t& length) override;
+		void write(const void *buffer, const size_t& length) override;
 		using lwiot::Uart::write;
 
 		virtual size_t available() const override;

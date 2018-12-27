@@ -59,11 +59,11 @@ namespace lwiot {
 		virtual String toString();
 
 		virtual uint8_t read() override;
-		virtual ssize_t read(uint8_t *output, const size_t& length) override;
+		virtual ssize_t read(void *output, const size_t& length) override;
 		virtual ssize_t read(String& output) override final;
 
 		virtual void write(uint8_t byte) override;
-		virtual void write(const uint8_t *bytes, const size_t& length) override;
+		virtual void write(const void *bytes, const size_t& length) override;
 		using Stream::write;
 
 	protected:

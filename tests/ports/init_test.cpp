@@ -15,7 +15,7 @@
 #include <lwiot/test.h>
 
 class Application : public lwiot::Functor {
-	virtual void operator()() override
+	void run() override
 	{
 		print_dbg("Inside init test..\n");
 	}

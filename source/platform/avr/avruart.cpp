@@ -321,13 +321,15 @@ namespace lwiot { namespace avr
 		exit_critical();
 	}
 
-	void Uart::write(const uint8_t *buffer, const size_t& length)
+	void Uart::write(const void *buffer, const size_t& length)
 	{
+		auto buf = static_cast<const uint8_t *>(buffer);
+
 		if(_tx_delay == 0)
 			return;
 
 		for(unsigned idx = 0; idx < length; idx++) {
-			this->write(buffer[idx]);
+			this->write(buf[idx]);
 		}
 	}
 
@@ -354,9 +356,10 @@ namespace lwiot { namespace avr
 		return data;
 	}
 
-	ssize_t Uart::read(uint8_t *buffer, const size_t& length)
+	ssize_t Uart::read(void *buffer, const size_t& length)
 	{
 		unsigned idx;
+		auto buf = static_cast<uint8_t *>(buffer);
 
 		if(!this->isListening())
 			return -EINVALID;
@@ -366,7 +369,7 @@ namespace lwiot { namespace avr
 			while(!this->available())
 				continue;
 
-			buffer[idx] = this->read();
+			buf[idx] = this->read();
 			idx++;
 		}
 

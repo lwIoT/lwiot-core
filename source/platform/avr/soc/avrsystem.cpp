@@ -20,6 +20,10 @@
 
 #include <util/delay.h>
 
+#ifndef NO_OS
+#include <FreeRTOS.h>
+#endif
+
 #ifdef IDE
 /* VS code fix */
 #undef wdt_disable()

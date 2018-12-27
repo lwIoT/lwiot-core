@@ -62,11 +62,6 @@ namespace lwiot
 		return this->_remote_port;
 	}
 
-	void TcpClient::write(const void *bytes, const size_t &length)
-	{
-		this->write(reinterpret_cast<const uint8_t *>(bytes), length);
-	}
-
 	uint8_t TcpClient::read()
 	{
 		uint8_t tmp;
@@ -81,16 +76,6 @@ namespace lwiot
 	void TcpClient::write(uint8_t byte)
 	{
 		this->write(&byte, sizeof(byte));
-	}
-
-	void TcpClient::write(const uint8_t *bytes, const size_t &length)
-	{
-		this->write((const void*)bytes, length);
-	}
-
-	ssize_t TcpClient::read(uint8_t *output, const size_t &length)
-	{
-		return this->read(reinterpret_cast<void *>(output), length);
 	}
 
 	Stream& TcpClient::operator<<(char x)

@@ -87,16 +87,16 @@ namespace lwiot { namespace esp32
 		this->write(&byte, sizeof(byte));
 	}
 
-	void Uart::write(const uint8_t *bytes, const size_t& length)
+	void Uart::write(const void *bytes, const size_t& length)
 	{
 		uart_write_bytes(this->_uart_num, (const char*)bytes, length);
 	}
 
-	ssize_t Uart::read(uint8_t *buffer, const size_t& length)
+	ssize_t Uart::read(void *buffer, const size_t& length)
 	{
 		int len;
 
-		len = uart_read_bytes(this->_uart_num, buffer, length, portMAX_DELAY);
+		len = uart_read_bytes(this->_uart_num, static_cast<uint8_t*>(buffer), length, portMAX_DELAY);
 		return static_cast<ssize_t>(len);
 	}
 
