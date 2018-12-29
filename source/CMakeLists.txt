@@ -65,7 +65,7 @@ set(GENERIC_HEADERS
 	lwiot/network/xbee/constants.h
 	lwiot/network/xbee/xbeeresponse.h
 
-
+	lwiot/linkedlist.h
 	lwiot/sharedpointer.h
 	lwiot/uniquepointer.h
 	lwiot/apds9301sensor.h
