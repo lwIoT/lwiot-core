@@ -26,7 +26,7 @@ namespace lwiot {
 			lwiot_thread_yield();
 		}
 
-		bool isRunning()
+		bool isRunning() const
 		{
 			return this->running;
 		}
