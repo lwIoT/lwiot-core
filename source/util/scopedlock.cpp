@@ -31,4 +31,10 @@ namespace lwiot
 		this->_locked = false;
 		this->_lock.unlock();
 	}
+
+	void ScopedLock::lock() const
+	{
+		this->_lock.lock();
+		this->_locked = true;
+	}
 }

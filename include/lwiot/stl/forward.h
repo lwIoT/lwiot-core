@@ -12,8 +12,7 @@
 
 namespace lwiot { namespace stl {
 	template<typename _Tp>
-	constexpr _Tp&&
-	forward(typename traits::RemoveReference<_Tp>::type& __t) noexcept
+	constexpr _Tp&& forward(typename traits::RemoveReference<_Tp>::type& __t) noexcept
 	{
 		return static_cast<_Tp &&>(__t);
 	}

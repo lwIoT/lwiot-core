@@ -15,6 +15,7 @@
 #include <lwiot/gfxbase.h>
 
 #ifdef AVR
+#include <avr/io.h>
 #include <avr/pgmspace.h>
 static const unsigned char default_font[] PROGMEM = {
 #else

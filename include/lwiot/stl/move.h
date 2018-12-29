@@ -5,8 +5,10 @@
  * @email  dev@bietje.net
  */
 
-#include <lwiot/traits/removereference.h>
+#pragma once
+
 #include <lwiot/stl/forward.h>
+#include <lwiot/traits/removereference.h>
 
 namespace lwiot { namespace stl {
 		template<typename _Tp>
@@ -16,7 +18,7 @@ namespace lwiot { namespace stl {
 		}
 
 		template <typename T, typename V = T>
-		constexpr T __exchange(T& obj, V&& nobj)
+		constexpr T exchange(T& obj, V&& nobj)
 		{
 			T old = move(obj);
 			obj = forward(nobj);
@@ -26,6 +28,9 @@ namespace lwiot { namespace stl {
 		template <typename T, typename V = T>
 		constexpr void swap(T& a, V& b)
 		{
-			b = move(__exchange(a,b));
+			T old = move(a);
+
+			a = move(b);
+			b = move(old);
 		}
 } }

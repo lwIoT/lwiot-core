@@ -16,6 +16,8 @@
 #include <lwiot/atomic.h>
 #include <lwiot/log.h>
 
+#include <lwiot/stl/move.h>
+
 #ifndef SHARED_ASSERT
 #define SHARED_ASSERT(__x__) assert(__x__)
 #endif
@@ -136,7 +138,10 @@ namespace lwiot
 
 		void swap(SharedPointer &lhs) noexcept
 		{
-			lwiot::lib::swap(this->ptr, lhs.ptr);
+			auto tmp = this->ptr;
+
+			this->ptr = lhs.ptr;
+			lhs.ptr = tmp;
 			pn.swap(lhs.pn);
 		}
 

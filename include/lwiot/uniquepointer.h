@@ -15,6 +15,8 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 
+#include <lwiot/stl/move.h>
+
 #ifndef SHARED_ASSERT
 #define SHARED_ASSERT(__x__) assert(__x__)
 #endif
@@ -65,12 +67,12 @@ namespace lwiot
 			return *this;
 		}
 
-		inline ~UniquePointer() noexcept
+		~UniquePointer() noexcept
 		{
 			destroy();
 		}
 
-		inline void reset() noexcept
+		void reset() noexcept
 		{
 			destroy();
 		}
@@ -82,34 +84,34 @@ namespace lwiot
 			px = p;
 		}
 
-		void swap(UniquePointer &lhs) noexcept
+		constexpr void swap(UniquePointer &lhs) noexcept
 		{
-			lwiot::lib::swap(px, lhs.px);
+			lwiot::stl::swap(px, lhs.px);
 		}
 
-		inline void release() noexcept
+		constexpr void release() noexcept
 		{
 			px = nullptr;
 		}
 
-		inline explicit operator bool() const noexcept
+		constexpr explicit operator bool() const noexcept
 		{
 			return (nullptr != px);
 		}
 
-		inline T &operator*() const noexcept
+		constexpr T &operator*() const noexcept
 		{
-			SHARED_ASSERT(nullptr != px);
+			SHARED_ASSERT(this->px != nullptr);
 			return *px;
 		}
 
-		inline T *operator->() const noexcept
+		constexpr T* operator->() const noexcept
 		{
-			SHARED_ASSERT(nullptr != px);
+			SHARED_ASSERT(this->px != nullptr);
 			return px;
 		}
 
-		inline T *get() const noexcept
+		constexpr inline T* get() const noexcept
 		{
 			return px;
 		}
@@ -118,11 +120,6 @@ namespace lwiot
 		inline void destroy() noexcept
 		{
 			delete px;
-			px = nullptr;
-		}
-
-		inline void release() const noexcept
-		{
 			px = nullptr;
 		}
 
