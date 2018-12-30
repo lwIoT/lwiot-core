@@ -49,6 +49,8 @@ set(PORT_INCLUDE_DIR
     ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include/lwip
     ${ESP8266_OPEN_RTOS_PATH}/core/include
     ${ESP8266_OPEN_RTOS_PATH}/extras
+    ${ESP8266_OPEN_RTOS_PATH}/extras/mbedtls/mbedtls/include
+    ${ESP8266_OPEN_RTOS_PATH}/extras/mbedtls/include
     ${ESP8266_OPEN_RTOS_PATH}/open_esplibs/include
 
     ${ESP8266_OPEN_RTOS_PATH}/lwip/lwip/src/include

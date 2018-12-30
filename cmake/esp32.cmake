@@ -88,7 +88,7 @@ SET(PORT_INCLUDE_DIR
 	${ESP32_IDF_PATH}/components/nvs_flash/include
 
 	${ESP32_IDF_PATH}/components/mbedtls/port/include
-	${ESP32_IDF_PATH}/components/mbedtls/include
+	${ESP32_IDF_PATH}/components/mbedtls/mbedtls/include
 	${ESP32_IDF_PATH}/components/mdns/include
 	${ESP32_IDF_PATH}/components/vfs/include
 	${ESP32_IDF_PATH}/components/log/include
@@ -126,11 +126,11 @@ IF(RTTI)
 ELSE()
 	set(PORT_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections -fdata-sections")
+	-mtext-section-literals -ffunction-sections -fdata-sections -fstack-protector")
 ENDIF()
 
 set(PORT_C_FLAGS "-Wno-comment -Wno-pointer-sign -fno-builtin \
 	-Wno-implicit-function-declaration -Wl,-EL,--gc-sections -fno-inline-functions \
 	-nostdlib -mlongcalls -mtext-section-literals \
-    -ffunction-sections -fdata-sections" )
+    -ffunction-sections -fdata-sections -fstack-protector" )
 
