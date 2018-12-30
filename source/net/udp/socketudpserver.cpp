@@ -26,7 +26,12 @@ namespace lwiot
 		this->_socket = server_socket_create(SOCKET_DGRAM, this->address().isIPv6());
 	}
 
-	SocketUdpServer::SocketUdpServer(bind_addr_t addr, uint16_t port ) : UdpServer(addr, port)
+	SocketUdpServer::SocketUdpServer(bind_addr_t addr, uint16_t port ) : UdpServer(IPAddress::fromBindAddress(addr), port)
+	{
+		this->_socket = server_socket_create(SOCKET_DGRAM, this->address().isIPv6());
+	}
+
+	SocketUdpServer::SocketUdpServer(const lwiot::IPAddress &addr, uint16_t port) : UdpServer(addr, port)
 	{
 		this->_socket = server_socket_create(SOCKET_DGRAM, this->address().isIPv6());
 	}
@@ -47,17 +52,26 @@ namespace lwiot
 
 	bool SocketUdpServer::bind(bind_addr_t addr, uint16_t port)
 	{
+		UdpServer::bind(IPAddress::fromBindAddress(addr), port);
+		return this->bind();
+	}
+
+	bool SocketUdpServer::bind(const lwiot::IPAddress &addr, uint16_t port)
+	{
 		UdpServer::bind(addr, port);
 		return this->bind();
 	}
 
 	bool SocketUdpServer::bind()
 	{
+		remote_addr_t remote;
+
 		if(!this->_socket)
 			this->_socket = server_socket_create(SOCKET_DGRAM, this->address().isIPv6());
 
 		assert(this->_socket != nullptr);
-		return server_socket_bind(this->_socket, this->bindaddr(), this->port());
+		this->address().toRemoteAddress(remote);
+		return server_socket_bind_to(this->_socket, &remote, this->port());
 	}
 
 	void SocketUdpServer::setTimeout(int tmo)

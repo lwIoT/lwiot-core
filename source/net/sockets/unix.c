@@ -221,53 +221,6 @@ socket_t* server_socket_create(socket_type_t type, bool ipv6)
 	return sock;
 }
 
-static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
-{
-	int fd;
-	struct sockaddr_in server;
-
-	fd = *sock;
-	assert(fd >= 0);
-
-	server.sin_port = port;
-	server.sin_family = AF_INET;
-
-	if(addr == BIND_ADDR_ANY) {
-		server.sin_addr.s_addr = htonl(INADDR_ANY);
-	} else {
-		server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-	}
-
-	int result = bind(fd, (struct sockaddr*)&server, sizeof(server));
-
-	if(result < 0) {
-		print_dbg("Unable to bind to socket address!\n");
-		return false;
-	}
-
-	return true;
-}
-
-static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
-{
-	int fd;
-	struct sockaddr_in6 server;
-
-	fd = *sock;
-	assert(fd >= 0);
-
-	server.sin6_port = port;
-	server.sin6_family = AF_INET6;
-
-	if(addr == BIND6_ADDR_ANY) {
-		server.sin6_addr = in6addr_any;
-	} else {
-		server.sin6_addr = in6addr_loopback;
-	}
-
-	return bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
-}
-
 size_t tcp_socket_available(socket_t* socket)
 {
 	size_t count;
@@ -282,21 +235,64 @@ size_t tcp_socket_available(socket_t* socket)
 	return count;
 }
 
+static bool bind_ipv4(const socket_t* sock, remote_addr_t* addr, uint16_t port)
+{
+	int fd;
+	struct sockaddr_in server;
+
+	fd = *sock;
+	assert(fd >= 0);
+
+	server.sin_port = port;
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = addr->addr.ip4_addr.ip;
+
+	return bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
+}
+
+static bool bind_ipv6(const socket_t* sock, remote_addr_t* addr, uint16_t port)
+{
+	int fd;
+	struct sockaddr_in6 server;
+
+	fd = *sock;
+	assert(fd >= 0);
+
+	server.sin6_port = port;
+	server.sin6_family = AF_INET6;
+	memcpy(server.sin6_addr.__in6_u.__u6_addr8, addr->addr.ip6_addr.ip, sizeof(addr->addr.ip6_addr.ip));
+
+	return bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
+}
+
+bool server_socket_bind_to(socket_t* sock, remote_addr_t* remote, uint16_t port)
+{
+	if(remote->version == 6) {
+		return bind_ipv6(sock, remote, port);
+	}
+
+	return bind_ipv4(sock, remote, port);
+}
+
 bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port)
 {
+	remote_addr_t remote;
 	assert(sock);
 
 	switch(addr) {
+	default:
 	case BIND_ADDR_ANY:
+		remote.addr.ip4_addr.ip = INADDR_ANY;
+		return bind_ipv4(sock, &remote, port);
+
 	case BIND_ADDR_LB:
-		return bind_ipv4(sock, addr, port);
+		remote.addr.ip4_addr.ip = INADDR_LOOPBACK;
+		return bind_ipv4(sock, &remote, port);
 
 	case BIND6_ADDR_ANY:
-	case BIND6_ADDR_LB:
-		return bind_ipv6(sock, addr, port);
+		memcpy(remote.addr.ip6_addr.ip, in6addr_any.__in6_u.__u6_addr8, sizeof(remote.addr.ip6_addr.ip));
+		return bind_ipv6(sock, &remote, port);
 	}
-
-	return false;
 }
 
 bool server_socket_listen(socket_t *socket)

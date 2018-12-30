@@ -100,8 +100,8 @@ static char *strToLabel(char *str, char *label, int maxLen)
 
 namespace lwiot
 {
-	CaptivePortal::CaptivePortal(const IPAddress& captor, uint16_t port, UdpServer* server) :
-		Thread("cp", nullptr), _lock(false), _udp(server), _captor(captor), _running(false), _port(port)
+	CaptivePortal::CaptivePortal(const IPAddress& addr, const IPAddress& captor, uint16_t port, UdpServer* server) :
+		Thread("cp", nullptr), _lock(false), _udp(server), _captor(captor), _running(false), _bind_addr(addr), _port(port)
 	{
 		this->udp_msg = (char*) lwiot_mem_zalloc(DNS_LEN);
 	}
@@ -127,10 +127,10 @@ namespace lwiot
 		ScopedLock lock(this->_lock);
 
 #ifndef NDEBUG
-		auto value = this->_udp->bind(BIND_ADDR_ANY, this->_port);
+		auto value = this->_udp->bind(this->_bind_addr, this->_port);
 		assert(value);
 #else
-		this->_udp->bind(BIND_ADDR_ANY, this->_port);
+		this->_udp->bind(this->_bind_addr, this->_port);
 #endif
 		this->_running = true;
 		this->start();

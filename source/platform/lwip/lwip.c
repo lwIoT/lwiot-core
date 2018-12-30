@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <assert.h>
 
+#include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 #include <lwiot/network/stdnet.h>
@@ -252,7 +253,7 @@ socket_t* server_socket_create(socket_type_t type, bool ipv6)
 	return sock;
 }
 
-static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
+static bool bind_ipv4(const socket_t* sock, remote_addr_t* addr, uint16_t port)
 {
 	int fd;
 	struct sockaddr_in server;
@@ -263,21 +264,15 @@ static bool bind_ipv4(const socket_t* sock, bind_addr_t addr, uint16_t port)
 	server.sin_port = port;
 	server.sin_family = AF_INET;
 	server.sin_len = sizeof(server);
-
-	if(addr == BIND_ADDR_ANY) {
-		server.sin_addr.s_addr = htonl(INADDR_ANY);
-	} else {
-		server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-	}
+	server.sin_addr.s_addr = addr->addr.ip4_addr.ip;
 
 	return lwip_bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
 }
 
-static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
+static bool bind_ipv6(const socket_t* sock, remote_addr_t* addr, uint16_t port)
 {
 	int fd;
 	struct sockaddr_in6 server;
-	struct in6_addr loopback = IN6ADDR_LOOPBACK_INIT;
 
 	fd = *sock;
 	assert(fd >= 0);
@@ -285,28 +280,38 @@ static bool bind_ipv6(const socket_t* sock, bind_addr_t addr, uint16_t port)
 	server.sin6_port = port;
 	server.sin6_family = AF_INET6;
 	server.sin6_len = sizeof(server);
-
-	if(addr == BIND6_ADDR_ANY) {
-		server.sin6_addr = in6addr_any;
-	} else {
-		server.sin6_addr = loopback;
-	}
+	memcpy(server.sin6_addr.un.u8_addr, addr->addr.ip6_addr.ip, sizeof(addr->addr.ip6_addr.ip));
 
 	return bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0 ? false : true;
 }
 
+bool server_socket_bind_to(socket_t* sock, remote_addr_t* remote, uint16_t port)
+{
+	if(remote->version == 6) {
+		return bind_ipv6(sock, remote, port);
+	}
+
+	return bind_ipv4(sock, remote, port);
+}
+
 bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port)
 {
+	remote_addr_t remote;
 	assert(sock);
 
 	switch(addr) {
+	default:
 	case BIND_ADDR_ANY:
+		remote.addr.ip4_addr.ip = INADDR_ANY;
+		return bind_ipv4(sock, &remote, port);
+
 	case BIND_ADDR_LB:
-		return bind_ipv4(sock, addr, port);
+		remote.addr.ip4_addr.ip = INADDR_LOOPBACK;
+		return bind_ipv4(sock, &remote, port);
 
 	case BIND6_ADDR_ANY:
-	case BIND6_ADDR_LB:
-		return bind_ipv6(sock, addr, port);
+		memcpy(remote.addr.ip6_addr.ip, in6addr_any.un.u8_addr, sizeof(in6addr_any.un.u8_addr));
+		return bind_ipv6(sock, &remote, port);
 	}
 
 	return false;

@@ -46,6 +46,11 @@ namespace lwiot
 		other._socket = nullptr;
 	}
 
+	SocketTcpServer::SocketTcpServer(const lwiot::IPAddress &addr, uint16_t port) : TcpServer(addr, port)
+	{
+		this->_socket = server_socket_create(SOCKET_STREAM, this->_bind_addr.isIPv6());
+	}
+
 	SocketTcpServer::~SocketTcpServer()
 	{
 		if(this->_socket != nullptr)
@@ -113,7 +118,12 @@ namespace lwiot
 
 	bool SocketTcpServer::bind(BindAddress addr, uint16_t port)
 	{
-		TcpServer::bind(IPAddress::fromBindAddress(addr), port);
+		return this->bind(IPAddress::fromBindAddress(addr), port);
+	}
+
+	bool SocketTcpServer::bind(const lwiot::IPAddress &addr, uint16_t port)
+	{
+		TcpServer::bind(addr, port);
 
 		if(this->_socket == nullptr)
 			this->connect();

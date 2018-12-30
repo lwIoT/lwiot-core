@@ -22,8 +22,9 @@
 
 static void start_and_run_server()
 {
-	lwiot::SocketUdpServer* srv = new lwiot::SocketUdpServer();
-	lwiot::CaptivePortal portal(lwiot::IPAddress(lwiot::IPAddress::fromString("1.2.3.4")));
+	lwiot::SocketUdpServer *srv = new lwiot::SocketUdpServer();
+	lwiot::CaptivePortal portal(lwiot::IPAddress::fromString("127.0.0.1"),
+	                            lwiot::IPAddress(lwiot::IPAddress::fromString("1.2.3.4")));
 
 	portal.begin(srv, 5300);
 	lwiot_sleep(5000);

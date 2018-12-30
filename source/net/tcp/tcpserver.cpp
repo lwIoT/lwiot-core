@@ -58,7 +58,7 @@ namespace lwiot
 	bool TcpServer::bind(const lwiot::IPAddress &addr, uint16_t port)
 	{
 		this->_bind_addr = addr;
-		this->_bind_port = port;
+		this->_bind_port = to_netorders(port);
 
 		return true;
 	}

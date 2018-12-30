@@ -28,6 +28,8 @@ namespace lwiot
 	public:
 		explicit SocketTcpServer();
 		explicit SocketTcpServer(BindAddress addr, uint16_t port);
+		explicit SocketTcpServer(const IPAddress& addr, uint16_t port);
+
 		SocketTcpServer(SocketTcpServer&& server);
 		~SocketTcpServer() override;
 
@@ -39,6 +41,7 @@ namespace lwiot
 
 		bool bind() const override;
 		bool bind(BindAddress addr, uint16_t port);
+		bool bind(const IPAddress& addr, uint16_t port) override;
 
 		void connect() override;
 		UniquePointer<TcpClient> accept() override;

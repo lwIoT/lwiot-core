@@ -24,7 +24,7 @@ namespace lwiot
 {
 	class CaptivePortal : Thread {
 	public:
-		explicit CaptivePortal(const IPAddress& captor, uint16_t port = DNS_SERVER_PORT, UdpServer* server = nullptr);
+		explicit CaptivePortal(const IPAddress& bind, const IPAddress& captor, uint16_t port = DNS_SERVER_PORT, UdpServer* server = nullptr);
 		virtual ~CaptivePortal();
 
 		void begin();
@@ -39,6 +39,7 @@ namespace lwiot
 		UniquePointer<UdpServer> _udp;
 		IPAddress _captor;
 		bool _running;
+		IPAddress _bind_addr;
 		uint16_t _port;
 		char *udp_msg;
 
