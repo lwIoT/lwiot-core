@@ -9,6 +9,7 @@
 
 #include <lwiot/stl/forward.h>
 #include <lwiot/traits/removereference.h>
+#include <lwiot/traits/removecv.h>
 
 namespace lwiot { namespace stl {
 		template<typename _Tp>
@@ -25,8 +26,8 @@ namespace lwiot { namespace stl {
 			return old;
 		}
 
-		template <typename T, typename V = T>
-		constexpr void swap(T& a, V& b)
+		template <typename T>
+		constexpr void swap(T& a, T& b)
 		{
 			T old = move(a);
 
