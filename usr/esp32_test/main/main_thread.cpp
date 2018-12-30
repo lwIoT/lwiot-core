@@ -47,7 +47,7 @@ public:
 protected:
 	void run(void *arg) override
 	{
-		auto srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
+		auto srv = new lwiot::SocketTcpServer(lwiot::IPAddress(192,168,1,1), 8080);
 		lwiot::HttpServer server(srv);
 
 		this->setup_server(server);
@@ -139,7 +139,7 @@ protected:
 		this->startAP("lwIoT test", "testap1234");
 
 		lwiot::SocketUdpServer* udp = new lwiot::SocketUdpServer();
-		lwiot::CaptivePortal portal(lwiot::IPAddress(192,168,1,1));
+		lwiot::CaptivePortal portal(lwiot::IPAddress(192,168,1,1), lwiot::IPAddress(192,168,1,1));
 		portal.begin(udp, 53);
 		wdt.enable(2000);
 
