@@ -198,7 +198,7 @@ namespace lwiot
 #else
 			bzero(ip._address.bytes, sizeof(ip._address.bytes));
 #endif
-		case BIND6_ADDR_LB:
+		/*case BIND6_ADDR_LB:
 #ifdef HAVE_BIG_ENDIAN
 			uint32_t raw = 1;
 #else
@@ -208,7 +208,7 @@ namespace lwiot
 			ip._address.dword[1] = 0;
 			ip._address.dword[2] = 0;
 			ip._address.dword[3] = 0;
-			break;
+			break;*/
 		}
 
 		return ip;

@@ -18,6 +18,7 @@ SET(NET_SOURCES
 
 	net/util/base64.c
 	net/util/captiveportal.cpp
+	net/util/ipaddress.cpp
 
 	net/802.15.4/xbee.cpp
 	net/802.15.4/xbeeresponse.cpp

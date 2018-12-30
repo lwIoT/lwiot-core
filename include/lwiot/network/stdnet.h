@@ -17,9 +17,13 @@
 typedef long socket_t;
 #endif
 
-static inline uint32_t lwiot_bswap_32 (uint32_t __bsx)
+#ifndef HAVE_SECURE_SOCKET_DEFINITION
+typedef long secure_socket_t;
+#endif
+
+static inline uint32_t lwiot_bswap_32(uint32_t __bsx)
 {
-	return __builtin_bswap32 (__bsx);
+	return __builtin_bswap32(__bsx);
 }
 
 #define _HTONS(n) (((((unsigned short)(n) & 0xFF)) << 8) | (((unsigned short)(n) & 0xFF00) >> 8))
@@ -67,30 +71,45 @@ typedef enum {
 	BIND_ADDR_ANY,
 	BIND_ADDR_LB,
 
-	BIND6_ADDR_ANY,
-	BIND6_ADDR_LB
+	BIND6_ADDR_ANY
 } bind_addr_t;
 
 CDECL
 #ifndef HAVE_SOCKET_DEFINITION
-extern DLL_EXPORT socket_t* tcp_socket_create(remote_addr_t* remote);
-extern DLL_EXPORT ssize_t tcp_socket_send(socket_t* socket, const void* data, size_t length);
-extern DLL_EXPORT ssize_t tcp_socket_read(socket_t* socket, void* data, size_t length);
-extern DLL_EXPORT size_t tcp_socket_available(socket_t* socket);
-extern DLL_EXPORT socket_t* udp_socket_create(remote_addr_t* remote);
-extern DLL_EXPORT ssize_t udp_send_to(socket_t* socket, const void *data, size_t length, remote_addr_t* remote);
-extern DLL_EXPORT ssize_t udp_recv_from(socket_t* socket, void *data, size_t length, remote_addr_t* remote);
+extern DLL_EXPORT socket_t *tcp_socket_create(remote_addr_t *remote);
+extern DLL_EXPORT ssize_t tcp_socket_send(socket_t *socket, const void *data, size_t length);
+extern DLL_EXPORT ssize_t tcp_socket_read(socket_t *socket, void *data, size_t length);
+extern DLL_EXPORT size_t tcp_socket_available(socket_t *socket);
+extern DLL_EXPORT socket_t *udp_socket_create(remote_addr_t *remote);
+extern DLL_EXPORT ssize_t udp_send_to(socket_t *socket, const void *data, size_t length, remote_addr_t *remote);
+extern DLL_EXPORT ssize_t udp_recv_from(socket_t *socket, void *data, size_t length, remote_addr_t *remote);
 
-extern DLL_EXPORT void socket_close(socket_t* socket);
+extern DLL_EXPORT void socket_close(socket_t *socket);
 extern DLL_EXPORT void socket_set_timeout(socket_t *sock, int tmo);
 
 /* SERVER OPS */
-extern DLL_EXPORT socket_t* server_socket_create(socket_type_t type, bool ipv6);
-extern DLL_EXPORT bool server_socket_bind(socket_t* sock, bind_addr_t addr, uint16_t port);
+extern DLL_EXPORT socket_t *server_socket_create(socket_type_t type, bool ipv6);
+extern DLL_EXPORT bool server_socket_bind_to(socket_t *sock, remote_addr_t *remote, uint16_t port);
+extern DLL_EXPORT bool server_socket_bind(socket_t *sock, bind_addr_t addr, uint16_t port);
 extern DLL_EXPORT bool server_socket_listen(socket_t *socket);
-extern DLL_EXPORT socket_t* server_socket_accept(socket_t* socket);
+extern DLL_EXPORT socket_t *server_socket_accept(socket_t *socket);
 
 /* DNS */
-extern DLL_EXPORT int dns_resolve_host(const char *host, remote_addr_t* addr);
+extern DLL_EXPORT int dns_resolve_host(const char *host, remote_addr_t *addr);
+
+/* SSL */
+typedef struct ssl_context {
+	const char *root_ca;
+	const char *client_cert;
+	const char *client_key;
+} ssl_context_t;
+
+extern DLL_EXPORT bool secure_socket_connect(secure_socket_t *socket, const char *host, remote_addr_t* addr, ssl_context_t* context);
+extern DLL_EXPORT secure_socket_t* secure_socket_create();
+extern DLL_EXPORT void secure_socket_close(secure_socket_t* socket);
+extern DLL_EXPORT size_t secure_socket_available(secure_socket_t* socket);
+extern DLL_EXPORT ssize_t secure_socket_send(secure_socket_t* socket, const void *data, size_t length);
+extern DLL_EXPORT ssize_t secure_socket_recv(secure_socket_t* socket, void *data, size_t length);
+
 #endif
 CDECL_END

@@ -73,8 +73,6 @@ SET(LIB_SOURCES
 	lib/gfx/gfxbase.cpp
 	lib/gfx/ssd1306display.cpp
 
-	lib/net/ipaddress.cpp
-
 	lib/count.cpp
 	lib/measurementvector.cpp
 	lib/sharedpointercount.cpp

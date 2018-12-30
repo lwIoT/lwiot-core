@@ -13,6 +13,7 @@ SET(PORT_SOURCE_FILES
 	${PROJECT_SOURCE_DIR}/source/platform/esp8266/soc/esp8266.c
 	${PROJECT_SOURCE_DIR}/source/platform/esp8266/soc/cplusplus.cpp
 	${PROJECT_SOURCE_DIR}/source/platform/lwip/lwip.c
+	${PROJECT_SOURCE_DIR}/source/platform/ssl/mbedtls.c
 	${FREERTOS_SOURCE_FILES}
 )
 

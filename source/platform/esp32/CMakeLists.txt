@@ -26,6 +26,7 @@ SET(PORT_SOURCE_FILES
 	soc/esp32system.cpp
 	${FREERTOS_SOURCE_FILES}
 	${PROJECT_SOURCE_DIR}/source/platform/lwip/lwip.c
+	${PROJECT_SOURCE_DIR}/source/platform/ssl/mbedtls.c
 )
 
 add_library(lwiot-platform ${PORT_SOURCE_FILES})
