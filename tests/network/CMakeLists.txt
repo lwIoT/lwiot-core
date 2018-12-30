@@ -23,3 +23,6 @@ target_link_libraries(udp-client_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(captiveportal_test captiveportal_test.cpp)
 target_link_libraries(captiveportal_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
+add_executable(sslclient_test sslclient_test.cpp)
+target_link_libraries(sslclient_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
