@@ -150,7 +150,7 @@ namespace lwiot
 			}
 
 			this->_currentClient.reset();
-			this->_currentClient = client;
+			this->_currentClient = lwiot::stl::move(client);
 			_currentStatus = HC_WAIT_READ;
 			_statusChange = lwiot_tick_ms();
 		}

@@ -26,7 +26,7 @@ namespace lwiot
 	template<typename T>
 	class UniquePointer {
 	public:
-		using PointerType = T;
+		typedef T PointerType;
 
 		UniquePointer() noexcept : px(nullptr)
 		{
@@ -37,33 +37,23 @@ namespace lwiot
 		}
 
 		template<class U>
-		explicit UniquePointer(const UniquePointer<U> &ptr) noexcept : px(
-				static_cast<typename UniquePointer<T>::PointerType *>(ptr.px))
-		{
-			const_cast<UniquePointer<U> &>(ptr).px = nullptr;
-		}
-
-		UniquePointer(const UniquePointer &ptr) noexcept :
-				px(ptr.px)
-		{
-			const_cast<UniquePointer &>(ptr).px = nullptr;
-		}
+		explicit UniquePointer(const UniquePointer<U> &ptr) = delete;
+		UniquePointer(const UniquePointer &ptr) = delete;
 
 		UniquePointer(UniquePointer&& ptr) noexcept : px(ptr.px)
 		{
-			ptr.px = nullptr;
+			ptr.release();
 		}
 
 		template<class U>
-		explicit UniquePointer(UniquePointer<U> &&ptr) noexcept
+		explicit UniquePointer(UniquePointer<U> &&ptr) noexcept : px(ptr.px)
 		{
-			this->px = ptr.px;
-			ptr.px = nullptr;
+			ptr.release();
 		}
 
 		UniquePointer &operator=(UniquePointer ptr) noexcept
 		{
-			swap(ptr);
+			this->reset(ptr.release());
 			return *this;
 		}
 
@@ -84,14 +74,11 @@ namespace lwiot
 			px = p;
 		}
 
-		constexpr void swap(UniquePointer &lhs) noexcept
+		PointerType* release() noexcept
 		{
-			lwiot::stl::swap(px, lhs.px);
-		}
-
-		constexpr void release() noexcept
-		{
+			auto tmp = this->px;
 			px = nullptr;
+			return tmp;
 		}
 
 		constexpr explicit operator bool() const noexcept
@@ -117,14 +104,14 @@ namespace lwiot
 		}
 
 	private:
-		inline void destroy() noexcept
+		void destroy() noexcept
 		{
 			delete px;
 			px = nullptr;
 		}
 
 	private:
-		T *px;
+		PointerType* px;
 	};
 
 	template<class T, class U>
