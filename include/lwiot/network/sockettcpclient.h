@@ -27,11 +27,12 @@ namespace lwiot
 		explicit SocketTcpClient(socket_t* raw);
 		explicit SocketTcpClient(const IPAddress& addr, uint16_t port);
 		explicit SocketTcpClient(const String& host, uint16_t port);
+		explicit SocketTcpClient(const SocketTcpClient& other) ;
+		explicit SocketTcpClient(SocketTcpClient&& other);
 		~SocketTcpClient() override;
 
-		static SocketTcpClient fromDescriptor(socket_t* socket);
-
 		SocketTcpClient& operator =(const SocketTcpClient& client);
+		SocketTcpClient& operator =( SocketTcpClient&& client);
 
 		bool operator ==(const SocketTcpClient& other);
 		bool operator !=(const SocketTcpClient& other);
@@ -54,5 +55,7 @@ namespace lwiot
 
 	private:
 		socket_t *_socket;
+
+		bool connect();
 	};
 }

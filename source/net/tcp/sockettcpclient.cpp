@@ -25,12 +25,23 @@ namespace lwiot
 
 	SocketTcpClient::SocketTcpClient(const lwiot::IPAddress &addr, uint16_t port) : TcpClient(addr, port), _socket(nullptr)
 	{
-		this->connect(addr, port);
+		this->connect();
 	}
 
 	SocketTcpClient::SocketTcpClient(const lwiot::String &host, uint16_t port) : TcpClient(host, port), _socket(nullptr)
 	{
-		this->connect(host, port);
+		this->connect();
+	}
+
+	SocketTcpClient::SocketTcpClient(const SocketTcpClient &other) : TcpClient(other._remote_addr, other._remote_port), _socket(nullptr)
+	{
+		this->connect();
+	}
+
+	SocketTcpClient::SocketTcpClient(lwiot::SocketTcpClient &&other) : TcpClient(other._remote_addr, other._remote_port), _socket(nullptr)
+	{
+		this->_socket = other._socket;
+		other._socket = nullptr;
 	}
 
 	SocketTcpClient::SocketTcpClient(socket_t *raw) : TcpClient()
@@ -45,16 +56,6 @@ namespace lwiot
 		}
 	}
 
-	SocketTcpClient SocketTcpClient::fromDescriptor(socket_t* client_socket)
-	{
-		SocketTcpClient c;
-
-		c._remote_port = 0;
-		c._remote_addr = 0U;
-		c._socket = client_socket;
-		return c;
-	}
-
 	SocketTcpClient& SocketTcpClient::operator=(const lwiot::SocketTcpClient &client)
 	{
 		if(this->_socket == client._socket)
@@ -63,9 +64,22 @@ namespace lwiot
 		if(this->connected())
 			this->close();
 
-		this->_socket = client._socket;
-		this->_remote_port = client._remote_port;
+		this->connect(client._remote_addr, client._remote_port);
+		return *this;
+	}
+
+	SocketTcpClient& SocketTcpClient::operator=(SocketTcpClient &&client)
+	{
+		if(this->_socket == client._socket)
+			return *this;
+
+		if(this->connected())
+			this->close();
+
 		this->_remote_addr = client._remote_addr;
+		this->_remote_port = client.port();
+		this->_socket = client._socket;
+
 		return *this;
 	}
 
@@ -91,13 +105,18 @@ namespace lwiot
 
 	bool SocketTcpClient::connect(const lwiot::IPAddress &addr, uint16_t port)
 	{
-		remote_addr_t remote;
-
 		this->_remote_addr = addr;
 		this->_remote_port = port;
 
-		addr.toRemoteAddress(remote);
-		remote.port = port;
+		return this->connect();
+	}
+
+	bool SocketTcpClient::connect()
+	{
+		remote_addr_t remote;
+
+		this->_remote_addr.toRemoteAddress(remote);
+		remote.port = this->_remote_port;
 
 		this->_socket = tcp_socket_create(&remote);
 

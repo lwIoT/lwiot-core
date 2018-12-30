@@ -30,6 +30,12 @@ namespace lwiot
 	{
 	}
 
+	TcpClient& TcpClient::operator=(lwiot::TcpClient &&client)
+	{
+		*this = client;
+		return *this;
+	}
+
 	TcpClient& TcpClient::operator=(const lwiot::TcpClient &client)
 	{
 		this->_remote_port = client._remote_port;

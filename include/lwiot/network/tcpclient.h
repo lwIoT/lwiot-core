@@ -27,7 +27,8 @@ namespace lwiot
 		explicit TcpClient(const String& host, uint16_t port);
 		~TcpClient() override = default;
 
-		TcpClient& operator =(const TcpClient& client);
+		virtual TcpClient& operator =(const TcpClient& client);
+		virtual TcpClient& operator =(TcpClient&& client);
 
 		virtual bool operator ==(const TcpClient& other);
 		virtual bool operator !=(const TcpClient& other);
