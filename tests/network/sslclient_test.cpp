@@ -11,7 +11,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/network/tcpclient.h>
-#include <lwiot/network/sockettcpclient.h>
+#include <lwiot/network/securetcpclient.h>
 #include <lwiot/test.h>
 
 #include <netinet/in.h>
@@ -39,7 +39,25 @@ static const char *cert =
   "JlBkySmXkFsDjma8VKoO17byGJffCLiTgudMe0O8x7RLaUZu09ujIyNs25sCVhsn\n" \
   "-----END CERTIFICATE-----";
 
-static void test_sslclient()
+static void ssl_client_test()
+{
+	lwiot::SecureTcpClient client(lwiot::IPAddress(127,0,0,1), 5300, "lwiot.local");
+	lwiot::String crt(cert);
+
+	client.setServerCertificate(crt);
+	client.connect();
+
+	assert(client.connected());
+
+	char data[] = "Hello, World!";
+	char readback[sizeof(data)];
+
+	client.write(data, sizeof(data));
+	client.read(readback, sizeof(readback));
+	print_dbg("Readback: %s\n", readback);
+}
+
+/*static void test_sslclient()
 {
 	ssl_context_t context = {0};
 	secure_socket_t* socket;
@@ -61,12 +79,12 @@ static void test_sslclient()
 	secure_socket_recv(socket, (void*) readback, sizeof(readback));
 	print_dbg("Readback: %s\n", readback);
 	secure_socket_close(socket);
-}
+}*/
 
 int main(int argc, char **argv)
 {
 	lwiot_init();
-	test_sslclient();
+	ssl_client_test();
 	lwiot_destroy();
 	wait_close();
 

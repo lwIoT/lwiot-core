@@ -20,6 +20,7 @@
 #include <lwiot/network/stdnet.h>
 #include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/network/tcpclient.h>
+#include <lwiot/network/securetcpclient.h>
 
 static const char *cert =
 		"-----BEGIN CERTIFICATE-----\n" \
@@ -83,28 +84,19 @@ private:
 
 	void test_sslclient()
 	{
-		ssl_context_t context = {0,0,0};
-		secure_socket_t* socket;
-		remote_addr_t remote;
+		lwiot::SecureTcpClient client(lwiot::IPAddress(192,168,1,2), 5300, "lwiot.local");
+		lwiot::String crt(cert);
 
-		context.root_ca = cert;
-		socket = secure_socket_create();
+		client.setServerCertificate(crt);
+		client.connect();
 
-		assert(socket);
-
-		this->_server.toRemoteAddress(remote);
-		remote.port = to_netorders(5300);
-		auto result = secure_socket_connect(socket, "lwiot.local", &remote, &context);
-
-		if(!result) {
-			print_dbg("Unable to connect!\n");
+		if(!client.connected())
 			return;
-		}
 
-		secure_socket_send(socket, this->_out, this->_size);
-		secure_socket_recv(socket, this->_in, this->_size);
+		client.write(this->_out, this->_size);
+		client.read(this->_in, this->_size);
 		print_dbg("Readback: %s\n", this->_in);
-		secure_socket_close(socket);
+		bzero(this->_in, this->_size);
 	}
 
 protected:

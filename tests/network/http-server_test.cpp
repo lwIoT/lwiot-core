@@ -14,6 +14,7 @@
 #include <lwiot/test.h>
 #include <lwiot/network/sockettcpserver.h>
 
+static volatile bool running = true;
 static const char INDEX_HTML[] =
 		"<!DOCTYPE HTML>"
 		"<html>"
@@ -26,64 +27,79 @@ static const char INDEX_HTML[] =
 		"</head>"
 		"<body>"
 		"<h1>ESP8266 Web Form Demo</h1>"
-		"<FORM action=\"/\" method=\"post\">"
+		"<form action=\"/\" method=\"POST\" enctype=\"multipart/form-data\">"
 		"<P>"
-		"LED<br>"
-		"<INPUT type=\"radio\" name=\"LED\" value=\"1\">On<BR>"
-		"<INPUT type=\"radio\" name=\"LED\" value=\"0\">Off<BR>"
-		"<INPUT type=\"submit\" value=\"Send\"> <INPUT type=\"reset\">"
+		"<input type=\"file\" name=\"cert\" id=\"fileToUpload\">"
+		"<input type=\"submit\" value=\"Upload Image\" name=\"submit\">"
 		"</P>"
-		"</FORM>"
+		"</form>"
 		"</body>"
 		"</html>";
 
-void returnFail(lwiot::HttpServer& server, const lwiot::String& msg)
+void returnFail(lwiot::HttpServer &server, const lwiot::String &msg)
 {
 	server.sendHeader("Connection", "close");
 	server.sendHeader("Access-Control-Allow-Origin", "*");
 	server.send(500, "text/plain", msg + "\r\n");
 }
 
-static void handleSubmit(lwiot::HttpServer& server)
+static void handle_root(lwiot::HttpServer &server)
 {
-	lwiot::String LEDvalue;
-
-	if (!server.hasArg("LED")) return returnFail(server, "BAD ARGS");
-	LEDvalue = server.arg("LED");
-	if (LEDvalue == "1") {
-		server.send(200, "text/html", INDEX_HTML);
-	}
-	else if (LEDvalue == "0") {
-		server.send(200, "text/html", INDEX_HTML);
-	}
-	else {
-		returnFail(server,"Bad LED value");
-	}
-}
-
-static void handle_root(lwiot::HttpServer& server)
-{
-	if(server.hasArg("LED")) {
-		printf("Page submitted");
-		handleSubmit(server);
+	if(server.hasArg("cert")) {
+		printf("Page submitted\n");
+		//handleSubmit(server);
 	} else {
 		server.send(200, "text/html", INDEX_HTML);
 	}
 }
 
+static void handle_upload(lwiot::HttpServer &server)
+{
+	lwiot::HTTPUpload &upload = server.upload();
+	char *data;
+
+	print_dbg("Http Upload!\n");
+
+	switch(upload.status) {
+	case lwiot::UPLOAD_FILE_START:
+		print_dbg("Upload started: %s\n", upload.filename.c_str());
+		break;
+
+	case lwiot::UPLOAD_FILE_WRITE:
+		data = new char[upload.currentSize+1];
+		memcpy(data, upload.buf, upload.currentSize);
+		data[upload.currentSize] = 0;
+		print_dbg("Data: %s\n", data);
+		delete[] data;
+		break;
+
+	case lwiot::UPLOAD_FILE_END:
+		print_dbg("Upload ended!\n");
+		running = false;
+		break;
+
+	default:
+		print_dbg("Upload aborted!\n");
+		running = false;
+		break;
+	}
+}
+
 static void test_httpserver()
 {
-	lwiot::SocketTcpServer* srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
+	lwiot::SocketTcpServer *srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
 	lwiot::HttpServer server(srv);
-	bool running = true;
 
-	server.on("/", handle_root);
+	server.on("/", lwiot::HTTP_GET, handle_root);
+	server.on("/", lwiot::HTTP_POST, [](lwiot::HttpServer &server) {
+		server.send(200, "text/plain", "");
+	}, handle_upload);
+
 	assert(server.begin());
 	print_dbg("HttpServer started!\n");
 
-	while(running) {
+	while(running || server.hasClient()) {
 		server.handleClient();
-		running = server.hasClient();
 	}
 }
 

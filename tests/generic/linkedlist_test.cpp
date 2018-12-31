@@ -20,6 +20,11 @@ struct Token {
 	{
 	}
 
+	bool operator==(const Token& other)
+	{
+		return other.x == x;
+	}
+
 	int& x;
 	double y;
 };
@@ -43,6 +48,13 @@ int main(int argc, char **argv)
 	list.push_back(t3);
 
 	lwiot::LinkedList<Token> list2(list);
+
+	for(const Token& token : list2) {
+		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);
+	}
+
+	list2.remove(t2);
+	list2.remove(t3);
 
 	for(const Token& token : list2) {
 		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);
