@@ -101,9 +101,20 @@ namespace lwiot
 		this->write(&byte, sizeof(byte));
 	}
 
-	void ByteBuffer::write(const uint8_t* bytes, size_t num)
+	void ByteBuffer::write(const lwiot::RawBuffer &raw)
+	{
+		this->write((const uint8_t*)raw.buffer(), raw.size());
+	}
+
+	void ByteBuffer::write(const lwiot::ByteBuffer &buffer)
+	{
+		this->write(buffer.data(), buffer.index());
+	}
+
+	void ByteBuffer::write(const void* data, size_t num)
 	{
 		size_t needed, avail;
+		const uint8_t *bytes = (const uint8_t*) data;
 
 		if(this->_index + num > this->count()) {
 			if(this->_exactfit) {

@@ -17,6 +17,28 @@
 #ifdef __cplusplus
 namespace lwiot
 {
+	struct RawBuffer {
+	public:
+		RawBuffer() : _buffer(nullptr), _size(0UL)
+		{ }
+
+		explicit RawBuffer(void *buf, size_t size) : _buffer(buf), _size(size)
+		{ }
+
+		constexpr void* buffer() const
+		{
+			return this->_buffer;
+		}
+
+		constexpr size_t size() const
+		{
+			return this->_size;
+		}
+
+		void *_buffer;
+		size_t _size;
+	};
+
 	class ByteBuffer : public Countable<uint8_t> {
 	public:
 		explicit ByteBuffer();
@@ -40,11 +62,14 @@ namespace lwiot
 		uint8_t *data() const { return this->_data; }
 
 		void setIndex(size_t index) { this->_index = index; }
+		size_t index() const { return this->_index; }
 
 		bool operator ==(const ByteBuffer& rhs) const;
 
 		void write(uint8_t byte);
-		void write(const uint8_t *bytes, size_t num);
+		void write(const void *bytes, size_t num);
+		void write(const RawBuffer& raw);
+		void write(const ByteBuffer& buffer);
 
 		template<typename Func> void foreach(Func f)
 		{
