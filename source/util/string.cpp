@@ -713,7 +713,8 @@ namespace lwiot {
 				readFrom = foundAt + find.len;
 				len += diff;
 			}
-			strcpy(writeTo, readFrom);
+			//strcpy(writeTo, readFrom);
+			memmove(writeTo, readFrom, strlen(writeTo));
 		} else {
 			unsigned int size = len; // compute size needed for result
 			while((foundAt = strstr(readFrom, find.buffer)) != NULL) {

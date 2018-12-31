@@ -31,6 +31,7 @@
 static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 {
 	struct sockaddr_in sockaddr;
+	int enable = 1;
 
 	sockaddr.sin_family = AF_INET;
 	sockaddr.sin_port = addr->port;
@@ -40,6 +41,8 @@ static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 	*sock = socket(AF_INET, SOCK_STREAM, 0);
 	if(*sock < 0)
 		return false;
+
+	setsockopt(*sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
 
 	if(connect(*sock, (struct sockaddr*) &sockaddr, sizeof(struct sockaddr)) < 0) {
 		close(*sock);

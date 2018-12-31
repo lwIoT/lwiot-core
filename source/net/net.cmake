@@ -10,6 +10,7 @@ SET(NET_SOURCES
 	net/tcp/sockettcpclient.cpp
 	net/tcp/tcpserver.cpp
 	net/tcp/sockettcpserver.cpp
+	net/tcp/securetcpclient.cpp
 
 	net/udp/udpclient.cpp
 	net/udp/udpserver.cpp
