@@ -19,7 +19,7 @@ namespace lwiot
 {
 	struct RawBuffer {
 	public:
-		RawBuffer() : _buffer(nullptr), _size(0UL)
+		constexpr RawBuffer() : _buffer(nullptr), _size(0)
 		{ }
 
 		explicit RawBuffer(void *buf, size_t size) : _buffer(buf), _size(size)
