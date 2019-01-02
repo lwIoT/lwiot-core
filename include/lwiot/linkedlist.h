@@ -53,7 +53,7 @@ namespace lwiot
 		typedef list::Node<T> node_type;
 		typedef Iterator iterator;
 
-		explicit LinkedList() : head(nullptr), _size(0UL)
+		constexpr explicit LinkedList() : head(nullptr), _size(0UL)
 		{ }
 
 		explicit LinkedList(const LinkedList<T>& other) : head(nullptr), _size(0UL)
@@ -61,7 +61,7 @@ namespace lwiot
 			this->copy(other);
 		}
 
-		explicit LinkedList(LinkedList<T>&& other)
+		constexpr explicit LinkedList(LinkedList<T>&& other) noexcept
 		{
 			this->_size = other._size;
 			this->head = other.head;
@@ -83,6 +83,9 @@ namespace lwiot
 
 		LinkedList& operator=(LinkedList<T>&& rhs)
 		{
+			if(this->_size > 0UL)
+				this->clear();
+
 			this->_size = rhs._size;
 			this->head = rhs.head;
 
@@ -195,10 +198,10 @@ namespace lwiot
 
 		class Iterator {
 		public:
-			explicit Iterator() : _current(nullptr), _start(nullptr)
+			constexpr explicit Iterator() : _current(nullptr), _start(nullptr)
 			{ }
 
-			explicit Iterator(node_type* node) : _current(node), _start(node)
+			constexpr explicit Iterator(node_type* node) : _current(node), _start(node)
 			{ }
 
 			constexpr Iterator& operator=(typename LinkedList<T>::node_type* node)
@@ -230,20 +233,26 @@ namespace lwiot
 				return iter;
 			}
 
-			constexpr bool operator ==(const Iterator& iter)
+			constexpr bool operator ==(const Iterator& iter) const
 			{
 				return this->_current == iter._current ;
 			}
 
-			constexpr bool operator !=(const Iterator& iter)
+			constexpr bool operator !=(const Iterator& iter) const
 			{
 				return !(*this == iter);
 			}
 
-			constexpr T operator*() const
+			constexpr T& operator*() const
 			{
 				assert(this->_current);
 				return this->_current->_data;
+			}
+
+			constexpr T* operator->() const
+			{
+				assert(this->_current);
+				return &this->_current->_data;
 			}
 
 			constexpr node_type* node() const
