@@ -16,9 +16,14 @@
 namespace lwiot {
 	class Timer {
 	public:
-		Timer(const lwiot::String& name, unsigned long ms, uint32_t flags, void *arg);
-		Timer(const char *name, unsigned long ms, uint32_t flags, void *arg);
+		explicit Timer(const lwiot::String& name, unsigned long ms, uint32_t flags, void *arg);
+		explicit Timer(const char *name, unsigned long ms, uint32_t flags, void *arg);
+		explicit Timer(const Timer&) = delete;
+		explicit Timer(Timer&& other);
 		virtual ~Timer();
+
+		Timer& operator=(const Timer&) = delete;
+		Timer& operator=(Timer&& rhs);
 
 		void start();
 		void stop();
@@ -33,5 +38,6 @@ namespace lwiot {
 		friend void run_timer(lwiot_timer_t *t, void *argument);
 		void *argument;
 		lwiot_timer_t* timer;
+		bool running;
 	};
 }

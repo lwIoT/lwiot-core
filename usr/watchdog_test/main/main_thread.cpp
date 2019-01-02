@@ -17,7 +17,7 @@ public:
 	{ }
 
 protected:
-	void run(void *arg)
+	void run()
 	{
 		wdt.enable(5000);
 

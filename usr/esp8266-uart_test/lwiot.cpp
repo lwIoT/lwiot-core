@@ -20,7 +20,7 @@ public:
 	}
 
 protected:
-	void run(void *argument) override
+	void run() override
 	{
 		char *buffer = (char*)malloc(32);
 		lwiot::String text("Test message");

@@ -28,9 +28,9 @@ public:
 	}
 
 protected:
-	void run(void *_argument) override
+	void run() override
 	{
-		auto *lock = (lwiot::Lock*) _argument;
+		auto *lock = (lwiot::Lock*) this->argument;
 
 		const char *arg = "test-tp";
 		int i = 0;

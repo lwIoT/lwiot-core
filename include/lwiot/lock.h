@@ -11,13 +11,23 @@
 #include <lwiot/error.h>
 #include <lwiot/port.h>
 #include <lwiot/types.h>
-#include <lwiot/sharedpointer.h>
+#include <lwiot/uniquepointer.h>
 
 namespace lwiot {
 	class Lock {
 	public:
 		explicit Lock(bool recursive = false);
-		virtual ~Lock();
+		virtual ~Lock() = default;
+
+		explicit Lock(Lock &&rhs) noexcept : _mtx(stl::move(rhs._mtx))
+		{
+		}
+
+		Lock& operator=(Lock&& rhs) noexcept
+		{
+			this->_mtx = stl::move(rhs._mtx);
+			return *this;
+		}
 
 		explicit Lock(Lock& lock) = delete;
 		Lock& operator =(Lock& lock) = delete;
@@ -107,6 +117,6 @@ namespace lwiot {
 #endif
 		};
 
-		SharedPointer<LockValue> _mtx;
+		UniquePointer<LockValue> _mtx;
 	};
 }

@@ -32,7 +32,7 @@ namespace lwiot
 		void end();
 
 	protected:
-		void run(void *arg) override;
+		void run() override;
 
 	private:
 		Lock _lock;

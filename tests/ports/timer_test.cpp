@@ -48,7 +48,7 @@ public:
 	}
 
 protected:
-	void run(void *_argument) override
+	void run() override
 	{
 		TestTimer *timer;
 

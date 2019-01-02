@@ -17,8 +17,8 @@
 
 #include <lwiot/stl/move.h>
 
-#ifndef SHARED_ASSERT
-#define SHARED_ASSERT(__x__) assert(__x__)
+#ifndef assert
+#define assert(__x__) assert(__x__)
 #endif
 
 namespace lwiot
@@ -28,11 +28,11 @@ namespace lwiot
 	public:
 		typedef T PointerType;
 
-		UniquePointer() noexcept : px(nullptr)
+		constexpr UniquePointer() noexcept : px(nullptr)
 		{
 		}
 
-		explicit UniquePointer(T *p) noexcept : px(p)
+		constexpr explicit UniquePointer(T *p) noexcept : px(p)
 		{
 		}
 
@@ -69,7 +69,7 @@ namespace lwiot
 
 		void reset(T *p) noexcept
 		{
-			SHARED_ASSERT((nullptr == p) || (px != p));
+			assert((nullptr == p) || (px != p));
 			destroy();
 			px = p;
 		}
@@ -88,13 +88,13 @@ namespace lwiot
 
 		constexpr T &operator*() const noexcept
 		{
-			SHARED_ASSERT(this->px != nullptr);
+			assert(this->px != nullptr);
 			return *px;
 		}
 
 		constexpr T* operator->() const noexcept
 		{
-			SHARED_ASSERT(this->px != nullptr);
+			assert(this->px != nullptr);
 			return px;
 		}
 

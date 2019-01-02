@@ -45,7 +45,7 @@ public:
 	}
 
 protected:
-	void run(void *arg) override
+	void run() override
 	{
 		auto srv = new lwiot::SocketTcpServer(lwiot::IPAddress(192,168,1,1), 8080);
 		lwiot::HttpServer server(srv);
@@ -122,7 +122,7 @@ protected:
 		ap.begin(ssid, passw, 4);
 	}
 
-	virtual void run(void *arg) override
+	virtual void run() override
 	{
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);

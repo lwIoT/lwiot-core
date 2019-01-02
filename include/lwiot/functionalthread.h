@@ -29,7 +29,7 @@ namespace lwiot
 		FunctionalThread& operator=(Runner& runner);
 
 	protected:
-		virtual void run(void *argument) override;
+		virtual void run() override;
 
 	private:
 		Runner _runner;

@@ -144,7 +144,7 @@ protected:
 		display.clear();
 	}
 
-	virtual void run(void *arg) override
+	void run() override
 	{
 		size_t freesize;
 		auto algo = new lwiot::GpioI2CAlgorithm(23, 22, 100000U);

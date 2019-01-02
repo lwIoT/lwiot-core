@@ -241,7 +241,7 @@ finish:
 			lwiot_mem_free(reply);
 	}
 
-	void CaptivePortal::run(void *arg)
+	void CaptivePortal::run()
 	{
 		size_t num;
 		bool running;

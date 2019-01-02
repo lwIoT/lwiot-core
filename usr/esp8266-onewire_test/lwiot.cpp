@@ -23,7 +23,7 @@ public:
 	{ }
 
 protected:
-	void run(void *argument) override
+	void run() override
 	{
 		float h, t;
 		lwiot::GpioPin dhtpin(2);

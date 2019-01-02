@@ -24,7 +24,7 @@ public:
 	}
 
 protected:
-	void run(void *arg)
+	void run()
 	{
 		lwiot::esp32::Uart uart(2, 9600);
 		lwiot::XBee xbee;

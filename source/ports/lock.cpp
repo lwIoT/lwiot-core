@@ -18,8 +18,6 @@ namespace lwiot {
 	{
 	}
 
-	Lock::~Lock() = default;
-
 	void Lock::lock()
 	{
 		this->_mtx->lock();

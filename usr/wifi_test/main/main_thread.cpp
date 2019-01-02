@@ -33,7 +33,7 @@ protected:
 		ap.begin(ssid, passw, 4);
 	}
 
-	void run(void *arg)
+	void run()
 	{
 		this->startAP("Silence of the LAN", "SecretPass");
 		while(true) {
