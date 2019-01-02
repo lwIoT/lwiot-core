@@ -51,3 +51,6 @@ target_link_libraries(typetraits-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${P
 
 add_executable(linkedlist_test linkedlist_test.cpp)
 target_link_libraries(linkedlist_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(guid_test guid_test.cpp)
+target_link_libraries(guid_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})

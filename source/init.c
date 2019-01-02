@@ -13,6 +13,7 @@
 
 void lwiot_init(void)
 {
+	srand(time(NULL));
 	log_init(stdout);
 	lwiot_timers_init();
 
