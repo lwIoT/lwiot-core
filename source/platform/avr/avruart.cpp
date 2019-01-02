@@ -298,10 +298,10 @@ namespace lwiot { namespace avr
 #endif
 	}
 
-	void Uart::write(uint8_t byte)
+	bool Uart::write(uint8_t byte)
 	{
 		if(_tx_delay == 0)
-			return;
+			return false;
 
 		enter_critical();
 		this->set_tx_low();
@@ -319,18 +319,24 @@ namespace lwiot { namespace avr
 		this->set_tx_high();
 		this->delay(this->_tx_delay);
 		exit_critical();
+
+		return true;
 	}
 
-	void Uart::write(const void *buffer, const size_t& length)
+	ssize_t Uart::write(const void *buffer, const size_t& length)
 	{
 		auto buf = static_cast<const uint8_t *>(buffer);
+		size_t idx = 0UL;
 
 		if(_tx_delay == 0)
-			return;
+			return 0UL;
 
-		for(unsigned idx = 0; idx < length; idx++) {
-			this->write(buf[idx]);
+		for(; idx < length; idx++) {
+			if(!this->write(buf[idx]))
+				break;
 		}
+
+		return idx;
 	}
 
 	void Uart::flush()

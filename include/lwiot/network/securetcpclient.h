@@ -48,7 +48,7 @@ namespace lwiot
 		using TcpClient::write;
 
 		ssize_t read(void *output, const size_t &length) override;
-		void write(const void *bytes, const size_t& length) override;
+		ssize_t write(const void *bytes, const size_t& length) override;
 		size_t available() const override;
 
 	private:

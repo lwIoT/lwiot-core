@@ -79,9 +79,9 @@ namespace lwiot
 		return tmp;
 	}
 
-	void TcpClient::write(uint8_t byte)
+	bool TcpClient::write(uint8_t byte)
 	{
-		this->write(&byte, sizeof(byte));
+		return this->write(&byte, sizeof(byte)) == sizeof(byte);
 	}
 
 	Stream& TcpClient::operator<<(char x)

@@ -62,8 +62,8 @@ namespace lwiot {
 		virtual ssize_t read(void *output, const size_t& length) override;
 		virtual ssize_t read(String& output) override final;
 
-		virtual void write(uint8_t byte) override;
-		virtual void write(const void *bytes, const size_t& length) override;
+		bool write(uint8_t byte) override;
+		ssize_t write(const void *bytes, const size_t& length) override;
 		using Stream::write;
 
 	protected:

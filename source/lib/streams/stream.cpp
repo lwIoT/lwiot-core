@@ -38,9 +38,9 @@ namespace lwiot {
 		return bytes;
 	}
 
-	void Stream::write(const String& data)
+	ssize_t Stream::write(const String& data)
 	{
-		this->write((const uint8_t*)data.c_str(), (ssize_t)data.length());
+		return this->write((const uint8_t*)data.c_str(), (ssize_t)data.length());
 	}
 
 	String Stream::readString()

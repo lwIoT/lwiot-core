@@ -57,7 +57,7 @@ namespace lwiot
 		uint8_t read() override;
 
 		using Stream::write;
-		void write(uint8_t byte) override;
+		bool write(uint8_t byte) override;
 
 		virtual bool connect(const IPAddress& addr, uint16_t port) = 0;
 		virtual bool connect(const String& host, uint16_t port)    = 0;

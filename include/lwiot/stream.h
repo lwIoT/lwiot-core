@@ -46,9 +46,9 @@ namespace lwiot {
 		virtual String readString();
 		virtual String readStringUntil(char terminator);
 
-		virtual void write(uint8_t byte) = 0;
-		virtual void write(const void *bytes, const size_t& length) = 0;
-		virtual void write(const String& data);
+		virtual bool write(uint8_t byte) = 0;
+		virtual ssize_t write(const void *bytes, const size_t& length) = 0;
+		virtual ssize_t write(const String& data);
 
 	private:
 		time_t _timeout;

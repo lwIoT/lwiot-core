@@ -82,14 +82,14 @@ namespace lwiot { namespace esp32
 		return retval;
 	}
 
-	void Uart::write(uint8_t byte)
+	bool Uart::write(uint8_t byte)
 	{
-		this->write(&byte, sizeof(byte));
+		return this->write(&byte, sizeof(byte)) == sizeof(uint8_t);
 	}
 
-	void Uart::write(const void *bytes, const size_t& length)
+	ssize_t Uart::write(const void *bytes, const size_t& length)
 	{
-		uart_write_bytes(this->_uart_num, (const char*)bytes, length);
+		return uart_write_bytes(this->_uart_num, (const char*)bytes, length);
 	}
 
 	ssize_t Uart::read(void *buffer, const size_t& length)

@@ -28,8 +28,8 @@ namespace lwiot { namespace esp8266
 		virtual ssize_t read(uint8_t *buffer, const size_t& length);
 		using Stream::read;
 
-		virtual void write(uint8_t byte);
-		virtual void write(const uint8_t *buffer, const size_t& length);
+		bool write(uint8_t byte) override;
+		ssize_t write(const void *buffer, const size_t& length) override;
 		using Stream::write;
 
 		virtual size_t available() const override;

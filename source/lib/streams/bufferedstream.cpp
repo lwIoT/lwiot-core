@@ -130,14 +130,16 @@ namespace lwiot {
 		return us.length();
 	}
 
-	void BufferedStream::write(uint8_t byte)
+	bool BufferedStream::write(uint8_t byte)
 	{
 		*this << byte;
+		return true;
 	}
 
-	void BufferedStream::write(const void *data, const size_t& length)
+	ssize_t BufferedStream::write(const void *data, const size_t& length)
 	{
 		this->append((const void*)data, length);
+		return length;
 	}
 
 	size_t BufferedStream::available() const

@@ -57,16 +57,22 @@ namespace lwiot { namespace esp8266
 		return (ssize_t)size;
 	}
 
-	void Uart::write(uint8_t byte)
+	bool Uart::write(uint8_t byte)
 	{
-		esp_softuart_put(this->_num, static_cast<char>(byte));
+		return esp_softuart_put(this->_num, static_cast<char>(byte));
 	}
 
-	void Uart::write(const uint8_t *buffer, const size_t& length)
+	ssize_t Uart::write(const void *buf, const size_t& length)
 	{
-		for(unsigned int idx = 0; idx < length; idx++) {
-			this->write(buffer[idx]);
+		size_t idx = 0UL;
+		const uint8_t *buffer = static_cast<const uint8_t *>(buf);
+
+		for(; idx < length; idx++) {
+			if(!this->write(buffer[idx]))
+				break;
 		}
+
+		return idx + 1;
 	}
 }
 }

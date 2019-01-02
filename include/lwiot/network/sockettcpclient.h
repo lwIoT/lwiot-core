@@ -46,7 +46,7 @@ namespace lwiot
 		using TcpClient::write;
 
 		ssize_t read(void *output, const size_t &length) override;
-		void write(const void *bytes, const size_t& length) override;
+		ssize_t write(const void *bytes, const size_t& length) override;
 
 		bool connect(const IPAddress& addr, uint16_t port) override;
 		bool connect(const String& host, uint16_t port) override;

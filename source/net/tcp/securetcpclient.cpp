@@ -150,12 +150,12 @@ namespace lwiot
 		return secure_socket_recv(this->_socket, output, length);
 	}
 
-	void SecureTcpClient::write(const void *bytes, const size_t &length)
+	ssize_t SecureTcpClient::write(const void *bytes, const size_t &length)
 	{
 		assert(this->_socket);
 		assert(bytes);
 
-		secure_socket_send(this->_socket, bytes, length);
+		return secure_socket_send(this->_socket, bytes, length);
 	}
 
 	size_t SecureTcpClient::available() const

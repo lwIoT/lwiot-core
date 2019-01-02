@@ -150,9 +150,9 @@ namespace lwiot
 		return tcp_socket_available(this->_socket);
 	}
 
-	void SocketTcpClient::write(const void *bytes, const size_t &length)
+	ssize_t SocketTcpClient::write(const void *bytes, const size_t &length)
 	{
-		tcp_socket_send(this->_socket, bytes, length);
+		return tcp_socket_send(this->_socket, bytes, length);
 	}
 
 	ssize_t SocketTcpClient::read(void *output, const size_t &length)

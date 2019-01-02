@@ -26,8 +26,8 @@ namespace lwiot { namespace avr
 		virtual ssize_t read(void *buffer, const size_t& length) override;
 		using Stream::read;
 
-		virtual void write(uint8_t byte) override;
-		virtual void write(const void *buffer, const size_t& length) override;
+		bool write(uint8_t byte) override;
+		ssize_t write(const void *buffer, const size_t& length) override;
 		virtual void flush();
 		using Stream::write;
 
