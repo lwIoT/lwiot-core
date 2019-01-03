@@ -30,6 +30,9 @@ namespace lwiot
 			explicit Node(const T& data) : _data(data)
 			{ }
 
+			explicit Node(T&& data) : _data(stl::forward<T>(data))
+			{ }
+
 			constexpr bool operator==(const Node<T>& other)
 			{
 				return this->_data == other._data && this->next == other.next && this->prev == other.prev;
@@ -165,17 +168,13 @@ namespace lwiot
 		constexpr void push_back(const T& data)
 		{
 			node_type* node = new node_type(data);
-			assert(node);
+			this->add(node);
+		}
 
-			node->prev = node->next = node;
-			this->_size++;
-
-			if(this->head == nullptr) {
-				this->head = node;
-				return;
-			}
-
-			this->add(node, head->prev, head);
+		constexpr void push_back(value_type&& data)
+		{
+			node_type* node = new node_type(stl::forward<value_type>(data));
+			this->add(node);
 		}
 
 		constexpr void clear()
@@ -276,6 +275,21 @@ namespace lwiot
 			lnew->next = next;
 			lnew->prev = prev;
 			prev->next = lnew;
+		}
+
+		constexpr void add(node_type* node)
+		{
+			assert(node);
+
+			node->prev = node->next = node;
+			this->_size++;
+
+			if(this->head == nullptr) {
+				this->head = node;
+				return;
+			}
+
+			this->add(node, head->prev, head);
 		}
 	};
 }

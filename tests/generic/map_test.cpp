@@ -16,20 +16,20 @@ int main(int argc, char **argv)
 {
 	lwiot_init();
 
-	lwiot::Map<int, double> m1;
-	m1.add(5, 1.234);
-	m1.add(6, 9.224);
-	m1.add(1, 3.234);
+	lwiot::Map<int, lwiot::String> m1;
+	m1.add(5, "Hello");
+	m1.add(6, "World");
+	m1.add(1, "What?!");
 
-	lwiot::Map<int, double> m2(lwiot::stl::move(m1));
+	lwiot::Map<int, lwiot::String> m2(lwiot::stl::move(m1));
 
-	m2[4] = 6.12341;
-	m2[6] = 2.1234;
+	m2[4] = "Bla. Bla";
+	m2[6] = "Testing..";
 
-	double six = lwiot::stl::move(m2.at(6));
-	print_dbg("Value at 6: %f\n", six);
+	lwiot::String six = lwiot::stl::move(m2.at(6));
+	print_dbg("Value at 6: %s\n", six.c_str());
 
-	assert(m2[6] == 2.1234);
+	assert(m2[6].equals("Testing.."));
 	assert(m2.contains(4));
 	assert(m2.contains(1));
 

@@ -49,6 +49,12 @@ namespace lwiot
 		constexpr void add(const MapKey& key, const MapValue& value)
 		{
 			Entry e(key, value);
+			this->_data.push_back(e);
+		}
+
+		constexpr void add(MapKey&& key, MapValue &&value)
+		{
+			Entry e(stl::forward<MapKey>(key), stl::forward<MapValue>(value));
 			this->_data.push_back(stl::move(e));
 		}
 
@@ -121,6 +127,9 @@ namespace lwiot
 		struct Entry {
 		public:
 			Entry(const MapKey& key, const MapValue& value) : key(key), value(value)
+			{ }
+
+			Entry(MapKey&& key, MapValue&& value) noexcept : key(stl::forward<MapKey>(key)), value(stl::forward<MapValue>(value))
 			{ }
 
 			bool operator==(const Entry& rhs) const
