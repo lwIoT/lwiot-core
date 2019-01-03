@@ -340,6 +340,10 @@ ssize_t secure_socket_recv(secure_socket_t* socket, void *data, size_t length)
 {
 	ssize_t ret;
 
-	ret = mbedtls_ssl_read(&socket->ssl_ctx, data, length);
+	while ((ret = mbedtls_ssl_read(&socket->ssl_ctx, data, length)) <= 0) {
+		if(ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE)
+			return handle_error(ret);
+	}
+
 	return ret;
 }

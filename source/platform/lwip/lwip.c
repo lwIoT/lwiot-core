@@ -354,6 +354,8 @@ static void dns_host_found_cb(const char *cb, const ip_addr_t* ip, void *arg)
 	addr = arg;
 	assert(arg);
 
+	print_dbg("DNS host found CB!\n");
+
 	if(ip->type == IPADDR_TYPE_V4 || ip->type == IPADDR_TYPE_ANY) {
 		addr->version = 4;
 		addr->addr.ip4_addr.ip = ip->u_addr.ip4.addr;
@@ -361,6 +363,8 @@ static void dns_host_found_cb(const char *cb, const ip_addr_t* ip, void *arg)
 		addr->version = 6;
 		memcpy(addr->addr.ip6_addr.ip, ip->u_addr.ip6.addr, sizeof(addr->addr.ip6_addr.ip));
 	}
+
+	lwiot_event_signal(lwiot_dns_event);
 }
 
 /* DNS */
