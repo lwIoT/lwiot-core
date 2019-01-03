@@ -116,6 +116,22 @@ lwiot_timer_t* lwiot_timer_create(const char *name, int ms, uint32_t flags, void
 	return timer;
 }
 
+void lwiot_timer_reset(lwiot_timer_t* timer)
+{
+	if(timer->state != TIMER_RUNNING) {
+		lwiot_timer_start(timer);
+		return;
+	}
+
+	/*
+	 * Lock the global timer lock, as we are updating an
+	 * active timer.
+	 */
+	timers_lock();
+	timer->expiry = lwiot_tick() + timer->tmo;
+	timers_unlock();
+}
+
 int lwiot_timer_start(lwiot_timer_t *timer)
 {
 	if(timer->state == TIMER_RUNNING)

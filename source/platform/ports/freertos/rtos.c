@@ -340,6 +340,17 @@ int lwiot_timer_stop(lwiot_timer_t *timer)
 	return -EOK;
 }
 
+void lwiot_timer_reset(lwiot_timer_t* timer)
+{
+	if(timer->state != TIMER_RUNNING) {
+		lwiot_timer_start(timer);
+		return;
+	}
+
+	timer->expiry = lwiot_tick_ms() + vPortTickToMs(timer->period);
+	xTimerReset(timer->timer, 0);
+}
+
 int lwiot_timer_destroy(lwiot_timer_t *timer)
 {
 	BaseType_t bt = pdFAIL;

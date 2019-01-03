@@ -28,15 +28,16 @@ namespace lwiot {
 		void start();
 		void stop();
 		bool isExpired();
+		void reset();
 
 		time_t expiry();
 
 	protected:
-		virtual void tick(void *arg) = 0;
+		virtual void tick() = 0;
+		void *argument;
 
 	private:
 		friend void run_timer(lwiot_timer_t *t, void *argument);
-		void *argument;
 		lwiot_timer_t* timer;
 		bool running;
 	};

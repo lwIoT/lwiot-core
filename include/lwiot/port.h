@@ -65,6 +65,7 @@ extern DLL_EXPORT void lwiot_timers_init(void);
 extern DLL_EXPORT void lwiot_timers_destroy(void);
 extern DLL_EXPORT bool lwiot_timer_is_running(lwiot_timer_t *timer);
 extern DLL_EXPORT int lwiot_timer_set_period(lwiot_timer_t *timer, int ms);
+extern DLL_EXPORT void lwiot_timer_reset(lwiot_timer_t* timer);
 extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
 #else /* CONFIG_NO_OS */
 #define lwiot_timers_init()

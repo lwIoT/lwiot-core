@@ -22,7 +22,7 @@ namespace lwiot {
 		if(timer == nullptr)
 			return;
 
-		timer->tick(timer->argument);
+		timer->tick();
 	}
 
 	Timer::Timer(const String& name, unsigned long ms, uint32_t flags, void *arg)
@@ -44,6 +44,11 @@ namespace lwiot {
 	{
 		lwiot_timer_stop(this->timer);
 		lwiot_timer_destroy(this->timer);
+	}
+
+	void Timer::reset()
+	{
+		lwiot_timer_reset(this->timer);
 	}
 
 	Timer& Timer::operator=( lwiot::Timer &&rhs)
