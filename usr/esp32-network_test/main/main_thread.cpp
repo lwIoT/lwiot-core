@@ -18,92 +18,85 @@
 #include <lwiot/application.h>
 
 #include <lwiot/network/stdnet.h>
-#include <lwiot/network/wifiaccesspoint.h>
+#include <lwiot/network/wifistation.h>
 #include <lwiot/network/tcpclient.h>
 #include <lwiot/network/securetcpclient.h>
 
 static const char *cert =
-		"-----BEGIN CERTIFICATE-----\n" \
-  "MIIDjDCCAnSgAwIBAgIJALeLmnGMkGgXMA0GCSqGSIb3DQEBCwUAMFsxCzAJBgNV\n" \
-  "BAYTAk5MMRYwFAYDVQQIDA1Ob29yZC1CcmFiYW50MQ4wDAYDVQQHDAVCcmVkYTEO\n" \
-  "MAwGA1UECgwFbHdJb1QxFDASBgNVBAMMC2x3aW90LmxvY2FsMB4XDTE4MTIzMDE1\n" \
-  "MzAxNFoXDTI4MTIyNzE1MzAxNFowWzELMAkGA1UEBhMCTkwxFjAUBgNVBAgMDU5v\n" \
-  "b3JkLUJyYWJhbnQxDjAMBgNVBAcMBUJyZWRhMQ4wDAYDVQQKDAVsd0lvVDEUMBIG\n" \
-  "A1UEAwwLbHdpb3QubG9jYWwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB\n" \
-  "AQCoTOZJd1rbu883vCmV3zK+VCwpFmzoO/yrnEKzOudU3Mf3pdfA0Fr4x51TyKK+\n" \
-  "QumnD3j0C3ZwCEfoQTo/eiOKnRKyNcKM/wfMgDZsvaENSCINomrpvFjkMMKb0XuQ\n" \
-  "swefOOTlp7kmBTpxi7wora3EhU3b1wNm0EDY8c71bj4MwtY+nqqyKRDOaFRzNhy0\n" \
-  "ulr23XJ6iJI8Caq61h2K0t//IJT8pc0F61/FLXrYZr1Yw1f1GG9Ecr5zvJJQgfqN\n" \
-  "YjmuMhQwmoDNkhWYKs5y87ywO1cWR/xmJITVlv4XKaHY5KQGO1lnBu8GLka+/1xi\n" \
-  "K+MOVlO025DfiiSDu75/lAHvAgMBAAGjUzBRMB0GA1UdDgQWBBQIap4O5ELEDHUS\n" \
-  "jpouinxRWFUXJTAfBgNVHSMEGDAWgBQIap4O5ELEDHUSjpouinxRWFUXJTAPBgNV\n" \
-  "HRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCOhyfvnHRVAoH2Tu5sE5SX\n" \
-  "Rs3vdWooj3Sa+EhdunlAEcnsQ4VgZ6zGkUtxCuUgV3v+Mv6n1XbOPP/HjvTCFJnh\n" \
-  "hd+ja4qF5qLD/RU0tgJMqVqgRH87cMMAhSzxYsrWF/Hg4fDtfR+qalTWGYfwgHAy\n" \
-  "+M77thkzt1eKn2QosKNrvPp4xJH2MNC6M1zFH+cD2IEmBqRzZ0vOa6QnMRk7/K+0\n" \
-  "8Wokv5E3nAs8hdTSy/Tr0MBv8RCrJH4Oyri83oF8zP7BV36NtPHIsyXmqOGfo7QC\n" \
-  "JlBkySmXkFsDjma8VKoO17byGJffCLiTgudMe0O8x7RLaUZu09ujIyNs25sCVhsn\n" \
-  "-----END CERTIFICATE-----";
+		"-----BEGIN CERTIFICATE-----\n"
+		"MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/\n"
+		"MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT\n"
+		"DkRTVCBSb290IENBIFgzMB4XDTE2MDMxNzE2NDA0NloXDTIxMDMxNzE2NDA0Nlow\n"
+		"SjELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUxldCdzIEVuY3J5cHQxIzAhBgNVBAMT\n"
+		"GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC\n"
+		"AQ8AMIIBCgKCAQEAnNMM8FrlLke3cl03g7NoYzDq1zUmGSXhvb418XCSL7e4S0EF\n"
+		"q6meNQhY7LEqxGiHC6PjdeTm86dicbp5gWAf15Gan/PQeGdxyGkOlZHP/uaZ6WA8\n"
+		"SMx+yk13EiSdRxta67nsHjcAHJyse6cF6s5K671B5TaYucv9bTyWaN8jKkKQDIZ0\n"
+		"Z8h/pZq4UmEUEz9l6YKHy9v6Dlb2honzhT+Xhq+w3Brvaw2VFn3EK6BlspkENnWA\n"
+		"a6xK8xuQSXgvopZPKiAlKQTGdMDQMc2PMTiVFrqoM7hD8bEfwzB/onkxEz0tNvjj\n"
+		"/PIzark5McWvxI0NHWQWM6r6hCm21AvA2H3DkwIDAQABo4IBfTCCAXkwEgYDVR0T\n"
+		"AQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwfwYIKwYBBQUHAQEEczBxMDIG\n"
+		"CCsGAQUFBzABhiZodHRwOi8vaXNyZy50cnVzdGlkLm9jc3AuaWRlbnRydXN0LmNv\n"
+		"bTA7BggrBgEFBQcwAoYvaHR0cDovL2FwcHMuaWRlbnRydXN0LmNvbS9yb290cy9k\n"
+		"c3Ryb290Y2F4My5wN2MwHwYDVR0jBBgwFoAUxKexpHsscfrb4UuQdf/EFWCFiRAw\n"
+		"VAYDVR0gBE0wSzAIBgZngQwBAgEwPwYLKwYBBAGC3xMBAQEwMDAuBggrBgEFBQcC\n"
+		"ARYiaHR0cDovL2Nwcy5yb290LXgxLmxldHNlbmNyeXB0Lm9yZzA8BgNVHR8ENTAz\n"
+		"MDGgL6AthitodHRwOi8vY3JsLmlkZW50cnVzdC5jb20vRFNUUk9PVENBWDNDUkwu\n"
+		"Y3JsMB0GA1UdDgQWBBSoSmpjBH3duubRObemRWXv86jsoTANBgkqhkiG9w0BAQsF\n"
+		"AAOCAQEA3TPXEfNjWDjdGBX7CVW+dla5cEilaUcne8IkCJLxWh9KEik3JHRRHGJo\n"
+		"uM2VcGfl96S8TihRzZvoroed6ti6WqEBmtzw3Wodatg+VyOeph4EYpr/1wXKtx8/\n"
+		"wApIvJSwtmVi4MFU5aMqrSDE6ea73Mj2tcMyo5jMd6jmeWUHK8so/joWUoHOUgwu\n"
+		"X4Po1QYz+3dszkDqMp4fklxBwXRsW10KXzPMTZ+sOPAveyxindmjkW8lGy+QsRlG\n"
+		"PfZ+G6Z6h7mjem0Y+iWlkYcV4PIWL1iwBi8saCbGS5jN2p8M+X+Q7UNKEkROb3N6\n"
+		"KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==\n"
+		"-----END CERTIFICATE-----";
 
 class EspNetworkApplication : public lwiot::Functor {
 public:
-	explicit EspNetworkApplication() : _server(192,168,1,2)
+	explicit EspNetworkApplication()
 	{
-		char buf[] = "Hello, World!";
-
-		this->_in = (char*)lwiot_mem_zalloc(sizeof(buf) + 1);
-		this->_out = (char*)lwiot_mem_zalloc(sizeof(buf) + 1);
-
-		memcpy(this->_out, (void*)buf, sizeof(buf));
-		this->_size = sizeof(buf);
 	}
 
 	virtual ~EspNetworkApplication()
 	{
-		lwiot_mem_free(this->_in);
-		lwiot_mem_free(this->_out);
 	}
 
 private:
-	lwiot::IPAddress _server;
-	char *_in;
-	char *_out;
-	size_t _size;
-
-	void startAP(const lwiot::String& ssid, const lwiot::String& passw)
+	void connectWifi()
 	{
-		auto& ap = lwiot::WifiAccessPoint::instance();
-		lwiot::IPAddress local(192, 168, 1, 1);
-		lwiot::IPAddress subnet(255, 255, 255, 0);
-		lwiot::IPAddress gw(192, 168, 1, 1);
-
-		ap.start();
-		ap.config(local, gw, subnet);
-		ap.begin(ssid, passw, 4);
+		auto& station = lwiot::WifiStation::instance();
+		station.connectTo("Intranet", "plofkip01");
 	}
 
 	void test_sslclient()
 	{
-		lwiot::SecureTcpClient client(lwiot::IPAddress(192,168,1,2), 5300, "lwiot.local");
+		remote_addr_t remote;
+
+		if(dns_resolve_host("io.bietje.net", &remote) != -EOK) {
+			print_dbg("Unable to resolve host!\n");
+			return;
+		}
+
+		lwiot::SecureTcpClient client(lwiot::IPAddress(remote), 8883, "io.bietje.net");
 		lwiot::String crt(cert);
 
 		client.setServerCertificate(crt);
 		client.connect();
 
-		if(!client.connected())
+		if(!client.connected()) {
+			print_dbg("Failed to connect!\n");
 			return;
+		}
 
-		client.write(this->_out, this->_size);
-		client.read(this->_in, this->_size);
-		print_dbg("Readback: %s\n", this->_in);
-		bzero(this->_in, this->_size);
+		print_dbg("Connected to broker!\n");
+		client.close();
 	}
 
 protected:
 	void run() override
 	{
 		printf("Main thread started!\n");
-		this->startAP("lwIoT test", "testap1234");
+		this->connectWifi();
 
 		while(true) {
 			this->test_sslclient();
