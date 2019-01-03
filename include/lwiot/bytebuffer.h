@@ -44,18 +44,14 @@ namespace lwiot
 		explicit ByteBuffer();
 		explicit ByteBuffer(const size_t& size, bool exactfit = false);
 		explicit ByteBuffer(const ByteBuffer& other);
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 		explicit ByteBuffer(ByteBuffer&& other) noexcept;
-#endif
 		virtual ~ByteBuffer();
 
 		ByteBuffer& operator =(const ByteBuffer& other);
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 		ByteBuffer& operator =(ByteBuffer&& other) noexcept;
-#endif
 
-		virtual const uint8_t& operator[] (const size_t& idx) const override;
-		virtual uint8_t& operator[] (const size_t& idx) override;
+		const uint8_t& operator[] (const size_t& idx) const override;
+		uint8_t& operator[] (const size_t& idx) override;
 
 		uint8_t *begin() const;
 		uint8_t *end() const;
@@ -65,13 +61,15 @@ namespace lwiot
 		size_t index() const { return this->_index; }
 
 		bool operator ==(const ByteBuffer& rhs) const;
+		bool operator !=(const ByteBuffer& rhs) const;
 
 		void write(uint8_t byte);
 		void write(const void *bytes, size_t num);
 		void write(const RawBuffer& raw);
 		void write(const ByteBuffer& buffer);
 
-		template<typename Func> void foreach(Func f)
+		template<typename Func>
+		void foreach(Func f)
 		{
 			for(auto idx = 0UL; idx < this->_index; idx++) {
 				f(this->_data[idx]);
@@ -82,13 +80,14 @@ namespace lwiot
 		size_t _index;
 
 		void grow(const size_t& size) override;
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 		void move(ByteBuffer& other);
-#endif
+		void copy(const ByteBuffer& other);
+		virtual void reset(const size_t& newsize);
 
 	private:
 		uint8_t *_data;
 		bool _exactfit;
+		uint8_t _default;
 	};
 }
 #endif
