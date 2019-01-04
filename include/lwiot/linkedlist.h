@@ -165,16 +165,28 @@ namespace lwiot
 			return iterator(nullptr);
 		}
 
-		constexpr void push_back(const T& data)
+		constexpr void push_back(const value_type & data)
 		{
 			node_type* node = new node_type(data);
-			this->add(node);
+			this->add_back(node);
 		}
 
 		constexpr void push_back(value_type&& data)
 		{
 			node_type* node = new node_type(stl::forward<value_type>(data));
-			this->add(node);
+			this->add_back(node);
+		}
+
+		constexpr void push_front(const value_type& data)
+		{
+			node_type* node = new node_type(data);
+			this->add_front(node);
+		}
+
+		constexpr void push_front(value_type&& data)
+		{
+			node_type* node = new node_type(stl::forward<value_type>(data));
+			this->add_front(node);
 		}
 
 		constexpr void clear()
@@ -277,7 +289,20 @@ namespace lwiot
 			prev->next = lnew;
 		}
 
-		constexpr void add(node_type* node)
+		constexpr void add_front(node_type* node)
+		{
+			node->prev = node->next = node;
+			this->_size++;
+
+			if(this->head == nullptr) {
+				this->head = node;
+				return;
+			}
+
+			this->add(node, head, head->next);
+		}
+
+		constexpr void add_back(node_type* node)
 		{
 			assert(node);
 

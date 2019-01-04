@@ -49,13 +49,13 @@ namespace lwiot
 		constexpr void add(const MapKey& key, const MapValue& value)
 		{
 			Entry e(key, value);
-			this->_data.push_back(e);
+			this->_data.push_front(e);
 		}
 
 		constexpr void add(MapKey&& key, MapValue &&value)
 		{
 			Entry e(stl::forward<MapKey>(key), stl::forward<MapValue>(value));
-			this->_data.push_back(stl::move(e));
+			this->_data.push_front(stl::move(e));
 		}
 
 		constexpr MapValue at(const MapKey&& key) const
@@ -110,7 +110,7 @@ namespace lwiot
 			}
 
 			Entry entry(idx, MapValue());
-			this->_data.push_back(entry);
+			this->_data.push_front(stl::move(entry));
 
 			for(Entry& e : this->_data) {
 				if(e == idx) {
