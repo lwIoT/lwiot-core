@@ -50,8 +50,10 @@ int main(int argc, char **argv)
 	lwiot::LinkedList<Token> list2(list);
 
 	for(const Token& token : list2) {
-		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);
+		print_dbg("List entry value: [%i][%f]\n", token.x, token.y);
 	}
+
+	print_dbg("First value: %f\n", list2.front().y);
 
 	list2.remove(t2);
 	list2.remove(t3);
