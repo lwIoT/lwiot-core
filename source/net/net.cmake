@@ -17,6 +17,9 @@ SET(NET_SOURCES
 	net/udp/socketudpclient.cpp
 	net/udp/socketudpserver.cpp
 
+	net/mqtt/mqtttoken.cpp
+	net/mqtt/mqtttokenbucket.cpp
+
 	net/util/base64.c
 	net/util/captiveportal.cpp
 	net/util/ipaddress.cpp
