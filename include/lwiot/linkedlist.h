@@ -22,7 +22,7 @@ namespace lwiot
 
 	namespace list
 	{
-		template <typename T> class Iterator;
+		class Iterator;
 
 		template <typename T>
 		struct Node {
@@ -40,7 +40,7 @@ namespace lwiot
 
 		private:
 			friend class LinkedList<T>;
-			friend class Iterator<T>;
+			friend class Iterator;
 
 			T _data;
 			Node<T>* next;
@@ -165,6 +165,16 @@ namespace lwiot
 			return iterator(nullptr);
 		}
 
+		constexpr value_type& front()
+		{
+			return *this->begin();
+		}
+
+		constexpr const value_type& front() const
+		{
+			return *this->begin();
+		}
+
 		constexpr void push_back(const value_type & data)
 		{
 			node_type* node = new node_type(data);
@@ -221,6 +231,11 @@ namespace lwiot
 				this->_start = node;
 
 				return *this;
+			}
+
+			explicit constexpr operator bool() const
+			{
+				return this->_current != nullptr;
 			}
 
 			constexpr Iterator& operator++()
@@ -300,6 +315,7 @@ namespace lwiot
 			}
 
 			this->add(node, head, head->next);
+			this->head = node;
 		}
 
 		constexpr void add_back(node_type* node)
