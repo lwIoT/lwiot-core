@@ -26,3 +26,6 @@ target_link_libraries(captiveportal_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(sslclient_test sslclient_test.cpp)
 target_link_libraries(sslclient_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
+add_executable(mqtt-token_test mqtt-token_test.cpp)
+target_link_libraries(mqtt-token_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
