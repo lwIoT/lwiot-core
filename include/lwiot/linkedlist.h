@@ -33,7 +33,7 @@ namespace lwiot
 			explicit Node(T&& data) : _data(stl::forward<T>(data))
 			{ }
 
-			constexpr bool operator==(const Node<T>& other)
+			CONSTEXPR bool operator==(const Node<T>& other)
 			{
 				return this->_data == other._data && this->next == other.next && this->prev == other.prev;
 			}
@@ -56,7 +56,7 @@ namespace lwiot
 		typedef list::Node<T> node_type;
 		typedef Iterator iterator;
 
-		constexpr explicit LinkedList() : head(nullptr), _size(0UL)
+		CONSTEXPR explicit LinkedList() : head(nullptr), _size(0UL)
 		{ }
 
 		explicit LinkedList(const LinkedList<T>& other) : head(nullptr), _size(0UL)
@@ -64,7 +64,7 @@ namespace lwiot
 			this->copy(other);
 		}
 
-		constexpr explicit LinkedList(LinkedList<T>&& other) noexcept
+		CONSTEXPR explicit LinkedList(LinkedList<T>&& other) noexcept
 		{
 			this->_size = other._size;
 			this->head = other.head;
@@ -97,7 +97,7 @@ namespace lwiot
 			return *this;
 		}
 
-		constexpr void remove(const node_type* node)
+		CONSTEXPR void remove(const node_type* node)
 		{
 			if(this->head == nullptr || !(node->next || node->prev))
 				return;
@@ -123,14 +123,14 @@ namespace lwiot
 			delete node;
 		}
 
-		constexpr void copy(const LinkedList<T>& list)
+		CONSTEXPR void copy(const LinkedList<T>& list)
 		{
 			for(const value_type& value : list) {
 				this->push_back(value);
 			}
 		}
 
-		constexpr void removeAt(size_t index)
+		CONSTEXPR void removeAt(size_t index)
 		{
 			if(index >= this->_size)
 				return;
@@ -145,7 +145,7 @@ namespace lwiot
 			}
 		}
 
-		constexpr void remove(const value_type& data)
+		CONSTEXPR void remove(const value_type& data)
 		{
 			for(iterator iter = iterator(this->head); iter != this->end(); ++iter) {
 				if(*iter == data) {
@@ -155,51 +155,51 @@ namespace lwiot
 			}
 		}
 
-		constexpr iterator begin() const
+		CONSTEXPR iterator begin() const
 		{
 			return iterator(this->head);
 		}
 
-		constexpr iterator end() const
+		CONSTEXPR iterator end() const
 		{
 			return iterator(nullptr);
 		}
 
-		constexpr value_type& front()
+		CONSTEXPR value_type& front()
 		{
 			return *this->begin();
 		}
 
-		constexpr const value_type& front() const
+		CONSTEXPR const value_type& front() const
 		{
 			return *this->begin();
 		}
 
-		constexpr void push_back(const value_type & data)
+		CONSTEXPR void push_back(const value_type & data)
 		{
 			node_type* node = new node_type(data);
 			this->add_back(node);
 		}
 
-		constexpr void push_back(value_type&& data)
+		CONSTEXPR void push_back(value_type&& data)
 		{
 			node_type* node = new node_type(stl::forward<value_type>(data));
 			this->add_back(node);
 		}
 
-		constexpr void push_front(const value_type& data)
+		CONSTEXPR void push_front(const value_type& data)
 		{
 			node_type* node = new node_type(data);
 			this->add_front(node);
 		}
 
-		constexpr void push_front(value_type&& data)
+		CONSTEXPR void push_front(value_type&& data)
 		{
 			node_type* node = new node_type(stl::forward<value_type>(data));
 			this->add_front(node);
 		}
 
-		constexpr void clear()
+		CONSTEXPR void clear()
 		{
 			if(this->_size == 0UL)
 				return;
@@ -219,13 +219,13 @@ namespace lwiot
 
 		class Iterator {
 		public:
-			constexpr explicit Iterator() : _current(nullptr), _start(nullptr)
+			CONSTEXPR explicit Iterator() : _current(nullptr), _start(nullptr)
 			{ }
 
-			constexpr explicit Iterator(node_type* node) : _current(node), _start(node)
+			CONSTEXPR explicit Iterator(node_type* node) : _current(node), _start(node)
 			{ }
 
-			constexpr Iterator& operator=(typename LinkedList<T>::node_type* node)
+			CONSTEXPR Iterator& operator=(typename LinkedList<T>::node_type* node)
 			{
 				this->_current = node;
 				this->_start = node;
@@ -233,12 +233,12 @@ namespace lwiot
 				return *this;
 			}
 
-			explicit constexpr operator bool() const
+			explicit CONSTEXPR operator bool() const
 			{
 				return this->_current != nullptr;
 			}
 
-			constexpr Iterator& operator++()
+			CONSTEXPR Iterator& operator++()
 			{
 				if(this->_current) {
 					if(this->_current->next == this->_start) {
@@ -251,7 +251,7 @@ namespace lwiot
 				return *this;
 			}
 
-			constexpr Iterator operator++(int)
+			CONSTEXPR Iterator operator++(int)
 			{
 				Iterator iter = *this;
 
@@ -259,29 +259,29 @@ namespace lwiot
 				return iter;
 			}
 
-			constexpr bool operator ==(const Iterator& iter) const
+			CONSTEXPR bool operator ==(const Iterator& iter) const
 			{
 				return this->_current == iter._current ;
 			}
 
-			constexpr bool operator !=(const Iterator& iter) const
+			CONSTEXPR bool operator !=(const Iterator& iter) const
 			{
 				return !(*this == iter);
 			}
 
-			constexpr T& operator*() const
+			CONSTEXPR T& operator*() const
 			{
 				assert(this->_current);
 				return this->_current->_data;
 			}
 
-			constexpr T* operator->() const
+			CONSTEXPR T* operator->() const
 			{
 				assert(this->_current);
 				return &this->_current->_data;
 			}
 
-			constexpr node_type* node() const
+			CONSTEXPR node_type* node() const
 			{
 				return this->_current;
 			}
@@ -296,7 +296,7 @@ namespace lwiot
 		node_type* head;
 		size_t _size;
 
-		constexpr void add(node_type* lnew, node_type* prev, node_type* next)
+		CONSTEXPR void add(node_type* lnew, node_type* prev, node_type* next)
 		{
 			next->prev = lnew;
 			lnew->next = next;
@@ -304,7 +304,7 @@ namespace lwiot
 			prev->next = lnew;
 		}
 
-		constexpr void add_front(node_type* node)
+		CONSTEXPR void add_front(node_type* node)
 		{
 			node->prev = node->next = node;
 			this->_size++;
@@ -318,7 +318,7 @@ namespace lwiot
 			this->head = node;
 		}
 
-		constexpr void add_back(node_type* node)
+		CONSTEXPR void add_back(node_type* node)
 		{
 			assert(node);
 

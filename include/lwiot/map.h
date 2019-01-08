@@ -57,13 +57,13 @@ namespace lwiot
 		typedef typename LinkedList<Entry>::Iterator Iterator;
 		typedef const typename LinkedList<Entry>::Iterator const_iterator;
 
-		constexpr explicit Map() : _data()
+		CONSTEXPR explicit Map() : _data()
 		{ }
 
-		constexpr explicit Map(const Map& map) : _data(map._data)
+		CONSTEXPR explicit Map(const Map& map) : _data(map._data)
 		{ }
 
-		constexpr explicit Map(Map&& map) : _data(stl::move(map._data))
+		CONSTEXPR explicit Map(Map&& map) : _data(stl::move(map._data))
 		{ }
 
 		virtual ~Map()
@@ -76,25 +76,25 @@ namespace lwiot
 			return *this;
 		}
 
-		constexpr Map<K, V>& operator=(Map<K,V>&& rhs)
+		CONSTEXPR Map<K, V>& operator=(Map<K,V>&& rhs)
 		{
 			this->_data = stl::move(rhs._data);
 			return *this;
 		}
 
-		constexpr void add(const MapKey& key, const MapValue& value)
+		CONSTEXPR void add(const MapKey& key, const MapValue& value)
 		{
 			Entry e(key, value);
 			this->_data.push_front(e);
 		}
 
-		constexpr void add(MapKey&& key, MapValue &&value)
+		CONSTEXPR void add(MapKey&& key, MapValue &&value)
 		{
 			Entry e(stl::forward<MapKey>(key), stl::forward<MapValue>(value));
 			this->_data.push_front(stl::move(e));
 		}
 
-		constexpr MapValue at(const MapKey&& key) const
+		CONSTEXPR MapValue at(const MapKey&& key) const
 		{
 			for(const auto& e : this->_data) {
 				if(e == key) {
@@ -105,12 +105,12 @@ namespace lwiot
 			return MapValue();
 		}
 
-		constexpr MapValue operator[](MapKey idx) const
+		CONSTEXPR MapValue operator[](MapKey idx) const
 		{
 			return this->at(idx);
 		}
 
-		constexpr Iterator find(const MapKey& key)
+		CONSTEXPR Iterator find(const MapKey& key)
 		{
 			for(auto& e : this->_data) {
 				if(e == key) {
@@ -121,7 +121,7 @@ namespace lwiot
 			return Iterator(nullptr);
 		}
 
-		constexpr const_iterator find(const MapKey& key) const
+		CONSTEXPR const_iterator find(const MapKey& key) const
 		{
 			for(const auto& e : this->_data) {
 				if(e == key) {
@@ -132,22 +132,22 @@ namespace lwiot
 			return Iterator(nullptr);
 		}
 
-		constexpr Iterator begin() const
+		CONSTEXPR Iterator begin() const
 		{
 			return this->_data.begin();
 		}
 
-		constexpr Iterator end() const
+		CONSTEXPR Iterator end() const
 		{
 			return this->_data.end();
 		}
 
-		constexpr bool contains(const MapKey& k) const
+		CONSTEXPR bool contains(const MapKey& k) const
 		{
 			return this->contains(stl::move(k));
 		}
 
-		constexpr bool contains(const MapKey&& k) const
+		CONSTEXPR bool contains(const MapKey&& k) const
 		{
 			for(Entry& e : this->_data) {
 				if(e == k) {
@@ -158,12 +158,12 @@ namespace lwiot
 			return false;
 		}
 
-		constexpr void remove(const MapKey& key)
+		CONSTEXPR void remove(const MapKey& key)
 		{
 			this->remove(stl::move(key));
 		}
 
-		constexpr void remove(const MapKey&& key)
+		CONSTEXPR void remove(const MapKey&& key)
 		{
 			for(auto idx = this->begin(); idx != this->end(); ++idx) {
 				if(idx->key == key) {

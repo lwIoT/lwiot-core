@@ -13,6 +13,8 @@
 #define __compiler_likely(x) (x)
 #define __compiler_unlikely(x) (x)
 
+#define CONSTEXPR constexpr
+
 #ifndef __never_inline
 #define __never_inline
 #endif
