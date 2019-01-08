@@ -9,6 +9,11 @@
 #include <assert.h>
 #include <lwiot.h>
 
+#ifdef HAVE_RTOS
+#include <FreeRTOS.h>
+#include <task.h>
+#endif
+
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/linkedlist.h>
@@ -25,7 +30,6 @@ public:
 	explicit ThreadTest() : Thread("Testing thread", nullptr), _event(3), _bucket()
 	{
 	}
-
 
 	void execute()
 	{

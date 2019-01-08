@@ -6,6 +6,7 @@ if(HAVE_RTOS)
 endif()
 SET (PLATFORM -Wl,--whole-archive lwiot-platform -Wl,--no-whole-archive lwiot)
 
+if(NOT HAVE_RTOS)
 add_executable(tcp-client_test tcp-client_test.cpp)
 target_link_libraries(tcp-client_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
@@ -26,6 +27,7 @@ target_link_libraries(captiveportal_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
 add_executable(sslclient_test sslclient_test.cpp)
 target_link_libraries(sslclient_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+endif()
 
 add_executable(mqtt-token_test mqtt-token_test.cpp)
 target_link_libraries(mqtt-token_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
