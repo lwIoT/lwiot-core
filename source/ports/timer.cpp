@@ -42,12 +42,16 @@ namespace lwiot {
 
 	Timer::~Timer()
 	{
+		this->running = false;
 		lwiot_timer_stop(this->timer);
 		lwiot_timer_destroy(this->timer);
 	}
 
 	void Timer::reset()
 	{
+		if(!this->running || this->isExpired())
+			return;
+
 		lwiot_timer_reset(this->timer);
 	}
 
