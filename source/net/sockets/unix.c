@@ -224,7 +224,7 @@ socket_t* server_socket_create(socket_type_t type, bool ipv6)
 	return sock;
 }
 
-size_t tcp_socket_available(socket_t* socket)
+static size_t socket_available(const socket_t* socket)
 {
 	size_t count;
 	int fd;
@@ -236,6 +236,16 @@ size_t tcp_socket_available(socket_t* socket)
 
 	ioctl(fd, FIONREAD, &count);
 	return count;
+}
+
+size_t tcp_socket_available(socket_t* socket)
+{
+	return socket_available(socket);
+}
+
+size_t udp_socket_available(socket_t* socket)
+{
+	return socket_available(socket);
 }
 
 static bool bind_ipv4(const socket_t* sock, remote_addr_t* addr, uint16_t port)

@@ -60,7 +60,7 @@ namespace lwiot
 		}
 	}
 
-	ssize_t SocketUdpClient::write(const void *buffer, size_t length)
+	ssize_t SocketUdpClient::write(const void *buffer, const size_t& length)
 	{
 		remote_addr_t remote;
 
@@ -71,12 +71,17 @@ namespace lwiot
 		return udp_send_to(this->_socket, buffer, length, &remote);
 	}
 
-	ssize_t SocketUdpClient::read(void *buffer, size_t length)
+	ssize_t SocketUdpClient::read(void *buffer, const size_t& length)
 	{
 		remote_addr_t remote;
 
 		assert(this->_socket != nullptr);
 		remote.version = this->address().version();
 		return udp_recv_from(this->_socket, buffer, length, &remote);
+	}
+
+	size_t SocketUdpClient::available() const
+	{
+		return udp_socket_available(this->_socket);
 	}
 }

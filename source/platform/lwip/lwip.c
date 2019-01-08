@@ -77,7 +77,7 @@ static bool ip6_connect(socket_t* sock, remote_addr_t* addr)
 	return true;
 }
 
-size_t tcp_socket_available(socket_t* socket)
+static size_t socket_available(const socket_t* socket)
 {
 	int count;
 
@@ -86,6 +86,16 @@ size_t tcp_socket_available(socket_t* socket)
 	ioctlsocket(*socket, FIONREAD, &count);
 
 	return count;
+}
+
+size_t tcp_socket_available(socket_t* socket)
+{
+	return socket_available(socket);
+}
+
+size_t udp_socket_available(socket_t* socket)
+{
+	return socket_available(socket);
 }
 
 socket_t* tcp_socket_create(remote_addr_t* remote)

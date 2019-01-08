@@ -15,8 +15,13 @@ namespace lwiot
 		~SocketUdpClient() override;
 
 		void close() override;
-		ssize_t read(void *buffer, size_t length) override;
-		ssize_t write(const void *buffer, size_t length) override;
+		size_t available() const override;
+
+		using UdpClient::read;
+		using UdpClient::write;
+
+		ssize_t read(void *output, const size_t &length) override;
+		ssize_t write(const void *bytes, const size_t& length) override;
 
 	private:
 		socket_t* _socket;

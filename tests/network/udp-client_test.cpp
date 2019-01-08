@@ -29,6 +29,8 @@ static void test_udp_client()
 
 	assert(client.write(buffer, sizeof(buffer)) > 0);
 	bzero(readback, sizeof(readback));
+
+	while(client.available() == 0);
 	assert(client.read(readback, sizeof(readback)) > 0);
 	print_dbg("Read back: %s\n", readback);
 	//client.close();

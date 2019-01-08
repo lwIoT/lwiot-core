@@ -83,6 +83,7 @@ extern DLL_EXPORT size_t tcp_socket_available(socket_t *socket);
 extern DLL_EXPORT socket_t *udp_socket_create(remote_addr_t *remote);
 extern DLL_EXPORT ssize_t udp_send_to(socket_t *socket, const void *data, size_t length, remote_addr_t *remote);
 extern DLL_EXPORT ssize_t udp_recv_from(socket_t *socket, void *data, size_t length, remote_addr_t *remote);
+extern DLL_EXPORT size_t udp_socket_available(socket_t *socket);
 
 extern DLL_EXPORT void socket_close(socket_t *socket);
 extern DLL_EXPORT void socket_set_timeout(socket_t *sock, int tmo);
