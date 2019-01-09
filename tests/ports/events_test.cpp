@@ -51,6 +51,11 @@ static void main_thread(void *arg)
 	e->signal();
 	lwiot_sleep(1000);
 
+	for(int idx = 0; idx < 200; idx++)
+		e->signal();
+
+	print_dbg("Timeout wait result: %i\n", e->wait(1000));
+
 #ifdef HAVE_RTOS
 	vTaskEndScheduler();
 #endif
@@ -69,7 +74,7 @@ int main(int argc, char **argv)
 
 	t1.start();
 	t2.start();
-	tp = lwiot_thread_create(main_thread, "main" , nullptr);
+	tp = lwiot_thread_create(main_thread, "main" , &e);
 
 #ifdef HAVE_RTOS
 	vTaskStartScheduler();

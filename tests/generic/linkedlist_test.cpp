@@ -16,7 +16,7 @@
 #include <lwiot/stl/move.h>
 
 struct Token {
-	Token(int& x, double y) : x(x), y(y)
+	Token(int& x, double y, const char *str) : x(x), y(y), tst(str)
 	{
 	}
 
@@ -27,6 +27,7 @@ struct Token {
 
 	int& x;
 	double y;
+	lwiot::String tst;
 };
 
 int main(int argc, char **argv)
@@ -38,9 +39,9 @@ int main(int argc, char **argv)
 	b = 5;
 	c = 6;
 
-	Token t1(a, 1.234);
-	Token t2(b, 1.234);
-	Token t3(c, 1.234);
+	Token t1(a, 1.234, "Hi");
+	Token t2(b, 1.234, "Hello");
+	Token t3(c, 1.234, "Bye");
 
 	lwiot::LinkedList<Token> list;
 	list.push_back(t1);
@@ -49,11 +50,13 @@ int main(int argc, char **argv)
 
 	lwiot::LinkedList<Token> list2(list);
 
-	for(const Token& token : list2) {
+	for(Token& token : list2) {
+		lwiot::String str = lwiot::stl::move(token.tst);
 		print_dbg("List entry value: [%i][%f]\n", token.x, token.y);
 	}
 
 	print_dbg("First value: %f\n", list2.front().y);
+	print_dbg("String length: %i\n", list2.front().tst.length());
 
 	list2.remove(t2);
 	list2.remove(t3);
