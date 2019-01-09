@@ -12,12 +12,6 @@
 
 #ifdef __cplusplus
 
-template<typename T>
-void *operator new(size_t s, T *v)
-{
-	return v;
-}
-
 namespace lwiot
 {
 	template<typename T>

@@ -54,4 +54,22 @@ typedef char bool;
 #define barrier() __asm__ __volatile__ ("" ::: "memory")
 #endif
 
+#ifdef __cplusplus
+#ifdef AVR
+template<typename T>
+constexpr void *operator new(unsigned int s, T *v)
+{
+	return v;
+}
+#else
+
+#include <stddef.h>
+template<typename T>
+constexpr void *operator new(size_t s, T *v)
+{
+	return v;
+}
+#endif
+#endif
+
 #endif
