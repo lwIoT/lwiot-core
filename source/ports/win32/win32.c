@@ -10,6 +10,8 @@
  * do, get yourself a bucket now, puking is inevitable. YOU HAVE BEEN WARNED.
  */
 
+#include "lwiot_arch.h"
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
@@ -222,6 +224,12 @@ void lwiot_event_destroy(lwiot_event_t *e)
 void lwiot_event_signal(lwiot_event_t *event)
 {
 	EnterCriticalSection(&event->cs);
+
+	if(event->length == 0) {
+		LeaveCriticalSection(&event->cs);
+		return;
+	}
+
 	event->signalled = true;
 	LeaveCriticalSection(&event->cs);
 
@@ -242,7 +250,8 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 	assert(event);
 
 	EnterCriticalSection(&event->cs);
-	assert(++event->length < event->size);
+	event->length++;
+	assert(event->length < event->size);
 
 	if(tmo == FOREVER)
 		tmo = INFINITE;

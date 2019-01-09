@@ -238,8 +238,13 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 void lwiot_event_signal(lwiot_event_t *event)
 {
 	assert(event);
-
 	pthread_mutex_lock(&event->mtx);
+
+	if(event->length == 0) {
+		pthread_mutex_unlock(&event->mtx);
+		return;
+	}
+
 	event->signalled = true;
 	pthread_cond_signal(&event->cond);
 	pthread_mutex_unlock(&event->mtx);
