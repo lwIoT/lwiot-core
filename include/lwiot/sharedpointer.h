@@ -26,43 +26,56 @@ namespace lwiot
 {
 	class SharedPointerCount {
 	public:
-		SharedPointerCount();
-		SharedPointerCount(const SharedPointerCount &count);
+		CONSTEXPR SharedPointerCount() : _count(nullptr)
+		{ }
 
-		void swap(SharedPointerCount &count) noexcept;
+		CONSTEXPR SharedPointerCount(const SharedPointerCount &count) = default;
+		SharedPointerCount(SharedPointerCount&& count) noexcept;
+		virtual ~SharedPointerCount() = default;
+
+		SharedPointerCount& operator=(const SharedPointerCount&) = default;
+		SharedPointerCount& operator=(SharedPointerCount&& rhs) noexcept;
+
+		inline void swap(SharedPointerCount &count) noexcept
+		{
+			lwiot::stl::swap(this->_count, count._count);
+		}
+
 		long useCount() const;
 
+		void acquire() noexcept;
+
 		template<typename T>
-		void acquire(T *p)
+		CONSTEXPR void acquire(T *p)
 		{
 			if(p != nullptr) {
-				if(this->count == nullptr) {
-					this->count = new Atomic<long>(1L);
+				if(this->_count == nullptr) {
+					this->_count = new Atomic<long>(1L);
 				} else {
-					this->count->add(1);
+					this->_count->add(1);
 				}
 			}
 		}
 
 		template<class U>
-		void release(U *p) noexcept
+		CONSTEXPR void release(U *p) noexcept
 		{
-			if(this->count != nullptr) {
-				this->count->substract(1);
+			if(this->_count != nullptr) {
+				this->_count->substract(1);
 
-				if(this->count->value() == 0L) {
+				if(this->_count->value() == 0L) {
 					if(p)
 						delete p;
 
-					delete this->count;
+					delete this->_count;
 				}
 
-				this->count = nullptr;
+				this->_count = nullptr;
 			}
 		}
 
 	private:
-		Atomic<long> *count;
+		Atomic<long> *_count;
 	};
 
 	template<typename T>
@@ -70,155 +83,206 @@ namespace lwiot
 	public:
 		typedef T PointerType;
 
-		SharedPointer() noexcept : ptr(nullptr), pn()
+		explicit CONSTEXPR SharedPointer() noexcept : _ptr(nullptr), _pn()
 		{
 		}
 
-		explicit SharedPointer(T *p) : pn()
+		explicit CONSTEXPR SharedPointer(T *p) : _pn()
 		{
-			acquire(p);
-		}
-
-		template<class U>
-		SharedPointer(const SharedPointer<U> &ptr, T *p) : pn(ptr.pn)
-		{
-			acquire(p);
+			this->acquire(p);
 		}
 
 		template<class U>
-		explicit SharedPointer(const SharedPointer<U> &ptr) noexcept : pn(ptr.pn)
+		CONSTEXPR SharedPointer(const SharedPointer<U> &ptr, T *p) : _pn(ptr._pn)
 		{
-			SHARED_ASSERT((NULL == ptr.ptr) || (0 != ptr.pn.useCount()));
-
-			acquire(static_cast<typename SharedPointer<T>::PointerType *>(ptr.ptr));
+			this->acquire(p);
 		}
 
-		SharedPointer(const SharedPointer &ptr) noexcept : pn(ptr.pn)
+		template<class U>
+		explicit CONSTEXPR SharedPointer(const SharedPointer<U> &ptr) noexcept : _pn(ptr._pn)
 		{
-			acquire(ptr.ptr);
+			SHARED_ASSERT((NULL == ptr._ptr) || (ptr._pn.useCount() != 0));
+			this->acquire(static_cast<typename SharedPointer<T>::PointerType *>(ptr._ptr));
 		}
 
-		SharedPointer &operator=(SharedPointer ptr) noexcept
+		CONSTEXPR explicit SharedPointer(SharedPointer&& ptr) noexcept : _ptr(ptr._ptr), _pn(stl::move(ptr._pn))
+		{
+			ptr._ptr = nullptr;
+		}
+
+		SharedPointer(const SharedPointer &ptr) noexcept : _pn(ptr._pn)
+		{
+			this->acquire(ptr._ptr);
+		}
+
+		SharedPointer &operator=(const SharedPointer& ptr) noexcept
 		{
 			if(ptr == *this) {
 				return *this;
 			}
 
 			release();
-			swap(ptr);
+			this->copy(ptr);
 
 			return *this;
 		}
 
 		template <typename U>
-		SharedPointer& operator=(SharedPointer<U> other)
+		inline SharedPointer& operator=(const SharedPointer<U>& other)
 		{
 			release();
-			swap(other);
 
+			this->_pn = other._pn;
+			this->_ptr = static_cast<typename SharedPointer<T>::PointerType *>(other._ptr);
+			this->_pn.acquire();
+
+			return *this;
+		}
+
+		inline SharedPointer& operator=(SharedPointer&& rhs)
+		{
+			if(rhs == *this)
+				return *this;
+
+			this->release();
+			this->swap(rhs);
+			return *this;
+		}
+
+		template <class U>
+		CONSTEXPR SharedPointer& operator=(SharedPointer<U>&& rhs)
+		{
+			if(rhs == *this)
+				return *this;
+
+			this->release();
+			this->swap(rhs);
 			return *this;
 		}
 
 		inline ~SharedPointer() noexcept
 		{
-			release();
+			this->release();
 		}
 
 		inline void reset() noexcept
 		{
-			release();
+			this->release();
 		}
 
 		void reset(T *p)
 		{
-			SHARED_ASSERT((NULL == p) || (ptr != p));
-			release();
-			acquire(p);
+			SHARED_ASSERT((NULL == p) || (_ptr != p));
+			this->release();
+			this->acquire(p);
 		}
 
-		void swap(SharedPointer &lhs) noexcept
+		CONSTEXPR void swap(SharedPointer &lhs) noexcept
 		{
-			auto tmp = this->ptr;
+			auto tmp = this->_ptr;
 
-			this->ptr = lhs.ptr;
-			lhs.ptr = tmp;
-			pn.swap(lhs.pn);
+			this->_ptr = lhs._ptr;
+			lhs._ptr = tmp;
+			this->_pn.swap(lhs._pn);
 		}
 
-		inline explicit operator bool() const noexcept
+		CONSTEXPR explicit operator bool() const noexcept
 		{
-			return (0 < pn.useCount());
+			return (this->_pn.useCount() > 0);
 		}
 
 		inline bool unique() const noexcept
 		{
-			return (1 == pn.useCount());
+			return (this->_pn.useCount() == 1);
 		}
 
-		long useCount() const noexcept
+		inline long useCount() const noexcept
 		{
-			return pn.useCount();
+			return this->_pn.useCount();
 		}
 
-		inline T &operator*() const noexcept
+		CONSTEXPR T& operator*() const noexcept
 		{
-			SHARED_ASSERT(NULL != ptr);
-			return *ptr;
+			assert(this->_ptr != nullptr);
+			return *this->_ptr;
 		}
 
-		inline T *operator->() const noexcept
+		CONSTEXPR T *operator->() const noexcept
 		{
-			SHARED_ASSERT(NULL != ptr);
-			return ptr;
+			assert(this->_ptr != nullptr);
+			return this->_ptr;
 		}
 
-		inline T *get() const noexcept
+		CONSTEXPR T *get() const noexcept
 		{
-			return ptr;
+			return this->_ptr;
 		}
 
 	private:
-		inline void acquire(T *p)
+		CONSTEXPR void acquire(T *p)
 		{
-			pn.acquire(p);
-			ptr = p;
+			this->_pn.acquire(p);
+			this->_ptr = p;
 		}
 
-		inline void release() noexcept
+		CONSTEXPR void release() noexcept
 		{
-			pn.release(ptr);
-			ptr = NULL;
+			this->_pn.release(this->_ptr);
+			this->_ptr = nullptr;
+		}
+
+		inline void copy(const SharedPointer& ptr)
+		{
+			this->_ptr = ptr._ptr;
+			this->_pn = ptr._pn;
+			this->_pn.acquire();
 		}
 
 		template<class U>
-		friend
-		class SharedPointer;
+		friend class SharedPointer;
 
-		T *ptr;
-		SharedPointerCount pn;
+		PointerType *_ptr;
+		SharedPointerCount _pn;
 	};
 
-	template<class T, class U> inline bool operator==(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
+	template<class T, class U>
+	CONSTEXPR bool operator==(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() == r.get());
 	}
-	template<class T, class U> inline bool operator!=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
+
+	template <typename T>
+	CONSTEXPR bool operator==(const SharedPointer<T>& sptr, const T* ptr)
+	{
+		return sptr.get() == ptr;
+	}
+
+	template<class T, class U>
+	CONSTEXPR bool operator!=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() != r.get());
 	}
-	template<class T, class U> inline bool operator<=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
+
+	template<class T, class U>
+	CONSTEXPR bool operator<=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() <= r.get());
 	}
-	template<class T, class U> inline bool operator<(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
+
+	template<class T, class U>
+	CONSTEXPR bool operator<(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() < r.get());
 	}
-	template<class T, class U> inline bool operator>=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
+
+	template<class T, class U>
+	CONSTEXPR bool operator>=(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() >= r.get());
 	}
-	template<class T, class U> inline bool operator>(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
+
+	template<class T, class U>
+	CONSTEXPR bool operator>(const SharedPointer<T>& l, const SharedPointer<U>& r) noexcept
 	{
 		return (l.get() > r.get());
 	}
