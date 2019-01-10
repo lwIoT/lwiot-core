@@ -7,63 +7,37 @@
 
 #pragma once
 
+#include <lwiot.h>
+
+#ifdef CXX
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
-
-#ifdef __cplusplus
+#include <lwiot/defaultallocator.h>
+#include <lwiot/stl/move.h>
 
 namespace lwiot
 {
-	template<typename T>
-	struct Simple_alloc {
-
-		Simple_alloc() = default;
-
-		T *allocate(int n)
-		{
-			auto data = lwiot_mem_alloc(n * sizeof(T));
-			return reinterpret_cast<T *>(data);
-		}
-
-		void deallocate(T *p, int n)
-		{
-			if(!p || n == 0)
-				return;
-
-			lwiot_mem_free(p);
-			//delete[] reinterpret_cast<char*>(p);
-		}
-
-		void construct(T *p, const T &t)
-		{
-			new(p) T(t);
-		}
-
-		void destroy(T *p)
-		{
-			p->~T();
-		}
-	};
-
-	template<class T, class A = Simple_alloc<T> >
+	template<class T, class A = DefaultAllocator<T>>
 	class Vector {
 	public:
+		typedef A Allocator;
+		typedef T ObjectType;
 		typedef T *iterator;
 		typedef const T *const_iterator;
 
-		Vector() : sz(0), elem(nullptr), space(0)
+
+		CONSTEXPR explicit Vector() : _index(0), _objects(nullptr), _space(0)
 		{
 		}
 
-		explicit Vector(const size_t &s) : sz(0), elem(nullptr), space(0)
+		explicit Vector(const size_t &&s) : _index(0), _objects(nullptr), _space(0)
 		{
 			this->reserve(s);
 		}
 
-		Vector<T, A> &operator=(const Vector &a);
-
-		Vector(const Vector<T, A> &other) : sz(0), elem(nullptr), space(0)
+		Vector(const Vector<T, A> &other) : _alloc(other._alloc), _index(0), _objects(nullptr), _space(0)
 		{
+			this->clear();
 			this->reserve(other.capacity());
 
 			for(auto &idx : other) {
@@ -71,100 +45,135 @@ namespace lwiot
 			}
 		}
 
-		virtual ~Vector()
+		explicit constexpr Vector(Vector<T, A> &&other) :
+				_index(other._index), _objects(other._objects), _space(other._space)
 		{
-			for(int i = 0; i < sz; ++i) {
-				alloc.destroy(&elem[i]);
-			}
+			this->_alloc = other._alloc;
 
-			if(this->elem != nullptr)
-				this->alloc.deallocate(elem, this->space);
+			other._objects = nullptr;
+			other._space = 0;
+			other._index = 0;
 		}
 
-		void clear()
+		Vector<T, A> &operator=(const Vector &a);
+
+		Vector<T,A>& operator=(Vector<T,A>&& rhs)
+		{
+			this->release();
+
+			this->_alloc = stl::move(rhs._alloc);
+			this->_space = rhs._space;
+			this->_objects = rhs._objects;
+			this->_index = rhs._index;
+
+			rhs._objects = nullptr;
+			rhs._space = 0;
+			rhs._index = 0;
+
+			return *this;
+		}
+
+		virtual ~Vector()
+		{
+			this->release();
+		}
+
+		CONSTEXPR void clear()
 		{
 			if(this->length() == 0UL)
 				return;
 
-			for(auto idx = 0; idx < this->sz; idx++) {
-				this->alloc.destroy(&elem[idx]);
+			for(auto idx = 0UL; idx < this->_index; idx++) {
+				this->_alloc.destroy(&_objects[idx]);
 			}
 
-			this->sz = 0;
+			this->_index = 0;
 		}
 
 		iterator begin()
 		{
-			return &this->elem[0];
+			return &this->_objects[0];
 		}
 
 		const_iterator begin() const
 		{
-			return &this->elem[0];
+			return &this->_objects[0];
 		}
 
 		iterator end()
 		{
-			return &this->elem[this->sz];
+			return &this->_objects[this->_index];
 		}
 
 		const_iterator end() const
 		{
-			return &this->elem[this->sz];
+			return &this->_objects[this->_index];
 		}
 
-		const T &get(int n) const
+		constexpr const T &get(int n) const
 		{
-			return this->elem[n];
+			return this->_objects[n];
 		}
 
-		T &operator[](int n)
+		constexpr T &operator[](int n)
 		{
-			return elem[n];
+			return this->_objects[n];
 		}
 
-		const T &operator[](int n) const
+		constexpr const T &operator[](int n) const
 		{
-			return elem[n];
+			return this->_objects[n];
 		}
 
-		size_t size() const
+		constexpr size_t size() const
 		{
-			return sz;
+			return _index;
 		}
 
-		size_t capacity() const
+		constexpr size_t capacity() const
 		{
-			return space;
+			return this->_space;
 		}
 
-		size_t length() const
+		constexpr size_t length() const
 		{
 			return this->size();
 		}
 
-		void reserve(int newalloc);
-		void pushback(const T &val);
+		void reserve(size_t newalloc);
 
-		void add(const T &val)
+		CONSTEXPR void pushback(const ObjectType &val);
+
+		CONSTEXPR void add(const ObjectType &val)
 		{
 			this->pushback(val);
 		}
 
 		template<typename Func>
-		void foreach(Func functor)
+		CONSTEXPR void foreach(Func functor)
 		{
-			for(size_t idx = 0U; idx < this->sz; idx++) {
-				functor(this->elem[idx]);
+			for(size_t idx = 0U; idx < this->_index; idx++) {
+				functor(this->_objects[idx]);
 			}
 		}
 
 	private:
-		A alloc;
+		Allocator _alloc;
 
-		int sz;
-		T *elem;
-		int space;
+		size_t _index;
+		ObjectType *_objects;
+		size_t _space;
+
+		/* Methods */
+		inline void release()
+		{
+			for(size_t i = 0; i < _index; ++i) {
+				_alloc.destroy(&_objects[i]);
+			}
+
+			if(this->_objects != nullptr)
+				this->_alloc.deallocate(_objects, this->_space);
+		}
 	};
 
 	template<class T, class A>
@@ -173,63 +182,66 @@ namespace lwiot
 		if(this == &a)
 			return *this;
 
-		if(a.size() <= (size_t) space) {
-			for(int i = 0; (size_t) i < a.size(); ++i) {
-				elem[i] = a[i];
+		if(a.size() <=  this->_space) {
+			for(size_t i = 0; i < a.size(); ++i) {
+				this->_objects[i] = a[i];
 			}
-			sz = a.size();
+
+			this->_index = a.size();
 			return *this;
 		}
 
-		T *p = alloc.allocate(a.size());
+		T *p = a._alloc.allocate(a.size());
 
 		for(size_t i = 0; i < a.size(); ++i) {
-			alloc.construct(&p[i], a[i]);
+			a._alloc.construct(&p[i], a[i]);
 		}
 
 		for(size_t i = 0; i < this->size(); ++i) {
-			alloc.destroy(&elem[i]);
+			a._alloc.destroy(&_objects[i]);
 		}
 
-		if(this->elem != nullptr)
-			alloc.deallocate(this->elem, this->space);
+		if(this->_objects != nullptr)
+			this->_alloc.deallocate(this->_objects, this->_space);
 
-		space = sz = a.size();
-		elem = p;
+		this->_space = this->_index = a.size();
+		this->_objects = p;
+		this->_alloc = a._alloc;
 		return *this;
 	}
 
 	template<class T, class A>
-	void Vector<T, A>::reserve(int newalloc)
+	void Vector<T, A>::reserve(size_t newalloc)
 	{
-		if(newalloc <= space)
+		if(newalloc <= this->_space)
 			return;
 
-		T *p = alloc.allocate(newalloc);
+		T *p = _alloc.allocate(newalloc);
 
-		for(int i = 0; i < sz; ++i) {
-			alloc.construct(&p[i], elem[i]);
+		for(size_t i = 0; i < this->_index; i++) {
+			_alloc.construct(&p[i], _objects[i]);
 		}
-		for(int i = 0; i < sz; ++i) {
-			alloc.destroy(&elem[i]);
+		for(size_t i = 0; i < this->_index; i++) {
+			_alloc.destroy(&_objects[i]);
 		}
 
-		if(this->elem)
-			alloc.deallocate(elem, space);
+		if(this->_objects)
+			_alloc.deallocate(_objects, this->_space);
 
-		this->elem = p;
-		this->space = newalloc;
+		this->_objects = p;
+		this->_space = newalloc;
 	}
 
 	template<class T, class A>
-	void Vector<T, A>::pushback(const T &val)
+	CONSTEXPR void Vector<T, A>::pushback(const T &val)
 	{
-		if(space == 0)
+		if(this->_space == 0UL)
 			reserve(4);
-		else if(sz == space)
-			reserve(2 * space);
-		alloc.construct(&elem[sz], val);
-		++sz;
+		else if(this->_index == this->_space)
+			reserve(2 * this->_space);
+
+		_alloc.construct(&_objects[this->_index], val);
+		this->_index++;
 	}
 }
 

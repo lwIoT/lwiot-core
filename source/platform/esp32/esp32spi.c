@@ -22,8 +22,7 @@
 #include <soc/gpio_sig_map.h>
 #include <soc/dport_reg.h>
 
-#include <lwiot/esp32/esp32gpiochip.h>
-
+#include "esp32gpio.h"
 #include "esp32spi.h"
 
 #define MATRIX_DETACH_OUT_SIG 0x100
