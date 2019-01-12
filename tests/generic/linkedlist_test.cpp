@@ -58,8 +58,11 @@ int main(int argc, char **argv)
 	print_dbg("First value: %f\n", list2.front().y);
 	print_dbg("String length: %i\n", list2.front().tst.length());
 
-	list2.remove(t2);
-	list2.remove(t3);
+	auto iter = list2.begin();
+	++iter;
+	list2.remove(iter);
+	++iter;
+	list2.remove(iter);
 
 	for(const Token& token : list2) {
 		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);
