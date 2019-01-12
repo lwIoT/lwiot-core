@@ -15,8 +15,11 @@ namespace lwiot
 	class Atomic {
 	public:
 		explicit Atomic() = default;
+		explicit Atomic(const Atomic&) = delete;
 		explicit Atomic(const T& value) : _value(value)
 		{ }
+
+		Atomic& operator=(const Atomic&) = delete;
 
 		void add(const T& value)
 		{
@@ -61,7 +64,7 @@ namespace lwiot
 
 		explicit operator T() const
 		{
-			return this->_value;
+			return this->value();
 		}
 
 		T operator++()
