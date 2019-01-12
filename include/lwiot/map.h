@@ -54,8 +54,8 @@ namespace lwiot
 			MapValue value;
 		};
 
-		typedef typename LinkedList<Entry>::Iterator Iterator;
-		typedef const typename LinkedList<Entry>::Iterator const_iterator;
+		typedef typename LinkedList<Entry>::iterator iterator;
+		typedef typename LinkedList<Entry>::const_iterator const_iterator;
 
 		CONSTEXPR explicit Map() : _data()
 		{ }
@@ -110,34 +110,44 @@ namespace lwiot
 			return this->at(idx);
 		}
 
-		CONSTEXPR Iterator find(const MapKey& key)
+		CONSTEXPR iterator find(const MapKey& key)
 		{
 			for(auto& e : this->_data) {
 				if(e == key) {
-					return Iterator(reinterpret_cast<typename lwiot::LinkedList<Entry>::node_type*>(&e));
+					return iterator(reinterpret_cast<typename lwiot::LinkedList<Entry>::node_type*>(&e));
 				}
 			}
 
-			return Iterator(nullptr);
+			return iterator(nullptr);
 		}
 
 		CONSTEXPR const_iterator find(const MapKey& key) const
 		{
 			for(const auto& e : this->_data) {
 				if(e == key) {
-					return Iterator(reinterpret_cast<typename lwiot::LinkedList<Entry>::node_type*>(&e));
+					return const_iterator(reinterpret_cast<typename lwiot::LinkedList<Entry>::node_type*>(&e));
 				}
 			}
 
-			return Iterator(nullptr);
+			return const_iterator(nullptr);
 		}
 
-		CONSTEXPR Iterator begin() const
+		CONSTEXPR iterator begin()
 		{
 			return this->_data.begin();
 		}
 
-		CONSTEXPR Iterator end() const
+		CONSTEXPR iterator end()
+		{
+			return this->_data.end();
+		}
+
+		CONSTEXPR const_iterator begin() const
+		{
+			return this->_data.begin();
+		}
+
+		CONSTEXPR const_iterator end() const
 		{
 			return this->_data.end();
 		}
@@ -149,7 +159,7 @@ namespace lwiot
 
 		CONSTEXPR bool contains(const MapKey&& k) const
 		{
-			for(Entry& e : this->_data) {
+			for(const Entry& e : this->_data) {
 				if(e == k) {
 					return true;
 				}
