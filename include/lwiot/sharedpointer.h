@@ -26,23 +26,18 @@ namespace lwiot
 {
 	class SharedPointerCount {
 	public:
-		CONSTEXPR SharedPointerCount() : _count(nullptr)
+		constexpr SharedPointerCount() : _count(nullptr)
 		{ }
 
-		CONSTEXPR SharedPointerCount(const SharedPointerCount &count) = default;
+		constexpr SharedPointerCount(const SharedPointerCount &count) = default;
 		SharedPointerCount(SharedPointerCount&& count) noexcept;
 		virtual ~SharedPointerCount() = default;
 
 		SharedPointerCount& operator=(const SharedPointerCount&) = default;
 		SharedPointerCount& operator=(SharedPointerCount&& rhs) noexcept;
 
-		inline void swap(SharedPointerCount &count) noexcept
-		{
-			lwiot::stl::swap(this->_count, count._count);
-		}
-
+		void swap(SharedPointerCount &count) noexcept;
 		long useCount() const;
-
 		void acquire() noexcept;
 
 		template<typename T>
@@ -83,7 +78,7 @@ namespace lwiot
 	public:
 		typedef T PointerType;
 
-		explicit CONSTEXPR SharedPointer() noexcept : _ptr(nullptr), _pn()
+		constexpr explicit SharedPointer() noexcept : _ptr(nullptr), _pn()
 		{
 		}
 
