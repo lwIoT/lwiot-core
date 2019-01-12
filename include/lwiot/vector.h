@@ -7,13 +7,18 @@
 
 #pragma once
 
+#include <stdlib.h>
+#include <assert.h>
 #include <lwiot.h>
 
 #ifdef CXX
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
+#include <lwiot/function.h>
 #include <lwiot/defaultallocator.h>
+
 #include <lwiot/stl/move.h>
+#include <lwiot/traits/typechoice.h>
 
 namespace lwiot
 {
@@ -22,9 +27,83 @@ namespace lwiot
 	public:
 		typedef A Allocator;
 		typedef T ObjectType;
-		typedef T *iterator;
-		typedef const T *const_iterator;
 
+		template <bool is_const>
+		class Iterator {
+		public:
+			typedef typename traits::TypeChoice<is_const, const ObjectType&, ObjectType&>::type reference;
+			typedef typename traits::TypeChoice<is_const, const ObjectType*, ObjectType*>::type pointer;
+
+			CONSTEXPR Iterator() : _base(nullptr), _index(0)
+			{ }
+
+			CONSTEXPR Iterator(ObjectType* start, size_t idx = 0) : _base(start), _index(idx)
+			{ }
+
+			explicit constexpr operator bool() const
+			{
+				return this->_base != nullptr;
+			}
+
+			CONSTEXPR reference operator=(ObjectType* obj)
+			{
+				this->_base = obj;
+				this->_index = 0UL;
+
+				return *this;
+			}
+
+			Iterator& operator++()
+			{
+				this->_index++;
+				return *this;
+			}
+
+			Iterator operator++(int num)
+			{
+				Iterator iter(*this);
+
+				++*this;
+				return iter;
+			}
+
+			constexpr bool operator==(const Iterator& rhs) const
+			{
+				return this->_base == rhs._base && this->_index == rhs._index;
+			}
+
+			constexpr bool operator!=(const Iterator& rhs) const
+			{
+				auto value = !(*this == rhs);
+				return value;
+			}
+
+			CONSTEXPR ObjectType& operator*() const
+			{
+				return this->_base[this->_index];
+			}
+
+			CONSTEXPR ObjectType* operator->() const
+			{
+				assert(this->_base);
+				return &this->_base[this->_index];
+			}
+
+		private:
+			ObjectType* _base;
+			size_t _index;
+
+			friend class Vector<T>;
+
+			CONSTEXPR void set(ObjectType* obj, size_t index)
+			{
+				this->_base = obj;
+				this->_index = index;
+			}
+		};
+
+		typedef Iterator<false> iterator;
+		typedef Iterator<true> const_iterator;
 
 		CONSTEXPR explicit Vector() : _index(0), _objects(nullptr), _space(0)
 		{
@@ -45,7 +124,7 @@ namespace lwiot
 			}
 		}
 
-		explicit constexpr Vector(Vector<T, A> &&other) :
+		explicit CONSTEXPR Vector(Vector<T, A> &&other) :
 				_index(other._index), _objects(other._objects), _space(other._space)
 		{
 			this->_alloc = other._alloc;
@@ -92,22 +171,28 @@ namespace lwiot
 
 		iterator begin()
 		{
-			return &this->_objects[0];
+			return Iterator<false>(&this->_objects[0]);
 		}
 
 		const_iterator begin() const
 		{
-			return &this->_objects[0];
+			return const_iterator (&this->_objects[0]);
 		}
 
 		iterator end()
 		{
-			return &this->_objects[this->_index];
+			Iterator<false> it;
+
+			it.set (this->_objects, this->_index);
+			return it;
 		}
 
 		const_iterator end() const
 		{
-			return &this->_objects[this->_index];
+			const_iterator it;
+
+			it.set (this->_objects, this->_index);
+			return it;
 		}
 
 		constexpr const T &get(int n) const
@@ -115,12 +200,12 @@ namespace lwiot
 			return this->_objects[n];
 		}
 
-		constexpr T &operator[](int n)
+		CONSTEXPR T &operator[](int n)
 		{
 			return this->_objects[n];
 		}
 
-		constexpr const T &operator[](int n) const
+		CONSTEXPR const T &operator[](int n) const
 		{
 			return this->_objects[n];
 		}
@@ -158,6 +243,9 @@ namespace lwiot
 		}
 
 	private:
+		friend class Iterator<true>;
+		friend class Iterator<false>;
+
 		Allocator _alloc;
 
 		size_t _index;
@@ -173,6 +261,8 @@ namespace lwiot
 
 			if(this->_objects != nullptr)
 				this->_alloc.deallocate(_objects, this->_space);
+
+			this->_objects = nullptr;
 		}
 	};
 

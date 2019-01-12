@@ -13,37 +13,51 @@
 #include <lwiot/log.h>
 #include <lwiot/test.h>
 #include <lwiot/vector.h>
-#include <lwiot/sharedpointer.h>
 
-static bool shared_ptr_test(void *expected, lwiot::SharedPointer<lwiot::Vector<int>> vec)
-{
-	return vec.get() == expected;
-}
+struct IteratorTest {
+	void test_const_iter(const lwiot::Vector<int>& vec) const
+	{
+		for(lwiot::Vector<int>::const_iterator iter = vec.begin(); iter != vec.end(); ++iter) {
+			print_dbg("Entry: %i\n", *iter);
+		}
+	}
+
+	void test_iter(lwiot::Vector<int>& vec)
+	{
+		for(lwiot::Vector<int>::iterator iter = vec.begin(); iter != vec.end(); ++iter) {
+			print_dbg("Entry: %i\n", *iter);
+		}
+	}
+};
 
 int main(int argc, char**argv)
 {
-	lwiot::SharedPointer<lwiot::Vector<int>> vec(new lwiot::Vector<int>());
-	lwiot::SharedPointer<lwiot::Vector<int>> ptr;
 	lwiot_init();
+
+	IteratorTest test;
+	lwiot::Vector<int> v1;
+	lwiot::Vector<int> v2;
+	lwiot::Vector<int> v3;
 
 	UNUSED(argc);
 	UNUSED(argv);
 
-	vec->add(2);
-	vec->add(21);
-	vec->add(120);
-	(*vec)[3] = 510;
+	v1.add(2);
+	v1.add(21);
+	v1.add(120);
+	v1.pushback(1411);
+	v1[3] = 510;
 
-	ptr = vec;
+	v2 = v1;
+	print_dbg("Iterator test:\n");
+	test.test_iter(v2);
 
-	for(auto entry : *vec) {
-		print_dbg("Entry: %i\n", entry);
-	}
+	print_dbg("Const iterator test:\n");
+	test.test_const_iter(v1);
 
-	assert((*vec)[1] == 21);
-	assert((*vec)[0] == 2);
-	assert((*vec)[3] == 510);
-	assert(shared_ptr_test(vec.get(), ptr));
+	assert(v2[1] == 21);
+	assert(v2[0] == 2);
+	assert(v2[3] == 510);
 
 	lwiot_destroy();
 	wait_close();
