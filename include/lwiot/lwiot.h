@@ -11,7 +11,7 @@
 
 #include <lwiot/compiler.h>
 #include <lwiot/types.h>
-#include <lwiot/port.h>
+#include <lwiot/kernel/port.h>
 
 #ifdef UNUSED
 #undef UNUSED
@@ -32,20 +32,6 @@ namespace lwiot
 {
 	namespace lib
 	{
-		template <typename T>
-		static inline T& move(T& obj)
-		{
-			return obj;
-		}
-
-		template <typename T>
-		static inline void swap(T& a, T& b)
-		{
-			T tmp = move(a);
-
-			a = b;
-			b = tmp;
-		}
 	}
 }
 #endif

@@ -10,7 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/function.h>
-#include <lwiot/functionalthread.h>
+#include <lwiot/kernel/functionalthread.h>
 
 namespace lwiot
 {
@@ -33,7 +33,7 @@ namespace lwiot
 		return *this;
 	}
 
-	void FunctionalThread::run(void *argument)
+	void FunctionalThread::run()
 	{
 		if(this->_runner.valid())
 			this->_runner();

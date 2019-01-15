@@ -17,7 +17,7 @@
 #include <lwiot.h>
 
 #include <lwiot/error.h>
-#include <lwiot/list.h>
+#include <lwiot/util/list.h>
 #include <lwiot/log.h>
 
 static struct list_head timers = STATIC_INIT_LIST_HEAD(timers);
@@ -114,6 +114,22 @@ lwiot_timer_t* lwiot_timer_create(const char *name, int ms, uint32_t flags, void
 	timer->state = TIMER_CREATED;
 
 	return timer;
+}
+
+void lwiot_timer_reset(lwiot_timer_t* timer)
+{
+	if(timer->state != TIMER_RUNNING) {
+		lwiot_timer_start(timer);
+		return;
+	}
+
+	/*
+	 * Lock the global timer lock, as we are updating an
+	 * active timer.
+	 */
+	timers_lock();
+	timer->expiry = lwiot_tick() + timer->tmo;
+	timers_unlock();
 }
 
 int lwiot_timer_start(lwiot_timer_t *timer)

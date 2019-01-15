@@ -11,16 +11,18 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/requesthandler.h>
-#include <lwiot/ipaddress.h>
+#include <lwiot/network/requesthandler.h>
 #include <lwiot/function.h>
-#include <lwiot/tcpserver.h>
-#include <lwiot/tcpclient.h>
-#include <lwiot/httpserver.h>
-#include <lwiot/thread.h>
-#include <lwiot/base64.h>
+#include <lwiot/network/httpserver.h>
+#include <lwiot/kernel/thread.h>
+#include <lwiot/network/base64.h>
+
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/tcpserver.h>
+#include <lwiot/network/tcpclient.h>
+#include <lwiot/stl/move.h>
 
 #include "mimetable.h"
 #include "requesthandlerimpl.h"
@@ -29,7 +31,6 @@ static const char Content_Type[] = "Content-Type";
 static const char filename[] = "filename";
 
 static const char AUTHORIZATION_HEADER[] = "Authorization";
-static const char qop_auth[] = "qop=auth";
 static const char WWW_Authenticate[] = "WWW-Authenticate";
 static const char Content_Length[] = "Content-Length";
 
@@ -38,32 +39,23 @@ static const char Content_Length[] = "Content-Length";
 
 namespace lwiot
 {
-	HttpServer::HttpServer(IPAddress addr, int port)
-			: _server(addr, port), _currentMethod(HTTP_ANY), _currentVersion(0), _currentStatus(HC_NONE),
+	HttpServer::HttpServer(TcpServer* server)
+			: _server(server), _currentMethod(HTTP_ANY), _currentVersion(0), _currentStatus(HC_NONE),
 			  _statusChange(0), _currentHandler(nullptr), _firstHandler(nullptr), _lastHandler(nullptr),
 			  _currentArgCount(0), _currentArgs(nullptr), _headerKeysCount(0), _currentHeaders(nullptr),
 			  _contentLength(0), _chunked(false)
 	{
 	}
 
-	HttpServer::HttpServer(int port)
-			: _server(IPAddress(0, 0, 0, 0), port), _currentMethod(HTTP_ANY), _currentVersion(0),
-			  _currentStatus(HC_NONE), _statusChange(0), _currentHandler(nullptr), _firstHandler(nullptr),
-			  _lastHandler(nullptr), _currentArgCount(0), _currentArgs(nullptr), _headerKeysCount(0),
-			  _currentHeaders(nullptr), _contentLength(0), _chunked(false)
-	{
-	}
-
 	HttpServer::~HttpServer()
 	{
-		_server.close();
-		if(_currentHeaders)
-			delete[]_currentHeaders;
+		_server->close();
 
-		if(_currentArgs)
-			delete[] _currentArgs;
+		delete[]_currentHeaders;
+		delete[] _currentArgs;
 
 		RequestHandler *handler = _firstHandler;
+
 		while(handler) {
 			RequestHandler *next = handler->next();
 			delete handler;
@@ -73,11 +65,11 @@ namespace lwiot
 
 	bool HttpServer::begin()
 	{
-		this->_server.connect();
-		return this->_server.bind();
+		this->_server->connect();
+		return this->_server->bind();
 	}
 
-	String HttpServer::_extractParam(String &authReq, const String &param, const char delimit)
+	String HttpServer::_extractParam(String &authReq, const String &param, char delimit)
 	{
 		int _begin = authReq.indexOf(param);
 		if(_begin == -1)
@@ -98,11 +90,12 @@ namespace lwiot
 
 	void HttpServer::requestAuthentication(HTTPAuthMethod mode, const char *realm, const String &authFailMsg)
 	{
-		if(realm == NULL) {
+		if(realm == nullptr) {
 			_srealm = String(F("Login Required"));
 		} else {
 			_srealm = String(realm);
 		}
+
 		if(mode == BASIC_AUTH) {
 			sendHeader(String(FPSTR(WWW_Authenticate)), String(F("Basic realm=\"")) + _srealm + String(F("\"")));
 		} else {
@@ -151,16 +144,13 @@ namespace lwiot
 	void HttpServer::handleClient()
 	{
 		if(_currentStatus == HC_NONE) {
-			TcpClient client = _server.accept();
-			if(!client) {
+			UniquePointer<TcpClient> client = lwiot::stl::move(this->_server->accept());
+			if(client.get() == nullptr) {
 				return;
 			}
 
-#ifdef DEBUG_ESP_HTTP_SERVER
-			DEBUG_OUTPUT.println("New client");
-#endif
-
-			_currentClient = client;
+			this->_currentClient.reset();
+			this->_currentClient = lwiot::stl::move(client);
 			_currentStatus = HC_WAIT_READ;
 			_statusChange = lwiot_tick_ms();
 		}
@@ -168,26 +158,25 @@ namespace lwiot
 		bool keepCurrentClient = false;
 		bool callYield = false;
 
-		if(_currentClient.connected()) {
+		if(_currentClient->connected()) {
 			switch(_currentStatus) {
 			case HC_NONE:
-				// No-op to avoid C++ compiler warning
 				break;
+
 			case HC_WAIT_READ:
-				// Wait for data from client to become available
-				if(_currentClient.available()) {
-					if(_parseRequest(_currentClient)) {
-						//_currentClient.setTimeout(HTTP_MAX_SEND_WAIT);
+				if(this->_currentClient->available()) {
+					if(_parseRequest(*_currentClient)) {
+						//_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
 						_contentLength = CONTENT_LENGTH_NOT_SET;
 						_handleRequest();
 
-						if(_currentClient.connected()) {
+						if(_currentClient->connected()) {
 							_currentStatus = HC_WAIT_CLOSE;
 							_statusChange = lwiot_tick_ms();
 							keepCurrentClient = true;
 						}
 					}
-				} else { // !_currentClient.available()
+				} else {
 					if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_DATA_WAIT) {
 						keepCurrentClient = true;
 					}
@@ -195,7 +184,6 @@ namespace lwiot
 				}
 				break;
 			case HC_WAIT_CLOSE:
-				// Wait for client to close the connection
 				if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_CLOSE_WAIT) {
 					keepCurrentClient = true;
 					callYield = true;
@@ -204,7 +192,7 @@ namespace lwiot
 		}
 
 		if(!keepCurrentClient) {
-			this->_currentClient.close();
+			this->_currentClient->close();
 			_currentStatus = HC_NONE;
 			_currentUpload.reset();
 		}
@@ -216,10 +204,18 @@ namespace lwiot
 
 	void HttpServer::close()
 	{
-		_server.close();
+		_server->close();
 		_currentStatus = HC_NONE;
 		if(!_headerKeysCount)
-			collectHeaders(0, 0);
+			collectHeaders(nullptr, 0);
+	}
+
+	bool HttpServer::hasClient() const
+	{
+		if(!this->_currentClient)
+			return false;
+
+		return this->_currentStatus != HC_NONE;
 	}
 
 	void HttpServer::stop()
@@ -241,7 +237,7 @@ namespace lwiot
 		}
 	}
 
-	void HttpServer::setContentLength(const size_t contentLength)
+	void HttpServer::setContentLength(size_t contentLength)
 	{
 		_contentLength = contentLength;
 	}
@@ -304,7 +300,7 @@ namespace lwiot
 		size_t len = content.length();
 
 		if(_chunked) {
-			char *chunkSize = (char *) malloc(11);
+			auto *chunkSize = (char *) malloc(11);
 			if(chunkSize) {
 #ifdef HAVE_LWIP
 				sprintf(chunkSize, "%x%s", len, footer);
@@ -317,14 +313,14 @@ namespace lwiot
 		}
 		_currentClientWrite(content.c_str(), len);
 		if(_chunked) {
-			_currentClient.write(footer, 2);
+			_currentClient->write(footer, 2);
 			if(len == 0) {
 				_chunked = false;
 			}
 		}
 	}
 
-	void HttpServer::_streamFileCore(const size_t fileSize, const String &fileName, const String &contentType)
+	void HttpServer::_streamFileCore( size_t fileSize, const String &fileName, const String &contentType)
 	{
 		using namespace mime;
 		setContentLength(fileSize);
@@ -384,11 +380,11 @@ namespace lwiot
 		return "";
 	}
 
-	void HttpServer::collectHeaders(const char *headerKeys[], const size_t headerKeysCount)
+	void HttpServer::collectHeaders(const char *headerKeys[],  size_t headerKeysCount)
 	{
 		_headerKeysCount = headerKeysCount + 1;
-		if(_currentHeaders)
-			delete[]_currentHeaders;
+
+		delete[]_currentHeaders;
 		_currentHeaders = new RequestArgument[_headerKeysCount];
 		_currentHeaders[0].key = FPSTR(AUTHORIZATION_HEADER);
 		for(int i = 1; i < _headerKeysCount; i++) {
@@ -578,7 +574,7 @@ namespace lwiot
 					return nullptr;
 				}
 			} else {
-				char *newBuf = (char *) realloc(buf, dataLength + newLength + 1);
+				auto *newBuf = (char *) realloc(buf, dataLength + newLength + 1);
 				if(!newBuf) {
 					free(buf);
 					return nullptr;
@@ -668,7 +664,7 @@ namespace lwiot
 			bool isEncoded = false;
 			uint32_t contentLength = 0;
 			//parse headers
-			while(1) {
+			while(true) {
 				req = client.readStringUntil('\r');
 				client.readStringUntil('\n');
 				if(req == "")
@@ -751,7 +747,7 @@ namespace lwiot
 			String headerName;
 			String headerValue;
 
-			while(1) {
+			while(true) {
 				req = client.readStringUntil('\r');
 				client.readStringUntil('\n');
 				if(req == "")
@@ -789,10 +785,10 @@ namespace lwiot
 
 	void HttpServer::_parseArguments(String data)
 	{
-		if(_currentArgs)
-			delete[] _currentArgs;
 
-		_currentArgs = 0;
+		delete[] _currentArgs;
+
+		_currentArgs = nullptr;
 
 		if(data.length() == 0) {
 			_currentArgCount = 0;
@@ -878,9 +874,9 @@ namespace lwiot
 		client.readStringUntil('\n');
 		//start reading the form
 		if(line == ("--" + boundary)) {
-			RequestArgument *postArgs = new RequestArgument[32];
+			auto *postArgs = new RequestArgument[32];
 			int postArgsLen = 0;
-			while(1) {
+			while(true) {
 				String argName;
 				String argValue;
 				String argType;
@@ -927,7 +923,7 @@ namespace lwiot
 		  DEBUG_OUTPUT.println(argType);
 #endif
 						if(!argIsFile) {
-							while(1) {
+							while(true) {
 								line = client.readStringUntil('\r');
 								client.readStringUntil('\n');
 								if(line.startsWith("--" + boundary))
@@ -1006,7 +1002,7 @@ readfile:
 								uint8_t endBuf[boundary.length()];
 								client.read(endBuf, boundary.length());
 
-								if(strstr((const char *) endBuf, boundary.c_str()) != NULL) {
+								if(strstr((const char *) endBuf, boundary.c_str()) != nullptr) {
 									if(_currentHandler && _currentHandler->canUpload(_currentUri))
 										_currentHandler->upload(*this, _currentUri, *_currentUpload);
 									_currentUpload->totalSize += _currentUpload->currentSize;
@@ -1058,8 +1054,8 @@ readfile:
 				arg.key = _currentArgs[iarg].key;
 				arg.value = _currentArgs[iarg].value;
 			}
-			if(_currentArgs)
-				delete[] _currentArgs;
+
+			delete[] _currentArgs;
 			_currentArgs = new RequestArgument[postArgsLen];
 			for(iarg = 0; iarg < postArgsLen; iarg++) {
 				RequestArgument &arg = _currentArgs[iarg];
@@ -1090,7 +1086,7 @@ readfile:
 				temp[2] = text.charAt(i++);
 				temp[3] = text.charAt(i++);
 
-				decodedChar = strtol(temp, NULL, 16);
+				decodedChar = strtol(temp, nullptr, 16);
 			} else {
 				if(encodedChar == '+') {
 					decodedChar = ' ';

@@ -14,11 +14,11 @@
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/gpioi2calgorithm.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/scopedlock.h>
 #include <lwiot/function.h>
-#include <lwiot/count.h>
+#include <lwiot/util/count.h>
 #include <lwiot/watchdog.h>
 
 #define BUSY_WAIT 10
@@ -354,7 +354,7 @@ namespace lwiot
 		return true;
 	}
 
-	ssize_t GpioI2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
+	ssize_t GpioI2CAlgorithm::transfer(stl::Vector<I2CMessage*>& msgs)
 	{
 		ssize_t total;
 		int rv;

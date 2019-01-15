@@ -10,9 +10,10 @@
 #include <lwiot.h>
 
 #include <lwiot/gpiopin.h>
-#include <lwiot/vector.h>
 
 #ifdef __cplusplus
+#include <lwiot/stl/vector.h>
+
 namespace lwiot
 {
 	enum IrqEdge {
@@ -59,7 +60,7 @@ namespace lwiot
 		/* attirbutes */
 		unsigned int _nr;
 #ifdef CONFIG_PIN_VECTOR
-		Vector<GpioPin*> _iopins;
+		stl::Vector<GpioPin*> _iopins;
 		void buildPinVector();
 #endif
 	};

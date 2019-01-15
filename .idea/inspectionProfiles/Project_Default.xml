@@ -1,6 +1,7 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="ClangTidyInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EndlessLoop" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="OCUnusedClassInspection" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="OCUnusedGlobalDeclarationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -13,6 +14,7 @@
         </list>
       </option>
     </inspection_tool>
+    <inspection_tool class="RedundantCast" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="SignednessMismatch" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
       <option name="processCode" value="true" />

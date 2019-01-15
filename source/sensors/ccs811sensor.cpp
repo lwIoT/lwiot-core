@@ -13,7 +13,7 @@
 #include <lwiot/types.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/ccs811sensor.h>
+#include <lwiot/device/ccs811sensor.h>
 
 #define CCS_HW_ID_CODE 0x81
 #define CCS811_REF_RESISTOR 100000
@@ -81,7 +81,7 @@ namespace lwiot
 	bool Ccs811Sensor::read(uint8_t reg, uint8_t *buf, size_t length)
 	{
 		I2CMessage wr(1), rd(length);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 
 		wr.setAddress(SlaveAddress, false, false);
 		wr.setRepeatedStart(true);
@@ -187,7 +187,7 @@ namespace lwiot
 	uint8_t Ccs811Sensor::read8(uint8_t reg)
 	{
 		I2CMessage wr(1), rd(1);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 
 		wr.setAddress(SlaveAddress, false, false);
 		wr.setRepeatedStart(true);

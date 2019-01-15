@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/string.h>
-#include <lwiot/thread.h>
+#include <lwiot/stl/string.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
-#include <lwiot/dhtsensor.h>
+#include <lwiot/device/dhtsensor.h>
 
 static lwiot::Thread *tp;
 
@@ -23,7 +23,7 @@ public:
 	{ }
 
 protected:
-	void run(void *argument) override
+	void run() override
 	{
 		float h, t;
 		lwiot::GpioPin dhtpin(2);

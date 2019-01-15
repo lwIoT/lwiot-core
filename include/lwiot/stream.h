@@ -10,14 +10,14 @@
 #include <stdint.h>
 
 #include <lwiot/types.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 
 #ifdef __cplusplus
 namespace lwiot {
 	class Stream {
 	public:
 		explicit Stream();
-		Stream(const time_t& timeout);
+		explicit Stream(const time_t& timeout);
 		virtual ~Stream() = default;
 
 		virtual size_t available() const = 0;
@@ -40,14 +40,15 @@ namespace lwiot {
 		virtual Stream& operator << (const char *cstr) = 0;
 
 		virtual uint8_t read() = 0;
-		virtual ssize_t read(uint8_t *output, const size_t& length) = 0;
+		virtual ssize_t read(void *output, const size_t& length) = 0;
 		virtual ssize_t read(String& output);
+
 		virtual String readString();
 		virtual String readStringUntil(char terminator);
 
-		virtual void write(uint8_t byte) = 0;
-		virtual void write(const uint8_t *bytes, const size_t& length) = 0;
-		virtual void write(const String& data);
+		virtual bool write(uint8_t byte) = 0;
+		virtual ssize_t write(const void *bytes, const size_t& length) = 0;
+		virtual ssize_t write(const String& data);
 
 	private:
 		time_t _timeout;

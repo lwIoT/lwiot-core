@@ -2,24 +2,32 @@ esp8266:
     defs:
         - CMAKE_TOOLCHAIN_FILE=../../cmake/esp8266-open-rtos.cmake
         - CMAKE_SYSTEM_NAME=Generic
-        - CONFIG_NO_SYS=True
-        - FREERTOS=True
-        - FREERTOS_MANUAL=True
         - ESP8266_TOOLCHAIN_PATH=~/usr/xtensa-lx106-elf
         - ESP8266_OPEN_RTOS_PATH=~/usr/esp8266-open-rtos
         - CMAKE_C_COMPILER=xtensa-lx106-elf-gcc
         - CMAKE_CXX_COMPILER=xtensa-lx106-elf-g++
+        - CONFIG_NO_SYS=True
+        - FREERTOS=True
+        - FREERTOS_MANUAL=True
+        - RTTI=False
+        - CONFIG_TASK_PRIO=6
+        - CONFIG_STACK_SIZE=4096
+        - CONFIG_PIN_VECTOR=True
 
 esp32:
     defs:
         - CMAKE_TOOLCHAIN_FILE=../../cmake/esp32.cmake
         - CMAKE_SYSTEM_NAME=Generic
-        - CONFIG_NO_SYS=True
-        - FREERTOS=True
-        - FREERTOS_MANUAL=True
         - ESP32_TOOLCHAIN_PATH=/opt/xtensa-esp32-elf
         - CMAKE_C_COMPILER=xtensa-esp32-elf-gcc
         - CMAKE_CXX_COMPILER=xtensa-esp32-elf-g++
+        - CONFIG_NO_SYS=True
+        - FREERTOS=True
+        - FREERTOS_MANUAL=True
+        - RTTI=False
+        - CONFIG_TASK_PRIO=6
+        - CONFIG_STACK_SIZE=4096
+        - CONFIG_PIN_VECTOR=True
 
 freertos:
     defs:
@@ -28,6 +36,7 @@ freertos:
         - CONFIG_NO_SYS=False
         - PORT=unix
         - CMAKE_SYSTEM_NAME=Generic
+        - CONFIG_TASK_PRIO=6
 
 unix:
     defs:
@@ -41,29 +50,33 @@ win32:
         
 atmega2560:
     defs:
+        - AVR=True
         - MCU=atmega2560
-        - ARDUINO_MEGA=True
+        - CMAKE_C_COMPILER=avr-gcc
+        - CMAKE_CXX_COMPILER=avr-g++
         - CONFIG_NO_SYS=True
         - CMAKE_SYSTEM_NAME=Generic
         - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
         - FREERTOS=True
         - FREERTOS_MANUAL=True
-        - AVR=True
         - F_CPU=16000000
-        - CMAKE_C_COMPILER=avr-gcc
-        - CMAKE_CXX_COMPILER=avr-g++
+        - RTTI=False
+        - ARDUINO_MEGA=True
+        - CONFIG_TASK_PRIO=6
+        - CONFIG_STACK_SIZE=4096
+        - CONFIG_PIN_VECTOR=True
 
 atmega328:
     defs:
+        - AVR=True
+        - CMAKE_C_COMPILER=avr-gcc
+        - CMAKE_CXX_COMPILER=avr-g++
         - MCU=atmega328
-        - ARDUINO_UNO=True
+        - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
         - CONFIG_NO_SYS=True
         - CMAKE_SYSTEM_NAME=Generic
-        - CMAKE_TOOLCHAIN_FILE=../../cmake/avr.cmake
         - FREERTOS=True
         - FREERTOS_MANUAL=True
         - NO_OS=True
-        - AVR=True
         - F_CPU=16000000
-        - CMAKE_C_COMPILER=avr-gcc
-        - CMAKE_CXX_COMPILER=avr-g++
+        - ARDUINO_UNO=True

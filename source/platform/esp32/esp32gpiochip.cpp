@@ -18,6 +18,8 @@
 #include <rom/ets_sys.h>
 #include <sys/reent.h>
 
+#include "esp32gpio.h"
+
 #ifdef PINS
 #undef PINS
 #endif

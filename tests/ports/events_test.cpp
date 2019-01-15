@@ -15,9 +15,9 @@
 #include <task.h>
 #endif
 
-#include <lwiot/event.h>
+#include <lwiot/kernel/event.h>
 #include <lwiot/log.h>
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/test.h>
 
 class ThreadTest : public lwiot::Thread {
@@ -28,9 +28,9 @@ public:
 	}
 
 protected:
-	void run(void *_argument) override
+	void run() override
 	{
-		const char *arg = (const char *)_argument;
+		const char *arg = (const char *)this->argument;
 
 		print_dbg("[%s] Thread is running!\n", arg);
 		this->event->wait();
@@ -51,6 +51,11 @@ static void main_thread(void *arg)
 	e->signal();
 	lwiot_sleep(1000);
 
+	for(int idx = 0; idx < 200; idx++)
+		e->signal();
+
+	print_dbg("Timeout wait result: %i\n", e->wait(1000));
+
 #ifdef HAVE_RTOS
 	vTaskEndScheduler();
 #endif
@@ -69,7 +74,7 @@ int main(int argc, char **argv)
 
 	t1.start();
 	t2.start();
-	tp = lwiot_thread_create(main_thread, "main" , nullptr);
+	tp = lwiot_thread_create(main_thread, "main" , &e);
 
 #ifdef HAVE_RTOS
 	vTaskStartScheduler();

@@ -14,7 +14,7 @@
 #include <lwiot/log.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/bufferedstream.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 
 typedef uint64_t onewire_addr_t;
 

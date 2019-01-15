@@ -9,7 +9,7 @@
 #include <lwiot.h>
 
 #include <lwiot/log.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/pwm.h>

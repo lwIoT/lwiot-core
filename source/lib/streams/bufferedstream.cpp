@@ -10,7 +10,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/bufferedstream.h>
 
 #define BUFFEREDSTREAM_DEFAULT_SIZE 32
@@ -105,7 +105,7 @@ namespace lwiot {
 		return this->_data[this->rd_idx++];
 	}
 
-	ssize_t BufferedStream::read(uint8_t *buffer, const size_t& length)
+	ssize_t BufferedStream::read(void *buffer, const size_t& length)
 	{
 		auto max = this->length();
 		size_t to_read;
@@ -130,14 +130,16 @@ namespace lwiot {
 		return us.length();
 	}
 
-	void BufferedStream::write(uint8_t byte)
+	bool BufferedStream::write(uint8_t byte)
 	{
 		*this << byte;
+		return true;
 	}
 
-	void BufferedStream::write(const uint8_t *data, const size_t& length)
+	ssize_t BufferedStream::write(const void *data, const size_t& length)
 	{
 		this->append((const void*)data, length);
+		return length;
 	}
 
 	size_t BufferedStream::available() const

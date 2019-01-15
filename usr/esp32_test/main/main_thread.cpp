@@ -11,37 +11,52 @@
 #include <esp_heap_caps.h>
 #include <lwiot.h>
 
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
-#include <lwiot/datetime.h>
-#include <lwiot/wifiaccesspoint.h>
-#include <lwiot/httpserver.h>
+#include <lwiot/util/datetime.h>
 #include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/apds9301sensor.h>
-#include <lwiot/dsrealtimeclock.h>
+#include <lwiot/device/apds9301sensor.h>
+#include <lwiot/device/dsrealtimeclock.h>
+
+#include <lwiot/network/httpserver.h>
+#include <lwiot/network/socketudpserver.h>
+#include <lwiot/network/udpserver.h>
+#include <lwiot/network/udpclient.h>
+#include <lwiot/network/sockettcpserver.h>
+#include <lwiot/network/wifiaccesspoint.h>
+#include <lwiot/network/captiveportal.h>
+
+#include <lwiot/stl/move.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
 static double luxdata = 0x0;
 
-class MainThread : public lwiot::Thread {
+class HttpServerThread : public lwiot::Thread {
 public:
-	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
-		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), lux(-1), rtc(_bus)
+	explicit HttpServerThread(const char *arg) : Thread("http-thread", (void*)arg)
 	{
 	}
 
 protected:
-	lwiot::I2CBus _bus;
-	lwiot::Apds9301Sensor _sensor;
-	double lux;
-	lwiot::DsRealTimeClock rtc;
+	void run() override
+	{
+		auto srv = new lwiot::SocketTcpServer(lwiot::IPAddress(192,168,1,1), 8080);
+		lwiot::HttpServer server(srv);
+
+		this->setup_server(server);
+		server.begin();
+
+		while(true) {
+			server.handleClient();
+		}
+	}
 
 	void setup_server(lwiot::HttpServer& server)
 	{
@@ -59,7 +74,6 @@ protected:
   <body>\
     <h1>Hello from ESP32!</h1>\
     <p>Lux: %f</p>\
-    <img src=\"/test.svg\" />\
   </body>\
 </html>", luxdata
 			);
@@ -67,6 +81,19 @@ protected:
 			_server.send(200, "text/html", temp);
 		});
 	}
+};
+
+class MainThread : public lwiot::Thread {
+public:
+	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
+		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), rtc(_bus)
+	{
+	}
+
+protected:
+	lwiot::I2CBus _bus;
+	lwiot::Apds9301Sensor _sensor;
+	lwiot::DsRealTimeClock rtc;
 
 	void startPwm(lwiot::esp32::PwmTimer& timer)
 	{
@@ -90,16 +117,15 @@ protected:
 		lwiot::IPAddress subnet(255, 255, 255, 0);
 		lwiot::IPAddress gw(192, 168, 1, 1);
 
+		ap.start();
 		ap.config(local, gw, subnet);
 		ap.begin(ssid, passw, 4);
 	}
 
-	virtual void run(void *arg) override
+	virtual void run() override
 	{
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
-		lwiot::IPAddress addr((uint32_t)0);
-		lwiot::HttpServer server(addr, 80);
 		lwiot::DateTime dt(1539189832);
 
 		lwiot_sleep(1000);
@@ -112,27 +138,19 @@ protected:
 		print_dbg("Free heap size: %u\n", freesize);
 		this->startAP("lwIoT test", "testap1234");
 
-		this->setup_server(server);
-		assert(server.begin());
+		lwiot::SocketUdpServer* udp = new lwiot::SocketUdpServer();
+		lwiot::CaptivePortal portal(lwiot::IPAddress(192,168,1,1), lwiot::IPAddress(192,168,1,1));
+		portal.begin(udp, 53);
+		wdt.enable(2000);
 
-		this->rtc.set(dt);
-		assert(_sensor.begin());
-		lwiot_sleep(1000);
-		assert(this->_sensor.getLux(lux));
-		printf("Lux: %f\n", lux);
-
-		wdt.enable();
-		print_dbg("Starting server...\n");
+		this->_sensor.begin();
+		auto http = new HttpServerThread(nullptr);
+		http->start();
 
 		while(true) {
-			wdt.disable();
-			auto time = this->rtc.now();
-			print_dbg("Time: %s\n", time.toString().c_str());
-			assert(this->_sensor.getLux(luxdata));
-			server.handleClient();
-			wdt.enable();
-
-			print_dbg("MT ping\n");
+			print_dbg("PING!\n");
+			wdt.reset();
+			this->_sensor.getLux(luxdata);
 			lwiot_sleep(1000);
 		}
 	}
@@ -148,4 +166,5 @@ extern "C" void main_start(void)
 	printf(" [DONE]\n");
 	mt->start();
 }
+
 

@@ -9,13 +9,13 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/gfxbase.h>
-#include <lwiot/ssd1306display.h>
+#include <lwiot/device/ssd1306display.h>
 
 /* Commands */
 #define SSD1306_SETCONTRAST 0x81

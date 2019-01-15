@@ -11,7 +11,7 @@
 
 #include <lwiot/gpiopin.h>
 #include <lwiot/dhtbus.h>
-#include <lwiot/dhtsensor.h>
+#include <lwiot/device/dhtsensor.h>
 
 #ifndef BIT
 #define BIT(x) (1UL << x)
@@ -48,7 +48,7 @@ namespace lwiot
 
 	bool DhtSensor::read(int16_t& humidity, int16_t& temperature)
 	{
-		Vector<bool> bits(DhtBus::Bits);
+		stl::Vector<bool> bits(DhtBus::Bits);
 		uint8_t data[DhtBus::Bits / BITS_PER_BYTE];
 		int idx;
 

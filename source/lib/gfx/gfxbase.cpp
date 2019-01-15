@@ -15,6 +15,7 @@
 #include <lwiot/gfxbase.h>
 
 #ifdef AVR
+#include <avr/io.h>
 #include <avr/pgmspace.h>
 static const unsigned char default_font[] PROGMEM = {
 #else
@@ -1051,8 +1052,6 @@ namespace lwiot
 				xo16 = xo;
 				yo16 = yo;
 			}
-
-			// Todo: Add character clipping here
 
 			// NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS.
 			// THIS IS ON PURPOSE AND BY DESIGN.  The background color feature

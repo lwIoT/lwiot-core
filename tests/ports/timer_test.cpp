@@ -14,10 +14,14 @@
 #include <task.h>
 #endif
 
-#include <lwiot/timer.h>
-#include <lwiot/thread.h>
+#include <lwiot/kernel/timer.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/test.h>
+
+#ifdef NDEBUG
+#error "Debugging not enabled.."
+#endif
 
 class TestTimer : public lwiot::Timer {
 public:
@@ -31,7 +35,7 @@ public:
 	}
 
 protected:
-	void tick(void *arg)
+	void tick() override
 	{
 		print_dbg("Timer tick..\n");
 		_ticks++;
@@ -48,7 +52,7 @@ public:
 	}
 
 protected:
-	void run(void *_argument) override
+	void run() override
 	{
 		TestTimer *timer;
 
@@ -60,9 +64,17 @@ protected:
 		lwiot_sleep(2020);
 		assert(timer->ticks() == 4);
 
+		for(int idx = 0; idx < 4; idx++) {
+			timer->reset();
+			lwiot_sleep(250);
+		}
+
+		assert(timer->ticks() == 4);
+		lwiot_sleep(520);
+		assert(timer->ticks() == 5);
+
 		timer->stop();
 		lwiot_sleep(1000);
-		assert(timer->ticks() == 4);
 		delete timer;
 
 #ifdef HAVE_RTOS
@@ -84,8 +96,8 @@ int main(int argc, char **argv)
 	vTaskStartScheduler();
 #endif
 
-	lwiot_destroy();
 	wait_close();
+	lwiot_destroy();
 
 	return -EXIT_SUCCESS;
 }

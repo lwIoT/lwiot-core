@@ -218,6 +218,7 @@ lwiot_event_t* lwiot_event_create(int length)
 	event = lwiot_mem_alloc(sizeof(*event));
 	assert(event);
 
+	event->size = length;
 	event->evq = xQueueCreate(length, sizeof(void*));
 	return event;
 }
@@ -246,11 +247,22 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 
 void lwiot_event_signal_irq(lwiot_event_t *event)
 {
-	xQueueSendFromISR(&event->evq, &event, (TickType_t) 0);
+	UBaseType_t length = uxQueueMessagesWaitingFromISR(event->evq);
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+	if(length == 0)
+		return;
+
+	xQueueSendFromISR(event->evq, &event, &xHigherPriorityTaskWoken);
 }
 
 void lwiot_event_signal(lwiot_event_t *event)
 {
+	UBaseType_t length = uxQueueMessagesWaiting(event->evq);
+
+	if(length == 0UL)
+		return;
+
 	xQueueSend(event->evq, &event, (TickType_t) 0);
 }
 
@@ -338,6 +350,17 @@ int lwiot_timer_stop(lwiot_timer_t *timer)
 
 	timer->state = TIMER_STOPPED;
 	return -EOK;
+}
+
+void lwiot_timer_reset(lwiot_timer_t* timer)
+{
+	if(timer->state != TIMER_RUNNING) {
+		lwiot_timer_start(timer);
+		return;
+	}
+
+	timer->expiry = lwiot_tick_ms() + vPortTickToMs(timer->period);
+	xTimerReset(timer->timer, 0);
 }
 
 int lwiot_timer_destroy(lwiot_timer_t *timer)

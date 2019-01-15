@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 
@@ -17,8 +17,6 @@ namespace lwiot {
 	Lock::Lock(bool recursive) : _mtx(new LockValue(recursive))
 	{
 	}
-
-	Lock::~Lock() = default;
 
 	void Lock::lock()
 	{

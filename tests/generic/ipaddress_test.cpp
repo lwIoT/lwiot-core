@@ -17,7 +17,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/test.h>
-#include <lwiot/ipaddress.h>
+#include <lwiot/network/ipaddress.h>
 
 int main(int argc, char **argv)
 {

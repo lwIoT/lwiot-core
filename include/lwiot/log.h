@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/lwiot.h>
 
 #ifdef HAVE_DEBUG
@@ -30,7 +30,7 @@ extern DLL_EXPORT void panic(const char *fmt, ...);
 CDECL_END
 
 #ifdef __cplusplus
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 
 namespace lwiot {
 	class Logger {

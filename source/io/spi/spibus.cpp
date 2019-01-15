@@ -42,7 +42,7 @@ namespace lwiot
 		return this->_clk;
 	}
 
-	bool SpiBus::transfer(Vector<SpiMessage>& msgs)
+	bool SpiBus::transfer(stl::Vector<SpiMessage>& msgs)
 	{
 		for(SpiMessage& msg : msgs) {
 			if(!this->transfer(msg))

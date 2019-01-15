@@ -23,11 +23,11 @@ namespace lwiot { namespace avr
 		virtual ~Uart();
 
 		virtual uint8_t read() override;
-		virtual ssize_t read(uint8_t *buffer, const size_t& length) override;
+		virtual ssize_t read(void *buffer, const size_t& length) override;
 		using Stream::read;
 
-		virtual void write(uint8_t byte) override;
-		virtual void write(const uint8_t *buffer, const size_t& length) override;
+		bool write(uint8_t byte) override;
+		ssize_t write(const void *buffer, const size_t& length) override;
 		virtual void flush();
 		using Stream::write;
 

@@ -11,7 +11,7 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/gpiopin.h>
 
@@ -45,7 +45,7 @@ namespace lwiot { namespace avr
 		return this->transfer(msg, true);
 	}
 
-	ssize_t I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
+	ssize_t I2CAlgorithm::transfer(stl::Vector<I2CMessage*>& msgs)
 	{
 		ssize_t retval, total;
 

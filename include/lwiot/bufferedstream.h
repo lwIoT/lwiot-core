@@ -11,7 +11,7 @@
 #include <lwiot.h>
 
 #include <lwiot/stream.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/countable.h>
 
 namespace lwiot {
@@ -59,11 +59,11 @@ namespace lwiot {
 		virtual String toString();
 
 		virtual uint8_t read() override;
-		virtual ssize_t read(uint8_t *output, const size_t& length) override;
+		virtual ssize_t read(void *output, const size_t& length) override;
 		virtual ssize_t read(String& output) override final;
 
-		virtual void write(uint8_t byte) override;
-		virtual void write(const uint8_t *bytes, const size_t& length) override;
+		bool write(uint8_t byte) override;
+		ssize_t write(const void *bytes, const size_t& length) override;
 		using Stream::write;
 
 	protected:

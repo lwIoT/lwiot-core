@@ -11,7 +11,6 @@
  */
 
 #include "lwiot_arch.h"
- 
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
@@ -245,6 +244,12 @@ void lwiot_event_destroy(lwiot_event_t *e)
 void lwiot_event_signal(lwiot_event_t *event)
 {
 	EnterCriticalSection(&event->cs);
+
+	if(event->length == 0) {
+		LeaveCriticalSection(&event->cs);
+		return;
+	}
+
 	event->signalled = true;
 	LeaveCriticalSection(&event->cs);
 

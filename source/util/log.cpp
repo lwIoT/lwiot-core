@@ -11,7 +11,7 @@
 #include <stdarg.h>
 #include <lwiot.h>
 
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/log.h>
 
 namespace lwiot {

@@ -298,10 +298,10 @@ namespace lwiot { namespace avr
 #endif
 	}
 
-	void Uart::write(uint8_t byte)
+	bool Uart::write(uint8_t byte)
 	{
 		if(_tx_delay == 0)
-			return;
+			return false;
 
 		enter_critical();
 		this->set_tx_low();
@@ -319,16 +319,24 @@ namespace lwiot { namespace avr
 		this->set_tx_high();
 		this->delay(this->_tx_delay);
 		exit_critical();
+
+		return true;
 	}
 
-	void Uart::write(const uint8_t *buffer, const size_t& length)
+	ssize_t Uart::write(const void *buffer, const size_t& length)
 	{
-		if(_tx_delay == 0)
-			return;
+		auto buf = static_cast<const uint8_t *>(buffer);
+		size_t idx = 0UL;
 
-		for(unsigned idx = 0; idx < length; idx++) {
-			this->write(buffer[idx]);
+		if(_tx_delay == 0)
+			return 0UL;
+
+		for(; idx < length; idx++) {
+			if(!this->write(buf[idx]))
+				break;
 		}
+
+		return idx;
 	}
 
 	void Uart::flush()
@@ -354,9 +362,10 @@ namespace lwiot { namespace avr
 		return data;
 	}
 
-	ssize_t Uart::read(uint8_t *buffer, const size_t& length)
+	ssize_t Uart::read(void *buffer, const size_t& length)
 	{
 		unsigned idx;
+		auto buf = static_cast<uint8_t *>(buffer);
 
 		if(!this->isListening())
 			return -EINVALID;
@@ -366,7 +375,7 @@ namespace lwiot { namespace avr
 			while(!this->available())
 				continue;
 
-			buffer[idx] = this->read();
+			buf[idx] = this->read();
 			idx++;
 		}
 

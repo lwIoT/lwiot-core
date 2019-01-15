@@ -17,7 +17,7 @@ namespace lwiot
 	{
 	}
 
-	ByteBuffer::ByteBuffer(const size_t& size, bool exactfit) : Countable(size), _index(0), _exactfit(exactfit)
+	ByteBuffer::ByteBuffer(const size_t& size, bool exactfit) : Countable(size), _index(0), _exactfit(exactfit), _default(0)
 	{
 		this->_data = (uint8_t*)lwiot_mem_alloc(size);
 		memset(this->_data, 0, size);
@@ -30,13 +30,11 @@ namespace lwiot
 		this->_index = other._index;
 	}
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 	ByteBuffer::ByteBuffer(ByteBuffer&& other) noexcept :
-		Countable(other.count()), _index(0), _data(nullptr), _exactfit(other._exactfit)
+		Countable(other.count()), _index(0), _data(nullptr), _exactfit(other._exactfit), _default(0)
 	{
 		this->move(other);
 	}
-#endif
 
 	ByteBuffer::~ByteBuffer()
 	{
@@ -44,7 +42,6 @@ namespace lwiot
 			lwiot_mem_free(this->_data);
 	}
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 	ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other) noexcept
 	{
 		this->move(other);
@@ -53,30 +50,37 @@ namespace lwiot
 
 	void ByteBuffer::move(ByteBuffer& other)
 	{
-		if(this->_data) {
-			if(other._data && this->_count >= other._count) {
-				memcpy(reinterpret_cast<void*>(this->_data),
-				       reinterpret_cast<void*>(other._data),
-					   other.count());
-				this->_count = other.count();
-				this->_index = other._index;
+		if(likely(this->_data))
+			lwiot_mem_free(this->_data);
 
-				other._count = 0;
-				other._index = 0;
-				return;
-			} else {
-				lwiot_mem_free(this->_data);
-			}
+		this->_data = other.begin();
+		this->_index = other._index;
+		this->_count = other.count();
+
+		other._count = 0;
+		other._index = 0;
+		other._data = nullptr;
+	}
+
+	void ByteBuffer::copy(const lwiot::ByteBuffer &other)
+	{
+		this->reset(other.count());
+		this->write(other);
+	}
+
+	void ByteBuffer::reset(const size_t& newsize)
+	{
+		if(newsize == this->count()) {
+			memset(this->_data, 0, this->count());
+		} else {
+			lwiot_mem_free(this->_data);
+			this->_data = static_cast<uint8_t *>(lwiot_mem_zalloc(newsize));
+			this->_count = newsize;
 		}
 
-		this->_data = other._data;
-		this->_index = other._index;
-		this->_count = other._count;
-
-		other._count = other._index = 0;
-		other._data = reinterpret_cast<uint8_t*>(lwiot_mem_alloc(BYTEBUFFER_DEFAULT_SIZE));
+		this->_index = 0UL;
+		this->_exactfit = false;
 	}
-#endif
 
 	ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other)
 	{
@@ -94,11 +98,17 @@ namespace lwiot
 
 	uint8_t& ByteBuffer::operator[](const size_t& idx)
 	{
+		if(unlikely(this->_data == nullptr))
+			return this->_default;
+
 		return this->_data[idx];
 	}
 
 	const uint8_t& ByteBuffer::operator[](const size_t& idx) const
 	{
+		if(unlikely(this->_data == nullptr))
+			return this->_default;
+
 		return this->_data[idx];
 	}
 
@@ -117,9 +127,27 @@ namespace lwiot
 		this->write(&byte, sizeof(byte));
 	}
 
-	void ByteBuffer::write(const uint8_t* bytes, size_t num)
+	void ByteBuffer::write(const lwiot::RawBuffer &raw)
+	{
+		this->write((const uint8_t*)raw.buffer(), raw.size());
+	}
+
+	void ByteBuffer::write(const lwiot::ByteBuffer &buffer)
+	{
+		this->write(buffer.data(), buffer.index());
+	}
+
+	void ByteBuffer::write(const void* data, size_t num)
 	{
 		size_t needed, avail;
+		const uint8_t *bytes = (const uint8_t*) data;
+
+		if(unlikely(bytes == nullptr)) {
+			auto size = num >= BYTEBUFFER_DEFAULT_SIZE ? num : BYTEBUFFER_DEFAULT_SIZE;
+			this->_data = static_cast<uint8_t *>(lwiot_mem_zalloc(size));
+			this->_count = BYTEBUFFER_DEFAULT_SIZE;
+			this->_index = 0;
+		}
 
 		if(this->_index + num > this->count()) {
 			if(this->_exactfit) {
@@ -138,6 +166,11 @@ namespace lwiot
 
 		memcpy(&this->_data[this->_index], bytes, num);
 		this->_index += num;
+	}
+
+	bool ByteBuffer::operator !=(const ByteBuffer& rhs) const
+	{
+		return !(*this == rhs);
 	}
 
 	bool ByteBuffer::operator ==(const ByteBuffer& rhs) const

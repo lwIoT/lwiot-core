@@ -11,9 +11,9 @@
 #include <time.h>
 
 #include <lwiot/log.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/types.h>
-#include <lwiot/datetime.h>
+#include <lwiot/util/datetime.h>
 #include <lwiot/test.h>
 
 static void dt_test()

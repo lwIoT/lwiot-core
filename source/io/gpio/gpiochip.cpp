@@ -30,7 +30,7 @@ namespace lwiot
 #ifdef CONFIG_PIN_VECTOR
 	GpioChip::~GpioChip()
 	{
-		for(auto pin : this->_iopins) {
+		for(auto& pin : this->_iopins) {
 			delete pin;
 		}
 	}

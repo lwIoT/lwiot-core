@@ -11,12 +11,12 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/stream.h>
-#include <lwiot/ipaddress.h>
-#include <lwiot/tcpserver.h>
-#include <lwiot/tcpclient.h>
-#include <lwiot/httpserver.h>
+#include <lwiot/network/ipaddress.h>
+#include <lwiot/network/tcpserver.h>
+#include <lwiot/network/tcpclient.h>
+#include <lwiot/network/httpserver.h>
 
 #include "mimetable.h"
 

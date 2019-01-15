@@ -13,7 +13,7 @@
 
 #include <lwip/ip_addr.h>
 #include <lwiot/log.h>
-#include <lwiot/wifistation.h>
+#include <lwiot/network/wifistation.h>
 #include <lwiot/types.h>
 
 #include <lwip/err.h>

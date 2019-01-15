@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/scopedlock.h>
-#include <lwiot/port.h>
+#include <lwiot/kernel/port.h>
 
 namespace lwiot
 {
@@ -30,5 +30,11 @@ namespace lwiot
 	{
 		this->_locked = false;
 		this->_lock.unlock();
+	}
+
+	void ScopedLock::lock() const
+	{
+		this->_lock.lock();
+		this->_locked = true;
 	}
 }

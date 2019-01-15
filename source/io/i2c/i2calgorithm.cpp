@@ -11,7 +11,7 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/i2calgorithm.h>
 
 namespace lwiot

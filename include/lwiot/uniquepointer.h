@@ -15,8 +15,10 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 
-#ifndef SHARED_ASSERT
-#define SHARED_ASSERT(__x__) assert(__x__)
+#include <lwiot/stl/move.h>
+
+#ifndef assert
+#define assert(__x__) assert(__x__)
 #endif
 
 namespace lwiot
@@ -24,98 +26,92 @@ namespace lwiot
 	template<typename T>
 	class UniquePointer {
 	public:
-		using PointerType = T;
+		typedef T PointerType;
 
-		UniquePointer() noexcept : px(NULL)
+		constexpr UniquePointer() noexcept : px(nullptr)
 		{
 		}
 
-		explicit UniquePointer(T *p) noexcept : px(p)
+		constexpr explicit UniquePointer(T *p) noexcept : px(p)
 		{
 		}
 
 		template<class U>
-		explicit UniquePointer(const UniquePointer<U> &ptr) noexcept : px(
-				static_cast<typename UniquePointer<T>::PointerType *>(ptr.px))
+		explicit UniquePointer(const UniquePointer<U> &ptr) = delete;
+		UniquePointer(const UniquePointer &ptr) = delete;
+
+		UniquePointer(UniquePointer&& ptr) noexcept : px(ptr.px)
 		{
-			const_cast<UniquePointer<U> &>(ptr).px = NULL;
+			ptr.release();
 		}
 
-		UniquePointer(const UniquePointer &ptr) noexcept :
-				px(ptr.px)
+		template<class U>
+		explicit UniquePointer(UniquePointer<U> &&ptr) noexcept : px(ptr.px)
 		{
-			const_cast<UniquePointer &>(ptr).px = NULL;
+			ptr.release();
 		}
 
 		UniquePointer &operator=(UniquePointer ptr) noexcept
 		{
-			swap(ptr);
+			this->reset(ptr.release());
 			return *this;
 		}
 
-		inline ~UniquePointer() noexcept
+		~UniquePointer() noexcept
 		{
 			destroy();
 		}
 
-		inline void reset() noexcept
+		void reset() noexcept
 		{
 			destroy();
 		}
 
 		void reset(T *p) noexcept
 		{
-			SHARED_ASSERT((NULL == p) || (px != p));
+			assert((nullptr == p) || (px != p));
 			destroy();
 			px = p;
 		}
 
-		void swap(UniquePointer &lhs) noexcept
+		PointerType* release() noexcept
 		{
-			lwiot::lib::swap(px, lhs.px);
+			auto tmp = this->px;
+			px = nullptr;
+			return tmp;
 		}
 
-		inline void release() noexcept
-		{
-			px = NULL;
-		}
-
-		inline explicit operator bool() const noexcept
+		constexpr explicit operator bool() const noexcept
 		{
 			return (nullptr != px);
 		}
 
-		inline T &operator*() const noexcept
+		constexpr T &operator*() const noexcept
 		{
-			SHARED_ASSERT(NULL != px);
+			assert(this->px != nullptr);
 			return *px;
 		}
 
-		inline T *operator->() const noexcept
+		constexpr T* operator->() const noexcept
 		{
-			SHARED_ASSERT(NULL != px);
+			assert(this->px != nullptr);
 			return px;
 		}
 
-		inline T *get() const noexcept
+		constexpr inline T* get() const noexcept
 		{
 			return px;
 		}
 
 	private:
-		inline void destroy() noexcept
+		void destroy() noexcept
 		{
 			delete px;
-			px = NULL;
-		}
-
-		inline void release() const noexcept
-		{
-			px = NULL;
+			px = nullptr;
 		}
 
 	private:
-		T *px;
+		PointerType* px;
 	};
 
 	template<class T, class U>

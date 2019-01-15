@@ -8,6 +8,7 @@ include(${PROJECT_SOURCE_DIR}/source/platform/ports/unix/unix.cmake)
 
 SET(PORT_SOURCE_FILES
 	soc.c
+	${PROJECT_SOURCE_DIR}/source/platform/ssl/mbedtls.c
 	${UNIX_SOURCE_FILES}
 	)
 

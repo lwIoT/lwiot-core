@@ -50,3 +50,21 @@ target_link_libraries(i2cmessage-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${P
 
 add_executable(function-test function_test.cpp)
 target_link_libraries(function-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(typetraits-test typetraits_test.cpp)
+target_link_libraries(typetraits-test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(linkedlist_test linkedlist_test.cpp)
+target_link_libraries(linkedlist_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(guid_test guid_test.cpp)
+target_link_libraries(guid_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(map_test map_test.cpp)
+target_link_libraries(map_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(sharedpointer_test sharedpointer_test.cpp)
+target_link_libraries(sharedpointer_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(tuple_test tuple_test.cpp)
+target_link_libraries(tuple_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})

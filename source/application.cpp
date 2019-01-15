@@ -12,7 +12,7 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/application.h>
+#include <lwiot/util/application.h>
 #include <lwiot/functor.h>
 
 namespace lwiot

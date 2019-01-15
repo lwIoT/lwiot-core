@@ -10,25 +10,30 @@
 #include <assert.h>
 
 #include <lwiot/log.h>
-#include <lwiot/tcpserver.h>
-#include <lwiot/dns.h>
+#include <lwiot/network/dns.h>
 #include <lwiot/test.h>
 
-static void test_tcpserver(void)
+#include <lwiot/network/tcpclient.h>
+#include <lwiot/network/tcpserver.h>
+#include <lwiot/network/sockettcpclient.h>
+#include <lwiot/network/sockettcpserver.h>
+
+#include <lwiot/stl/move.h>
+
+static void test_tcpserver()
 {
-	lwiot::TcpServer server;
-	lwiot::IPAddress addr(0,0,0,0);
+	lwiot::SocketTcpServer server;
 	unsigned char buffer[1024];
 
-	assert(server.bind(addr, 5555));
-	auto client = server.accept();
-	assert(client.connected());
+	assert(server.bind(BIND_ADDR_ANY, 5555));
+	lwiot::UniquePointer<lwiot::TcpClient> client = lwiot::stl::move(server.accept());
+	assert(client->connected());
 
-	auto num = client.read(buffer, sizeof buffer);
+	auto num = client->read(buffer, sizeof buffer);
 	assert(num > 0);
-	client.write(buffer, num);
+	client->write(buffer, num);
 
-	client.close();
+	client->close();
 	server.close();
 }
 

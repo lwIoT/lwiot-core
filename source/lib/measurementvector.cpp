@@ -11,8 +11,8 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/vector.h>
-#include <lwiot/measurementvector.h>
+#include <lwiot/stl/vector.h>
+#include <lwiot/util/measurementvector.h>
 
 namespace lwiot
 {
@@ -20,7 +20,7 @@ namespace lwiot
 	{
 	}
 
-	MeasurementVector::MeasurementVector(const Vector<double> &_measurements) : _measurements(_measurements)
+	MeasurementVector::MeasurementVector(const stl::Vector<double> &_measurements) : _measurements(_measurements)
 	{
 	}
 
@@ -29,7 +29,7 @@ namespace lwiot
 		this->clear();
 	}
 
-	MeasurementVector& MeasurementVector::operator=(const lwiot::Vector<double> &rhs)
+	MeasurementVector &MeasurementVector::operator=(const stl::Vector<double> &rhs)
 	{
 		this->_measurements = rhs;
 		return *this;
@@ -44,8 +44,8 @@ namespace lwiot
 			return false;
 
 		for(auto idx = 0UL; idx < this->_measurements.size(); idx++) {
-			auto& m1 = this->_measurements[idx];
-			auto& m2 = rhs._measurements[idx];
+			auto &m1 = this->_measurements[idx];
+			auto &m2 = rhs._measurements[idx];
 
 			if(m1 != m2)
 				return false;
@@ -74,8 +74,9 @@ namespace lwiot
 		double data;
 
 		data = 0.0F;
-		for(auto& value : this->_measurements) {
-			auto tmp = value * value;
+		for(stl::Vector<double>::const_iterator iter = this->_measurements.begin();
+				iter != this->_measurements.end(); ++iter) {
+			auto tmp = *iter * *iter;
 			data += tmp;
 		}
 

@@ -16,8 +16,8 @@
 
 #include <lwiot/gpiochip.h>
 #include <lwiot/error.h>
-#include <lwiot/pair.h>
-#include <lwiot/string.h>
+#include <lwiot/util/pair.h>
+#include <lwiot/stl/string.h>
 
 namespace lwiot
 {

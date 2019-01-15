@@ -16,10 +16,10 @@
 #endif
 
 #include <lwiot/log.h>
-#include <lwiot/thread.h>
-#include <lwiot/functionalthread.h>
+#include <lwiot/kernel/thread.h>
+#include <lwiot/kernel/functionalthread.h>
 #include <lwiot/test.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 
 class ThreadTest : public lwiot::Thread {
 public:
@@ -28,9 +28,9 @@ public:
 	}
 
 protected:
-	void run(void *_argument) override
+	void run() override
 	{
-		auto *lock = (lwiot::Lock*) _argument;
+		auto *lock = (lwiot::Lock*) this->argument;
 
 		const char *arg = "test-tp";
 		int i = 0;

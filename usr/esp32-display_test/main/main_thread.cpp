@@ -11,17 +11,20 @@
 #include <esp_heap_caps.h>
 #include <lwiot.h>
 
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
+#include <lwiot/stl/string.h>
+
 #include <lwiot/log.h>
-#include <lwiot/string.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
-#include <lwiot/datetime.h>
-#include <lwiot/wifiaccesspoint.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/gpioi2calgorithm.h>
-#include <lwiot/ssd1306display.h>
+
+#include <lwiot/device/ssd1306display.h>
+
+#include <lwiot/network/wifiaccesspoint.h>
+#include <lwiot/util/datetime.h>
 
 #include <lwiot/esp32/esp32pwm.h>
 
@@ -144,7 +147,7 @@ protected:
 		display.clear();
 	}
 
-	virtual void run(void *arg) override
+	void run() override
 	{
 		size_t freesize;
 		auto algo = new lwiot::GpioI2CAlgorithm(23, 22, 100000U);
