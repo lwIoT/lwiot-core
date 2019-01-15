@@ -11,7 +11,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/function.h>
-#include <lwiot/count.h>
+#include <lwiot/util/count.h>
 
 namespace lwiot
 {

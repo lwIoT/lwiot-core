@@ -9,7 +9,6 @@
 
 #pragma once
 
-
 namespace lwiot
 {
 	template<typename A, typename B> class Pair {

@@ -13,7 +13,7 @@
 #include <lwiot.h>
 
 #include <lwiot/error.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/uniquepointer.h>
 
 #include <lwiot/kernel/thread.h>

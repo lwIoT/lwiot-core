@@ -12,7 +12,7 @@
 #include <lwiot/types.h>
 #include <lwiot/error.h>
 #include <lwiot/stl/vector.h>
-#include <lwiot/measurementvector.h>
+#include <lwiot/util/measurementvector.h>
 
 namespace lwiot
 {

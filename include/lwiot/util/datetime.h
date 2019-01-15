@@ -8,10 +8,11 @@
 #pragma once
 
 #include <lwiot.h>
+#include <string.h>
 #include <stdlib.h>
-#include <time.h>
 
-#include <lwiot/string.h>
+#include <lwiot/types.h>
+#include <lwiot/stl/string.h>
 
 namespace lwiot
 {
@@ -75,7 +76,6 @@ namespace lwiot
 
 		/* Methods */
 		void updateGmt() const;
-		void add(const time_t& other);
 		int compare(const time_t& other) const;
 	};
 }

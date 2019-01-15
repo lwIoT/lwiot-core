@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/string.h>
-#include <lwiot/thread.h>
+#include <lwiot/stl/string.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>

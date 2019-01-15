@@ -17,7 +17,7 @@
 #include <lwiot.h>
 
 #include <lwiot/error.h>
-#include <lwiot/list.h>
+#include <lwiot/util/list.h>
 #include <lwiot/log.h>
 
 static struct list_head timers = STATIC_INIT_LIST_HEAD(timers);

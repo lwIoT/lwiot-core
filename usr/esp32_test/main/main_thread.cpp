@@ -11,13 +11,13 @@
 #include <esp_heap_caps.h>
 #include <lwiot.h>
 
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
-#include <lwiot/datetime.h>
+#include <lwiot/util/datetime.h>
 #include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>

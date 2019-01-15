@@ -10,7 +10,7 @@
 #include <stdint.h>
 
 #include <lwiot/types.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 
 #ifdef __cplusplus
 namespace lwiot {

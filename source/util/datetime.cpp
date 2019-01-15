@@ -12,9 +12,9 @@
 #include <time.h>
 #include <lwiot.h>
 
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/types.h>
-#include <lwiot/datetime.h>
+#include <lwiot/util/datetime.h>
 
 namespace lwiot
 {

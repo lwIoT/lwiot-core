@@ -9,20 +9,23 @@
 #include <math.h>
 #include <lwiot.h>
 
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/scopedlock.h>
-#include <lwiot/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/watchdog.h>
+
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/wifistation.h>
-#include <lwiot/measurementvector.h>
 #include <lwiot/network/wifiaccesspoint.h>
-#include <lwiot/application.h>
-#include <lwiot/functionalthread.h>
+
+#include <lwiot/util/application.h>
+#include <lwiot/util/measurementvector.h>
+
+#include <lwiot/kernel/functionalthread.h>
+#include <lwiot/kernel/thread.h>
 
 #include <lwip/api.h>
 #include <lwip/ip_addr.h>

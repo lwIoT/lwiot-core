@@ -21,7 +21,7 @@
 
 #include <sys/time.h>
 
-#include <lwiot/list.h>
+#include <lwiot/util/list.h>
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 

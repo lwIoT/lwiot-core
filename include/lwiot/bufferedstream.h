@@ -11,7 +11,7 @@
 #include <lwiot.h>
 
 #include <lwiot/stream.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/countable.h>
 
 namespace lwiot {

@@ -13,7 +13,7 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
 #include <lwiot/function.h>
-#include <lwiot/defaultallocator.h>
+#include <lwiot/util/defaultallocator.h>
 
 #include <lwiot/stl/move.h>
 #include <lwiot/traits/typechoice.h>

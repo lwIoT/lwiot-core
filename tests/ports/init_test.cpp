@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <lwiot/application.h>
+#include <lwiot/util/application.h>
 #include <lwiot/functor.h>
 #include <lwiot/log.h>
 #include <lwiot/test.h>

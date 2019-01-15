@@ -10,7 +10,7 @@
 
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/bufferedstream.h>
 
 #define BUFFEREDSTREAM_DEFAULT_SIZE 32

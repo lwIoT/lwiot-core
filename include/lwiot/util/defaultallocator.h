@@ -10,6 +10,7 @@
 #include <lwiot.h>
 
 #ifdef CXX
+
 #include <stddef.h>
 
 namespace lwiot

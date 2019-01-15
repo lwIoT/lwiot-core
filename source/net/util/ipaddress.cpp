@@ -16,7 +16,7 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/stdnet.h>

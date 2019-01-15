@@ -10,7 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/thread.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/network/wifistation.h>

@@ -12,7 +12,7 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/error.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/stream.h>
 
 #include <lwiot/network/ipaddress.h>

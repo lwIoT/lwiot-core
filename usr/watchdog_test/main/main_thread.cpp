@@ -5,7 +5,7 @@
 #include <esp_task_wdt.h>
 
 #include <lwiot/thread.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/watchdog.h>
 #include <lwiot/log.h>
 

@@ -10,7 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/kernel/timer.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/types.h>
 #include <lwiot/stl/move.h>
 

@@ -18,7 +18,7 @@
 #include <lwiot/log.h>
 #include <lwiot/scopedlock.h>
 #include <lwiot/function.h>
-#include <lwiot/count.h>
+#include <lwiot/util/count.h>
 #include <lwiot/watchdog.h>
 
 #define BUSY_WAIT 10

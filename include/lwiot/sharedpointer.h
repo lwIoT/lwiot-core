@@ -13,7 +13,7 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/atomic.h>
+#include <lwiot/util/atomic.h>
 #include <lwiot/log.h>
 
 #include <lwiot/stl/move.h>

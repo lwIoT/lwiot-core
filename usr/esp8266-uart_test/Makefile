@@ -1,6 +1,6 @@
 # Makefile for access_point example
 PROGRAM=lwiot_test
-EXTRA_COMPONENTS=extras/dhcpserver
+EXTRA_COMPONENTS=extras/dhcpserver extras/mbedtls
 
 ESP_OPEN_RTOS_PATH=$(LWIOT_PATH)/external/esp8266-open-rtos
 BASE := $(LWIOT_PATH)

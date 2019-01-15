@@ -14,7 +14,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 
 namespace lwiot {
 	class Timer {

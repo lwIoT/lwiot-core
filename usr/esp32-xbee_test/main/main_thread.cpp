@@ -4,10 +4,10 @@
 #include <esp_attr.h>
 #include <lwiot.h>
 
-#include <lwiot/thread.h>
-#include <lwiot/string.h>
+#include <lwiot/kernel/thread.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/uart.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/watchdog.h>
 
 #include <lwiot/network/xbee/xbeeaddress.h>

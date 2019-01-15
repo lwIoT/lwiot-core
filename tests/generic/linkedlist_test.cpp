@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/test.h>
 #include <lwiot/stl/linkedlist.h>
 

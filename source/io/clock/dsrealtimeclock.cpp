@@ -11,7 +11,7 @@
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/realtimeclock.h>
-#include <lwiot/datetime.h>
+#include <lwiot/util/datetime.h>
 #include <lwiot/dsrealtimeclock.h>
 
 #define RTC_SECONDS 0x00

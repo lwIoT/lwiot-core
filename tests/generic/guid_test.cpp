@@ -10,7 +10,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/guid.h>
+#include <lwiot/util/guid.h>
 #include <lwiot/test.h>
 
 #include <lwiot/stl/move.h>

@@ -12,7 +12,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 
 #define DEC 10
 #define HEX 16

@@ -12,7 +12,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/datetime.h>
+#include <lwiot/util/datetime.h>
 
 namespace lwiot
 {

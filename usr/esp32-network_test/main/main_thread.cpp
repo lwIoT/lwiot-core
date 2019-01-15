@@ -10,12 +10,12 @@
 #include <assert.h>
 #include <lwiot.h>
 
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
-#include <lwiot/string.h>
+#include <lwiot/stl/string.h>
 #include <lwiot/watchdog.h>
 #include <lwiot/datetime.h>
-#include <lwiot/application.h>
+#include <lwiot/util/application.h>
 
 #include <lwiot/network/stdnet.h>
 #include <lwiot/network/wifistation.h>

@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include <lwiot.h>
+# include <stdlib.h>
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
+
 #include <lwiot/stl/vector.h>
 
 namespace lwiot
