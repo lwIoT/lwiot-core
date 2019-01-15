@@ -12,7 +12,7 @@
 #include <lwiot/types.h>
 #include <lwiot/realtimeclock.h>
 #include <lwiot/util/datetime.h>
-#include <lwiot/dsrealtimeclock.h>
+#include <lwiot/device/dsrealtimeclock.h>
 
 #define RTC_SECONDS 0x00
 #define RTC_MINUTES 0x01

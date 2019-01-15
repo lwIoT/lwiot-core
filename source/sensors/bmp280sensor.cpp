@@ -14,8 +14,8 @@
 #include <lwiot/log.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/bmpsensor.h>
-#include <lwiot/bmp280sensor.h>
+#include <lwiot/device/bmpsensor.h>
+#include <lwiot/device/bmp280sensor.h>
 
 namespace lwiot
 {

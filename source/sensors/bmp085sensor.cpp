@@ -14,8 +14,8 @@
 #include <lwiot/log.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/bmpsensor.h>
-#include <lwiot/bmp085sensor.h>
+#include <lwiot/device/bmpsensor.h>
+#include <lwiot/device/bmp085sensor.h>
 
 #define BMP_CHECK_REG 0xD0
 #define BMP_CHECK_VALUE 0x55

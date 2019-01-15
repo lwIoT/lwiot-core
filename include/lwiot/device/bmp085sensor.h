@@ -11,7 +11,7 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/i2cbus.h>
-#include <lwiot/bmpsensor.h>
+#include <lwiot/device/bmpsensor.h>
 
 namespace lwiot
 {

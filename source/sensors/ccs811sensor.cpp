@@ -13,7 +13,7 @@
 #include <lwiot/types.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/ccs811sensor.h>
+#include <lwiot/device/ccs811sensor.h>
 
 #define CCS_HW_ID_CODE 0x81
 #define CCS811_REF_RESISTOR 100000

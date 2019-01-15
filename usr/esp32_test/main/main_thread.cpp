@@ -21,8 +21,8 @@
 #include <lwiot/gpioi2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/apds9301sensor.h>
-#include <lwiot/dsrealtimeclock.h>
+#include <lwiot/device/apds9301sensor.h>
+#include <lwiot/device/dsrealtimeclock.h>
 
 #include <lwiot/network/httpserver.h>
 #include <lwiot/network/socketudpserver.h>

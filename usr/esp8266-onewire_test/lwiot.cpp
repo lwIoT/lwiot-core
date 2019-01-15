@@ -13,7 +13,7 @@
 #include <lwiot/log.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
-#include <lwiot/dhtsensor.h>
+#include <lwiot/device/dhtsensor.h>
 
 static lwiot::Thread *tp;
 

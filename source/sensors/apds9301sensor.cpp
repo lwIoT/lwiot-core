@@ -16,7 +16,7 @@
 #include <lwiot/i2cmessage.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/kernel/lock.h>
-#include <lwiot/apds9301sensor.h>
+#include <lwiot/device/apds9301sensor.h>
 
 #define APDS_DEBUG 1
 #ifdef APDS_DEBUG

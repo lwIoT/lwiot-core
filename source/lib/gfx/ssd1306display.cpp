@@ -15,7 +15,7 @@
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/gfxbase.h>
-#include <lwiot/ssd1306display.h>
+#include <lwiot/device/ssd1306display.h>
 
 /* Commands */
 #define SSD1306_SETCONTRAST 0x81

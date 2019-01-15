@@ -11,7 +11,7 @@
 
 #include <lwiot/gpiopin.h>
 #include <lwiot/dhtbus.h>
-#include <lwiot/dhtsensor.h>
+#include <lwiot/device/dhtsensor.h>
 
 #ifndef BIT
 #define BIT(x) (1UL << x)

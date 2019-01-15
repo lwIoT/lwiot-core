@@ -13,7 +13,7 @@
 #include <lwiot/error.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/eeprom24c02.h>
+#include <lwiot/device/eeprom24c02.h>
 #include <lwiot/scopedlock.h>
 
 namespace lwiot

@@ -9,7 +9,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/bmpsensor.h>
+#include <lwiot/device/bmpsensor.h>
 
 typedef int32_t BMP280_S32_t;
 typedef uint32_t BMP280_U32_t;

@@ -21,7 +21,7 @@
 #include <lwiot/i2cbus.h>
 #include <lwiot/gpioi2calgorithm.h>
 
-#include <lwiot/ssd1306display.h>
+#include <lwiot/device/ssd1306display.h>
 
 #include <lwiot/network/wifiaccesspoint.h>
 #include <lwiot/util/datetime.h>
