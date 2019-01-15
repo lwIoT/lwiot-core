@@ -297,6 +297,11 @@ namespace lwiot
 			}
 		}
 
+		constexpr size_t size() const
+		{
+			return this->_size;
+		}
+
 	private:
 		friend class list::Node<T>;
 		node_type* _head;
