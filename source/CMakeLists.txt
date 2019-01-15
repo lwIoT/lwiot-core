@@ -48,87 +48,113 @@ if(HAVE_NETWORKING)
 		${NET_SOURCES}
 )
 endif()
-
-set(GENERIC_HEADERS
+SET(GENERIC_HEADERS
 	lwiot.h
 	ArduinoJson.h
-
-	lwiot/network/tcpclient.h
-	lwiot/network/tcpserver.h
-	lwiot/network/ipaddress.h
-	lwiot/network/wifiaccesspoint.h
-	lwiot/network/wifistation.h
+	lwiot/spibus.h
+	lwiot/adcpin.h
+	lwiot/functor.h
+	lwiot/compiler-gcc.h
+	lwiot/test.h
+	lwiot/lwiot.h
+	lwiot/watchdog.h
+	lwiot/types.h
+	lwiot/function.h
+	lwiot/pwm.h
+	lwiot/compiler.h
+	lwiot/log.h
+	lwiot/i2cmessage.h
+	lwiot/gfxbase.h
+	lwiot/uart.h
+	lwiot/realtimeclock.h
+	lwiot/bufferedstream.h
+	lwiot/spimessage.h
+	lwiot/gpiochip.h
+	lwiot/countable.h
+	lwiot/i2calgorithm.h
+	lwiot/dhtbus.h
+	lwiot/onewirebus.h
+	lwiot/scopedlock.h
+	lwiot/printer.h
+	lwiot/uniquepointer.h
+	lwiot/system.h
+	lwiot/adcchip.h
+	lwiot/stream.h
+	lwiot/dacpin.h
+	lwiot/sharedpointer.h
+	lwiot/gpioi2calgorithm.h
+	lwiot/compiler-vc.h
+	lwiot/dacchip.h
+	lwiot/error.h
+	lwiot/bytebuffer.h
+	lwiot/i2cbus.h
+	lwiot/gpiopin.h
 	lwiot/network/httpserver.h
+	lwiot/network/dns.h
+	lwiot/network/udpclient.h
+	lwiot/network/ipaddress.h
+	lwiot/network/stdnet.h
+	lwiot/network/tcpclient.h
 	lwiot/network/requesthandler.h
+	lwiot/network/sockettcpserver.h
+	lwiot/network/wifistation.h
+	lwiot/network/socketudpserver.h
+	lwiot/network/securetcpclient.h
+	lwiot/network/sockettcpclient.h
+	lwiot/network/captiveportal.h
 	lwiot/network/base64.h
-
+	lwiot/network/wifiaccesspoint.h
+	lwiot/network/tcpserver.h
+	lwiot/network/udpserver.h
+	lwiot/network/socketudpclient.h
 	lwiot/network/xbee/constants.h
 	lwiot/network/xbee/xbeeresponse.h
-
-	lwiot/linkedlist.h
-	lwiot/sharedpointer.h
-	lwiot/uniquepointer.h
-	lwiot/apds9301sensor.h
-	lwiot/measurementvector.h
-	lwiot/application.h
-	lwiot/adcchip.h
-	lwiot/adcpin.h
-	lwiot/bufferedstream.h
-	lwiot/bytebuffer.h
-	lwiot/compiler.h
-	lwiot/compiler-gcc.h
-	lwiot/compiler-vc.h
-	lwiot/config.h.in
-	lwiot/count.h
-	lwiot/countable.h
-	lwiot/dacchip.h
-	lwiot/dacpin.h
-	lwiot/datetime.h
-	lwiot/dhtbus.h
-	lwiot/dhtsensor.h
-	lwiot/eeprom24c02.h
-	lwiot/error.h
-	lwiot/event.h
-	lwiot/functionalthread.h
-	lwiot/gpiochip.h
-	lwiot/gpiopin.h
-	lwiot/i2calgorithm.h
-	lwiot/gpioi2calgorithm.h
-	lwiot/realtimeclock.h
-	lwiot/dsrealtimeclock.h
-	lwiot/atomic.h
-	lwiot/i2cbus.h
-	lwiot/i2cmessage.h
-	lwiot/json.h
-	lwiot/list.h
-	lwiot/lock.h
-	lwiot/log.h
-	lwiot/lwiot.h
-	lwiot/onewirebus.h
-	lwiot/pair.h
-	lwiot/port.h
-	lwiot/pwm.h
-	lwiot/scopedlock.h
-	lwiot/spibus.h
-	lwiot/spimessage.h
-	lwiot/ssd1306display.h
-	lwiot/stream.h
-	lwiot/string.h
-	lwiot/system.h
-	lwiot/test.h
-	lwiot/thread.h
-	lwiot/timer.h
-	lwiot/types.h
-	lwiot/uart.h
-	lwiot/vector.h
-	lwiot/watchdog.h
-	lwiot/printer.h
-	lwiot/gfxbase.h
-	lwiot/bmpsensor.h
-	lwiot/bmp085sensor.h
-	lwiot/bmp280sensor.h
-	lwiot/ccs811sensor.h
-	lwiot/function.h
+	lwiot/network/xbee/xbeeaddress.h
+	lwiot/network/xbee/xbee.h
+	lwiot/network/xbee/xbeerequest.h
+	lwiot/device/bmpsensor.h
+	lwiot/device/eeprom24c02.h
+	lwiot/device/dsrealtimeclock.h
+	lwiot/device/ccs811sensor.h
+	lwiot/device/bmp085sensor.h
+	lwiot/device/dhtsensor.h
+	lwiot/device/ssd1306display.h
+	lwiot/device/bmp280sensor.h
+	lwiot/device/apds9301sensor.h
+	lwiot/stl/vector.h
+	lwiot/stl/move.h
+	lwiot/stl/forward.h
+	lwiot/stl/array.h
+	lwiot/stl/map.h
+	lwiot/stl/linkedlist.h
+	lwiot/stl/tuple.h
+	lwiot/stl/container_of.h
+	lwiot/stl/string.h
+	lwiot/util/guid.h
+	lwiot/util/list.h
+	lwiot/util/application.h
+	lwiot/util/count.h
+	lwiot/util/json.h
+	lwiot/util/datetime.h
+	lwiot/util/atomic.h
+	lwiot/util/measurementvector.h
+	lwiot/util/defaultallocator.h
+	lwiot/util/pair.h
+	lwiot/kernel/port.h
+	lwiot/kernel/event.h
+	lwiot/kernel/lock.h
+	lwiot/kernel/functionalthread.h
+	lwiot/kernel/timer.h
+	lwiot/kernel/thread.h
+	lwiot/traits/integralconstant.h
+	lwiot/traits/isreference.h
+	lwiot/traits/isintegral.h
+	lwiot/traits/removereference.h
+	lwiot/traits/isfloatingpoint.h
+	lwiot/traits/enableif.h
+	lwiot/traits/removecv.h
+	lwiot/traits/typechoice.h
+	lwiot/traits/issame.h
 )
 
 set(BASE_HDRS
@@ -157,7 +183,7 @@ SET(${SOURCES} ${SOURCES})
 add_subdirectory(${PLATFORM_DIRECTORY})
 add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} )
 
-CONFIGURE_FILE(${INCLUDE_DIR}/lwiot/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/scripts/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
 
 foreach(source IN LISTS ${SOURCES})
     get_filename_component(source_path "${source}" PATH)
@@ -165,8 +191,14 @@ foreach(source IN LISTS ${SOURCES})
     source_group("${source_path_msvc}" FILES "${source}")
 endforeach()
 
+SET(PUB_HDRS "")
+LIST(APPEND PUB_HDRS "${GENERIC_HEADERS}")
 
 # Install targets
-INSTALL(TARGETS lwiot DESTINATION lib)
+INSTALL(TARGETS lwiot
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+)
+
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/lwiot_opts.h DESTINATION include)
