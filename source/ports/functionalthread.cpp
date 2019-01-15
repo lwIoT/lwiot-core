@@ -10,7 +10,7 @@
 #include <lwiot.h>
 
 #include <lwiot/function.h>
-#include <lwiot/functionalthread.h>
+#include <lwiot/kernel/functionalthread.h>
 
 namespace lwiot
 {

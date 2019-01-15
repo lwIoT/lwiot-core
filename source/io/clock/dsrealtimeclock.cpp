@@ -80,7 +80,7 @@ namespace lwiot
 	DateTime DsRealTimeClock::now()
 	{
 		I2CMessage tx(1), rx(ReadLength);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 		struct tm tm{};
 		time_t stamp;
 
@@ -156,7 +156,7 @@ namespace lwiot
 	uint8_t DsRealTimeClock::read(uint8_t addr)
 	{
 		I2CMessage tx(1), rx(1);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 
 		tx.write(addr);
 		tx.setRepeatedStart(true);

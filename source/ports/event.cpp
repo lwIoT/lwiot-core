@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/event.h>
+#include <lwiot/kernel/event.h>
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 

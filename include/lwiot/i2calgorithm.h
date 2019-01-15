@@ -13,7 +13,7 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 
 #define MAX_RETRIES 3
 
@@ -31,7 +31,7 @@ namespace lwiot
 		virtual void setFrequency(const uint32_t& freq);
 
 		virtual ssize_t transfer(I2CMessage& msg) = 0;
-		virtual ssize_t transfer(Vector<I2CMessage*>& msgs) = 0;
+		virtual ssize_t transfer(stl::Vector<I2CMessage*>& msgs) = 0;
 
 	protected:
 		uint32_t _frequency;

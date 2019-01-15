@@ -13,9 +13,9 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/i2calgorithm.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/sharedpointer.h>
 
 namespace lwiot
@@ -29,7 +29,7 @@ namespace lwiot
 		I2CBus& operator=(const I2CBus& bus);
 
 		bool transfer(I2CMessage& msg);
-		bool transfer(Vector<I2CMessage*>& msgs);
+		bool transfer(stl::Vector<I2CMessage*>& msgs);
 
 		bool send(int8_t  sla, const ByteBuffer& buffer);
 		bool send(int8_t sla, const void *buffer, size_t size);

@@ -34,7 +34,7 @@ namespace lwiot
 	{
 		I2CMessage rx(1);
 		I2CMessage tx(1);
-		Vector<I2CMessage *> msgs;
+		stl::Vector<I2CMessage *> msgs;
 		ScopedLock lock(this->_lock);
 
 		tx.setRepeatedStart(true);
@@ -91,7 +91,7 @@ namespace lwiot
 	ssize_t Eeprom24C02::read(uint8_t addr, void *data, size_t length)
 	{
 		I2CMessage tx(1), rx(length);
-		Vector<I2CMessage *> msgs;
+		stl::Vector<I2CMessage *> msgs;
 		ScopedLock lock(this->_lock);
 
 		tx.setRepeatedStart(true);

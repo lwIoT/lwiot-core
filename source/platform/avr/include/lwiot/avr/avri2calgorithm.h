@@ -10,7 +10,7 @@
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/gpiopin.h>
 
@@ -24,7 +24,7 @@ namespace lwiot { namespace avr
 		~I2CAlgorithm() override = default;
 
 		ssize_t transfer(I2CMessage& msg) override;
-		ssize_t transfer(Vector<I2CMessage*>& msgs) override;
+		ssize_t transfer(stl::Vector<I2CMessage*>& msgs) override;
 		void setFrequency(const uint32_t& freq) override;
 
 	private:

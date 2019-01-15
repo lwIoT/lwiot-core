@@ -15,9 +15,9 @@
 #include <task.h>
 #endif
 
-#include <lwiot/event.h>
+#include <lwiot/kernel/event.h>
 #include <lwiot/log.h>
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/test.h>
 
 class ThreadTest : public lwiot::Thread {

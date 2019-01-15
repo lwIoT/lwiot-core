@@ -14,7 +14,7 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/gpiopin.h>
 
@@ -112,7 +112,7 @@ namespace lwiot { namespace esp32
 	}
 #endif
 
-	ssize_t I2CAlgorithm::transfer(Vector<I2CMessage*>& msgs)
+	ssize_t I2CAlgorithm::transfer(stl::Vector<I2CMessage*>& msgs)
 	{
 		i2c_cmd_handle_t handle;
 		ssize_t total = 0L;

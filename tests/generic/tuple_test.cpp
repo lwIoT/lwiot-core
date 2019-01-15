@@ -13,7 +13,7 @@
 #include <lwiot/log.h>
 #include <lwiot/function.h>
 #include <lwiot/test.h>
-#include <lwiot/linkedlist.h>
+#include <lwiot/stl/linkedlist.h>
 
 #include <lwiot/stl/tuple.h>
 #include <lwiot/stl/array.h>
@@ -170,7 +170,7 @@ public:
 		bool allocated;
 	};
 
-	typedef lwiot::LinkedList<QueuedItem> Queue;
+	typedef lwiot::stl::LinkedList<QueuedItem> Queue;
 
 	constexpr EventQueueBase()
 	{
@@ -185,7 +185,7 @@ public:
 
 	constexpr void dispatch()
 	{
-		lwiot::LinkedList<QueuedItem> q;
+		Queue q;
 
 		Dispatcher<ReturnType>::dispatch(q, lwiot::stl::move(this->q));
 		assert(q.size() == 1);

@@ -15,7 +15,7 @@
 #include <lwiot/log.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/i2cbus.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/apds9301sensor.h>
 
 #define APDS_DEBUG 1
@@ -231,7 +231,7 @@ namespace lwiot
 	{
 		uint16_t data = 0;
 		lwiot::I2CMessage wr(1), rd(2);
-		lwiot::Vector<lwiot::I2CMessage *> msgs;
+		lwiot::stl::Vector<lwiot::I2CMessage *> msgs;
 
 		wr.write(CMD_REG | addr);
 		wr.setAddress(this->_addr, false, false);
@@ -254,7 +254,7 @@ namespace lwiot
 	bool Apds9301Sensor::read(uint8_t addr, uint8_t &byte)
 	{
 		lwiot::I2CMessage wr(1), rd(1);
-		lwiot::Vector<lwiot::I2CMessage *> msgs;
+		lwiot::stl::Vector<lwiot::I2CMessage *> msgs;
 
 		wr.write(addr);
 		wr.setAddress(this->_addr, false, false);

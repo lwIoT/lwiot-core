@@ -12,8 +12,8 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/log.h>
-#include <lwiot/vector.h>
-#include <lwiot/lock.h>
+#include <lwiot/stl/vector.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/dhtbus.h>
 #include <lwiot/scopedlock.h>
 
@@ -58,7 +58,7 @@ namespace lwiot
 #define INIT_DELAY 250000U
 #define START_DELAY 50000U
 
-	bool DhtBus::_read(Vector<bool>& bits)
+	bool DhtBus::_read(stl::Vector<bool>& bits)
 	{
 		uint32_t low, high;
 
@@ -113,7 +113,7 @@ namespace lwiot
 		return true;
 	}
 
-	bool DhtBus::read(Vector<bool>& bits)
+	bool DhtBus::read(stl::Vector<bool>& bits)
 	{
 		bool retval;
 		ScopedLock lock(this->_lock);

@@ -12,19 +12,19 @@
 
 #include <lwiot/log.h>
 #include <lwiot/test.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 
 struct IteratorTest {
-	void test_const_iter(const lwiot::Vector<int>& vec) const
+	void test_const_iter(const lwiot::stl::Vector<int>& vec) const
 	{
-		for(lwiot::Vector<int>::const_iterator iter = vec.begin(); iter != vec.end(); ++iter) {
+		for(lwiot::stl::Vector<int>::const_iterator iter = vec.begin(); iter != vec.end(); ++iter) {
 			print_dbg("Entry: %i\n", *iter);
 		}
 	}
 
-	void test_iter(lwiot::Vector<int>& vec)
+	void test_iter(lwiot::stl::Vector<int>& vec)
 	{
-		for(lwiot::Vector<int>::iterator iter = vec.begin(); iter != vec.end(); ++iter) {
+		for(lwiot::stl::Vector<int>::iterator iter = vec.begin(); iter != vec.end(); ++iter) {
 			print_dbg("Entry: %i\n", *iter);
 		}
 	}
@@ -35,9 +35,9 @@ int main(int argc, char**argv)
 	lwiot_init();
 
 	IteratorTest test;
-	lwiot::Vector<int> v1;
-	lwiot::Vector<int> v2;
-	lwiot::Vector<int> v3;
+	lwiot::stl::Vector<int> v1;
+	lwiot::stl::Vector<int> v2;
+	lwiot::stl::Vector<int> v3;
 
 	UNUSED(argc);
 	UNUSED(argv);

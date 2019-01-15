@@ -8,10 +8,13 @@
 
 #pragma once
 
-#include <lwiot/string.h>
-#include <lwiot/port.h>
-#include <lwiot/string.h>
+#include <stdlib.h>
+#include <string.h>
+#include <lwiot.h>
+
 #include <lwiot/types.h>
+#include <lwiot/error.h>
+#include <lwiot/string.h>
 
 namespace lwiot {
 	class Timer {

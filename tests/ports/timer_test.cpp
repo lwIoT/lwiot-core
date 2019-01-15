@@ -14,8 +14,8 @@
 #include <task.h>
 #endif
 
-#include <lwiot/timer.h>
-#include <lwiot/thread.h>
+#include <lwiot/kernel/timer.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/test.h>
 

@@ -16,7 +16,7 @@
 #include <lwiot/network/requesthandler.h>
 #include <lwiot/function.h>
 #include <lwiot/network/httpserver.h>
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/network/base64.h>
 
 #include <lwiot/network/ipaddress.h>

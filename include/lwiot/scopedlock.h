@@ -8,7 +8,7 @@
 #include <lwiot.h>
 #include <stdlib.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 
 namespace lwiot

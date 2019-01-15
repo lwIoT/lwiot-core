@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 

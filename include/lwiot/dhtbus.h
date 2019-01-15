@@ -10,8 +10,8 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/gpiopin.h>
 #include <lwiot/log.h>
-#include <lwiot/vector.h>
-#include <lwiot/lock.h>
+#include <lwiot/stl/vector.h>
+#include <lwiot/kernel/lock.h>
 
 namespace lwiot
 {
@@ -25,7 +25,7 @@ namespace lwiot
 		explicit DhtBus(const GpioPin& pin);
 		virtual ~DhtBus();
 
-		bool read(Vector<bool>& output);
+		bool read(stl::Vector<bool>& output);
 		const GpioPin& pin() const;
 
 		static constexpr int Bits = 40;
@@ -46,6 +46,6 @@ namespace lwiot
 
 		/* Methods */
 		bool await(uint32_t tmo, bool expected, uint32_t& duration);
-		bool _read(Vector<bool>& output);
+		bool _read(stl::Vector<bool>& output);
 	};
 }

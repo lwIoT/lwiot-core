@@ -11,9 +11,8 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/measurementvector.h>
-#include "../../../../../../../usr/include/c++/7/deque"
 
 namespace lwiot
 {
@@ -21,7 +20,7 @@ namespace lwiot
 	{
 	}
 
-	MeasurementVector::MeasurementVector(const Vector<double> &_measurements) : _measurements(_measurements)
+	MeasurementVector::MeasurementVector(const stl::Vector<double> &_measurements) : _measurements(_measurements)
 	{
 	}
 
@@ -30,7 +29,7 @@ namespace lwiot
 		this->clear();
 	}
 
-	MeasurementVector &MeasurementVector::operator=(const lwiot::Vector<double> &rhs)
+	MeasurementVector &MeasurementVector::operator=(const stl::Vector<double> &rhs)
 	{
 		this->_measurements = rhs;
 		return *this;
@@ -75,7 +74,7 @@ namespace lwiot
 		double data;
 
 		data = 0.0F;
-		for(Vector<double>::const_iterator iter = this->_measurements.begin();
+		for(stl::Vector<double>::const_iterator iter = this->_measurements.begin();
 				iter != this->_measurements.end(); ++iter) {
 			auto tmp = *iter * *iter;
 			data += tmp;

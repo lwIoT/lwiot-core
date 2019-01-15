@@ -9,6 +9,7 @@
 
 #include <lwiot.h>
 #include <lwiot/string.h>
+
 #include <lwiot/stl/move.h>
 
 namespace lwiot {

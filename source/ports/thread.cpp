@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/thread.h>
+#include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 
 #include <lwiot/stl/move.h>

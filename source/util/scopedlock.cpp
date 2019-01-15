@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/scopedlock.h>
-#include <lwiot/port.h>
+#include <lwiot/kernel/port.h>
 
 namespace lwiot
 {

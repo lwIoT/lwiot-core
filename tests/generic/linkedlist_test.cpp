@@ -11,7 +11,7 @@
 
 #include <lwiot/string.h>
 #include <lwiot/test.h>
-#include <lwiot/linkedlist.h>
+#include <lwiot/stl/linkedlist.h>
 
 #include <lwiot/stl/move.h>
 
@@ -43,12 +43,12 @@ int main(int argc, char **argv)
 	Token t2(b, 1.234, "Hello");
 	Token t3(c, 1.234, "Bye");
 
-	lwiot::LinkedList<Token> list;
+	lwiot::stl::LinkedList<Token> list;
 	list.push_back(t1);
 	list.push_back(t2);
 	list.push_back(t3);
 
-	lwiot::LinkedList<Token> list2(list);
+	lwiot::stl::LinkedList<Token> list2(list);
 
 	for(Token& token : list2) {
 		lwiot::String str = lwiot::stl::move(token.tst);

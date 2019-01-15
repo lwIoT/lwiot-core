@@ -13,8 +13,8 @@
 #include <lwiot/types.h>
 #include <lwiot/error.h>
 #include <lwiot/uniquepointer.h>
-#include <lwiot/thread.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/thread.h>
+#include <lwiot/kernel/lock.h>
 
 #include <lwiot/network/udpclient.h>
 #include <lwiot/network/udpserver.h>

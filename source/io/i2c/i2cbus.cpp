@@ -14,7 +14,7 @@
 #include <lwiot/error.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/scopedlock.h>
@@ -52,7 +52,7 @@ namespace lwiot
 		return this->_algo.get();
 	}
 
-	bool I2CBus::transfer(Vector<I2CMessage*>& msgs)
+	bool I2CBus::transfer(stl::Vector<I2CMessage*>& msgs)
 	{
 		int rv = -EINVALID;
 		ScopedLock lock(*this->_lock);

@@ -16,10 +16,10 @@
 #endif
 
 #include <lwiot/log.h>
-#include <lwiot/thread.h>
-#include <lwiot/functionalthread.h>
+#include <lwiot/kernel/thread.h>
+#include <lwiot/kernel/functionalthread.h>
 #include <lwiot/test.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 
 class ThreadTest : public lwiot::Thread {
 public:

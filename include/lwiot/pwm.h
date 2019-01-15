@@ -11,7 +11,7 @@
 #include <lwiot.h>
 
 #include <lwiot/log.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 #include <lwiot/gpiochip.h>
 #include <lwiot/gpiopin.h>
 
@@ -67,7 +67,7 @@ namespace lwiot
 
 	protected:
 		void addChannel(PwmChannel& channel);
-		Vector<PwmChannel*> _channels;
+		stl::Vector<PwmChannel*> _channels;
 		friend class PwmChannel;
 
 	private:

@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <lwiot.h>
 
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 
 namespace lwiot
 {

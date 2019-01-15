@@ -12,7 +12,6 @@
 
 #include <lwiot/log.h>
 #include <lwiot/test.h>
-#include <lwiot/vector.h>
 #include <lwiot/sharedpointer.h>
 
 #include <lwiot/stl/move.h>

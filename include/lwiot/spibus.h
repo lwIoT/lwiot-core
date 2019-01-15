@@ -13,7 +13,7 @@
 #include <lwiot/spimessage.h>
 #include <lwiot/types.h>
 #include <lwiot/gpiopin.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 
 #ifdef __cplusplus
 namespace lwiot
@@ -29,7 +29,7 @@ namespace lwiot
 		const GpioPin& clk() const;
 
 		virtual bool transfer(SpiMessage& msg);
-		virtual bool transfer(Vector<SpiMessage>& msgs);
+		virtual bool transfer(stl::Vector<SpiMessage>& msgs);
 		virtual void setFrequency(uint32_t freq) = 0;
 
 	protected:

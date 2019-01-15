@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/i2cbus.h>

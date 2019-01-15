@@ -84,7 +84,7 @@ namespace lwiot
 	bool BmpSensor::read(uint8_t reg, uint8_t *rv, size_t num)
 	{
 		I2CMessage wr(1), rd(num);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 
 		wr.write(reg);
 		wr.setAddress(this->_addr, false, false);

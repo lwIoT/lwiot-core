@@ -11,7 +11,7 @@
 
 #include <lwiot/compiler.h>
 #include <lwiot/types.h>
-#include <lwiot/port.h>
+#include <lwiot/kernel/port.h>
 
 #ifdef UNUSED
 #undef UNUSED

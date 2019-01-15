@@ -11,9 +11,10 @@
 #include <string.h>
 #include <lwiot.h>
 
-#include <lwiot/thread.h>
 #include <lwiot/string.h>
 #include <lwiot/function.h>
+
+#include <lwiot/kernel/thread.h>
 
 namespace lwiot
 {

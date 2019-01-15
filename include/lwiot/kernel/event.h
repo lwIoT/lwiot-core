@@ -8,7 +8,7 @@
 #pragma once
 
 #include <lwiot_opts.h>
-#include <lwiot/port.h>
+#include <lwiot/kernel/port.h>
 #include <lwiot/scopedlock.h>
 
 namespace lwiot {

@@ -8,10 +8,15 @@
 
 #pragma once
 
+#include <stdlib.h>
+#include <string.h>
+#include <lwiot.h>
+
 #include <lwiot/error.h>
-#include <lwiot/port.h>
-#include <lwiot/types.h>
+#include <lwiot/string.h>
 #include <lwiot/uniquepointer.h>
+
+#include <lwiot/kernel/thread.h>
 
 namespace lwiot {
 	class Lock {

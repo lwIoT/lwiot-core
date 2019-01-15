@@ -12,17 +12,17 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/vector.h>
+#include <lwiot/stl/vector.h>
 
 namespace lwiot
 {
 	class MeasurementVector {
 	public:
 		explicit MeasurementVector(int num = 0);
-		explicit MeasurementVector(const Vector<double> &_measurements);
+		explicit MeasurementVector(const stl::Vector<double> &_measurements);
 		virtual ~MeasurementVector();
 
-		MeasurementVector& operator =(const Vector<double>& rhs);
+		MeasurementVector& operator =(const stl::Vector<double>& rhs);
 
 		void add(const double& data);
 		void clear();
@@ -32,6 +32,6 @@ namespace lwiot
 		bool operator!=(const MeasurementVector &rhs) const;
 
 	private:
-		Vector<double> _measurements;
+		stl::Vector<double> _measurements;
 	};
 }

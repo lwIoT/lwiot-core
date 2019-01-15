@@ -15,7 +15,7 @@
 #include <lwiot/gpiochip.h>
 #include <lwiot/i2calgorithm.h>
 #include <lwiot/i2cmessage.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 
 namespace lwiot
@@ -27,7 +27,7 @@ namespace lwiot
 		~GpioI2CAlgorithm() override;
 
 		ssize_t transfer(I2CMessage& msg) override;
-		ssize_t transfer(Vector<I2CMessage*>& msgs) override;
+		ssize_t transfer(stl::Vector<I2CMessage*>& msgs) override;
 		void setFrequency(const uint32_t& freq) override;
 
 		bool test();

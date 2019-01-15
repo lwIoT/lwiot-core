@@ -8,7 +8,7 @@
 #pragma once
 
 #include <lwiot/types.h>
-#include <lwiot/lock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/i2cbus.h>
 #include <lwiot/i2cmessage.h>
 #include <lwiot/gfxbase.h>

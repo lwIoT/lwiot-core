@@ -81,7 +81,7 @@ namespace lwiot
 	bool Ccs811Sensor::read(uint8_t reg, uint8_t *buf, size_t length)
 	{
 		I2CMessage wr(1), rd(length);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 
 		wr.setAddress(SlaveAddress, false, false);
 		wr.setRepeatedStart(true);
@@ -187,7 +187,7 @@ namespace lwiot
 	uint8_t Ccs811Sensor::read8(uint8_t reg)
 	{
 		I2CMessage wr(1), rd(1);
-		Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage*> msgs;
 
 		wr.setAddress(SlaveAddress, false, false);
 		wr.setRepeatedStart(true);

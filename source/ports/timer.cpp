@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/timer.h>
+#include <lwiot/kernel/timer.h>
 #include <lwiot/string.h>
 #include <lwiot/types.h>
 #include <lwiot/stl/move.h>
