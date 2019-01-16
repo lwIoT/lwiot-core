@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <lwiot.h>
 
 #ifdef __cplusplus
 namespace lwiot
@@ -63,7 +64,7 @@ namespace lwiot
 
 			explicit String(double, unsigned char decimalPlaces = 2);
 
-			virtual ~String(void);
+			virtual ~String();
 
 			// memory management
 			// return true on success, false on failure (in which case, the string
@@ -71,7 +72,7 @@ namespace lwiot
 			// invalid string (i.e., "if (s)" will be true afterwards)
 			unsigned char reserve(unsigned int size);
 
-			constexpr size_t length()  const noexcept
+			size_t length()  const noexcept
 			{
 				return this->len;
 			}
@@ -339,13 +340,11 @@ namespace lwiot
 			char *buffer;
 			unsigned int capacity;
 			unsigned int len;
+
 		protected:
 			void init(void);
-
 			void invalidate(void);
-
 			unsigned char changeBuffer(unsigned int maxStrLen);
-
 			unsigned char concat(const char *cstr, unsigned int length);
 
 			// copy and move
