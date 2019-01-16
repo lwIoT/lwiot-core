@@ -14,8 +14,6 @@
 #include <lwiot/network/securetcpclient.h>
 #include <lwiot/test.h>
 
-#include <netinet/in.h>
-
 static const char *cert =
 		"-----BEGIN CERTIFICATE-----\n" \
   "MIIDjDCCAnSgAwIBAgIJALeLmnGMkGgXMA0GCSqGSIb3DQEBCwUAMFsxCzAJBgNV\n" \

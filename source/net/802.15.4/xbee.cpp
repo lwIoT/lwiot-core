@@ -73,13 +73,13 @@ namespace lwiot
 		sendByte(checksum, true);
 	}
 
-	void XBee::sendByte(uint8_t b, bool escape)
+	void XBee::sendByte(uint8_t byte, bool escape)
 	{
-		if(escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
+		if(escape && (byte == START_BYTE || byte == ESCAPE || byte == XON || byte == XOFF)) {
 			write(ESCAPE);
-			write(b ^ 0x20);
+			write(byte ^ 0x20);
 		} else {
-			write(b);
+			write(byte);
 		}
 	}
 

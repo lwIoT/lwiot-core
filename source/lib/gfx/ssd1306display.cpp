@@ -202,7 +202,7 @@ namespace lwiot
 		msg.write(cmd);
 		msg.setAddress(Ssd1306Display::SlaveAddress, false, false);
 
-		if(this->_bus.transfer(msg) <= 0) {
+		if(!this->_bus.transfer(msg)) {
 			print_dbg("Unable to send SSD1306 command!\n");
 			return;
 		}

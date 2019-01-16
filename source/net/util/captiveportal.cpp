@@ -244,14 +244,14 @@ finish:
 	void CaptivePortal::run()
 	{
 		size_t num;
-		bool running;
+		bool running_;
 
 		this->_lock.lock();
-		running = this->_running;
+		running_ = this->_running;
 		this->_lock.unlock();
 
-		while(running) {
-			this->yield();
+		while(running_) {
+			Thread::yield();
 			ScopedLock lock(this->_lock);
 			memset(udp_msg, 0, DNS_LEN);
 			num = DNS_LEN;
@@ -262,7 +262,7 @@ finish:
 			if(client)
 				this->respond(*client, udp_msg, num);
 
-			running = this->_running;
+			running_ = this->_running;
 		}
 	}
 }

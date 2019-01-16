@@ -38,7 +38,7 @@ namespace lwiot
 
 		void swap(SharedPointerCount &count) noexcept;
 		long useCount() const;
-		void acquire() noexcept;
+		void acquire() const noexcept;
 
 		template<typename T>
 		CONSTEXPR void acquire(T *p)
@@ -112,7 +112,7 @@ namespace lwiot
 
 		SharedPointer &operator=(const SharedPointer& ptr) noexcept
 		{
-			if(pointer == *this) {
+			if(this->_ptr == ptr._ptr) {
 				return *this;
 			}
 
@@ -125,7 +125,7 @@ namespace lwiot
 		template <typename U>
 		inline SharedPointer& operator=(const SharedPointer<U>& other)
 		{
-			release();
+			this->release();
 
 			this->_pn = other._pn;
 			this->_ptr = static_cast<typename SharedPointer<T>::PointerType *>(other._ptr);
@@ -134,7 +134,7 @@ namespace lwiot
 			return *this;
 		}
 
-		inline SharedPointer& operator=(SharedPointer&& rhs)
+		inline SharedPointer& operator=(SharedPointer&& rhs) noexcept
 		{
 			if(rhs == *this)
 				return *this;

@@ -77,7 +77,7 @@ template<size_t N, size_t ...Indexes>
 struct MakeIndexSequence : MakeIndexSequence<N - 1, N - 1, Indexes...> {
 };
 
-template<std::size_t ...Indexes>
+template<size_t ...Indexes>
 struct MakeIndexSequence<0, Indexes...> {
 	using Type = IndexSequence<Indexes...>;
 };
@@ -133,7 +133,7 @@ public:
 
 		QueuedItem(QueuedItem &&) = delete;
 
-		QueuedItem(const QueuedItem &item) : handler(item.handler), buffer(item.buffer)
+		QueuedItem(const QueuedItem &item) noexcept : handler(item.handler), buffer(item.buffer)
 		{
 			this->allocated = item.allocated;
 		}

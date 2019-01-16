@@ -26,12 +26,3 @@
 #endif
 
 #define BITS_PER_BYTE 8U
-
-#ifdef __cplusplus
-namespace lwiot
-{
-	namespace lib
-	{
-	}
-}
-#endif

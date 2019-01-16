@@ -5,15 +5,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #ifdef WIN32
+#include <WS2tcpip.h>
 #include <WinSock2.h>
+#pragma comment(lib, "Ws2_32.lib")
 #else
 #include <unistd.h>
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #endif
+
 
 int main(int argc, char **argv) {
 	const char* server_name;
@@ -33,7 +37,7 @@ int main(int argc, char **argv) {
 	memset(&server_address, 0, sizeof(server_address));
 	server_address.sin_family = AF_INET;
 	inet_pton(AF_INET, server_name, &server_address.sin_addr);
-	server_address.sin_port = htons(server_port);
+	server_address.sin_port = htons((uint16_t)server_port);
 
 	if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("Could not create socket\n");
@@ -50,7 +54,8 @@ int main(int argc, char **argv) {
 
 	int n = 0;
 	int len = 0, maxlen = 100;
-	char buffer[maxlen];
+
+	char *buffer = malloc(maxlen);
 	char* pbuffer = buffer;
 
 	while ((n = recv(sock, pbuffer, maxlen, 0)) > 0) {
@@ -62,6 +67,7 @@ int main(int argc, char **argv) {
 		printf("Received: '%s'\n", buffer);
 	}
 
-	close(sock);
+	free(buffer);
+	closesocket(sock);
 	return 0;
 }

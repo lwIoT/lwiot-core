@@ -70,6 +70,10 @@ constexpr void *operator new(size_t s, T *v)
 	return v;
 }
 #endif
+
+template<typename T>
+constexpr void operator delete(void *, T*)
+{ }
 #endif
 
 #endif

@@ -13,6 +13,10 @@
 #include <lwiot/types.h>
 #include <lwiot/error.h>
 
+#ifdef WIN32
+#include <WinSock2.h>
+#endif
+
 #ifndef HAVE_SOCKET_DEFINITION
 typedef long socket_t;
 #endif
@@ -23,7 +27,11 @@ typedef long secure_socket_t;
 
 static inline uint32_t lwiot_bswap_32(uint32_t __bsx)
 {
+#ifdef WIN32
+	return htonl(__bsx);
+#else
 	return __builtin_bswap32(__bsx);
+#endif
 }
 
 #define _HTONS(n) (((((unsigned short)(n) & 0xFF)) << 8) | (((unsigned short)(n) & 0xFF00) >> 8))

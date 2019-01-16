@@ -160,7 +160,7 @@ namespace lwiot
 				this->copy(other);
 			}
 
-			CONSTEXPR explicit LinkedList(LinkedList<T> &&other) noexcept
+			CONSTEXPR explicit LinkedList(LinkedList<T> &&other) noexcept : _head(nullptr), _size(0)
 			{
 				this->_size = other._size;
 				this->_head = other._head;
@@ -309,7 +309,7 @@ namespace lwiot
 			}
 
 		private:
-			friend class list::Node<T>;
+			friend struct list::Node<T>;
 
 			node_type *_head;
 			size_t _size;

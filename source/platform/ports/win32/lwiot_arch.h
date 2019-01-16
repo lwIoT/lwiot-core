@@ -8,11 +8,12 @@
 
 #pragma once
 
+#define DLL_EXPORT __declspec(dllexport)
 #include <WinSock2.h>
 #include <Windows.h>
 
 #include <lwiot/types.h>
-#include <lwiot/list.h>
+#include <lwiot/util/list.h>
 
 #ifdef __cplusplus
 extern "C" {

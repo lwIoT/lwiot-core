@@ -11,12 +11,15 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/stl/vector.h>
+
 #include <lwiot/util/measurementvector.h>
+
+#include <lwiot/stl/vector.h>
+#include <lwiot/stl/move.h>
 
 namespace lwiot
 {
-	MeasurementVector::MeasurementVector(int num) : _measurements(num)
+	MeasurementVector::MeasurementVector(int num) : _measurements(stl::move(num))
 	{
 	}
 

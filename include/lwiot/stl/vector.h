@@ -57,7 +57,7 @@ namespace lwiot
 
 				Iterator &operator++()
 				{
-					this->_index++;
+					++this->_index;
 					return *this;
 				}
 
@@ -111,7 +111,7 @@ namespace lwiot
 			{
 			}
 
-			explicit Vector(const size_t &&s) : _index(0), _objects(nullptr), _space(0)
+			explicit Vector(const size_t &s) : _index(0), _objects(nullptr), _space(0)
 			{
 				this->reserve(s);
 			}

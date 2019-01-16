@@ -13,29 +13,29 @@
 
 CDECL
 
-typedef struct __attribute__ ((packed)) {
+typedef struct PACKED_ATTR {
 	uint8_t len;
 	uint8_t data;
 } DnsLabel;
 
-typedef struct __attribute__ ((packed)) {
+typedef struct PACKED_ATTR {
 	uint16_t type;
 	uint16_t q_class;
 } DnsQuestionFooter;
 
-typedef struct __attribute__ ((packed)) {
+typedef struct PACKED_ATTR {
 	uint16_t type;
 	uint16_t r_class;
 	uint32_t ttl;
 	uint16_t rdlength;
 } DnsResourceFooter;
 
-typedef struct __attribute__ ((packed)) {
+typedef struct  PACKED_ATTR {
 	uint16_t prio;
 	uint16_t weight;
 } DnsUriHdr;
 
-typedef struct __attribute__ ((packed)) {
+typedef struct PACKED_ATTR {
 	uint16_t id;
 	uint8_t flags;
 	uint8_t rcode;

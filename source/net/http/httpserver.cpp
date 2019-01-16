@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <lwiot.h>
@@ -157,6 +159,7 @@ namespace lwiot
 
 		bool keepCurrentClient = false;
 		bool callYield = false;
+		lwiot_sleep(100);
 
 		if(_currentClient->connected()) {
 			switch(_currentStatus) {
@@ -999,7 +1002,12 @@ readfile:
 									}
 								}
 
+#ifdef WIN32
+								uint8_t *endBuf = new uint8_t[boundary.length()];
+								UniquePointer<uint8_t> bufmanager(endBuf);
+#else
 								uint8_t endBuf[boundary.length()];
+#endif
 								client.read(endBuf, boundary.length());
 
 								if(strstr((const char *) endBuf, boundary.c_str()) != nullptr) {

@@ -14,6 +14,7 @@
 #define __compiler_unlikely(x) (x)
 
 #define CONSTEXPR constexpr
+#define PACKED_ATTR
 
 #ifndef __never_inline
 #define __never_inline
@@ -31,7 +32,9 @@
 #pragma warning (disable : 4201)
 #pragma warning (disable : 4244)
 
+#ifndef DLL_EXPORT
 #define DLL_EXPORT __declspec(dllexport)
+#endif
 #define __always_inline __forceinline
 
 #pragma comment(lib, "Ws2_32.lib")

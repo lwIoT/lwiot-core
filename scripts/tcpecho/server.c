@@ -8,14 +8,25 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#ifdef WIN32
+#include <WS2tcpip.h>
+#include <WinSock2.h>
+#pragma comment(lib, "Ws2_32.lib")
+#else
 #include <unistd.h>
 
-#include <sys/types.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#endif
+
+#include <sys/types.h>
+#include <stdint.h>
 
 #define BUFFER_SIZE 1024
 #define on_error(...) { fprintf(stderr, __VA_ARGS__); fflush(stderr); exit(1); }
+
 
 static void run(int port)
 {
@@ -27,10 +38,10 @@ static void run(int port)
 	if (server_fd < 0) on_error("Could not create socket\n");
 
 	server.sin_family = AF_INET;
-	server.sin_port = htons(port);
+	server.sin_port = htons((uint16_t)port);
 	server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-	int opt_val = 1;
+	char opt_val = 1;
 	setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof opt_val);
 
 	err = bind(server_fd, (struct sockaddr *) &server, sizeof(server));
@@ -43,7 +54,7 @@ static void run(int port)
 
 	while (1) {
 		socklen_t client_len = sizeof(client);
-		bzero(buf, sizeof(buf));
+		memset(buf, 0, sizeof(buf));
 		client_fd = accept(server_fd, (struct sockaddr *) &client, &client_len);
 
 		if (client_fd < 0) on_error("Could not establish new connection\n");

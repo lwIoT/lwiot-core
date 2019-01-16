@@ -28,7 +28,7 @@ static void test_udp_client()
 	lwiot::SocketUdpClient client(ip, 5000);
 
 	assert(client.write(buffer, sizeof(buffer)) > 0);
-	bzero(readback, sizeof(readback));
+	memset(readback, 0, sizeof(readback));
 
 	while(client.available() == 0);
 	assert(client.read(readback, sizeof(readback)) > 0);

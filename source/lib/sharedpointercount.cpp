@@ -29,7 +29,7 @@ namespace lwiot
 
 	void SharedPointerCount::swap(lwiot::SharedPointerCount &cnt) noexcept
 	{
-		lwiot::stl::swap(this->_count, count._count);
+		lwiot::stl::swap(this->_count, cnt._count);
 	}
 
 	long SharedPointerCount::useCount() const
@@ -37,7 +37,7 @@ namespace lwiot
 		return this->_count->value();
 	}
 
-	void SharedPointerCount::acquire() noexcept
+	void SharedPointerCount::acquire() const noexcept
 	{
 		assert(this->_count != nullptr);
 		this->_count->add(1L);

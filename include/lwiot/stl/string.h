@@ -71,9 +71,9 @@ namespace lwiot
 			// invalid string (i.e., "if (s)" will be true afterwards)
 			unsigned char reserve(unsigned int size);
 
-			inline unsigned int length(void) const
+			constexpr size_t length()  const noexcept
 			{
-				return len;
+				return this->len;
 			}
 
 			// creates a copy of the assigned value.  if the value is null or
@@ -336,9 +336,9 @@ namespace lwiot
 			double toDouble(void) const;
 
 		protected:
-			char *buffer;            // the actual char array
-			unsigned int capacity;  // the array length minus one (for the '\0')
-			unsigned int len;       // the String length (not counting the '\0')
+			char *buffer;
+			unsigned int capacity;
+			unsigned int len;
 		protected:
 			void init(void);
 

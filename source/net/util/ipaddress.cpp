@@ -193,11 +193,7 @@ namespace lwiot
 			break;
 
 		case BIND6_ADDR_ANY:
-#ifdef AVR
-			memset(ip._address.bytes, 0, sizeof(ip._address.bytes));
-#else
-			bzero(ip._address.bytes, sizeof(ip._address.bytes));
-#endif
+		memset(ip._address.bytes, 0, sizeof(ip._address.bytes));
 		/*case BIND6_ADDR_LB:
 #ifdef HAVE_BIG_ENDIAN
 			uint32_t raw = 1;

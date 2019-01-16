@@ -17,6 +17,8 @@
 
 #define __maybe __attribute__((weak))
 
+#define PACKED_ATTR __attribute__((packed))
+
 #if __cplusplus >= 201402L
 #define CONSTEXPR constexpr
 #else
