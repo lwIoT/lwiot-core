@@ -110,8 +110,8 @@ public:
 
 		~QueuedItem()
 		{
-			if(allocated) {
-				clear();
+			if(this->allocated) {
+				this->clear();
 			}
 		}
 
@@ -152,17 +152,17 @@ public:
 
 		QueuedEvent &get()
 		{
-			assert(allocated);
+			assert(this->allocated);
 
 			return *reinterpret_cast<QueuedEvent *>(buffer.data());
 		}
 
 		void clear()
 		{
-			assert(allocated);
+			assert(this->allocated);
 
 			get().~QueuedEvent();
-			allocated = false;
+			this->allocated = false;
 		}
 
 		HandlerType handler;

@@ -60,9 +60,9 @@ int main(int argc, char **argv)
 
 	auto iter = list2.begin();
 	++iter;
-	list2.remove(iter);
+	list2.erase(iter);
 	++iter;
-	list2.remove(iter);
+	list2.erase(iter);
 
 	for(const Token& token : list2) {
 		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);

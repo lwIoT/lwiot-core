@@ -219,7 +219,12 @@ namespace lwiot
 				delete node;
 			}
 
-			CONSTEXPR void remove(iterator &iter)
+			CONSTEXPR void erase(const_iterator&  iter)
+			{
+				this->remove(iter.node());
+			}
+
+			CONSTEXPR void erase(iterator& iter)
 			{
 				this->remove(iter.node());
 			}
