@@ -17,6 +17,8 @@
 
 #include <lwiot/stl/tuple.h>
 #include <lwiot/stl/array.h>
+#include <lwiot/kernel/event.h>
+#include <lwiot/stl/vector.h>
 
 template<typename T>
 struct identity {
@@ -122,7 +124,7 @@ public:
 		constexpr R dispatch(IndexSequence<Indexes...>)
 		{
 			return this->invoke(lwiot::stl::get<Indexes>(
-					lwiot::stl::forward<QueuedEvent>(this->get()))...
+					lwiot::stl::forward<QueuedEvent>( this->get() ))...
 			);
 		}
 
@@ -200,6 +202,8 @@ public:
 
 private:
 	QueuedItem q;
+	lwiot::Event _notfull_event;
+	lwiot::stl::LinkedList<QueuedItem> _items;
 };
 
 int main(int argc, char **argv)
