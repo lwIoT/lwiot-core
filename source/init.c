@@ -47,5 +47,7 @@ void lwiot_init(void)
 void lwiot_destroy(void)
 {
 	lwiot_timers_destroy();
+#ifdef WIN32
 	WSACleanup();
+#endif
 }
