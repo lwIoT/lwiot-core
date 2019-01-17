@@ -125,7 +125,7 @@ IF(RTTI)
 	-mtext-section-literals -ffunction-sections -fdata-sections")
 ELSE()
 	set(PORT_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin \
-	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
+	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -Wc++14-compat \
 	-mtext-section-literals -ffunction-sections -fdata-sections -fstack-protector")
 ENDIF()
 
