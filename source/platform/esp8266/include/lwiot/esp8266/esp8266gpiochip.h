@@ -9,7 +9,7 @@
 
 #include <esp8266.h>
 #include <lwiot.h>
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 
 #include <esp/gpio.h>
 

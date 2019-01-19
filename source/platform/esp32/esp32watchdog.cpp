@@ -10,7 +10,7 @@
 #include <lwiot.h>
 #include <esp_task_wdt.h>
 
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 #include <lwiot/esp32/esp32watchdog.h>
 
 namespace lwiot { namespace esp32

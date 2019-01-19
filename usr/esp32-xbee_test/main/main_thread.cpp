@@ -6,9 +6,9 @@
 
 #include <lwiot/kernel/thread.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/uart.h>
+#include <lwiot/io/uart.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 
 #include <lwiot/network/xbee/xbeeaddress.h>
 #include <lwiot/network/xbee/xbeeresponse.h>

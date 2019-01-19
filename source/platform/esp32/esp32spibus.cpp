@@ -10,8 +10,8 @@
 #include <lwiot.h>
 #include <esp_system.h>
 
-#include <lwiot/spibus.h>
-#include <lwiot/spimessage.h>
+#include <lwiot/io/spibus.h>
+#include <lwiot/io/spimessage.h>
 #include <lwiot/log.h>
 
 #include <lwiot/esp32/esp32spibus.h>

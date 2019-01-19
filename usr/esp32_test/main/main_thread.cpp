@@ -14,13 +14,13 @@
 #include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/gpiopin.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/watchdog.h>
 #include <lwiot/util/datetime.h>
-#include <lwiot/gpioi2calgorithm.h>
-#include <lwiot/i2cbus.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/gpioi2calgorithm.h>
+#include <lwiot/io/i2cbus.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/device/apds9301sensor.h>
 #include <lwiot/device/dsrealtimeclock.h>
 

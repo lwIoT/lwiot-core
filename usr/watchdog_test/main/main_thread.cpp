@@ -6,7 +6,7 @@
 
 #include <lwiot/thread.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 #include <lwiot/log.h>
 
 #include <lwiot/esp32/esp32watchdog.h>

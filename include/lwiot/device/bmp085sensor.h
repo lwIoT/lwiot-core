@@ -10,7 +10,7 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/i2cbus.h>
+#include <lwiot/io/i2cbus.h>
 #include <lwiot/device/bmpsensor.h>
 
 namespace lwiot

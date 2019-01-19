@@ -7,9 +7,9 @@
 
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/gpiopin.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/watchdog.h>
 
 #include <lwiot/esp8266/esp8266watchdog.h>
 

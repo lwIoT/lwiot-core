@@ -13,7 +13,7 @@
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
 #include <lwiot/types.h>
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiopin.h>
 #include <lwiot/bytebuffer.h>
 
 #ifdef __cplusplus

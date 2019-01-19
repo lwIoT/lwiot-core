@@ -15,11 +15,11 @@
 #include <lwiot/stl/string.h>
 
 #include <lwiot/log.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/gpiopin.h>
-#include <lwiot/watchdog.h>
-#include <lwiot/i2cbus.h>
-#include <lwiot/gpioi2calgorithm.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/watchdog.h>
+#include <lwiot/io/i2cbus.h>
+#include <lwiot/io/gpioi2calgorithm.h>
 
 #include <lwiot/device/ssd1306display.h>
 

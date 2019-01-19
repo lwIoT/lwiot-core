@@ -9,7 +9,7 @@
 
 #include <lwiot.h>
 
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiopin.h>
 
 #ifdef __cplusplus
 #include <lwiot/stl/vector.h>

@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
-#include <lwiot/uart.h>
+#include <lwiot/io/uart.h>
 #include <lwiot/stream.h>
 
 #include <esp/uart.h>

@@ -12,7 +12,7 @@
 #include <lwiot.h>
 
 #include <lwiot/log.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 
 namespace lwiot { namespace avr
 {

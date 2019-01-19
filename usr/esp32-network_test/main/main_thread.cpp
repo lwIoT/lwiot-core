@@ -13,7 +13,7 @@
 #include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 #include <lwiot/datetime.h>
 #include <lwiot/util/application.h>
 

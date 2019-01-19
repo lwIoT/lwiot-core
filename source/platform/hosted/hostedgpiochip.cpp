@@ -9,7 +9,7 @@
 #include <lwiot.h>
 
 #include <lwiot/log.h>
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 #include <lwiot/util/pair.h>
 #include <lwiot/hosted/hostedgpiochip.h>
 

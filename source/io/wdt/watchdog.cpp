@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 
 
 namespace lwiot

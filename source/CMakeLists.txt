@@ -48,47 +48,31 @@ if(HAVE_NETWORKING)
 		${NET_SOURCES}
 )
 endif()
+
 SET(GENERIC_HEADERS
 	lwiot.h
 	ArduinoJson.h
-	lwiot/spibus.h
-	lwiot/adcpin.h
 	lwiot/functor.h
 	lwiot/compiler-gcc.h
 	lwiot/test.h
 	lwiot/lwiot.h
-	lwiot/watchdog.h
 	lwiot/types.h
 	lwiot/function.h
-	lwiot/pwm.h
 	lwiot/compiler.h
 	lwiot/log.h
-	lwiot/i2cmessage.h
 	lwiot/gfxbase.h
-	lwiot/uart.h
 	lwiot/realtimeclock.h
 	lwiot/bufferedstream.h
-	lwiot/spimessage.h
-	lwiot/gpiochip.h
 	lwiot/countable.h
-	lwiot/i2calgorithm.h
-	lwiot/dhtbus.h
-	lwiot/onewirebus.h
 	lwiot/scopedlock.h
 	lwiot/printer.h
 	lwiot/uniquepointer.h
 	lwiot/system.h
-	lwiot/adcchip.h
 	lwiot/stream.h
-	lwiot/dacpin.h
 	lwiot/sharedpointer.h
-	lwiot/gpioi2calgorithm.h
 	lwiot/compiler-vc.h
-	lwiot/dacchip.h
 	lwiot/error.h
 	lwiot/bytebuffer.h
-	lwiot/i2cbus.h
-	lwiot/gpiopin.h
 	lwiot/network/httpserver.h
 	lwiot/network/dns.h
 	lwiot/network/udpclient.h
@@ -112,6 +96,23 @@ SET(GENERIC_HEADERS
 	lwiot/network/xbee/xbeeaddress.h
 	lwiot/network/xbee/xbee.h
 	lwiot/network/xbee/xbeerequest.h
+	lwiot/io/spibus.h
+	lwiot/io/adcpin.h
+	lwiot/io/watchdog.h
+	lwiot/io/pwm.h
+	lwiot/io/i2cmessage.h
+	lwiot/io/uart.h
+	lwiot/io/spimessage.h
+	lwiot/io/gpiochip.h
+	lwiot/io/i2calgorithm.h
+	lwiot/io/dhtbus.h
+	lwiot/io/onewirebus.h
+	lwiot/io/adcchip.h
+	lwiot/io/dacpin.h
+	lwiot/io/gpioi2calgorithm.h
+	lwiot/io/dacchip.h
+	lwiot/io/i2cbus.h
+	lwiot/io/gpiopin.h
 	lwiot/device/bmpsensor.h
 	lwiot/device/eeprom24c02.h
 	lwiot/device/dsrealtimeclock.h
@@ -155,7 +156,7 @@ SET(GENERIC_HEADERS
 	lwiot/traits/removecv.h
 	lwiot/traits/typechoice.h
 	lwiot/traits/issame.h
-)
+	)
 
 set(BASE_HDRS
     ${PROJECT_SOURCE_DIR}/include/lwiot.h

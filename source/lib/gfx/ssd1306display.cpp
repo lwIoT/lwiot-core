@@ -12,8 +12,8 @@
 #include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/types.h>
-#include <lwiot/i2cbus.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/i2cbus.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/gfxbase.h>
 #include <lwiot/device/ssd1306display.h>
 

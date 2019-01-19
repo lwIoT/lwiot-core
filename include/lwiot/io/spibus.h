@@ -10,9 +10,9 @@
 #include <lwiot.h>
 #include <stdlib.h>
 
-#include <lwiot/spimessage.h>
+#include <lwiot/io/spimessage.h>
 #include <lwiot/types.h>
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiopin.h>
 #include <lwiot/stl/vector.h>
 
 #ifdef __cplusplus

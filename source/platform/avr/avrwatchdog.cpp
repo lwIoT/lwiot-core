@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 #include <lwiot/avr/avrwatchdog.h>
 #include <lwiot/log.h>
 

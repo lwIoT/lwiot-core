@@ -9,7 +9,7 @@
 #include <lwiot.h>
 
 #include <lwiot/log.h>
-#include <lwiot/dacchip.h>
+#include <lwiot/io/dacchip.h>
 #include <lwiot/test.h>
 
 class TestDacChip : public lwiot::DacChip {

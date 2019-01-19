@@ -8,7 +8,7 @@
 #pragma once
 
 #include <lwiot/lwiot.h>
-#include <lwiot/adcchip.h>
+#include <lwiot/io/adcchip.h>
 
 #include <lwiot/esp32/esp32primaryadc.h>
 #include <lwiot/esp32/esp32secondaryadc.h>

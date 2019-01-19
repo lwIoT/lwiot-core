@@ -13,9 +13,9 @@
 #include <lwiot/scopedlock.h>
 #include <lwiot/log.h>
 #include <lwiot/stream.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/gpiopin.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/watchdog.h>
 
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/network/wifistation.h>
@@ -53,6 +53,8 @@ public:
 				wdt.reset();
 				lwiot_sleep(50);
 			}
+
+			print_dbg("Ping!\n");
 		}
 	}
 };

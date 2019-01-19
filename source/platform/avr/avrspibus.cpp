@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/spibus.h>
+#include <lwiot/io/spibus.h>
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 

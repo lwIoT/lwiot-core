@@ -10,11 +10,11 @@
 #include <lwiot.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiopin.h>
 #include <lwiot/log.h>
 #include <lwiot/stl/vector.h>
 #include <lwiot/kernel/lock.h>
-#include <lwiot/dhtbus.h>
+#include <lwiot/io/dhtbus.h>
 #include <lwiot/scopedlock.h>
 
 namespace lwiot

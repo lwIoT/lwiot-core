@@ -13,10 +13,10 @@
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 #include <lwiot/types.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/stl/vector.h>
-#include <lwiot/i2calgorithm.h>
-#include <lwiot/i2cbus.h>
+#include <lwiot/io/i2calgorithm.h>
+#include <lwiot/io/i2cbus.h>
 #include <lwiot/scopedlock.h>
 
 namespace lwiot

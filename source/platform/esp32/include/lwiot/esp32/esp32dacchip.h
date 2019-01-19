@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <lwiot.h>
 
-#include <lwiot/dacchip.h>
+#include <lwiot/io/dacchip.h>
 
 #include <driver/gpio.h>
 #include <driver/dac.h>

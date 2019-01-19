@@ -13,7 +13,7 @@
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/realtimeclock.h>
-#include <lwiot/i2cbus.h>
+#include <lwiot/io/i2cbus.h>
 
 namespace lwiot
 {

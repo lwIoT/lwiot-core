@@ -8,8 +8,8 @@
 #include <lwiot.h>
 #include <stdlib.h>
 
-#include <lwiot/dacchip.h>
-#include <lwiot/dacpin.h>
+#include <lwiot/io/dacchip.h>
+#include <lwiot/io/dacpin.h>
 
 namespace lwiot
 {

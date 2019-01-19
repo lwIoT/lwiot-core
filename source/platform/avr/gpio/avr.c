@@ -6,7 +6,7 @@
 #include <avr/pgmspace.h>
 
 #include <lwiot.h>
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 
 #include <lwiot/avr/avrgpiochip.h>
 

@@ -13,7 +13,7 @@
 #include <esp8266.h>
 
 #include <lwiot/log.h>
-#include <lwiot/uart.h>
+#include <lwiot/io/uart.h>
 #include <lwiot/types.h>
 
 #include <esp/gpio.h>

@@ -10,7 +10,7 @@
 #include <math.h>
 #include <lwiot.h>
 
-#include <lwiot/dacchip.h>
+#include <lwiot/io/dacchip.h>
 
 namespace lwiot
 {

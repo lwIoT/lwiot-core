@@ -85,22 +85,21 @@ struct MakeIndexSequence<0, Indexes...> {
 };
 
 template<typename Proto, typename P>
-class EventQueueBase;
+class TupleTest;
 
 template<typename P, typename R, typename ...Args>
-class EventQueueBase<R(Args...), P> {
+class TupleTest<R(Args...), P> {
 public:
 	typedef P PolicyType;
 	typedef R ReturnType;
 	typedef lwiot::Function<ReturnType(*)(Args...)> HandlerType;
-	typedef EventQueueBase<P, R(Args...)> Base;
+	typedef TupleTest<P, R(Args...)> Base;
 
 	using QueuedEvent = lwiot::stl::Tuple<
 			typename lwiot::traits::RemoveCv<typename lwiot::traits::RemoveCv<Args>::type>::type...
 	>;
 
-	static_assert(lwiot::IsVoid<ReturnType>::value || IsBool<ReturnType>::value,
-	              "Handler return value should be of type bool or void!");
+	static_assert(lwiot::IsVoid<ReturnType>::value || IsBool<ReturnType>::value, "Handler return value should be of type bool or void!");
 
 	class QueuedItem {
 	public:
@@ -115,7 +114,7 @@ public:
 			}
 		}
 
-		R invoke(Args... args)
+		ReturnType invoke(Args... args)
 		{
 			return this->handler(args...);
 		}
@@ -174,7 +173,7 @@ public:
 
 	typedef lwiot::stl::LinkedList<QueuedItem> Queue;
 
-	constexpr EventQueueBase()
+	constexpr TupleTest()
 	{
 		this->q.handler = HandlerType(func);
 	}
@@ -209,7 +208,7 @@ private:
 int main(int argc, char **argv)
 {
 	lwiot_init();
-	EventQueueBase<bool(int, int, double), int> eq;
+	TupleTest<bool(int, int, double), int> eq;
 
 	eq.enqueue(1, 4, 1.1234);
 	eq.dispatch();

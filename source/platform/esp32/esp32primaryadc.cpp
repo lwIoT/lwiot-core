@@ -11,7 +11,7 @@
 #include <esp_system.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/adcchip.h>
+#include <lwiot/io/adcchip.h>
 #include <lwiot/esp32/esp32primaryadc.h>
 
 #include <driver/adc.h>

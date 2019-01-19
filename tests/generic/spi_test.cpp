@@ -9,8 +9,8 @@
 #include <lwiot.h>
 
 #include <lwiot/test.h>
-#include <lwiot/spimessage.h>
-#include <lwiot/spibus.h>
+#include <lwiot/io/spimessage.h>
+#include <lwiot/io/spibus.h>
 #include <lwiot/types.h>
 
 #include <stack>

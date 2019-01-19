@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <lwiot/spibus.h>
+#include <lwiot/io/spibus.h>
 
 #ifdef __cplusplus
 extern "C" {

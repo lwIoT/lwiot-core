@@ -15,7 +15,7 @@
 #include <stdio.h>
 
 #include <lwiot/log.h>
-#include <lwiot/uart.h>
+#include <lwiot/io/uart.h>
 #include <lwiot/error.h>
 #include <lwiot/avr/avrgpiochip.h>
 #include <lwiot/avr/avruart.h>

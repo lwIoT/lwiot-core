@@ -12,8 +12,8 @@
 #include <lwiot/stream.h>
 #include <lwiot/types.h>
 #include <lwiot/bufferedstream.h>
-#include <lwiot/spimessage.h>
-#include <lwiot/spibus.h>
+#include <lwiot/io/spimessage.h>
+#include <lwiot/io/spibus.h>
 
 namespace lwiot
 {

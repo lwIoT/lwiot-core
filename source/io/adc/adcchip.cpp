@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/adcchip.h>
+#include <lwiot/io/adcchip.h>
 
 namespace lwiot
 {

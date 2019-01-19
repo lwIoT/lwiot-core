@@ -12,7 +12,7 @@
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 #include <lwiot/types.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/stl/vector.h>
 
 #define MAX_RETRIES 3

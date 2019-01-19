@@ -10,7 +10,7 @@
 #include <esp8266.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/adcchip.h>
+#include <lwiot/io/adcchip.h>
 #include <lwiot/esp8266/esp8266adcchip.h>
 
 #include <espressif/esp_system.h>

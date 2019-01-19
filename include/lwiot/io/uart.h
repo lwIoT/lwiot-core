@@ -13,10 +13,10 @@
 
 #ifdef __cplusplus
 
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiopin.h>
 #include <lwiot/stream.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 
 #endif
 

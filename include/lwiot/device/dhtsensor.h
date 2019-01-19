@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <lwiot.h>
 
-#include <lwiot/gpiopin.h>
-#include <lwiot/dhtbus.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/dhtbus.h>
 
 namespace lwiot
 {

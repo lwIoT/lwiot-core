@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <lwiot/spibus.h>
-#include <lwiot/spimessage.h>
+#include <lwiot/io/spibus.h>
+#include <lwiot/io/spimessage.h>
 #include <lwiot/log.h>
 
 #include <driver/gpio.h>

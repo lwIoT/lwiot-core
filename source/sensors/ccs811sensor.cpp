@@ -11,8 +11,8 @@
 
 #include <lwiot/lwiot.h>
 #include <lwiot/types.h>
-#include <lwiot/i2cbus.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/i2cbus.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/device/ccs811sensor.h>
 
 #define CCS_HW_ID_CODE 0x81

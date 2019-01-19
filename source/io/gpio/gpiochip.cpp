@@ -7,8 +7,8 @@
 
 #include <stdio.h>
 
-#include <lwiot/gpiochip.h>
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/gpiopin.h>
 #include <lwiot/error.h>
 
 extern lwiot::GpioPin iopins[];

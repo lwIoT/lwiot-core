@@ -12,7 +12,7 @@
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 #include <lwiot/types.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/i2cmessage.h>
 
 #define I2CMESSAGE_DEFAULT_SIZE 8UL
 

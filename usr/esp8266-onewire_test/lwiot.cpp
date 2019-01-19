@@ -11,8 +11,8 @@
 #include <lwiot/stl/string.h>
 #include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/gpiopin.h>
 #include <lwiot/device/dhtsensor.h>
 
 static lwiot::Thread *tp;

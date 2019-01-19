@@ -11,10 +11,10 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/gpiopin.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/i2calgorithm.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/i2calgorithm.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 

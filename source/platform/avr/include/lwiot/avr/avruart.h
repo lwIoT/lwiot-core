@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 #include <lwiot/log.h>
-#include <lwiot/uart.h>
+#include <lwiot/io/uart.h>
 
 #define SS_RX_BUFFER_SIZE 64
 

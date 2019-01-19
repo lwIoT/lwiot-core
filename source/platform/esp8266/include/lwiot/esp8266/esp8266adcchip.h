@@ -8,7 +8,7 @@
 #pragma once
 
 #include <lwiot/lwiot.h>
-#include <lwiot/adcchip.h>
+#include <lwiot/io/adcchip.h>
 
 #ifdef CXX
 namespace lwiot { namespace esp8266

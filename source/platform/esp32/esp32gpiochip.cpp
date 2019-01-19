@@ -10,7 +10,7 @@
 #include <esp_intr.h>
 #include <esp_attr.h>
 
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 #include <lwiot/log.h>
 #include <lwiot/esp32/esp32gpiochip.h>
 

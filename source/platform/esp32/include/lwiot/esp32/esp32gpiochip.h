@@ -8,7 +8,7 @@
 #pragma once
 
 #include <lwiot/lwiot.h>
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 
 #ifdef __cplusplus
 namespace lwiot { namespace esp32

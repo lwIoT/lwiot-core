@@ -9,17 +9,17 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/gpiopin.h>
-#include <lwiot/gpiochip.h>
-#include <lwiot/i2calgorithm.h>
-#include <lwiot/i2cmessage.h>
-#include <lwiot/gpioi2calgorithm.h>
+#include <lwiot/io/gpiopin.h>
+#include <lwiot/io/gpiochip.h>
+#include <lwiot/io/i2calgorithm.h>
+#include <lwiot/io/i2cmessage.h>
+#include <lwiot/io/gpioi2calgorithm.h>
 #include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
 #include <lwiot/scopedlock.h>
 #include <lwiot/function.h>
 #include <lwiot/util/count.h>
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 
 #define BUSY_WAIT 10
 #define READ_FLAG 0x1U

@@ -16,7 +16,7 @@ extern "C" {
 #include <esp/interrupts.h>
 }
 
-#include <lwiot/watchdog.h>
+#include <lwiot/io/watchdog.h>
 #include <lwiot/esp8266/esp8266watchdog.h>
 
 #define WDT_FREQ 10

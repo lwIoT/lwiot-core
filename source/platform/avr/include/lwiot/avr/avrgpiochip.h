@@ -13,7 +13,7 @@
 #include <avr/io.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/gpiochip.h>
+#include <lwiot/io/gpiochip.h>
 
 extern const uint16_t PROGMEM port_to_mode_PGM[];
 extern const uint16_t PROGMEM port_to_input_PGM[];

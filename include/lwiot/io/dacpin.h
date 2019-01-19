@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 #include <lwiot/lwiot.h>
-#include <lwiot/dacchip.h>
+#include <lwiot/io/dacchip.h>
 
 namespace lwiot
 {

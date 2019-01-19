@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <lwiot/adcchip.h>
-#include <lwiot/adcpin.h>
+#include <lwiot/io/adcchip.h>
+#include <lwiot/io/adcpin.h>
 
 namespace lwiot
 {

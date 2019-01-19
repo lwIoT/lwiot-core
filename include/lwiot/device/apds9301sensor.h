@@ -9,7 +9,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/error.h>
-#include <lwiot/i2cbus.h>
+#include <lwiot/io/i2cbus.h>
 #include <lwiot/kernel/lock.h>
 
 namespace lwiot

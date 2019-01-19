@@ -9,10 +9,10 @@
 #include <lwiot/error.h>
 #include <lwiot/log.h>
 #include <lwiot/types.h>
-#include <lwiot/i2cmessage.h>
+#include <lwiot/io/i2cmessage.h>
 #include <lwiot/stl/vector.h>
-#include <lwiot/i2calgorithm.h>
-#include <lwiot/gpiopin.h>
+#include <lwiot/io/i2calgorithm.h>
+#include <lwiot/io/gpiopin.h>
 
 #pragma once
 
