@@ -28,10 +28,15 @@ namespace lwiot {
 
 		void setName(const String& name)
 		{
+			this->_name = name;
+		}
+
+		inline void setName(String&& name)
+		{
 			this->_name = stl::move(name);
 		}
 
-		virtual Thread& operator=(Thread&& rhs);
+		Thread& operator=(Thread&& rhs);
 		Thread& operator=(Thread& rhs) = delete;
 
 		static void yield()
@@ -39,23 +44,23 @@ namespace lwiot {
 			lwiot_thread_yield();
 		}
 
-		bool isRunning() const
+		inline bool isRunning() const
 		{
-			return this->running;
+			return this->_running;
 		}
 
 	protected:
 		virtual void run() = 0;
-		void *argument;
+		void *_argument;
 		virtual void move(Thread& rhs);
 
 	private:
 		friend void thread_starter(void *arg);
 
-		bool running;
-		lwiot_thread_t *internal;
+		bool _running;
+		lwiot_thread_t *_internal;
 
-		int prio;
+		int _prio;
 		size_t stacksize;
 		String _name;
 	};
