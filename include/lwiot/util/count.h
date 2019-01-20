@@ -45,7 +45,7 @@ static inline int count(ssize_t start, ssize_t end, Func functor)
 
 namespace lwiot
 {
-	extern int count(ssize_t start, ssize_t end, Function<int(*)(int)>& func);
-	extern int count_up(ssize_t start, ssize_t end, Function<int(*)(int)>& func);
-	extern int count_down(ssize_t start, ssize_t end, Function<int(*)(int)>& func);
+	extern int count(ssize_t start, ssize_t end, Function<int(int)>& func);
+	extern int count_up(ssize_t start, ssize_t end, Function<int(int)>& func);
+	extern int count_down(ssize_t start, ssize_t end, Function<int(int)>& func);
 }

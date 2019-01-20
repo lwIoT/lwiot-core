@@ -62,13 +62,16 @@ namespace lwiot
 		}
 	};
 
-	template <typename _FunctionType> class Function : public Function<decltype(&_FunctionType::operator())> {
-	};
+	/*template <typename _FunctionType> class Function : public Function<decltype(&_FunctionType::operator())> {
+	};*/
+
+	template <typename _FunctionType>
+	class Function;
 
 	/*
 	 * Wrapper for lambda's, functors and functions.
 	 */
-	template <typename _ReturnType, typename... Args> class Function<_ReturnType(*)(Args...)> {
+	template <typename _ReturnType, typename... Args> class Function<_ReturnType(Args...)> {
 	public:
 		typedef Function<_ReturnType(*)(Args...)> SelfType;
 		typedef _ReturnType(*SignatureType)(Args...);

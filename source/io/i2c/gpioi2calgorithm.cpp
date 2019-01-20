@@ -199,7 +199,7 @@ namespace lwiot
 
 	int RAM_ATTR GpioI2CAlgorithm::write(uint8_t byte)
 	{
-		Function<int(*)(int)> writer;
+		Function<int(int)> writer;
 		int rv;
 		bool ack;
 
@@ -254,7 +254,7 @@ namespace lwiot
 	int RAM_ATTR GpioI2CAlgorithm::read(uint8_t& byte)
 	{
 		uint8_t value;
-		Function<int(*)(int)> reader;
+		Function<int(int)> reader;
 		int rv;
 
 		value = 0;

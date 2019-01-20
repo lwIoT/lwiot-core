@@ -92,7 +92,7 @@ class TupleTest<R(Args...), P> {
 public:
 	typedef P PolicyType;
 	typedef R ReturnType;
-	typedef lwiot::Function<ReturnType(*)(Args...)> HandlerType;
+	typedef lwiot::Function<ReturnType(Args...)> HandlerType;
 	typedef TupleTest<P, R(Args...)> Base;
 
 	using QueuedEvent = lwiot::stl::Tuple<

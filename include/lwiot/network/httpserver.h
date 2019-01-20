@@ -40,7 +40,7 @@ namespace lwiot
 		void requestAuthentication(HTTPAuthMethod mode = BASIC_AUTH, const char *realm = nullptr,
 		                           const String &authFailMsg = String(""));
 
-		using THandlerFunction = Function<void(*)(HttpServer& server)>;
+		using THandlerFunction = Function<void(HttpServer& server)>;
 
 		void on(const String &uri, THandlerFunction handler);
 		void on(const String &uri, HTTPMethod method, THandlerFunction fn);

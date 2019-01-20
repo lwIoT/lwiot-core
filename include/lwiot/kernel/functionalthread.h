@@ -20,7 +20,7 @@ namespace lwiot
 {
 	class FunctionalThread : public Thread {
 	public:
-		typedef Function<void(*)(void)> Runner;
+		typedef Function<void(void)> Runner;
 
 		explicit FunctionalThread(const String& name);
 		explicit FunctionalThread(const char* name);

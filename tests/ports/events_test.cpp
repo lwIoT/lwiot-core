@@ -30,7 +30,7 @@ public:
 protected:
 	void run() override
 	{
-		const char *arg = (const char *)this->argument;
+		const char *arg = (const char *)this->_argument;
 
 		print_dbg("[%s] Thread is running!\n", arg);
 		this->event->wait();

@@ -15,7 +15,7 @@
 
 int main(int argc, char **argv)
 {
-	lwiot::Function<int(*)(int)> fn;
+	lwiot::Function<int(int)> fn;
 
 	lwiot_init();
 	print_dbg("Testing lambda wrapping..\n");

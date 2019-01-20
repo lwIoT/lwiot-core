@@ -15,7 +15,7 @@
 
 namespace lwiot
 {
-	int count(ssize_t start, ssize_t end, Function<int(*)(int)>& functor)
+	int count(ssize_t start, ssize_t end, Function<int(int)>& functor)
 	{
 		if(start < end)
 			return count_up(start, end, functor);
@@ -23,7 +23,7 @@ namespace lwiot
 			return count_down(start, end, functor);
 	}
 
-	int count_up(ssize_t start, ssize_t end, Function<int(*)(int)>& functor)
+	int count_up(ssize_t start, ssize_t end, Function<int(int)>& functor)
 	{
 		int rv = 0;
 
@@ -33,7 +33,7 @@ namespace lwiot
 		return rv;
 	}
 
-	int count_down(ssize_t start, ssize_t end, Function<int(*)(int)>& functor)
+	int count_down(ssize_t start, ssize_t end, Function<int(int)>& functor)
 	{
 		int rv = 0;
 

@@ -30,7 +30,7 @@ public:
 protected:
 	void run() override
 	{
-		auto *lock = (lwiot::Lock*) this->argument;
+		auto *lock = (lwiot::Lock*) this->_argument;
 
 		const char *arg = "test-tp";
 		int i = 0;
@@ -46,7 +46,7 @@ protected:
 
 static void main_thread(void *arg)
 {
-	lwiot::Function<void(*)(void)> lambda1 = [&]() -> void {
+	lwiot::Function<void(void)> lambda1 = [&]() -> void {
 		int i = 0;
 
 		while(i++ <= 5) {
@@ -55,7 +55,7 @@ static void main_thread(void *arg)
 		}
 	};
 
-	lwiot::Function<void(*)(void)> lambda2 = [&]() -> void {
+	lwiot::Function<void(void)> lambda2 = [&]() -> void {
 		int i = 0;
 
 		while(i++ <= 5) {
