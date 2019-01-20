@@ -8,8 +8,11 @@
 #pragma once
 
 #include <lwiot.h>
-#include <lwiot/stl/string.h>
 
+#include <lwiot/kernel/event.h>
+#include <lwiot/scopedlock.h>
+
+#include <lwiot/stl/string.h>
 #include <lwiot/stl/move.h>
 
 namespace lwiot {
@@ -25,6 +28,7 @@ namespace lwiot {
 
 		void stop();
 		void start();
+		void join();
 
 		void setName(const String& name)
 		{
@@ -56,9 +60,12 @@ namespace lwiot {
 
 	private:
 		friend void thread_starter(void *arg);
+		void pre_run();
 
 		bool _running;
 		lwiot_thread_t *_internal;
+		Event _join;
+		Lock _lock;
 
 		int _prio;
 		size_t stacksize;

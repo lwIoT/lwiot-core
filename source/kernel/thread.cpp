@@ -20,7 +20,7 @@ namespace lwiot
 	void thread_starter(void *arg)
 	{
 		auto *ctx = (Thread*)arg;
-		ctx->run();
+		ctx->pre_run();
 	}
 
 	Thread::Thread(void *argument) : Thread("", argument)
@@ -100,9 +100,30 @@ namespace lwiot
 		}
 	}
 
+	void Thread::join()
+	{
+		ScopedLock g(this->_lock);
+
+		if(this->_running)
+			this->_join.wait(g, FOREVER);
+	}
+
 	void Thread::stop()
 	{
+		ScopedLock g(this->_lock);
 		this->_running = false;
+		this->_join.signal();
+
+		g.unlock();
 		lwiot_thread_destroy(this->_internal);
+	}
+
+	void Thread::pre_run()
+	{
+		this->run();
+
+		ScopedLock g(this->_lock);
+		this->_running = false;
+		this->_join.signal();
 	}
 }
