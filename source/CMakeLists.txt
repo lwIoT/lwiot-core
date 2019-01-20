@@ -14,11 +14,11 @@ include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
 if(NOT NO_OS)
 SET(WRAPPER_SOURCES
-	ports/thread.cpp
-	ports/functionalthread.cpp
-	ports/lock.cpp
-	ports/event.cpp
-	ports/timer.cpp
+	kernel/thread.cpp
+	kernel/functionalthread.cpp
+	kernel/lock.cpp
+	kernel/event.cpp
+	kernel/timer.cpp
 )
 else()
 SET(WRAPPER_SOURCES )
