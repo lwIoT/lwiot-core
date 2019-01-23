@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
+#include <lwiot/kernel/atomic.h>
+
 #ifdef HAVE_RTOS
 #include <FreeRTOS.h>
 #include <task.h>
@@ -20,6 +22,8 @@
 #include <lwiot/kernel/functionalthread.h>
 #include <lwiot/test.h>
 #include <lwiot/kernel/lock.h>
+
+lwiot::atomic_long_t counter;
 
 class ThreadTest : public lwiot::Thread {
 public:
@@ -39,6 +43,8 @@ protected:
 			lock->lock();
 			print_dbg("[%s] Thread is running!\n", arg);
 			lock->unlock();
+
+			counter++;
 			lwiot_sleep(1000);
 		}
 	}
@@ -55,6 +61,8 @@ static void main_thread(void *arg)
 			lock->lock();
 			print_dbg("Lambda thread 1 ping!\n");
 			lock->unlock();
+
+			counter--;
 			lwiot_sleep(750);
 		}
 	};
@@ -63,8 +71,9 @@ static void main_thread(void *arg)
 		int i = 0;
 
 		while(i++ <= 5) {
+			auto value = counter.load();
 			lock->lock();
-			print_dbg("Lambda thread 2 ping!\n");
+			print_dbg("Lambda thread 2 ping! Atomic: %li\n", value);
 			lock->unlock();
 			lwiot_sleep(750);
 		}
