@@ -29,9 +29,9 @@ namespace lwiot { namespace stl {
 		template <typename T>
 		constexpr void swap(T& a, T& b)
 		{
-			T old = move(a);
+			T old = stl::move(a);
 
-			a = move(b);
-			b = move(old);
+			a = stl::move(b);
+			b = stl::move(old);
 		}
 } }

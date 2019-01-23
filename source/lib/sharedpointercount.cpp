@@ -34,13 +34,13 @@ namespace lwiot
 
 	long SharedPointerCount::useCount() const
 	{
-		return this->_count->value();
+		return this->_count->load();
 	}
 
 	void SharedPointerCount::acquire() const noexcept
 	{
 		assert(this->_count != nullptr);
-		this->_count->add(1L);
+		this->_count->fetch_add(1L);
 	}
 }
 

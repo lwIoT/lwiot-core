@@ -137,7 +137,7 @@ SET(GENERIC_HEADERS
 	lwiot/util/count.h
 	lwiot/util/json.h
 	lwiot/util/datetime.h
-	lwiot/util/atomic.h
+	lwiot/kernel/atomic.h
 	lwiot/util/measurementvector.h
 	lwiot/util/defaultallocator.h
 	lwiot/util/pair.h

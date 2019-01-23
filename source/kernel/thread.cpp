@@ -53,8 +53,12 @@ namespace lwiot
 
 	Thread::~Thread()
 	{
-		if(this->_running)
+		ScopedLock g(this->_lock);
+
+		if(this->_running) {
+			g.unlock();
 			this->stop();
+		}
 	}
 
 	Thread& Thread::operator=(lwiot::Thread &&rhs)

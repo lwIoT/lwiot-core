@@ -13,7 +13,7 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/util/atomic.h>
+#include <lwiot/kernel/atomic.h>
 #include <lwiot/log.h>
 
 #include <lwiot/stl/move.h>
@@ -47,7 +47,7 @@ namespace lwiot
 				if(this->_count == nullptr) {
 					this->_count = new Atomic<long>(1L);
 				} else {
-					this->_count->add(1);
+					this->_count->fetch_add(1);
 				}
 			}
 		}
@@ -56,9 +56,9 @@ namespace lwiot
 		CONSTEXPR void release(U *p) noexcept
 		{
 			if(this->_count != nullptr) {
-				this->_count->substract(1);
+				this->_count->fetch_sub(1);
 
-				if(this->_count->value() == 0L) {
+				if(this->_count->load() == 0L) {
 					if(p)
 						delete p;
 
