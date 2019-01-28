@@ -2,49 +2,25 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
-      <paths name="Remote Host (ESP32) (ec48afa6-90f7-4436-9a45-9f60d007b72c)">
+      <paths name="WSL (AVR) (9c21a3d3-d0ab-4c39-a3b4-bba9d9704b6d)">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/tmp.9XECoZMXJn" local="$PROJECT_DIR$" />
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
-          <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/external/avr-freertos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/usr" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp32-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp32-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/debug-freertos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp8266-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/tests" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/debug-freertos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp8266-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/scripts" />
-            <excludedPath local="true" path="$PROJECT_DIR$/external/esp8266-open-rtos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/external/freertos" />
-          </excludedPaths>
         </serverdata>
       </paths>
-      <paths name="Remote Host (ESP8266) (6b787c51-5303-4e5c-91c2-f01cb913a1c2)">
+      <paths name="WSL (ESP32) (bd7ace46-b98c-454e-8698-e7ab75bba1c1)">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/tmp.2Ffun8mdlO" local="$PROJECT_DIR$" />
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
-          <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/build" />
-            <excludedPath local="true" path="$PROJECT_DIR$/usr" />
-            <excludedPath local="true" path="$PROJECT_DIR$/external/avr-freertos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp32-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp32-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/debug-freertos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/external/esp32-idf" />
-            <excludedPath local="true" path="$PROJECT_DIR$/.vscode" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp8266-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/tests" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/debug-freertos" />
-            <excludedPath local="true" path="$PROJECT_DIR$/build/esp8266-debug" />
-            <excludedPath local="true" path="$PROJECT_DIR$/external/freertos" />
-          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="WSL (ESP8266) (ff5c53ed-2a13-4d14-9e11-4d4d79dc8d42)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
         </serverdata>
       </paths>
       <paths name="WSL (fb433b0d-f6b3-4460-9bf1-0eabbbd2529e)">
