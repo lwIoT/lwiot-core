@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoUploadManager">
+    <option name="hosts">
+      <list>
+        <option value="6b787c51-5303-4e5c-91c2-f01cb913a1c2" />
+        <option value="ec48afa6-90f7-4436-9a45-9f60d007b72c" />
+      </list>
+    </option>
+  </component>
   <component name="ClangdSettings">
     <option name="clangWarnings" value="-Wno-unused-variable,-Wno-shadow,-Wshadow-field-in-constructor-modified,-Wshadow-ivar,-Wno-switch,-Wno-parentheses,-Wbitwise-op-parentheses,-Wdangling-else,-Wlogical-not-parentheses,-Wlogical-op-parentheses,-Woverloaded-shift-op-parentheses,-Wparentheses-equality,-Wshift-op-parentheses,-Werror=implicit-function-declaration,-Wall,-Wno-address-of-packed-member" />
   </component>

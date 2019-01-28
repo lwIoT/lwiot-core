@@ -13,8 +13,6 @@
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/mbedtls/mbedtls" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/micro-ecc/micro-ecc" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2/third-party/mruby" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/nghttp/nghttp2/third-party/neverbleed" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp32-idf/components/spiffs/spiffs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/external/esp8266-open-rtos/bootloader/rboot" vcs="Git" />
