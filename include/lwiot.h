@@ -17,6 +17,12 @@ extern "C" void lwiot_destroy();
 extern lwiot_event_t* lwiot_dns_event;
 #endif
 
+#ifdef __GNUG__
+#define gnu_pure gnu::pure
+#else
+#define gnu_pure
+#endif
+
 #else /* __cplusplus */
 
 extern void lwiot_init();

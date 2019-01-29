@@ -193,6 +193,7 @@ namespace lwiot
 				return *this;
 			}
 
+			[[gnu_pure]]
 			CONSTEXPR void remove(const node_type *node)
 			{
 				if(this->_head == nullptr || !(node->next || node->prev))
