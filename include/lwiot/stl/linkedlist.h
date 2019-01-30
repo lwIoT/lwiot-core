@@ -43,12 +43,13 @@ namespace lwiot
 					return this->_data == other._data && this->next == other.next && this->prev == other.prev;
 				}
 
+				T _data;
+
 			private:
 				friend class LinkedList<T>;
 
 				friend class Iterator;
 
-				T _data;
 				Node<T> *next;
 				Node<T> *prev;
 			};
@@ -58,7 +59,7 @@ namespace lwiot
 		class LinkedList {
 		public:
 			typedef T value_type;
-			typedef list::Node<T> node_type;
+			typedef list::Node<value_type> node_type;
 
 			template<bool is_const>
 			class Iterator {
@@ -193,7 +194,12 @@ namespace lwiot
 				return *this;
 			}
 
-			[[gnu_pure]]
+			constexpr value_type replace(iterator& iter, value_type&& value)
+			{
+				auto node = iter.node();
+				return stl::exchange(node->_data, stl::forward<value_type &&>(value));
+			}
+
 			CONSTEXPR void remove(const node_type *node)
 			{
 				if(this->_head == nullptr || !(node->next || node->prev))

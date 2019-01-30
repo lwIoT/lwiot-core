@@ -16,8 +16,22 @@
 #include <lwiot/stl/move.h>
 
 struct Token {
+	explicit Token(const Token&) = default;
+	Token( Token&& token) = default;
+
 	Token(int& x, double y, const char *str) : x(x), y(y), tst(str)
 	{
+	}
+
+	Token& operator=(const Token&) = default;
+
+	Token& operator=(Token&& rhs) noexcept
+	{
+		this->tst = lwiot::stl::move(rhs.tst);
+		this->y = rhs.y;
+		this->x = rhs.x;
+
+		return *this;
 	}
 
 	bool operator==(const Token& other)
@@ -25,23 +39,25 @@ struct Token {
 		return other.x == x;
 	}
 
-	int& x;
+	int &x;
 	double y;
 	lwiot::String tst;
 };
 
 int main(int argc, char **argv)
 {
-	int a, b, c;
+	int a, b, c, d;
 
 	lwiot_init();
 	a = 4;
 	b = 5;
 	c = 6;
+	d = 7;
 
 	Token t1(a, 1.234, "Hi");
 	Token t2(b, 1.234, "Hello");
 	Token t3(c, 1.234, "Bye");
+	Token t4(d, 3.234, "Swap");
 
 	lwiot::stl::LinkedList<Token> list;
 	list.push_back(t1);
@@ -50,7 +66,7 @@ int main(int argc, char **argv)
 
 	lwiot::stl::LinkedList<Token> list2(list);
 
-	for(Token& token : list2) {
+	for(Token& token : list) {
 		lwiot::String str = lwiot::stl::move(token.tst);
 		print_dbg("List entry value: [%i][%f]\n", token.x, token.y);
 	}
@@ -60,10 +76,20 @@ int main(int argc, char **argv)
 
 	auto iter = list2.begin();
 	++iter;
+	list2.replace(iter, lwiot::stl::move(t4));
+
+	print_dbg("After swap:\n");
+	for(Token& token : list2) {
+		lwiot::String str = lwiot::stl::move(token.tst);
+		print_dbg("List entry value: [%i][%f]\n", token.x, token.y);
+	}
+
 	list2.erase(iter);
 	++iter;
 	list2.erase(iter);
 
+	print_dbg("\n");
+	print_dbg("After erase:\n");
 	for(const Token& token : list2) {
 		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);
 	}
