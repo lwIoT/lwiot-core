@@ -72,6 +72,8 @@ set(LWIOT_CORE_INCLUDE_DIRECTORIES
 
 SET(PLATFORM_DIRECTORY ${PROJECT_SOURCE_DIR}/source/platform/esp8266)
 
+SET(RTTI False)
+
 set(PORT_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -Wno-implicit-function-declaration \
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections -fdata-sections")

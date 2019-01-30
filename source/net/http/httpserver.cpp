@@ -25,6 +25,7 @@
 #include <lwiot/network/tcpserver.h>
 #include <lwiot/network/tcpclient.h>
 #include <lwiot/stl/move.h>
+#include <lwiot/bytebuffer.h>
 
 #include "mimetable.h"
 #include "requesthandlerimpl.h"
@@ -861,12 +862,6 @@ namespace lwiot
 	bool HttpServer::_parseForm(TcpClient &client, String boundary, uint32_t len)
 	{
 		(void) len;
-#ifdef DEBUG_ESP_HTTP_SERVER
-		DEBUG_OUTPUT.print("Parse Form: Boundary: ");
-  DEBUG_OUTPUT.print(boundary);
-  DEBUG_OUTPUT.print(" Length: ");
-  DEBUG_OUTPUT.println(len);
-#endif
 		String line;
 		int retry = 0;
 		do {
@@ -899,18 +894,12 @@ namespace lwiot
 							argFilename = argName.substring(nameStart + 2, argName.length() - 1);
 							argName = argName.substring(0, argName.indexOf('"'));
 							argIsFile = true;
-#ifdef DEBUG_ESP_HTTP_SERVER
-							DEBUG_OUTPUT.print("PostArg FileName: ");
-			DEBUG_OUTPUT.println(argFilename);
-#endif
+
 							//use GET to set the filename if uploading using blob
 							if(argFilename == F("blob") && hasArg(FPSTR(filename)))
 								argFilename = arg(FPSTR(filename));
 						}
-#ifdef DEBUG_ESP_HTTP_SERVER
-						DEBUG_OUTPUT.print("PostArg Name: ");
-		  DEBUG_OUTPUT.println(argName);
-#endif
+
 						using namespace mime;
 						argType = FPSTR(mimeTable[txt].mimeType);
 						line = client.readStringUntil('\r');
@@ -921,10 +910,7 @@ namespace lwiot
 							client.readStringUntil('\r');
 							client.readStringUntil('\n');
 						}
-#ifdef DEBUG_ESP_HTTP_SERVER
-						DEBUG_OUTPUT.print("PostArg Type: ");
-		  DEBUG_OUTPUT.println(argType);
-#endif
+
 						if(!argIsFile) {
 							while(true) {
 								line = client.readStringUntil('\r');
@@ -935,20 +921,12 @@ namespace lwiot
 									argValue += "\n";
 								argValue += line;
 							}
-#ifdef DEBUG_ESP_HTTP_SERVER
-							DEBUG_OUTPUT.print("PostArg Value: ");
-			DEBUG_OUTPUT.println(argValue);
-			DEBUG_OUTPUT.println();
-#endif
 
 							RequestArgument &arg = postArgs[postArgsLen++];
 							arg.key = argName;
 							arg.value = argValue;
 
 							if(line == ("--" + boundary + "--")) {
-#ifdef DEBUG_ESP_HTTP_SERVER
-								DEBUG_OUTPUT.println("Done Parsing POST");
-#endif
 								break;
 							}
 						} else {
@@ -959,12 +937,7 @@ namespace lwiot
 							_currentUpload->type = argType;
 							_currentUpload->totalSize = 0;
 							_currentUpload->currentSize = 0;
-#ifdef DEBUG_ESP_HTTP_SERVER
-							DEBUG_OUTPUT.print("Start File: ");
-			DEBUG_OUTPUT.print(_currentUpload->filename);
-			DEBUG_OUTPUT.print(" Type: ");
-			DEBUG_OUTPUT.println(_currentUpload->type);
-#endif
+
 							if(_currentHandler && _currentHandler->canUpload(_currentUri))
 								_currentHandler->upload(*this, _currentUri, *_currentUpload);
 							_currentUpload->status = UPLOAD_FILE_WRITE;
@@ -1002,37 +975,26 @@ readfile:
 									}
 								}
 
-#ifdef WIN32
-								uint8_t *endBuf = new uint8_t[boundary.length()];
-								UniquePointer<uint8_t> bufmanager(endBuf);
-#else
-								uint8_t endBuf[boundary.length()];
-#endif
-								client.read(endBuf, boundary.length());
 
-								if(strstr((const char *) endBuf, boundary.c_str()) != nullptr) {
+								ByteBuffer endBuf(boundary.length());
+
+								client.read(endBuf.data(), boundary.length());
+								endBuf.setIndex(boundary.length());
+
+								if(strstr((const char *) endBuf.data(), boundary.c_str()) != nullptr) {
 									if(_currentHandler && _currentHandler->canUpload(_currentUri))
 										_currentHandler->upload(*this, _currentUri, *_currentUpload);
 									_currentUpload->totalSize += _currentUpload->currentSize;
 									_currentUpload->status = UPLOAD_FILE_END;
 									if(_currentHandler && _currentHandler->canUpload(_currentUri))
 										_currentHandler->upload(*this, _currentUri, *_currentUpload);
-#ifdef DEBUG_ESP_HTTP_SERVER
-									DEBUG_OUTPUT.print("End File: ");
-				DEBUG_OUTPUT.print(_currentUpload->filename);
-				DEBUG_OUTPUT.print(" Type: ");
-				DEBUG_OUTPUT.print(_currentUpload->type);
-				DEBUG_OUTPUT.print(" Size: ");
-				DEBUG_OUTPUT.println(_currentUpload->totalSize);
-#endif
+
 									line = client.readStringUntil(0x0D);
 									client.readStringUntil(0x0A);
 									if(line == "--") {
-#ifdef DEBUG_ESP_HTTP_SERVER
-										DEBUG_OUTPUT.println("Done Parsing POST");
-#endif
 										break;
 									}
+
 									continue;
 								} else {
 									_uploadWriteByte(0x0D);
@@ -1074,10 +1036,7 @@ readfile:
 			delete[] postArgs;
 			return true;
 		}
-#ifdef DEBUG_ESP_HTTP_SERVER
-		DEBUG_OUTPUT.print("Error: line: ");
-  DEBUG_OUTPUT.println(line);
-#endif
+
 		return false;
 	}
 

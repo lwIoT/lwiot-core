@@ -184,6 +184,10 @@ SET(${SOURCES} ${SOURCES})
 add_subdirectory(${PLATFORM_DIRECTORY})
 add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} )
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	target_compile_options(lwiot PUBLIC -pedantic-errors)
+endif()
+
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/scripts/config.h.in ${CMAKE_BINARY_DIR}/lwiot_opts.h)
 
 foreach(source IN LISTS ${SOURCES})
