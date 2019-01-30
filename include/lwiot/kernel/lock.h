@@ -16,8 +16,6 @@
 #include <lwiot/stl/string.h>
 #include <lwiot/uniquepointer.h>
 
-#include <lwiot/kernel/thread.h>
-
 namespace lwiot {
 	class Lock {
 	public:

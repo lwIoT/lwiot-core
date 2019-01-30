@@ -116,6 +116,7 @@ SET(ESP32 True CACHE BOOL "Build for the ESP32 SoC.")
 SET(HAVE_RTOS True)
 SET(HAVE_JSON True)
 SET(HAVE_LWIP True)
+SET(HAVE_SYNC_FETCH True)
 SET(HAVE_NETWORKING True)
 SET(RTTI False CACHE BOOL "Enable/disable runtime type identification.")
 

@@ -20,6 +20,7 @@
 #cmakedefine CONFIG_NO_SYS
 #cmakedefine CONFIG_HW_BARRIER 1
 #cmakedefine NO_OS
+#cmakedefine HAVE_SYNC_FETCH
 
 #ifdef NO_OS
 #define CONFIG_NO_OS 1

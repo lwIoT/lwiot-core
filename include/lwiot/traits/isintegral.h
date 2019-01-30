@@ -46,4 +46,7 @@ namespace lwiot { namespace traits
 	struct IsIntegral_helper<unsigned long> : TrueType { };
 	template <>
 	struct IsIntegral_helper<unsigned long long> : TrueType { };
+
+	template <typename T>
+	struct IsIntegral : IsIntegral_helper<T> { };
 }}

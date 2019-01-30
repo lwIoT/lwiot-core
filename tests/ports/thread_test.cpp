@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <lwiot.h>
 
+#include <lwiot/kernel/atomic.h>
+
 #ifdef HAVE_RTOS
 #include <FreeRTOS.h>
 #include <task.h>
@@ -20,6 +22,8 @@
 #include <lwiot/kernel/functionalthread.h>
 #include <lwiot/test.h>
 #include <lwiot/kernel/lock.h>
+
+lwiot::atomic_long_t counter;
 
 class ThreadTest : public lwiot::Thread {
 public:
@@ -35,22 +39,30 @@ protected:
 		const char *arg = "test-tp";
 		int i = 0;
 
-		lock->lock();
 		while(i++ <= 5) {
+			lock->lock();
 			print_dbg("[%s] Thread is running!\n", arg);
+			lock->unlock();
+
+			counter++;
 			lwiot_sleep(1000);
 		}
-		lock->unlock();
 	}
 };
 
 static void main_thread(void *arg)
 {
+	static auto *lock = (lwiot::Lock*)arg;
+
 	lwiot::Function<void(void)> lambda1 = [&]() -> void {
 		int i = 0;
 
 		while(i++ <= 5) {
+			lock->lock();
 			print_dbg("Lambda thread 1 ping!\n");
+			lock->unlock();
+
+			counter--;
 			lwiot_sleep(750);
 		}
 	};
@@ -59,15 +71,20 @@ static void main_thread(void *arg)
 		int i = 0;
 
 		while(i++ <= 5) {
-			print_dbg("Lambda thread 2 ping!\n");
+			auto value = counter.load();
+			lock->lock();
+			print_dbg("Lambda thread 2 ping! Atomic: %li\n", value);
+			lock->unlock();
 			lwiot_sleep(750);
 		}
 	};
 
+	lock->lock();
 	lwiot::FunctionalThread tp1("ft-tp1", lambda1);
 	lwiot::FunctionalThread tp2("ft-tp2", lambda2);
 	tp1.start();
 	tp2.start();
+	lock->unlock();
 
 	lwiot_sleep(6000);
 	tp1.stop();
@@ -88,18 +105,19 @@ int main(int argc, char **argv)
 
 	ThreadTest t1(&lock), t2(&lock);
 	
-	tp = lwiot_thread_create(main_thread, "main" , nullptr);
+	tp = lwiot_thread_create(main_thread, "main" , &lock);
 
 	t1.start();
 	t2.start();
 
 #ifdef HAVE_RTOS
 	vTaskStartScheduler();
+#else
+	t1.join();
+	t2.join();
 #endif
 
-	lwiot_sleep(8000);
-	t1.stop();
-	t2.stop();
+	//lwiot_sleep(8000);
 	lwiot_thread_destroy(tp);
 
 	lwiot_destroy();

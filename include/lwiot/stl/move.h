@@ -32,7 +32,7 @@ namespace lwiot {
 		{
 			auto old = move(a);
 
-			a = move(b);
-			b = move(old);
+			a = stl::move(b);
+			b = stl::move(old);
 		}
 } }

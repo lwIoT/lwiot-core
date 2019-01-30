@@ -12,6 +12,7 @@
 #include <lwiot/stl/string.h>
 #include <lwiot/test.h>
 #include <lwiot/stl/linkedlist.h>
+#include <lwiot/stl/referencewrapper.h>
 
 #include <lwiot/stl/move.h>
 
@@ -39,7 +40,11 @@ struct Token {
 		return other.x == x;
 	}
 
+<<<<<<< HEAD
 	int &x;
+=======
+	lwiot::stl::ReferenceWrapper<int> x;
+>>>>>>> michel/dev
 	double y;
 	lwiot::String tst;
 };
@@ -68,7 +73,7 @@ int main(int argc, char **argv)
 
 	for(Token& token : list) {
 		lwiot::String str = lwiot::stl::move(token.tst);
-		print_dbg("List entry value: [%i][%f]\n", token.x, token.y);
+		print_dbg("List entry value: [%i][%f]\n", token.x.get(), token.y);
 	}
 
 	print_dbg("First value: %f\n", list2.front().y);
@@ -91,7 +96,7 @@ int main(int argc, char **argv)
 	print_dbg("\n");
 	print_dbg("After erase:\n");
 	for(const Token& token : list2) {
-		print_dbg("List enry value: [%i][%f]\n", token.x, token.y);
+		print_dbg("List enry value: [%i][%f]\n", token.x.get(), token.y);
 	}
 
 	list.clear();
