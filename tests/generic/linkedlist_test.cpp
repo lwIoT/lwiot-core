@@ -40,11 +40,7 @@ struct Token {
 		return other.x == x;
 	}
 
-<<<<<<< HEAD
-	int &x;
-=======
 	lwiot::stl::ReferenceWrapper<int> x;
->>>>>>> michel/dev
 	double y;
 	lwiot::String tst;
 };

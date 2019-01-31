@@ -1,17 +1,19 @@
+/*
+ * Global atomic header.
+ *
+ * @author Michel Megens
+ * @email  dev@bietje.net
+ */
 
 #pragma once
 
 #include <lwiot.h>
 
-#ifdef WIN32
-#include "detail/atomic_stl.h"
-#else
 #ifdef HAVE_SYNC_FETCH
 #include "detail/atomic_sync.h"
 #else
 #include "detail/atomic_crit.h"
 #endif
-#endif /* WIN32 */
 
 namespace lwiot
 {
