@@ -27,15 +27,17 @@ struct identity {
 
 template<typename ReturnType>
 struct Dispatcher {
-	template<typename QueueType, typename QueuedItemType>
-	static constexpr ReturnType dispatch(QueueType &queue, QueuedItemType&& item)
+	template<typename QueueType, typename Iterator, typename QueuedItemType>
+	static constexpr ReturnType dispatch(QueueType &queue, Iterator& iter, QueuedItemType&& item)
 	{
 		auto result = item();
 
-		if(likely(result))
+		if(likely(result)) {
+			queue.erase(iter);
 			item.clear();
-		else
-			queue.push_front(item);
+		} else {
+			queue.replace(iter, lwiot::stl::forward<QueuedItemType&&>(item));
+		}
 
 		return result;
 	}
@@ -67,7 +69,8 @@ static bool func(int x, int y, double z)
 	print_dbg("Value of y: %i\n", y);
 	print_dbg("Value of z: %f\n", z);
 
-	return false;
+	//return false;
+	return true;
 }
 
 template<size_t... Indexes>
@@ -132,7 +135,8 @@ public:
 			return this->dispatch(typename MakeIndexSequence<sizeof...(Args)>::Type());
 		}
 
-		QueuedItem(QueuedItem &&) = delete;
+		QueuedItem(QueuedItem &&) = default;
+		QueuedItem& operator=(QueuedItem&&) = default;
 
 		QueuedItem(const QueuedItem &item) noexcept : handler(item.handler), buffer(item.buffer)
 		{
@@ -188,8 +192,11 @@ public:
 	{
 		Queue q;
 
-		Dispatcher<ReturnType>::dispatch(q, lwiot::stl::move(this->q));
-		assert(q.size() == 1);
+		q.push_back(this->q);
+		auto value = lwiot::stl::move(q.front());
+		auto iter = q.begin();
+		Dispatcher<ReturnType>::dispatch(q, iter, lwiot::stl::move(value));
+		assert(q.size() != 1);
 	}
 
 	constexpr void print()
