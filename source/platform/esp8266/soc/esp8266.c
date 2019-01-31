@@ -9,6 +9,8 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
+#include <espressif/esp_misc.h>
+
 void RAM_ATTR lwiot_udelay(uint32_t delay)
 {
 	sdk_os_delay_us((uint16_t)delay);
