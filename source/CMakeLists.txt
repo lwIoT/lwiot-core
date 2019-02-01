@@ -156,6 +156,7 @@ SET(GENERIC_HEADERS
 	lwiot/traits/removecv.h
 	lwiot/traits/typechoice.h
 	lwiot/traits/issame.h
+	lwiot/traits/addpointer.h
 	)
 
 set(BASE_HDRS
