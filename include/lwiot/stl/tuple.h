@@ -8,7 +8,9 @@
 #pragma once
 
 #include <lwiot/stl/forward.h>
+#include <lwiot/stl/move.h>
 #include <lwiot/stl/referencewrapper.h>
+
 #include <lwiot/traits/decay.h>
 
 namespace lwiot
