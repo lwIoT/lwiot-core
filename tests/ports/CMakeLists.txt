@@ -22,3 +22,6 @@ target_link_libraries(thread-test lwiot ${PLATFORM} lwiot  ${LWIOT_SYSTEM_LIBS})
 
 add_executable(events-test events_test.cpp)
 target_link_libraries(events-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(dispatchqueue-policy-test dispatchqueue-policy_test.cpp)
+target_link_libraries(dispatchqueue-policy-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
