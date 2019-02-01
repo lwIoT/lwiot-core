@@ -185,7 +185,7 @@ public:
 	template<typename... A>
 	constexpr void enqueue(A... args)
 	{
-		this->q.set(QueuedEvent(args...));
+		this->q.set(lwiot::stl::MakeTuple(args...));
 	}
 
 	constexpr void dispatch()
