@@ -10,10 +10,10 @@
 namespace lwiot { namespace traits
 {
 	template <bool, typename T>
-	struct enable_if { };
+	struct EnableIf { };
 
 	template <typename T>
-	struct enable_if<true, T> {
+	struct EnableIf<true, T> {
 		typedef T type;
 	};
 }}
