@@ -45,10 +45,11 @@ struct Dispatcher {
 
 template<>
 struct Dispatcher<void> {
-	template<typename QueueType, typename QueuedItemType>
-	static constexpr void dispatch(QueueType &queue, QueuedItemType&& item)
+	template<typename QueueType, typename Iterator, typename QueuedItemType>
+	static constexpr void dispatch(QueueType &queue, Iterator& iter, QueuedItemType&& item)
 	{
 		item();
+		queue.erase(iter);
 		item.clear();
 	}
 };
