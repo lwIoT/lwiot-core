@@ -88,15 +88,15 @@ struct MakeIndexSequence<0, Indexes...> {
 };
 
 template<typename Proto, typename P>
-class TupleTest;
+class TupleTestBase;
 
 template<typename P, typename R, typename ...Args>
-class TupleTest<R(Args...), P> {
+class TupleTestBase<R(Args...), P> {
 public:
 	typedef P PolicyType;
 	typedef R ReturnType;
 	typedef lwiot::Function<ReturnType(Args...)> HandlerType;
-	typedef TupleTest<P, R(Args...)> Base;
+	typedef TupleTestBase<P, R(Args...)> Base;
 
 	using QueuedEvent = lwiot::stl::Tuple<
 			typename lwiot::traits::RemoveCv<typename lwiot::traits::RemoveCv<Args>::type>::type...
@@ -177,7 +177,7 @@ public:
 
 	typedef lwiot::stl::LinkedList<QueuedItem> Queue;
 
-	constexpr TupleTest()
+	constexpr TupleTestBase()
 	{
 		this->q.handler = HandlerType(func);
 	}
@@ -212,13 +212,35 @@ private:
 	lwiot::stl::LinkedList<QueuedItem> _items;
 };
 
+template <typename Proto, typename Policy>
+class TupleTest : public TupleTestBase<Proto, Policy> {
+public:
+	inline void print() const
+	{
+		print_dbg("Generic policy tuple test\n");
+	}
+};
+
+template <typename Proto>
+class TupleTest<Proto, int> : public TupleTestBase<Proto, int> {
+public:
+	inline void print() const
+	{
+		print_dbg("Integer policy tuple test\n");
+	}
+};
+
 int main(int argc, char **argv)
 {
 	lwiot_init();
 	TupleTest<bool(int, int, double), int> eq;
+	TupleTest<bool(int, int, double), double> tupletest;
 
 	eq.enqueue(1, 4, 1.1234);
 	eq.dispatch();
+	eq.print();
+
+	tupletest.print();
 
 	lwiot_destroy();
 	wait_close();
