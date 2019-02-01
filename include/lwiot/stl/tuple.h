@@ -7,6 +7,10 @@
 
 #pragma once
 
+#include <lwiot/stl/forward.h>
+#include <lwiot/stl/referencewrapper.h>
+#include <lwiot/traits/decay.h>
+
 namespace lwiot
 {
 	namespace stl
@@ -77,6 +81,25 @@ namespace lwiot
 		auto get(const Tuple<Value, Rest...> &t) -> decltype(GetImpl<index, Value, Rest...>::value(&t))
 		{
 			return GetImpl<index, Value, Rest...>::value(&t);
+		}
+
+		template <typename T>
+		struct UnwrapRefwrapper {
+			using type = T;
+		};
+
+		template <typename Ref>
+		struct UnwrapRefwrapper<stl::ReferenceWrapper<Ref>> {
+			using type = Ref&;
+		};
+
+		template <class T>
+		using special_decay_t = typename UnwrapRefwrapper<typename traits::Decay<T>::type>::type ;
+
+		template <class... Types>
+		constexpr auto MakeTuple(Types&&... args)
+		{
+			return lwiot::stl::Tuple<special_decay_t<Types>...>(stl::forward<Types>(args)...);
 		}
 	}
 }
