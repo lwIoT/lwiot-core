@@ -16,6 +16,8 @@
 #include <lwiot/types.h>
 #include <lwiot/sharedpointer.h>
 
+#include <lwiot/traits/isfunction.h>
+
 namespace lwiot
 {
 	template <typename T> struct IsVoid {

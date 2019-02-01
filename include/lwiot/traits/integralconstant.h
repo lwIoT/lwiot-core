@@ -68,6 +68,14 @@ namespace lwiot { namespace traits {
 		{ };
 
 		template<typename _B1, typename _B2, typename _B3, typename... _Bn>
-		struct And<_B1, _B2, _B3, _Bn...> : public Conditional<_B1::value, And<_B2, _B3, _Bn...>, _B1>::type
+		struct And<_B1, _B2, _B3, _Bn...> :
+				public Conditional<_B1::value, And<_B2, _B3, _Bn...>, _B1>::type
+		{ };
+
+		template <bool value>
+		using BoolConstant = IntegralConstant<bool, value>;
+
+		template<typename _Pp>
+		struct Not : public BoolConstant <!bool(_Pp::value)>
 		{ };
 }}
