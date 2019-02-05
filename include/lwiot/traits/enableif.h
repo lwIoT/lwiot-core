@@ -9,7 +9,7 @@
 
 namespace lwiot { namespace traits
 {
-	template <bool, typename T>
+	template <bool, typename T = void>
 	struct EnableIf { };
 
 	template <typename T>
