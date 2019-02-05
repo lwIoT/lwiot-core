@@ -162,7 +162,7 @@ namespace lwiot
 				return _AT_Type::_S_ptr(_M_elems);
 			}
 
-			const_pointer data() const noexcept
+			CONSTEXPR const_pointer data() const noexcept
 			{
 				return _AT_Type::_S_ptr(_M_elems);
 			}

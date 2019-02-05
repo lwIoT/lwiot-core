@@ -172,10 +172,10 @@ namespace lwiot
 		}
 
 		template <size_t I, typename ... Types>
-		constexpr traits::RemoveReference<type_at_index_t<I, Types...>>&& get(Tuple<Types...>&& tuple)
+		constexpr typename traits::RemoveReference<type_at_index_t<I, Types...>>::type && get(Tuple<Types...>&& tuple)
 		{
 			TupleElement<I, type_at_index_t<I, Types...>>& base = tuple;
-			return base._value;
+			return stl::move(base._value);
 		}
 
 		template <size_t I, typename... Types>
@@ -214,7 +214,7 @@ namespace lwiot
 		using special_decay_t = typename UnwrapRefwrapper<typename traits::Decay<T>::type>::type ;
 
 		template <class... Types>
-		constexpr auto MakeTuple(Types&&... args)
+		constexpr Tuple<special_decay_t<Types>...> MakeTuple(Types&&... args)
 		{
 			return lwiot::stl::Tuple<special_decay_t<Types>...>(stl::forward<Types>(args)...);
 		}
