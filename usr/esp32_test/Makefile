@@ -9,7 +9,7 @@ PORT_PATH = $(LWIOT_PATH)/source/platform/esp32/include
 BUILD_DIR = $(LWIOT_PATH)/build/esp32-debug
 
 EXTRA_CFLAGS = -I$(BUILD_DIR) -I$(LWIOT_PATH)/include -I$(PORT_PATH)
-EXTRA_CXXFLAGS = $(EXTRA_CFLAGS)
+EXTRA_CXXFLAGS = $(EXTRA_CFLAGS) -std=gnu++14
 
 include $(IDF_PATH)/make/project.mk
 
