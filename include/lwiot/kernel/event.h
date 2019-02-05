@@ -8,8 +8,10 @@
 #pragma once
 
 #include <lwiot_opts.h>
+
 #include <lwiot/kernel/port.h>
 #include <lwiot/scopedlock.h>
+#include <lwiot/kernel/uniquelock.h>
 
 namespace lwiot {
 	class Event {
@@ -27,6 +29,18 @@ namespace lwiot {
 		void wait();
 		bool wait(int tmo);
 		bool wait(ScopedLock& guard, int tmo = FOREVER);
+
+		template <typename T>
+		bool wait(UniqueLock<T>& guard, int tmo = FOREVER)
+		{
+			guard.unlock();
+			auto rv = this->wait(tmo);
+			guard.lock();
+
+			return rv;
+		}
+
+
 
 		void signalFromIrq();
 		void signal();
