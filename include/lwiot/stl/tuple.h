@@ -126,6 +126,10 @@ namespace lwiot
 			Tuple& operator=(Tuple&&) = default;
 		};
 
+		template <>
+		class Tuple<> {
+		};
+
 		template <size_t I, typename, typename ... Tail>
 		struct TypeAtIndex {
 			using type = typename TypeAtIndex<I-1, Tail...>::type;
