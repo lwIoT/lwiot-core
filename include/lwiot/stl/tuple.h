@@ -51,7 +51,7 @@ namespace lwiot
 
 
 			explicit TupleElement(T const& value) : _value(value) {}
-			explicit TupleElement(T&& value) : _value(stl::move(value)) {}
+			explicit TupleElement(T&& value) : _value(stl::forward<T>(value)) {}
 
 			template <typename U>
 			explicit TupleElement(U&& value) : _value(stl::forward<U>(value))
