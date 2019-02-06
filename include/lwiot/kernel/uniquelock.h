@@ -16,7 +16,7 @@ namespace lwiot
 	public:
 		typedef T LockType;
 
-		explicit UniqueLock(LockType & lock) : _lock(lock)
+		explicit UniqueLock(LockType & lock) : _lock(lock), _locked(false)
 		{
 		}
 
