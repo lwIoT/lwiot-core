@@ -74,22 +74,7 @@ namespace lwiot
 		{
 		};
 
-		template<typename _Tp>
-		struct __is_referenceable
-				: public Or<IsObject<_Tp>, IsReference<_Tp>>::type
-		{ };
-
-		template<typename _Res, typename... _Args>
-		struct __is_referenceable<_Res(_Args...)>
-				: public TrueType
-		{ };
-
-		template<typename _Res, typename... _Args>
-		struct __is_referenceable<_Res(_Args......)>
-				: public TrueType
-		{ };
-
-		template<typename _Tp, bool = __is_referenceable<_Tp>::value>
+		template<typename _Tp, bool = IsReferenceable<_Tp>::value>
 		struct __add_rvalue_reference_helper
 		{ typedef _Tp   type; };
 
