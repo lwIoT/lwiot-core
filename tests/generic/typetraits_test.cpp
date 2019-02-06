@@ -32,6 +32,7 @@
 #include <lwiot/traits/remove_extent.h>
 #include <lwiot/traits/addpointer.h>
 #include <lwiot/traits/decay.h>
+#include <lwiot/traits/isconvirtible.h>
 
 class A {
 public:
@@ -65,6 +66,10 @@ int main(int argc, char**argv)
 	static_assert(lwiot::traits::IsFloatingPoint<double >::value, "Float is not a floating point!");
 	static_assert(lwiot::traits::IsFloatingPoint<long double>::value, "Float is not a floating point!");
 	static_assert(!lwiot::traits::IsFloatingPoint<long>::value, "Long is not a floating point!");
+	static_assert(lwiot::traits::IsConvirtable<int, bool>::value, "Int not convirtable to bool!");
+	static_assert(!lwiot::traits::IsConvirtable<A, bool>::value, "Int not convirtable to bool!");
+
+
 	tst = lwiot::stl::move(4);
 	assert(tst.x == 4);
 

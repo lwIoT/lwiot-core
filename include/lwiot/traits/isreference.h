@@ -73,5 +73,50 @@ namespace lwiot
 		struct IsObject : public Not<Or <IsFunction<T>, IsReference<T>, IsSame<T,void>>>::type
 		{
 		};
+
+		template<typename _Tp>
+		struct __is_referenceable
+				: public Or<IsObject<_Tp>, IsReference<_Tp>>::type
+		{ };
+
+		template<typename _Res, typename... _Args>
+		struct __is_referenceable<_Res(_Args...)>
+				: public TrueType
+		{ };
+
+		template<typename _Res, typename... _Args>
+		struct __is_referenceable<_Res(_Args......)>
+				: public TrueType
+		{ };
+
+		template<typename _Tp, bool = __is_referenceable<_Tp>::value>
+		struct __add_rvalue_reference_helper
+		{ typedef _Tp   type; };
+
+		template<typename _Tp>
+		struct __add_rvalue_reference_helper<_Tp, true>
+		{ typedef _Tp&&   type; };
+
+		/// add_rvalue_reference
+		template<typename _Tp>
+		struct add_rvalue_reference
+				: public __add_rvalue_reference_helper<_Tp>
+		{ };
+
+		template<typename _Tp>
+		struct __declval_protector
+		{
+			static const bool __stop = false;
+			static typename add_rvalue_reference<_Tp>::type __delegate() { }
+		};
+
+		template<typename _Tp>
+		inline typename add_rvalue_reference<_Tp>::type
+		declval() noexcept
+		{
+			static_assert(__declval_protector<_Tp>::__stop,
+			              "declval() must not be used!");
+			return __declval_protector<_Tp>::__delegate();
+		}
 }
 }
