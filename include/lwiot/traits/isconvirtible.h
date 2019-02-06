@@ -10,6 +10,8 @@
 #include <lwiot/traits/integralconstant.h>
 #include <lwiot/traits/isfunction.h>
 #include <lwiot/traits/issame.h>
+#include <lwiot/traits/isarray.h>
+#include <lwiot/traits/isfunction.h>
 
 namespace lwiot
 {
