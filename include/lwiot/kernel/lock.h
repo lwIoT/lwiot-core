@@ -14,6 +14,7 @@
 
 #include <lwiot/error.h>
 #include <lwiot/stl/string.h>
+#include <lwiot/kernel/atomic.h>
 #include <lwiot/uniquepointer.h>
 
 namespace lwiot {
@@ -88,7 +89,7 @@ namespace lwiot {
 
 			bool _lockval;
 #else
-			explicit LockValue(bool recursive)
+			explicit LockValue(bool recursive) : _lockdepth(0)
 			{
 				if(recursive)
 					this->_lock = lwiot_mutex_create(MTX_RECURSIVE);
@@ -96,7 +97,7 @@ namespace lwiot {
 					this->_lock = lwiot_mutex_create(0);
 			}
 
-			~LockValue()
+			virtual ~LockValue()
 			{
 				lwiot_mutex_destroy(this->_lock);
 			}
@@ -104,19 +105,33 @@ namespace lwiot {
 			void lock()
 			{
 				lwiot_mutex_lock(this->_lock, FOREVER);
+				++this->_lockdepth;
 			}
 
 			bool try_lock(int tmo)
 			{
-				return lwiot_mutex_lock(this->_lock, tmo) == -EOK;
+				auto result = lwiot_mutex_lock(this->_lock, tmo) == -EOK;
+
+				if(result == -EOK)
+					++this->_lockdepth;
+
+				return result;
 			}
 
 			void unlock()
 			{
+				assert(this->_lockdepth >= 0);
+
+				if(this->_lockdepth == 0)
+					return;
+					
+
+				--this->_lockdepth;
 				lwiot_mutex_unlock(this->_lock);
 			}
 
 			lwiot_mutex_t* _lock;
+			int _lockdepth;
 #endif
 		};
 
