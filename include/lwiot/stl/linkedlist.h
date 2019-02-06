@@ -156,12 +156,12 @@ namespace lwiot
 			{
 			}
 
-			explicit LinkedList(const LinkedList<T> &other) : _head(nullptr), _size(0UL)
+			LinkedList(const LinkedList<T> &other) : _head(nullptr), _size(0UL)
 			{
 				this->copy(other);
 			}
 
-			CONSTEXPR explicit LinkedList(LinkedList<T> &&other) noexcept : _head(nullptr), _size(0)
+			CONSTEXPR LinkedList(LinkedList<T> &&other) noexcept : _head(nullptr), _size(0)
 			{
 				this->_size = other._size;
 				this->_head = other._head;
@@ -318,6 +318,11 @@ namespace lwiot
 			constexpr size_t size() const
 			{
 				return this->_size;
+			}
+
+			constexpr bool empty() const
+			{
+				return this->size() == 0UL;
 			}
 
 		private:
