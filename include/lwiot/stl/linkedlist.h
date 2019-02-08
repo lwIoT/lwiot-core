@@ -31,11 +31,11 @@ namespace lwiot
 			template<typename T>
 			struct Node {
 			public:
-				explicit Node(const T &data) : _data(data)
+				explicit Node(const T &data) : _data(data), next(nullptr), prev(nullptr)
 				{
 				}
 
-				explicit Node(T &&data) : _data(stl::forward<T>(data))
+				explicit Node(T &&data) : _data(stl::forward<T>(data)), next(nullptr), prev(nullptr)
 				{
 				}
 
@@ -248,7 +248,7 @@ namespace lwiot
 			{
 				stl::foreach(list, [&](iterator& iter) {
 					auto node = iter.node();
-					this->removeAndKeepNode(node);
+					list.removeAndKeepNode(node);
 					node->next = nullptr;
 					node->prev = nullptr;
 					this->add_back(node);

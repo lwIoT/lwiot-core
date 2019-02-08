@@ -13,12 +13,12 @@
 #include <lwiot/error.h>
 
 namespace lwiot {
-	Event::Event(int length)
+	Event::Event(int length) : _event(nullptr)
 	{
 		this->_event = lwiot_event_create(length);
 	}
 
-	Event::Event(lwiot::Event &&event)
+	Event::Event(lwiot::Event &&event) : _event(nullptr)
 	{
 		this->_event = event._event;
 		event._event = nullptr;
@@ -27,6 +27,7 @@ namespace lwiot {
 	Event::~Event()
 	{
 		lwiot_event_destroy(this->_event);
+		this->_event = nullptr;
 	}
 
 	Event& Event::operator=(lwiot::Event &&rhs)
