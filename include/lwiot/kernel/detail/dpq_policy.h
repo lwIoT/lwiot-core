@@ -14,6 +14,7 @@
 
 #include <lwiot/kernel/lock.h>
 #include <lwiot/kernel/event.h>
+#include <lwiot/kernel/thread.h>
 
 namespace lwiot
 {
@@ -40,6 +41,23 @@ namespace lwiot
 					return true;
 				}
 			};
+
+			struct Thread {
+				explicit Thread(void *argument = nullptr) { }
+				explicit Thread(const char *name, void *argument = nullptr) { }
+				explicit Thread(const String& name, void *argument = nullptr) { }
+				explicit Thread(const String& name, int priority, size_t stacksize, void *argument = nullptr)
+				{ }
+
+				explicit Thread(Thread&& other) = default;
+				explicit Thread(Thread&) = delete;
+				Thread& operator=(Thread&& rhs) = default;
+				Thread& operator=(Thread& rhs) = delete;
+
+				constexpr void start() { }
+				constexpr void stop() { }
+				constexpr void join() { }
+			};
 		};
 
 		template <typename T>
@@ -50,6 +68,7 @@ namespace lwiot
 		struct MultiThreading {
 			using Event = lwiot::Event;
 			using Lock = lwiot::Lock;
+			using Thread = lwiot::Thread;
 		};
 
 		template <typename T>
