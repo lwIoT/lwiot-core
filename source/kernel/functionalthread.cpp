@@ -27,12 +27,6 @@ namespace lwiot
 	{
 	}
 
-	FunctionalThread& FunctionalThread::operator=(FunctionalThread::Runner &runner)
-	{
-		this->_runner = runner;
-		return *this;
-	}
-
 	void FunctionalThread::run()
 	{
 		if(this->_runner.valid())
