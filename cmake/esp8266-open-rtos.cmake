@@ -78,7 +78,7 @@ set(PORT_C_FLAGS "${CMAKE_C_FLAGS} -Wno-comment -Wno-pointer-sign -fno-builtin -
     -Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals \
     -ffunction-sections -fdata-sections")
 set(PORT_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -Wno-comment -fno-builtin -Wl,-EL,--gc-sections -fno-inline-functions \
-    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -fdata-sections -Wc++11-compat")
+    -nostdlib -mlongcalls -mtext-section-literals -ffunction-sections -fdata-sections -Wc++11-compat -fstack-protector")
 
 SET(ESP8266 True)
 SET(HAVE_RTOS True)

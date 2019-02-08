@@ -123,7 +123,7 @@ SET(RTTI False CACHE BOOL "Enable/disable runtime type identification.")
 IF(RTTI)
 	set(PORT_CXX_FLAGS "-frtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls \
-	-mtext-section-literals -ffunction-sections -fdata-sections")
+	-mtext-section-literals -ffunction-sections -fdata-sections -fstack-protector")
 ELSE()
 	set(PORT_CXX_FLAGS "-fno-rtti -Wno-comment -fno-builtin \
 	-Wl,-EL,--gc-sections -fno-inline-functions -nostdlib -mlongcalls -Wc++14-compat \
