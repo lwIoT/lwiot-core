@@ -18,6 +18,7 @@ namespace lwiot
 
 		explicit UniqueLock(LockType & lock) : _lock(lock), _locked(false)
 		{
+			this->lock();
 		}
 
 		~UniqueLock()
