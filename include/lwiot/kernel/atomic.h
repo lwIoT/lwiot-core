@@ -26,4 +26,37 @@ namespace lwiot
 	typedef lwiot::Atomic<int> atomic_int_t;
 	typedef lwiot::Atomic<long> atomic_long_t;
 	typedef lwiot::Atomic<long long> atomic_long_long_t;
+
+	class AtomicBool : public Atomic<uint8_t> {
+	public:
+		AtomicBool(bool value = false) : Atomic(uint8_t(value))
+		{
+		}
+
+		AtomicBool& operator=(bool v) noexcept
+		{
+			if(v)
+				this->store(1);
+			else
+				this->store(0);
+
+			return *this;
+		}
+
+		AtomicBool& operator=(const AtomicBool& ab)
+		{
+			bool v = ab.load() != 0;
+			*this = v;
+
+			return *this;
+		}
+
+		operator bool() noexcept
+		{
+			bool value = this->load();
+			return value != 0;
+		}
+	};
+
+	typedef AtomicBool atomic_bool_t;
 }

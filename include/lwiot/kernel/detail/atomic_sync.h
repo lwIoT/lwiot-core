@@ -149,12 +149,12 @@ namespace lwiot
 			// Conversion operator
 			operator T () const
 			{
-				return __sync_fetch_and_add(&this->_value, 0);
+				return __sync_fetch_and_add((T*) &this->_value, 0);
 			}
 
 			operator T() volatile const
 			{
-				return __sync_fetch_and_add(&this->_value, 0);
+				return __sync_fetch_and_add((T*) &this->_value, 0);
 			}
 
 			// Is lock free?
