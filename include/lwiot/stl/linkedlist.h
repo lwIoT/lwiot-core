@@ -15,6 +15,7 @@
 #include <lwiot/stl/move.h>
 #include <lwiot/stl/container_of.h>
 #include <lwiot/traits/typechoice.h>
+#include "foreach.h"
 
 namespace lwiot
 {
@@ -44,10 +45,9 @@ namespace lwiot
 				}
 
 				T _data;
-
-			private:
 				friend class LinkedList<T>;
 
+			private:
 				friend class Iterator;
 
 				Node<T> *next;
@@ -202,26 +202,8 @@ namespace lwiot
 
 			CONSTEXPR void remove(const node_type *node)
 			{
-				if(this->_head == nullptr || !(node->next || node->prev))
+				if(!removeAndKeepNode(node))
 					return;
-
-				this->_size--;
-
-				if(this->_size == 0UL) {
-					this->_head = nullptr;
-					delete node;
-					return;
-				}
-
-				if(node == this->_head) {
-					this->_head = node->next;
-				}
-
-				if(node->next)
-					node->next->prev = node->prev;
-
-				if(node->prev)
-					node->prev->next = node->next;
 
 				delete node;
 			}
@@ -241,6 +223,17 @@ namespace lwiot
 				for(const value_type &value : list) {
 					this->push_back(value);
 				}
+			}
+
+			CONSTEXPR void append(LinkedList&& list)
+			{
+				stl::foreach(list, [&](iterator& iter) {
+					auto node = iter.node();
+					this->removeAndKeepNode(node);
+					node->next = nullptr;
+					node->prev = nullptr;
+					this->add_back(node);
+				});
 			}
 
 			CONSTEXPR iterator begin()
@@ -325,11 +318,37 @@ namespace lwiot
 				return this->size() == 0UL;
 			}
 
-		private:
 			friend struct list::Node<T>;
+
+		private:
 
 			node_type *_head;
 			size_t _size;
+
+			CONSTEXPR bool removeAndKeepNode(const node_type *node)
+			{
+				if(this->_head == nullptr || !(node->next || node->prev))
+					return false;
+
+				this->_size--;
+
+				if(this->_size == 0UL) {
+					this->_head = nullptr;
+					return true;
+				}
+
+				if(node == this->_head) {
+					this->_head = node->next;
+				}
+
+				if(node->next)
+					node->next->prev = node->prev;
+
+				if(node->prev)
+					node->prev->next = node->next;
+
+				return true;
+			}
 
 			constexpr void add(node_type *lnew, node_type *prev, node_type *next)
 			{
