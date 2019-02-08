@@ -14,8 +14,12 @@ namespace lwiot
 		template <typename Collection, typename Func>
 		constexpr void foreach(Collection& collection, Func&& handler)
 		{
-			for(auto iter = collection.begin(); iter != collection.end(); ++iter)
+			for(auto iter = collection.begin(); iter != collection.end(); ++iter) {
+				if(collection.size() == 0)
+					break;
+
 				handler(iter);
+			}
 		}
 	}
 }

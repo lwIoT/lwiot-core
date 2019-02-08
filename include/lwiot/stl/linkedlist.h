@@ -98,7 +98,7 @@ namespace lwiot
 					if(this->_current == nullptr)
 						return *this;
 
-					if(this->_next == this->_start) {
+					if((this->_next == this->_start) || (this->_next == this->_current)) {
 						this->_current = nullptr;
 						return *this;
 					}
@@ -143,7 +143,15 @@ namespace lwiot
 					return this->_current;
 				}
 
+				constexpr void clear()
+				{
+					this->_current = nullptr;
+					this->_start = nullptr;
+					this->_next = nullptr;
+				}
+
 			private:
+				friend class LinkedList<T>;
 				node_type *_current;
 				node_type *_start;
 				node_type *_next;
@@ -197,6 +205,11 @@ namespace lwiot
 			constexpr value_type replace(iterator& iter, value_type&& value)
 			{
 				auto node = iter.node();
+
+				if(node == this->_head) {
+					iter._start = node;
+				}
+
 				return stl::exchange(node->_data, stl::forward<value_type &&>(value));
 			}
 
@@ -211,11 +224,17 @@ namespace lwiot
 			CONSTEXPR void erase(const_iterator&  iter)
 			{
 				this->remove(iter.node());
+
+				if(this->_size == 0UL)
+					iter.clear();
 			}
 
 			CONSTEXPR void erase(iterator& iter)
 			{
 				this->remove(iter.node());
+
+				if(this->_size == 0UL)
+					iter.clear();
 			}
 
 			CONSTEXPR void copy(const LinkedList<T> &list)
