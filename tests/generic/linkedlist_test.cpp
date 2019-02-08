@@ -15,6 +15,7 @@
 #include <lwiot/stl/referencewrapper.h>
 
 #include <lwiot/stl/move.h>
+#include <lwiot/stl/foreach.h>
 
 struct Token {
 	explicit Token(const Token&) = default;
@@ -67,10 +68,10 @@ int main(int argc, char **argv)
 
 	lwiot::stl::LinkedList<Token> list2(list);
 
-	for(Token& token : list) {
-		lwiot::String str = lwiot::stl::move(token.tst);
-		print_dbg("List entry value: [%i][%f]\n", token.x.get(), token.y);
-	}
+	lwiot::stl::foreach(list, [](lwiot::stl::LinkedList<Token>::iterator& iter) {
+		auto& token = *iter;
+		print_dbg("Entry value: [%i][%f]\n", token.x.get(), token.y);
+	});
 
 	print_dbg("First value: %f\n", list2.front().y);
 	print_dbg("String length: %i\n", list2.front().tst.length());
@@ -82,7 +83,7 @@ int main(int argc, char **argv)
 	print_dbg("After swap:\n");
 	for(Token& token : list2) {
 		lwiot::String str = lwiot::stl::move(token.tst);
-		print_dbg("List entry value: [%i][%f]\n", token.x, token.y);
+		print_dbg("List entry value: [%i][%f]\n", token.x.get(), token.y);
 	}
 
 	list2.erase(iter);
