@@ -29,8 +29,6 @@ namespace lwiot
 
 	Thread::Thread(const char *name, void *argument) :_prio(-1), stacksize(0), _name(name)
 	{
-		print_dbg("Creating thread [%s]!\n", name);
-
 		this->_running = false;
 		this->_argument = argument;
 	}
@@ -88,6 +86,7 @@ namespace lwiot
 	{
 		lwiot_thread_attributes attrs{};
 
+		print_dbg("Creating thread [%s]!\n", this->_name.c_str());
 		this->_running = true;
 		assert(this->_name.length() != 0);
 
