@@ -27,7 +27,12 @@ namespace lwiot
 		FunctionalThread(const String& name, Runner& runner);
 		virtual ~FunctionalThread() = default;
 
-		FunctionalThread& operator=(Runner& runner);
+		template <typename Func>
+		FunctionalThread& operator=(Func&& runner)
+		{
+			this->_runner = stl::forward<Func>(runner);
+			return *this;
+		}
 
 	protected:
 		virtual void run() override;
