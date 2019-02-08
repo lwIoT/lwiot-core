@@ -18,9 +18,9 @@ extern lwiot_event_t* lwiot_dns_event;
 #endif
 
 #ifdef __GNUG__
-#define gnu_pure gnu::pure
+#define stack_protect gnu::stack_protect
 #else
-#define gnu_pure
+#define stack_protect
 #endif
 
 #else /* __cplusplus */
