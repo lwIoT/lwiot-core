@@ -43,6 +43,7 @@ namespace lwiot
 			};
 
 			struct Thread {
+				Thread() = default;
 				explicit Thread(void *argument = nullptr) { }
 				explicit Thread(const char *name, void *argument = nullptr) { }
 				explicit Thread(const String& name, void *argument = nullptr) { }
