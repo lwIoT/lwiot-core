@@ -180,7 +180,6 @@ lwiot_event_t* lwiot_event_create(int length)
 	assert(event);
 
 	event->size = length;
-	event->length = 0;
 	event->signalled = false;
 
 	pthread_mutex_init(&event->mtx, NULL);
@@ -212,8 +211,6 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 	assert(event);
 
 	pthread_mutex_lock(&event->mtx);
-	event->length++;
-	assert(event->length < event->size);
 
 	while(!event->signalled) {
 		if(tmo == FOREVER) {
@@ -221,7 +218,6 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 		} else {
 			timespec_create_from_tmo(&timeout, tmo);
 			if(pthread_cond_timedwait(&event->cond, &event->mtx, &timeout)) {
-				event->length--;
 				pthread_mutex_unlock(&event->mtx);
 				return -ETMO;
 			}
@@ -229,7 +225,6 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 
 	}
 	
-	event->length--;
 	event->signalled = false;
 	pthread_mutex_unlock(&event->mtx);
 	return -EOK;
@@ -239,11 +234,6 @@ void lwiot_event_signal(lwiot_event_t *event)
 {
 	assert(event);
 	pthread_mutex_lock(&event->mtx);
-
-	if(event->length == 0) {
-		pthread_mutex_unlock(&event->mtx);
-		return;
-	}
 
 	event->signalled = true;
 	pthread_cond_signal(&event->cond);

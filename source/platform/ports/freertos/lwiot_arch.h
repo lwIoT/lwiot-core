@@ -76,7 +76,6 @@ typedef struct mutex {
 } lwiot_mutex_t;
 
 typedef struct event {
-	UBaseType_t size;
 	QueueHandle_t evq;
 #define HAVE_EVENT
 } lwiot_event_t;

@@ -35,7 +35,6 @@ typedef DLL_EXPORT struct event {
 	pthread_mutex_t mtx;
 	pthread_cond_t cond;
 	bool signalled;
-	int length;
 	int size;
 #define HAVE_EVENT
 } lwiot_event_t;

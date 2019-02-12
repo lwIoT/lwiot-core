@@ -221,7 +221,6 @@ lwiot_event_t* lwiot_event_create(int length)
 	assert(event);
 
 	event->size = length;
-	event->length = 0;
 	event->signalled = false;
 	InitializeConditionVariable(&event->cond);
 	InitializeCriticalSection(&event->cs);
@@ -236,7 +235,6 @@ void lwiot_event_destroy(lwiot_event_t *e)
 	DeleteCriticalSection(&e->cs);
 
 	e->size = 0;
-	e->length = 0;
 	e->signalled = false;
 
 	lwiot_mem_free(e);
@@ -245,12 +243,6 @@ void lwiot_event_destroy(lwiot_event_t *e)
 void lwiot_event_signal(lwiot_event_t *event)
 {
 	EnterCriticalSection(&event->cs);
-
-	if(event->length == 0) {
-		LeaveCriticalSection(&event->cs);
-		return;
-	}
-
 	event->signalled = true;
 	LeaveCriticalSection(&event->cs);
 
@@ -271,8 +263,6 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 	assert(event);
 
 	EnterCriticalSection(&event->cs);
-	event->length++;
-	assert(event->length < event->size);
 
 	if(tmo == FOREVER)
 		tmo = INFINITE;
@@ -283,8 +273,6 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 		if(tmo != INFINITE)
 			break;
 	}
-
-	event->length--;
 
 	if(rv)
 		event->signalled = false;

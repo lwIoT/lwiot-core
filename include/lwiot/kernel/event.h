@@ -10,8 +10,10 @@
 #include <lwiot_opts.h>
 
 #include <lwiot/kernel/port.h>
-#include <lwiot/scopedlock.h>
+#include <lwiot/kernel/lock.h>
 #include <lwiot/kernel/uniquelock.h>
+
+#include <lwiot/scopedlock.h>
 
 namespace lwiot {
 	class Event {
@@ -41,11 +43,12 @@ namespace lwiot {
 		}
 
 
-
 		void signalFromIrq();
 		void signal();
 
 	private:
 		lwiot_event_t* _event;
+		int _waiters;
+		Lock _lock;
 	};
 }

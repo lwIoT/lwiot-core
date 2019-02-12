@@ -37,8 +37,7 @@ typedef struct DLL_EXPORT event {
 	CRITICAL_SECTION cs;
 	CONDITION_VARIABLE cond;
 	bool signalled;
-	int size,
-		length;
+	int size;
 #define HAVE_EVENT
 } lwiot_event_t;
 

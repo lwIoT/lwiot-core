@@ -13,12 +13,12 @@
 #include <lwiot/error.h>
 
 namespace lwiot {
-	Event::Event(int length) : _event(nullptr)
+	Event::Event(int length) : _event(nullptr), _waiters(0)
 	{
 		this->_event = lwiot_event_create(length);
 	}
 
-	Event::Event(lwiot::Event &&event) : _event(nullptr)
+	Event::Event(lwiot::Event &&event) : _event(nullptr), _waiters(0)
 	{
 		this->_event = event._event;
 		event._event = nullptr;
@@ -34,6 +34,8 @@ namespace lwiot {
 	{
 		this->_event = rhs._event;
 		rhs._event = nullptr;
+		this->_waiters = rhs._waiters;
+		this->_lock = stl::move(rhs._lock);
 
 		return *this;
 	}
@@ -53,7 +55,17 @@ namespace lwiot {
 		if(!this->_event)
 			return false;
 
-		return lwiot_event_wait(this->_event, tmo) == -EOK;
+		this->_lock.lock();
+		++this->_waiters;
+		this->_lock.unlock();
+
+		auto result = lwiot_event_wait(this->_event, tmo) == -EOK;
+
+		this->_lock.lock();
+		--this->_waiters;
+		this->_lock.unlock();
+
+		return result;
 	}
 
 	bool Event::wait(lwiot::ScopedLock &guard, int tmo)
@@ -70,12 +82,20 @@ namespace lwiot {
 		if(!this->_event)
 			return;
 
+		ScopedLock g(this->_lock);
+		if(this->_waiters == 0)
+			return;
+
+		g.unlock();
 		lwiot_event_signal(this->_event);
 	}
 
 	void Event::signalFromIrq()
 	{
 		if(!this->_event)
+			return;
+
+		if(this->_waiters == 0)
 			return;
 
 		lwiot_event_signal_irq(this->_event);
