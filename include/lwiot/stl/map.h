@@ -100,7 +100,7 @@ namespace lwiot
 				this->_data.push_front(stl::move(e));
 			}
 
-			CONSTEXPR MapValue at(const MapKey &&key) const
+			CONSTEXPR MapValue at(const MapKey &key) const
 			{
 				for(const auto &e : this->_data) {
 					if(e == key) {
@@ -174,12 +174,7 @@ namespace lwiot
 				return false;
 			}
 
-			CONSTEXPR void remove(const MapKey &key)
-			{
-				this->remove(stl::move(key));
-			}
-
-			CONSTEXPR void remove(const MapKey &&key)
+			CONSTEXPR void remove(const MapKey& key)
 			{
 				for(auto idx = this->begin(); idx != this->end(); ++idx) {
 					if(idx->key == key) {
