@@ -17,198 +17,130 @@
 #include <lwiot/sharedpointer.h>
 
 #include <lwiot/traits/isfunction.h>
+#include <lwiot/traits/enableif.h>
 
 namespace lwiot
 {
-	template <typename T> struct IsVoid {
-		static const bool value = false;
-	};
+	template<class ReturnType, class...Xs>
+	struct SFConcept {
+		virtual ReturnType operator()(Xs...) const = 0;
+		virtual ReturnType operator()(Xs...) = 0;
+		virtual void copy(void *) const = 0;
 
-	template <> struct IsVoid<void> {
-		static const bool value = true;
-	};
-
-	template <typename _ReturnType, typename... Args> struct Callable {
-		typedef _ReturnType ReturnType;
-		typedef _ReturnType (*SignatureType)(Args...);
-		virtual ~Callable() = default;
-
-		virtual _ReturnType operator ()(Args...args) = 0;
-	};
-
-	template <typename _ClosureType, typename _ReturnType, typename ...Args>
-	struct Closure : public Callable<_ReturnType, Args...> {
-		typedef _ClosureType ClosureType;
-		typedef Closure<_ClosureType, _ReturnType, Args...> SelfType;
-
-		_ClosureType handler;
-
-		Closure(const _ClosureType& handler) : handler(handler)
-		{ }
-
-		Closure(const Callable<_ReturnType, Args...> *callable)
+		virtual ~SFConcept()
 		{
-			const Closure<ClosureType , _ReturnType, Args...> *closure = (const SelfType *)callable;
-			this->handler = closure->handler;
+		};
+	};
+
+	template<class F, typename ReturnType, typename...Xs>
+	struct SFModel final : SFConcept<ReturnType, Xs...> {
+        F f;
+
+		SFModel(F const &f) : f(f)
+		{
 		}
 
-		virtual ~Closure() = default;
-
-		virtual _ReturnType operator ()(Args...args) override
+		virtual void copy(void *memory) const
 		{
-			if(IsVoid<_ReturnType>::value) {
-				this->handler(args...);
-			} else {
-				return this->handler(args...);
-			}
+			new(memory) SFModel<F, ReturnType, Xs...>(f);
+		}
+
+		virtual ReturnType operator()(Xs...xs) const
+		{
+			return f(xs...);
+		}
+
+		virtual ReturnType operator()(Xs...xs)
+		{
+			return f(xs...);
+		}
+
+		virtual ~SFModel()
+		{
 		}
 	};
 
-	/*template <typename _FunctionType> class Function : public Function<decltype(&_FunctionType::operator())> {
-	};*/
 
-	template <typename _FunctionType>
-	class Function;
+	template<typename Func, size_t size = 128>
+	class Function ;
 
-	/*
-	 * Wrapper for lambda's, functors and functions.
-	 */
-	template <typename _ReturnType, typename... Args> class Function<_ReturnType(Args...)> {
+	template<typename ReturnType, typename ...Xs, size_t size>
+	class Function<ReturnType(Xs...), size> {
 	public:
-		typedef Function<_ReturnType(*)(Args...)> SelfType;
-		typedef _ReturnType(*SignatureType)(Args...);
-
-		template <typename _ClosureType> Function(const _ClosureType& func) :
-			_callable(new Closure<decltype(func), _ReturnType, Args...>(func))
+		Function()
 		{
 		}
 
-		Function(_ReturnType(*func)(Args...)) :
-			_callable(new Closure<SignatureType, _ReturnType, Args...>(func))
+		template<typename F, traits::EnableIf_t<(sizeof(SFModel<F, ReturnType, Xs...>) <= size), bool> = false>
+		Function(F const &f) : allocated(sizeof(SFModel<F, ReturnType, Xs...>))
 		{
+			new(memory) SFModel<F, ReturnType, Xs...>(f);
 		}
 
-		Function() : _callable(nullptr)
-		{ }
-
-		virtual ~Function() = default;
-
-		Function& operator=(_ReturnType(*func)(Args...))
+		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = 0>
+		Function(Function<ReturnType(Xs...), s> const &sf)
+				: allocated(sf.allocated)
 		{
-			if(this->_callable)
-				delete this->_callable;
+			sf.copy(memory);
+		}
 
-			this->_callable.reset( new Closure<SignatureType, _ReturnType, Args...>(func));
+
+		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = 0>
+		Function &operator=(Function<ReturnType(Xs...), s> const &sf)
+		{
+			clean();
+			allocated = sf.allocated;
+			sf.copy(memory);
 			return *this;
 		}
 
-		template <typename _ClosureType>
-		Function& operator=(const _ClosureType& func)
+		void clean()
 		{
-			this->_callable.reset( new Closure<decltype(func), _ReturnType, Args...>(func));
-			return *this;
-		}
-
-		_ReturnType operator() (Args... args)
-		{
-			if(IsVoid<_ReturnType>::value) {
-				(*_callable)(args...);
-			} else {
-				return (*_callable)(args...);
+			if(allocated) {
+				((concept *) memory)->~concept();
+				allocated = 0;
 			}
 		}
 
-		operator bool() const
+		~Function()
+		{
+			if(allocated) {
+				((concept *) memory)->~concept();
+			}
+		}
+
+		template<class...Ys>
+		ReturnType operator()(Ys &&...ys)
+		{
+			return (*(concept *) memory)(stl::forward<Ys>(ys)...);
+		}
+
+		template<class...Ys>
+		ReturnType operator()(Ys &&...ys) const
+		{
+			return (*(concept *) memory)(stl::forward<Ys>(ys)...);
+		}
+
+		bool valid() const
+		{
+			return this->allocated;
+		}
+
+		explicit operator bool() const
 		{
 			return this->valid();
 		}
 
-		bool operator !() const
+		void copy(void *data) const
 		{
-			return !this->valid();
-		}
-
-		bool valid() const
-		{
-			return this->_callable.get() != nullptr;
-		}
-
-	private:
-//		Callable<_ReturnType, Args...> *_callable;
-//		std::shared_ptr<Callable<_ReturnType, Args...>> _callable;
-		lwiot::SharedPointer<Callable<_ReturnType, Args...>> _callable;
-	};
-
-	template <typename _ClassType, typename _ReturnType, typename... Args>
-	class Function<_ReturnType(_ClassType::*)(Args...)> {
-	public:
-		typedef Function<_ReturnType(_ClassType::*)(Args...)> SelfType;
-		typedef _ReturnType(_ClassType::*SignatureType)(Args...);
-
-		explicit Function(_ReturnType(_ClassType::*method)(Args...)) : _method(method)
-		{ }
-
-		Function() : _method(nullptr)
-		{ }
-
-		Function& operator=(_ReturnType(_ClassType::*method)(Args...))
-		{
-			this->_method = method;
-			return *this;
-		}
-
-		_ReturnType operator ()(_ClassType *object, Args... args)
-		{
-			if(IsVoid<_ReturnType>::value) {
-				(object->*_method)(args...);
-				return;
+			if(allocated) {
+				((concept *) memory)->copy(data);
 			}
-
-			return (object->*_method)(args...);
-		}
-
-		bool valid() const
-		{
-			return this->_callable != nullptr;
 		}
 
 	private:
-		SignatureType _method;
-	};
-
-	template <typename C, typename R, typename... Args> class Function<R(C::*)(Args...) const> {
-	public:
-		typedef Function<R(C::*)(Args...) const> SelfType;
-		typedef R(C::*SignatureType)(Args...) const;
-
-		Function(R(C::*method)(Args...) const) : _method(method)
-		{ }
-
-		Function() : _method(nullptr)
-		{ }
-
-		Function& operator=(R(C::*method)(Args...) const)
-		{
-			this->_method = method;
-			return *this;
-		}
-
-		R operator ()(C *object, Args... args) const
-		{
-			if(IsVoid<R>::value) {
-				(object->*_method)(args...);
-				return;
-			}
-
-			return (object->*_method)(args...);
-		}
-
-		bool valid() const
-		{
-			return this->_callable != nullptr;
-		}
-
-	private:
-		SignatureType _method;
+		char memory[size];
+		bool allocated = false;
+		using concept = SFConcept<ReturnType, Xs...>;
 	};
 }

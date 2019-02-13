@@ -16,4 +16,7 @@ namespace lwiot { namespace traits
 	struct EnableIf<true, T> {
 		typedef T type;
 	};
+
+	template <bool condition, typename T = void>
+	using EnableIf_t = typename EnableIf<condition, T>::type;
 }}
