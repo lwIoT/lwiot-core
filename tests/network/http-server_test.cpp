@@ -90,10 +90,10 @@ static void test_httpserver()
 	lwiot::SocketTcpServer *srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
 	lwiot::HttpServer server(srv);
 
-	server.on("/", lwiot::HTTP_GET, handle_root);
+	server.on("/", lwiot::HTTP_GET, &handle_root);
 	server.on("/", lwiot::HTTP_POST, [](lwiot::HttpServer &server) {
 		server.send(200, "text/plain", "");
-	}, handle_upload);
+	}, &handle_upload);
 
 	assert(server.begin());
 	print_dbg("HttpServer started!\n");
