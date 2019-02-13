@@ -67,25 +67,25 @@ namespace lwiot
 	template<typename ReturnType, typename ...Xs, size_t size>
 	class Function<ReturnType(Xs...), size> {
 	public:
-		Function()
+		Function() : allocated(false)
 		{
 		}
 
-		template<typename F, traits::EnableIf_t<(sizeof(SFModel<F, ReturnType, Xs...>) <= size), bool> = false>
-		Function(F const &f) : allocated(sizeof(SFModel<F, ReturnType, Xs...>))
+		template <typename Func>
+		Function(Func const &f) : allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
 		{
-			new(memory) SFModel<F, ReturnType, Xs...>(f);
+			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
+			new(memory) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = 0>
-		Function(Function<ReturnType(Xs...), s> const &sf)
-				: allocated(sf.allocated)
+		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
+		Function(Function<ReturnType(Xs...), s> const &sf) : allocated(sf.allocated)
 		{
 			sf.copy(memory);
 		}
 
 
-		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = 0>
+		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
 		Function &operator=(Function<ReturnType(Xs...), s> const &sf)
 		{
 			clean();
@@ -97,28 +97,32 @@ namespace lwiot
 		void clean()
 		{
 			if(allocated) {
-				((concept *) memory)->~concept();
-				allocated = 0;
+				auto c = this->as_concept();
+				c->~concept();
+				allocated = false;
 			}
 		}
 
-		~Function()
+		virtual ~Function()
 		{
 			if(allocated) {
-				((concept *) memory)->~concept();
+				auto c = this->as_concept();
+				c->~concept();
 			}
 		}
 
 		template<class...Ys>
 		ReturnType operator()(Ys &&...ys)
 		{
-			return (*(concept *) memory)(stl::forward<Ys>(ys)...);
+			auto c = this->as_concept();
+			return (*c)(stl::forward<Ys>(ys)...);
 		}
 
 		template<class...Ys>
 		ReturnType operator()(Ys &&...ys) const
 		{
-			return (*(concept *) memory)(stl::forward<Ys>(ys)...);
+			auto c = this->as_concept();
+			return (*c)(stl::forward<Ys>(ys)...);
 		}
 
 		bool valid() const
@@ -140,7 +144,12 @@ namespace lwiot
 
 	private:
 		char memory[size];
-		bool allocated = false;
+		bool allocated;
 		using concept = SFConcept<ReturnType, Xs...>;
+
+		constexpr concept* as_concept() const
+		{
+			return (concept*) &memory[0];
+		}
 	};
 }
