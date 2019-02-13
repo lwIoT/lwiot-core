@@ -40,15 +40,15 @@ namespace lwiot
 		explicit UniquePointer(const UniquePointer<U> &ptr) = delete;
 		UniquePointer(const UniquePointer &ptr) = delete;
 
-		UniquePointer(UniquePointer&& ptr) noexcept : px(ptr.px)
+		UniquePointer(UniquePointer&& ptr) noexcept
 		{
-			ptr.release();
+			this->px = ptr.release();
 		}
 
 		template<class U>
-		explicit UniquePointer(UniquePointer<U> &&ptr) noexcept : px(ptr.px)
+		explicit UniquePointer(UniquePointer<U> &&ptr) noexcept
 		{
-			ptr.release();
+			this->px = ptr.release();
 		}
 
 		UniquePointer &operator=(UniquePointer ptr) noexcept
@@ -69,15 +69,16 @@ namespace lwiot
 
 		void reset(T *p) noexcept
 		{
-			assert((nullptr == p) || (px != p));
-			destroy();
-			px = p;
+			assert((p == nullptr) || (px != p));
+
+			this->destroy();
+			this->px = p;
 		}
 
 		PointerType* release() noexcept
 		{
 			auto tmp = this->px;
-			px = nullptr;
+			this->px = nullptr;
 			return tmp;
 		}
 
