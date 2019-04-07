@@ -33,4 +33,7 @@ SET(IO_SOURCES
 
 	io/clock/realtimeclock.cpp
 	io/clock/dsrealtimeclock.cpp
+
+	io/clock/dsrealtimeclock.cpp
+	io/clock/realtimeclock.cpp
 )
