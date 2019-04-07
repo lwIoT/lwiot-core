@@ -54,16 +54,15 @@ void loop()
   delay(10);
 }
 
+static unsigned char data[] = {0xAB, 0xAC, 0xAD};
 static void requestEvent(void)
 {
-  unsigned char x = 0xAB;
-
-  Serial.println("Read event!");
-
-  Wire.write(x++);
-  Wire.write(x++);
-  Wire.write(x);
-
+  if(state != STATE_RD) {
+    Serial.println("Invalid read attempted!");
+    return;
+  }
+  
+  Wire.write(data, 3);
   state = STATE_IDLE;
 }
 
@@ -80,8 +79,8 @@ static void receiveEvent(int howMany)
 
   case STATE_IDLE:
     state = Wire.read();
-    Serial.print("State set.. ");
-    Serial.println(state);
+    //Serial.print("State set.. ");
+    //Serial.println(state);
     buf_idx = 0;
     state_set_at = millis();
 
