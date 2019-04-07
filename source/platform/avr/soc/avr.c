@@ -16,7 +16,9 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-void __attribute__((optimize("Os")))  lwiot_udelay(uint32_t us)
+#include <util/delay.h>
+
+/*void __attribute__((optimize("Os")))  lwiot_udelay(uint32_t us)
 {
 #if F_CPU >= 24000000L
 	if(!us)
@@ -72,6 +74,11 @@ void __attribute__((optimize("Os")))  lwiot_udelay(uint32_t us)
 		"1: sbiw %0,1" "\n\t"
 		"brne 1b" : "=w" (us) : "0" (us)
 	);
+}*/
+
+void lwiot_udelay(uint32_t us)
+{
+	_delay_us(10);
 }
 
 #define P0		0
