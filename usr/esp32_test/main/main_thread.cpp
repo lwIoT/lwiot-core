@@ -66,14 +66,14 @@ protected:
 			         "<html>\
   <head>\
     <meta http-equiv='refresh' content='5'/>\
-    <title>ESP8266 Demo</title>\
+    <title>ESP32 DEMO</title>\
     <style>\
       body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
     </style>\
   </head>\
   <body>\
     <h1>Hello from ESP32!</h1>\
-    <p>Lux: %f</p>\
+    <p>Lux value: %f</p>\
   </body>\
 </html>", luxdata
 			);
@@ -82,6 +82,42 @@ protected:
 		});
 	}
 };
+
+#include <lwiot/kernel/eventqueue.h>
+
+static int x = 0;
+static bool hello_world_event(time_t time)
+{
+	print_dbg("Hello, World event triggered!\n");
+	return true;
+}
+
+static void evq_test()
+{
+	lwiot::EventQueue<bool(time_t)> evq;
+
+	evq.on("hello", &hello_world_event);
+	evq.on("tmp", &hello_world_event);
+
+	evq.on("test", [&](time_t time) -> bool {
+		print_dbg("Test event!\n");
+		x++;
+
+		return x == 4;
+	});
+
+	evq.signal("hello");
+	evq.enable();
+
+	evq.signal("test");
+	evq.signal("hello");
+	evq.signal("tmp");
+
+	lwiot_sleep(1000);
+	evq.remove("tmp");
+}
+
+static lwiot::EventQueue<bool(time_t)> mainq;
 
 class MainThread : public lwiot::Thread {
 public:
@@ -122,6 +158,10 @@ protected:
 		ap.begin(ssid, passw, 4);
 	}
 
+	void sense()
+	{
+	}
+
 	virtual void run() override
 	{
 		size_t freesize;
@@ -144,13 +184,27 @@ protected:
 		wdt.enable(2000);
 
 		this->_sensor.begin();
+		mainq.enable();
 		auto http = new HttpServerThread(nullptr);
 		http->start();
+		evq_test();
+
+		lwiot::Apds9301Sensor& sensor = this->_sensor;
+
+		mainq.on("lux", [&](time_t time) {
+			sensor.getLux(luxdata);
+			return true;
+		});
+
+		mainq.on("ping", [](time_t time) {
+			print_dbg("PING\n");
+			return true;
+		});
 
 		while(true) {
-			print_dbg("PING!\n");
 			wdt.reset();
-			this->_sensor.getLux(luxdata);
+			mainq.signal("ping");
+			mainq.signal("lux");
 			lwiot_sleep(1000);
 		}
 	}
