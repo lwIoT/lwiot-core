@@ -40,8 +40,8 @@ namespace lwiot { namespace esp32
 		this->config.mode = I2C_MODE_MASTER;
 		this->config.sda_io_num = static_cast<gpio_num_t>(sda);
 		this->config.scl_io_num = static_cast<gpio_num_t>(scl);
-		this->config.scl_pullup_en = GPIO_PULLUP_ENABLE;
-		this->config.sda_pullup_en = GPIO_PULLUP_ENABLE;
+		this->config.scl_pullup_en = GPIO_PULLUP_DISABLE;
+		this->config.sda_pullup_en = GPIO_PULLUP_DISABLE;
 		this->config.master.clk_speed = this->frequency();
 
 		i2c_param_config(num, &this->config);
