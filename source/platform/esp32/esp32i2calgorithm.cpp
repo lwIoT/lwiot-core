@@ -40,8 +40,8 @@ namespace lwiot { namespace esp32
 		this->config.mode = I2C_MODE_MASTER;
 		this->config.sda_io_num = static_cast<gpio_num_t>(sda);
 		this->config.scl_io_num = static_cast<gpio_num_t>(scl);
-		this->config.scl_pullup_en = GPIO_PULLUP_DISABLE;
-		this->config.sda_pullup_en = GPIO_PULLUP_DISABLE;
+		this->config.scl_pullup_en = GPIO_PULLUP_ENABLE;
+		this->config.sda_pullup_en = GPIO_PULLUP_ENABLE;
 		this->config.master.clk_speed = this->frequency();
 
 		i2c_param_config(num, &this->config);
@@ -76,6 +76,8 @@ namespace lwiot { namespace esp32
 
 		i2c_master_start(handle);
 		this->prepareTransfer(handle, msg);
+		i2c_master_stop(handle);
+
 		auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
 		i2c_cmd_link_delete(handle);
 
@@ -106,6 +108,7 @@ namespace lwiot { namespace esp32
 		auto err = i2c_master_cmd_begin(this->_portno, handle, TIMEOUT / portTICK_PERIOD_MS);
 
 		if(err != ESP_OK) {
+			print_dbg("ESP32 I2C error: %i\n", err);
 			i2c_cmd_link_delete(handle);
 			return -EINVALID;
 		}
@@ -124,8 +127,10 @@ namespace lwiot { namespace esp32
 
 			i2c_master_write_byte( handle, address | I2C_MASTER_READ, true );
 
-			i2c_master_read(handle, data, msg.count() - 1, ACK);
-			i2c_master_read_byte(handle, data + msg.count() - 1, ACK);
+			if(msg.count() > 1)
+				i2c_master_read(handle, data, msg.count() - 1, ACK);
+
+			i2c_master_read_byte(handle, data + msg.count() - 1, NACK);
 
 			msg.setIndex(msg.count());
 		} else {
