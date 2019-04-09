@@ -49,8 +49,19 @@ namespace lwiot
 	bool Apds9301Sensor::begin()
 	{
 		auto a = this->on();
+
+		if(!a)
+			print_dbg("Unable to enable APDS sensor!\n");
+
 		auto b = this->setGain(false);
+
+		if(!b)
+			print_dbg("Unable to set gain!\n");
+
 		auto c = this->setIntegrationTime(Apds9301Sensor::INT_TIME_101_MS);
+
+		if(!c)
+			print_dbg("Unable to set integration time!\n");
 
 		return a && b && c;
 	}
@@ -236,6 +247,7 @@ namespace lwiot
 		wr.write(CMD_REG | addr);
 		wr.setAddress(this->_addr, false, false);
 		wr.setRepeatedStart(true);
+
 		rd.setRepeatedStart(false);
 		rd.setAddress(this->_addr, false, true);
 
