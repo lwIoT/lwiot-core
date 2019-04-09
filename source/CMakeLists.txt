@@ -138,6 +138,8 @@ SET(GENERIC_HEADERS
 	lwiot/util/json.h
 	lwiot/util/datetime.h
 	lwiot/kernel/atomic.h
+	lwiot/kernel/dispatchqueue.h
+	lwiot/kernel/eventqueue.h
 	lwiot/util/measurementvector.h
 	lwiot/util/defaultallocator.h
 	lwiot/util/pair.h
@@ -157,7 +159,7 @@ SET(GENERIC_HEADERS
 	lwiot/traits/typechoice.h
 	lwiot/traits/issame.h
 	lwiot/traits/addpointer.h
-	)
+)
 
 set(BASE_HDRS
     ${PROJECT_SOURCE_DIR}/include/lwiot.h
