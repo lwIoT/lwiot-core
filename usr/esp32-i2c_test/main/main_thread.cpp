@@ -129,9 +129,10 @@ protected:
 			lwiot_sleep(200);
 			wdt.reset();
 
-			this->testRead(bus);
-			lwiot_sleep(100);
 			this->testSingle(bus);
+			lwiot_sleep(150);
+
+			this->testRead(bus);
 
 			wdt.reset();
 			lwiot_sleep(500);
@@ -141,12 +142,26 @@ protected:
 private:
 	void testSingle(lwiot::I2CBus& bus)
 	{
-		lwiot::I2CMessage wr(1);
+		lwiot::I2CMessage wr(1), rd(3);
+		lwiot::stl::Vector<lwiot::I2CMessage*> msgs(2);
 
 		wr.setAddress(0x6B, false, false);
 		wr.write(1);
+		wr.setRepeatedStart(true);
 
-		if(bus.transfer(wr)) {
+		rd.setAddress(0x6B, false, true);
+		rd.setRepeatedStart(false);
+
+		msgs.pushback(&wr);
+		msgs.pushback(&rd);
+
+		if(bus.transfer(msgs)) {
+			auto b1 = rd[0];
+			auto b2 = rd[1];
+			auto b3 = rd[2];
+
+			assert(b2 == (b1 + 1));
+			assert(b3 == b2 + 1);
 			print_dbg("Single test successfull!\n");
 		} else {
 			print_dbg("Single test failed!\n");

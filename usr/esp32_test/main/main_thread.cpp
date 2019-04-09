@@ -35,6 +35,7 @@
 #include <lwiot/stl/move.h>
 
 #include <lwiot/esp32/esp32pwm.h>
+#include <lwiot/esp32/esp32i2calgorithm.h>
 
 static double luxdata = 0x0;
 
@@ -121,16 +122,11 @@ static lwiot::EventQueue<bool(time_t)> mainq;
 
 class MainThread : public lwiot::Thread {
 public:
-	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg),
-		_bus(new lwiot::GpioI2CAlgorithm(23, 22, 100000U)), _sensor(_bus), rtc(_bus)
+	explicit MainThread(const char *arg) : Thread("main-thread", (void*)arg)
 	{
 	}
 
 protected:
-	lwiot::I2CBus _bus;
-	lwiot::Apds9301Sensor _sensor;
-	lwiot::DsRealTimeClock rtc;
-
 	void startPwm(lwiot::esp32::PwmTimer& timer)
 	{
 		auto& channel = timer[0];
@@ -167,6 +163,7 @@ protected:
 		size_t freesize;
 		lwiot::esp32::PwmTimer timer(0, MCPWM_UNIT_0, 100);
 		lwiot::DateTime dt(1539189832);
+		lwiot::I2CBus bus(new lwiot::esp32::I2CAlgorithm(23,22,400000U));
 
 		lwiot_sleep(1000);
 		this->startPwm(timer);
@@ -183,13 +180,12 @@ protected:
 		portal.begin(udp, 53);
 		wdt.enable(2000);
 
-		this->_sensor.begin();
+		lwiot::Apds9301Sensor sensor(bus);
+		sensor.begin();
 		mainq.enable();
 		auto http = new HttpServerThread(nullptr);
 		http->start();
 		evq_test();
-
-		lwiot::Apds9301Sensor& sensor = this->_sensor;
 
 		mainq.on("lux", [&](time_t time) {
 			sensor.getLux(luxdata);
