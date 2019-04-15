@@ -163,7 +163,7 @@ SET(GENERIC_HEADERS
 
 set(BASE_HDRS
     ${PROJECT_SOURCE_DIR}/include/lwiot.h
-    ${PROJECT_BINARY_DIR}/lwiot_opts.h
+    ${CMAKE_BINARY_DIR}/lwiot_opts.h
 )
 
 SET(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
@@ -184,7 +184,6 @@ include_directories(
 
 SET(${SOURCES} ${SOURCES})
 
-add_subdirectory(${PLATFORM_DIRECTORY})
 add_library(lwiot ${SOURCES} ${GENERIC_HEADERS} ${BASE_HDRS} )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")

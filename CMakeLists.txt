@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(lwIoT)
+project(lwiot-core)
 
 include(CMakeToolsHelpers OPTIONAL)
 include(CheckIncludeFiles)
