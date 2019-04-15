@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "../../../external/esp32-idf/components/newlib/include/stdlib.h"
-#include "../../../external/esp32-idf/components/newlib/include/stdio.h"
-#include "../../../external/esp32-idf/components/newlib/include/stdint.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <lwiot.h>
 
 #include <lwiot/network/ipaddress.h>
