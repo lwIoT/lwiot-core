@@ -12,7 +12,7 @@ include(${PROJECT_SOURCE_DIR}/source/net/net.cmake)
 
 include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
 
-if(NOT NO_OS)
+if(NOT CONFIG_STANDALONE)
 SET(WRAPPER_SOURCES
 	kernel/thread.cpp
 	kernel/functionalthread.cpp

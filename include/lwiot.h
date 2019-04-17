@@ -13,7 +13,7 @@
 extern "C" void lwiot_init();
 extern "C" void lwiot_destroy();
 
-#ifndef NO_OS
+#ifndef CONFIG_STANDALONE
 extern lwiot_event_t* lwiot_dns_event;
 #endif
 
@@ -28,7 +28,7 @@ extern lwiot_event_t* lwiot_dns_event;
 extern void lwiot_init();
 extern void lwiot_destroy();
 
-#ifndef NO_OS
+#ifndef CONFIG_STANDALONE
 extern lwiot_event_t* lwiot_dns_event;
 #endif
 #endif

@@ -43,7 +43,7 @@ namespace lwiot {
 	private:
 		struct LockValue {
 		public:
-#ifdef NO_OS
+#ifdef CONFIG_STANDALONE
 			explicit LockValue(bool value) : _lockval(value)
 			{
 			}
