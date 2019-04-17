@@ -17,7 +17,7 @@ CDECL
 typedef void* lwiot_mutex_t;
 #endif
 
-#ifndef CONFIG_NO_OS
+#ifndef CONFIG_CONFIG_STANDALONE
 #ifndef HAVE_THREAD
 typedef void* lwiot_thread_t;
 #endif
@@ -67,10 +67,10 @@ extern DLL_EXPORT bool lwiot_timer_is_running(lwiot_timer_t *timer);
 extern DLL_EXPORT int lwiot_timer_set_period(lwiot_timer_t *timer, int ms);
 extern DLL_EXPORT void lwiot_timer_reset(lwiot_timer_t* timer);
 extern DLL_EXPORT time_t lwiot_timer_get_expiry(lwiot_timer_t *timer);
-#else /* CONFIG_NO_OS */
+#else /* CONFIG_CONFIG_STANDALONE */
 #define lwiot_timers_init()
 #define lwiot_timers_destroy()
-#endif /* CONFIG_NO_OS */
+#endif /* CONFIG_CONFIG_STANDALONE */
 
 extern DLL_EXPORT time_t lwiot_tick(void);
 extern DLL_EXPORT time_t lwiot_tick_ms(void);
@@ -93,7 +93,7 @@ extern DLL_EXPORT void enter_critical();
 extern DLL_EXPORT void exit_critical();
 extern DLL_EXPORT RAM_ATTR void lwiot_udelay(uint32_t us);
 
-#ifdef NO_OS
+#ifdef CONFIG_STANDALONE
 extern DLL_EXPORT void no_os_init();
 #endif
 
