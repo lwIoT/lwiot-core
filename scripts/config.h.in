@@ -21,6 +21,7 @@
 #cmakedefine CONFIG_HW_BARRIER 1
 #cmakedefine NO_OS
 #cmakedefine HAVE_SYNC_FETCH
+#cmakedefine HAVE_IP6
 
 #ifdef NO_OS
 #define CONFIG_NO_OS 1
