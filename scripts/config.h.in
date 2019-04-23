@@ -19,12 +19,12 @@
 #cmakedefine HAVE_RTOS
 #cmakedefine CONFIG_NO_SYS
 #cmakedefine CONFIG_HW_BARRIER 1
-#cmakedefine NO_OS
+#cmakedefine CONFIG_STANDALONE
 #cmakedefine HAVE_SYNC_FETCH
 #cmakedefine HAVE_IP6
 
-#ifdef NO_OS
-#define CONFIG_NO_OS 1
+#ifdef CONFIG_STANDALONE
+#define CONFIG_CONFIG_STANDALONE 1
 #endif
 
 #cmakedefine HAVE_LWIP

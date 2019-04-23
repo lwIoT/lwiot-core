@@ -61,7 +61,6 @@ SET(TIME_SOURCES
 	lib/time/utc_offset.c
 	lib/time/week_of_month.c
 	lib/time/week_of_year.c
-	lib/time/system_tick.S
 )
 endif()
 

@@ -21,7 +21,7 @@ void lwiot_init(void)
 	log_init(stdout);
 	lwiot_timers_init();
 
-#ifdef NO_OS
+#ifdef CONFIG_STANDALONE
 	no_os_init();
 #else
 	/* Create the DNS event queue */
