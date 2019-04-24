@@ -16,6 +16,7 @@
 #define DLL_EXPORT
 
 #define __maybe __attribute__((weak))
+#define __weak __maybe
 
 #define PACKED_ATTR __attribute__((packed))
 
