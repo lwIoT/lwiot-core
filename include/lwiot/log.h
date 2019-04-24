@@ -21,7 +21,7 @@ CDECL
 extern DLL_EXPORT void print_dbg(const char *fmt, ...);
 CDECL_END
 #else
-#define print_dbg(x, ...)
+#define print_dbg(...)
 #endif
 
 CDECL
