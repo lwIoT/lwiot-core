@@ -86,4 +86,6 @@ if(WIN32 OR UNIX)
     endif()
 endif()
 
+INSTALL(PROGRAMS scripts/avr_upload.rb DESTINATION bin RENAME avr_upload)
+
 add_subdirectory(source)
