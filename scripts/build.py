@@ -8,8 +8,8 @@
 
 import argparse
 import os
-import io
 
+from io import BytesIO as StringIO
 from yaml import load
 
 try:
@@ -44,7 +44,7 @@ class ConfigParser(object):
             print ('Unable to open configuration file %s' % config.config)
 
     def build_arguments(self, config):
-        argbuilder = io.StringIO()
+        argbuilder = StringIO()
         for definition in self.defs:
             argbuilder.write('-D%s ' % definition)
 
