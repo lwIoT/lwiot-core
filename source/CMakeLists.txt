@@ -10,8 +10,6 @@ include(${PROJECT_SOURCE_DIR}/source/lib/lib.cmake)
 include(${PROJECT_SOURCE_DIR}/source/sensors/sensors.cmake)
 include(${PROJECT_SOURCE_DIR}/source/net/net.cmake)
 
-include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake)
-
 if(NOT CONFIG_STANDALONE)
 SET(WRAPPER_SOURCES
 	kernel/thread.cpp
