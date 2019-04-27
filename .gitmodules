@@ -1,0 +1,6 @@
+[submodule "external/lwiot-mbedtls"]
+	path = external/lwiot-mbedtls
+	url = https://github.com/lwIoT/lwiot-mbedtls.git
+[submodule "external/lwiot-freertos"]
+	path = external/lwiot-freertos
+	url = https://github.com/lwIoT/lwiot-freertos.git
