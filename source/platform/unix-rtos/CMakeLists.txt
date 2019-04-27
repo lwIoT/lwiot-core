@@ -3,16 +3,21 @@
 #
 # Author: Michel Megens
 # Email:  dev@bietje.net
+#
 
-include(${PROJECT_SOURCE_DIR}/source/platform/ports/freertos/freertos.cmake)
+find_package(Threads REQUIRED)
+
+include (${PROJECT_SOURCE_DIR}/cmake/freertos.cmake)
+
 SET(HOSTED_DIR ${PROJECT_SOURCE_DIR}/source/platform/hosted)
 
 SET(PORT_SOURCE_FILES
 	soc.c
 	unix.c
-	${FREERTOS_SOURCE_FILES}
+	${PROJECT_SOURCE_DIR}/external/lwiot-freertos/rtos.c
 	${HOSTED_DIR}/hostedgpiochip.cpp
 )
 
 add_library(lwiot-platform ${PORT_SOURCE_FILES})
-target_include_directories(lwiot-platform PUBLIC ${PORT_INCLUDE_DIR})
+include_directories(lwiot-platform PUBLIC ${PROJECT_SOURCE_DIR}/source/platform/unix ${HOSTED_DIR}/include ${PORT_INCLUDE_DIR})
+target_link_libraries(lwiot-platform mbedtls mbedx509 mbedcrypto ${CMAKE_THREAD_LIBS_INIT})

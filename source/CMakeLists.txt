@@ -9,6 +9,7 @@ include(${PROJECT_SOURCE_DIR}/source/io/io.cmake)
 include(${PROJECT_SOURCE_DIR}/source/lib/lib.cmake)
 include(${PROJECT_SOURCE_DIR}/source/sensors/sensors.cmake)
 include(${PROJECT_SOURCE_DIR}/source/net/net.cmake)
+include(${PROJECT_SOURCE_DIR}/source/drivers/drivers.cmake)
 
 if(NOT CONFIG_STANDALONE)
 SET(WRAPPER_SOURCES
@@ -35,7 +36,8 @@ SET(SOURCES
     util/vector.cpp
     util/system.cpp
     ${WRAPPER_SOURCES}
-	${IO_SOURCES}
+    ${IO_SOURCES}
+    ${DRIVER_SOURCES}
     ${LIB_SOURCES}
     ${SENSOR_SOURCES}
 )
@@ -207,3 +209,7 @@ INSTALL(TARGETS lwiot
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/lwiot_opts.h DESTINATION include)
+
+if(WIN32 OR UNIX)
+add_subdirectory(platform)
+endif()

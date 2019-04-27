@@ -2,15 +2,11 @@
 # CMakeLists file for the platform library.
 #
 
-if(ESP32)
-add_subdirectory(esp32)
-elseif(ESP8266)
-add_subdirectory(esp8266)
-elseif(AVR)
-add_subdirectory(avr)
-elseif(WIN32)
+if(WIN32)
 add_subdirectory(win32)
-else()
+elseif(UNIX AND FREERTOS)
+add_subdirectory(unix-rtos)
+elseif(UNIX)
 add_subdirectory(unix)
 endif()
 

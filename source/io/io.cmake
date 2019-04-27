@@ -30,10 +30,4 @@ SET(IO_SOURCES
 	io/i2c/i2calgorithm.cpp
 	io/i2c/i2cbus.cpp
 	io/i2c/gpioi2calgorithm.cpp
-
-	io/clock/realtimeclock.cpp
-	io/clock/dsrealtimeclock.cpp
-
-	io/clock/dsrealtimeclock.cpp
-	io/clock/realtimeclock.cpp
 )
