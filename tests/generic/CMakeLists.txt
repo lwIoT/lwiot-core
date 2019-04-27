@@ -1,5 +1,3 @@
-include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
-
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR} ${PORT_INCLUDE_DIR})
 
 if(HAVE_RTOS)

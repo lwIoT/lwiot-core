@@ -1,4 +1,6 @@
-include( ${PROJECT_SOURCE_DIR}/cmake/port.cmake )
+if(HAVE_RTOS)
+include(${PROJECT_SOURCE_DIR}/cmake/freertos.cmake)
+endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR} ${PORT_INCLUDE_DIR})
 if(HAVE_RTOS)
