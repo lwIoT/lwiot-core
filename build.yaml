@@ -41,6 +41,13 @@ freertos:
 unix:
     defs:
         - CONFIG_NO_SYS=False
+        - HAVE_NETWORKING=True
+        - HAVE_DEBUG=True
+        - HAVE_JSON=True
+        - CONFIG_BUILD_TESTS=True
+        - CONFIG_STACK_SIZE=4096
+        - CONFIG_PIN_VECTOR=True
+
 win32:
     defs:
         - CONFIG_NO_SYS=False
