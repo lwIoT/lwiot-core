@@ -2,7 +2,8 @@ if(HAVE_RTOS)
 include(${PROJECT_SOURCE_DIR}/cmake/freertos.cmake)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR} ${PORT_INCLUDE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}
+	${PROJECT_SOURCE_DIR}/source/platform/hosted/include)
 if(HAVE_RTOS)
 	link_directories(${FREERTOS_LIB_DIR})
 endif()
