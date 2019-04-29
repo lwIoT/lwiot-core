@@ -31,7 +31,8 @@ namespace lwiot
 		const size_t& length() const;
 
 		void setAddress(uint16_t addr, bool is10bit, bool readop);
-		void markAsRead(bool read);
+		void setAddress(uint16_t addr, bool is10bit);
+		void markAsReadoperation(bool read);
 
 		void setRepeatedStart(bool repstart);
 		bool repstart() const;

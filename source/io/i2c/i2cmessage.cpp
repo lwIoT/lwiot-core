@@ -12,6 +12,7 @@
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 #include <lwiot/types.h>
+
 #include <lwiot/io/i2cmessage.h>
 
 #define I2CMESSAGE_DEFAULT_SIZE 8UL
@@ -72,7 +73,7 @@ namespace lwiot
 		this->_readop = readop;
 	}
 
-	void I2CMessage::markAsRead(bool read)
+	void I2CMessage::markAsReadoperation(bool read)
 	{
 		this->_readop = read;
 	}
@@ -90,5 +91,11 @@ namespace lwiot
 	const size_t& I2CMessage::length() const
 	{
 		return this->_index;
+	}
+
+	void I2CMessage::setAddress(uint16_t addr, bool is10bit)
+	{
+		this->_addr = addr;
+		this->_is_10bit = is10bit;
 	}
 }
