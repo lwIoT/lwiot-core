@@ -14,9 +14,11 @@
 #include <lwiot/types.h>
 #include <lwiot/io/i2cmessage.h>
 #include <lwiot/stl/vector.h>
-#include <lwiot/io/i2calgorithm.h>
 #include <lwiot/kernel/lock.h>
 #include <lwiot/sharedpointer.h>
+
+#include <lwiot/io/i2chal.h>
+#include <lwiot/io/i2calgorithm.h>
 
 namespace lwiot
 {
@@ -39,8 +41,19 @@ namespace lwiot
 
 		I2CAlgorithm *algorithm() const;
 
+		constexpr int timeout() const
+		{
+			return this->_timeout;
+		}
+
+		constexpr void setTimeout(int tmo)
+		{
+			this->_timeout = tmo;
+		}
+
 	private:
 		SharedPointer<I2CAlgorithm> _algo;
 		SharedPointer<Lock> _lock;
+		int _timeout;
 	};
 }
