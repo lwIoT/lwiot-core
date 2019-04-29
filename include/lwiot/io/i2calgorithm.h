@@ -12,8 +12,9 @@
 #include <lwiot/log.h>
 #include <lwiot/error.h>
 #include <lwiot/types.h>
-#include <lwiot/io/i2cmessage.h>
+
 #include <lwiot/stl/vector.h>
+#include <lwiot/io/i2cmessage.h>
 
 #define MAX_RETRIES 3
 
@@ -38,7 +39,7 @@ namespace lwiot
 		static constexpr int DefaultRetryDelay = 200;
 
 	private:
-		int _retry;
+		int _delay;
 
 		static constexpr uint32_t DefaultFrequency = 100000UL;
 	};
