@@ -20,9 +20,8 @@ namespace lwiot {
 	Logger::Logger(FILE *output) : _f_output(output), _newline(true)
 	{ }
 
-	Logger::Logger()
+	Logger::Logger() : _f_output(stdout), _newline(true)
 	{
-		this->_f_output = stdout;
 	}
 
 	Logger::Logger(const String& subsys, FILE *output /* = stdout */) :
