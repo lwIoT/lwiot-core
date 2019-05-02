@@ -149,8 +149,9 @@ namespace lwiot
 		tx.write(addr);
 		tx.write(data);
 
-		if(!this->_bus.transfer(tx))
+		if(!this->_bus.transfer(tx)) {
 			print_dbg("Unable to write to RTC!");
+		}
 	}
 
 	uint8_t DsRealTimeClock::read(uint8_t addr)

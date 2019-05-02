@@ -26,7 +26,7 @@ namespace lwiot {
 	BufferedStream::BufferedStream() : BufferedStream(BUFFEREDSTREAM_DEFAULT_SIZE)
 	{ }
 
-	BufferedStream::BufferedStream(const BufferedStream& other)
+	BufferedStream::BufferedStream(const BufferedStream& other) : Stream(), Countable(other.size())
 	{
 		auto size = other.size();
 

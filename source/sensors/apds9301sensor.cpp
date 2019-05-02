@@ -50,18 +50,21 @@ namespace lwiot
 	{
 		auto a = this->on();
 
-		if(!a)
+		if(!a) {
 			print_dbg("Unable to enable APDS sensor!\n");
+		}
 
 		auto b = this->setGain(false);
 
-		if(!b)
+		if(!b) {
 			print_dbg("Unable to set gain!\n");
+		}
 
 		auto c = this->setIntegrationTime(Apds9301Sensor::INT_TIME_101_MS);
 
-		if(!c)
+		if(!c) {
 			print_dbg("Unable to set integration time!\n");
+		}
 
 		return a && b && c;
 	}
