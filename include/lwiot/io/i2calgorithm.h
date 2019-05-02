@@ -24,7 +24,12 @@ namespace lwiot
 	public:
 		explicit I2CAlgorithm(int delay, uint32_t frequency);
 		explicit I2CAlgorithm();
+		explicit I2CAlgorithm(I2CAlgorithm&& other) = default;
+		explicit I2CAlgorithm(const I2CAlgorithm& other) = default;
 		virtual ~I2CAlgorithm() = default;
+
+		I2CAlgorithm& operator=(const I2CAlgorithm& rhs) = default;
+		I2CAlgorithm& operator=(I2CAlgorithm&& rhs) = default;
 
 		const uint32_t& frequency() const;
 		int delay() const;
@@ -37,6 +42,7 @@ namespace lwiot
 	protected:
 		uint32_t _frequency;
 		static constexpr int DefaultRetryDelay = 200;
+		virtual void copy(I2CAlgorithm& other);
 
 	private:
 		int _delay;
