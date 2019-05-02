@@ -41,12 +41,12 @@ namespace lwiot
 
 		I2CAlgorithm *algorithm() const;
 
-		constexpr int timeout() const
+		inline int timeout() const
 		{
 			return this->_timeout;
 		}
 
-		constexpr void setTimeout(int tmo)
+		inline void setTimeout(int tmo)
 		{
 			this->_timeout = tmo;
 		}
