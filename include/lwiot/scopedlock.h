@@ -12,6 +12,7 @@
 
 #include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
+#include <lwiot/stl/referencewrapper.h>
 
 namespace lwiot
 {
@@ -26,7 +27,7 @@ namespace lwiot
 		void unlock() const;
 
 	private:
-		Lock& _lock;
+		stl::ReferenceWrapper<Lock> _lock;
 		mutable bool _locked;
 	};
 }
