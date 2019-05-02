@@ -3,7 +3,8 @@ include(${PROJECT_SOURCE_DIR}/cmake/freertos.cmake)
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}
-	${PROJECT_SOURCE_DIR}/source/platform/hosted/include)
+	${PROJECT_SOURCE_DIR}/source/platform/hosted/include
+	${PORT_INCLUDE_DIR})
 if(HAVE_RTOS)
 	link_directories(${FREERTOS_LIB_DIR})
 endif()
@@ -34,3 +35,6 @@ target_link_libraries(dispatchqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_
 
 add_executable(eventqueue-test eventqueue_test.cpp)
 target_link_libraries(eventqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(hardwarei2c-test hardwarei2c_test.cpp)
+target_link_libraries(hardwarei2c-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
