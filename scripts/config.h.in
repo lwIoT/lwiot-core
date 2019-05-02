@@ -22,6 +22,7 @@
 #cmakedefine CONFIG_STANDALONE
 #cmakedefine HAVE_SYNC_FETCH
 #cmakedefine HAVE_IP6
+#cmakedefine CONFIG_PATCH_I2C_CLOCK
 
 #ifdef CONFIG_STANDALONE
 #define CONFIG_CONFIG_STANDALONE 1

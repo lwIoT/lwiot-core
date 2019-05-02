@@ -28,6 +28,7 @@ esp32:
         - CONFIG_TASK_PRIO=6
         - CONFIG_STACK_SIZE=4096
         - CONFIG_PIN_VECTOR=True
+        - CONFIG_PATCH_I2C_CLOCK=True
 
 freertos:
     defs:
