@@ -8,6 +8,12 @@ include(CheckCSourceCompiles)
 include(TestBigEndian)
 include(${PROJECT_SOURCE_DIR}/cmake/config.cmake)
 
+if(UNIX)
+	include(${PROJECT_SOURCE_DIR}/cmake/unix.cmake)
+elseif(WIN32)
+    include(${PROJECT_SOURCE_DIR}/cmake/win32.cmake)
+endif()
+
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(HAVE_DEBUG True)
 endif ()

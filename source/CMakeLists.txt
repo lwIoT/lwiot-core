@@ -15,7 +15,6 @@ if(NOT CONFIG_STANDALONE)
 SET(WRAPPER_SOURCES
 	kernel/thread.cpp
 	kernel/functionalthread.cpp
-	kernel/lock.cpp
 	kernel/event.cpp
 	kernel/timer.cpp
 )
@@ -26,6 +25,8 @@ endif()
 SET(SOURCES
     init.c
     application.cpp
+
+	kernel/lock.cpp
 
     util/log.c
     util/bytebuffer.cpp
