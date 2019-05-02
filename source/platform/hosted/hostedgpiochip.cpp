@@ -18,12 +18,13 @@
 
 namespace lwiot
 {
-	HostedGpioChip::HostedGpioChip(int pins ) noexcept : GpioChip(pins)
+	HostedGpioChip::HostedGpioChip(int pins ) noexcept : GpioChip(pins), _values()
 	{ }
 
 	void HostedGpioChip::write(int pin, bool value)
 	{
 		print_dbg("Writing %u to %i\n", value, pin);
+		this->_values[pin] = value;
 	}
 
 	void HostedGpioChip::odWrite(int pin, bool value)
@@ -33,7 +34,7 @@ namespace lwiot
 
 	bool HostedGpioChip::read(int pin) const
 	{
-		return false;
+		return this->_values.at(pin);
 	}
 
 	void HostedGpioChip::mode(int pin, const PinMode& mode)

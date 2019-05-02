@@ -33,5 +33,8 @@ namespace lwiot
 		void setOpenDrain(int pin) override;
 		void odWrite(int pin, bool value) override;
 		void attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge) override;
+
+	private:
+		std::map<int, bool> _values;
 	};
 }

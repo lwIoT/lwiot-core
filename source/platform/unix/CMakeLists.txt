@@ -9,13 +9,20 @@ find_package(Threads REQUIRED)
 
 SET(UNIX_DIR ${PROJECT_SOURCE_DIR}/source/platform/unix)
 SET(HOSTED_DIR ${PROJECT_SOURCE_DIR}/source/platform/hosted)
-SET(UNIX_SOURCE_FILES ${UNIX_DIR}/unix.c ${HOSTED_DIR}/timer.c ${HOSTED_DIR}/hostedgpiochip.cpp)
+SET(UNIX_SOURCE_FILES
+	${UNIX_DIR}/unix.c
+	${HOSTED_DIR}/timer.c
+	${HOSTED_DIR}/hostedgpiochip.cpp
+	${HOSTED_DIR}/i2chal.c
+	${HOSTED_DIR}/i2cdbg.c
+)
 
 SET(PORT_SOURCE_FILES
 	soc.c
 	unix.c
 	${PROJECT_SOURCE_DIR}/external/lwiot-mbedtls/mbedtls.c
 	${UNIX_SOURCE_FILES}
+
 )
 
 add_library(lwiot-platform ${PORT_SOURCE_FILES})

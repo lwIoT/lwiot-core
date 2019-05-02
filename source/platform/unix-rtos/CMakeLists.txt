@@ -10,12 +10,20 @@ find_package(Threads REQUIRED)
 include (${PROJECT_SOURCE_DIR}/cmake/freertos.cmake)
 
 SET(HOSTED_DIR ${PROJECT_SOURCE_DIR}/source/platform/hosted)
+SET(HOSTED_DIR ${PROJECT_SOURCE_DIR}/source/platform/hosted)
+
+SET(UNIX_SOURCE_FILES
+	${HOSTED_DIR}/hostedgpiochip.cpp
+	${HOSTED_DIR}/i2chal.c
+	${HOSTED_DIR}/i2cdbg.c
+)
 
 SET(PORT_SOURCE_FILES
 	soc.c
 	unix.c
 	${PROJECT_SOURCE_DIR}/external/lwiot-freertos/rtos.c
-	${HOSTED_DIR}/hostedgpiochip.cpp
+	${UNIX_SOURCE_FILES}
+
 )
 
 add_library(lwiot-platform ${PORT_SOURCE_FILES})
