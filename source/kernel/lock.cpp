@@ -20,16 +20,25 @@ namespace lwiot {
 
 	void Lock::lock()
 	{
+		if(!this->_mtx)
+			return;
+
 		this->_mtx->lock();
 	}
 
 	bool Lock::try_lock(int tmo)
 	{
+		if(!this->_mtx)
+			return false;
+
 		return this->_mtx->try_lock(tmo);
 	}
 
 	void Lock::unlock()
 	{
+		if(!this->_mtx)
+			return;
+
 		this->_mtx->unlock();
 	}
 }
