@@ -58,7 +58,6 @@ namespace lwiot
 
 	DsRealTimeClock::DsRealTimeClock(const lwiot::DateTime &now, const lwiot::I2CBus &bus) : _bus(bus)
 	{
-		this->set(now);
 	}
 
 	void DsRealTimeClock::mktime(struct tm &tm, const lwiot::I2CMessage &msg, bool century) const
@@ -164,14 +163,13 @@ namespace lwiot
 		I2CMessage tx(1), rx(1);
 		stl::Vector<I2CMessage*> msgs;
 
-		tx.write(addr);
-		tx.setRepeatedStart(true);
 		tx.setAddress(SlaveAddress, false);
 		tx.markAsReadOperation(false);
+		tx.setRepeatedStart(true);
+		tx.write(addr);
 
-		rx.setRepeatedStart(true);
 		rx.setAddress(SlaveAddress, false);
-		tx.markAsReadOperation(true);
+		rx.markAsReadOperation(true);
 		rx.setRepeatedStart(false);
 
 		msgs.pushback(&tx);
