@@ -58,6 +58,7 @@ namespace lwiot
 
 	DsRealTimeClock::DsRealTimeClock(const lwiot::DateTime &now, const lwiot::I2CBus &bus) : _bus(bus)
 	{
+		this->set(now);
 	}
 
 	void DsRealTimeClock::mktime(struct tm &tm, const lwiot::I2CMessage &msg, bool century) const
@@ -84,11 +85,13 @@ namespace lwiot
 		struct tm tm{};
 		time_t stamp;
 
-		tx.setAddress(SlaveAddress, false, false);
+		tx.setAddress(SlaveAddress, false);
+		tx.markAsReadoperation(false);
 		tx.setRepeatedStart(true);
 		tx.write(RTC_SECONDS);
 
-		rx.setAddress(SlaveAddress, false, true);
+		rx.setAddress(DsRealTimeClock::SlaveAddress, false);
+		rx.markAsReadoperation(true);
 		rx.setRepeatedStart(false);
 
 		msgs.pushback(&tx);
@@ -115,7 +118,8 @@ namespace lwiot
 		I2CMessage tx(8), status(1), rx(1);
 		uint8_t stopbit;
 
-		tx.setAddress(SlaveAddress, false, false);
+		tx.setAddress(SlaveAddress, false);
+		tx.markAsReadoperation(false);
 		tx.setRepeatedStart(false);
 
 		tx.write(RTC_SECONDS);
@@ -144,7 +148,8 @@ namespace lwiot
 	{
 		I2CMessage tx(2);
 
-		tx.setAddress(SlaveAddress, false, false);
+		tx.setAddress(SlaveAddress, false);
+		tx.markAsReadoperation(false);
 		tx.setRepeatedStart(false);
 		tx.write(addr);
 		tx.write(data);
@@ -161,10 +166,12 @@ namespace lwiot
 
 		tx.write(addr);
 		tx.setRepeatedStart(true);
-		tx.setAddress(SlaveAddress, false, false);
+		tx.setAddress(SlaveAddress, false);
+		tx.markAsReadoperation(false);
 
 		rx.setRepeatedStart(true);
-		rx.setAddress(SlaveAddress, false, true);
+		rx.setAddress(SlaveAddress, false);
+		tx.markAsReadoperation(true);
 		rx.setRepeatedStart(false);
 
 		msgs.pushback(&tx);
