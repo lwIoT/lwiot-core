@@ -86,12 +86,12 @@ namespace lwiot
 		time_t stamp;
 
 		tx.setAddress(SlaveAddress, false);
-		tx.markAsReadoperation(false);
+		tx.markAsReadOperation(false);
 		tx.setRepeatedStart(true);
 		tx.write(RTC_SECONDS);
 
 		rx.setAddress(DsRealTimeClock::SlaveAddress, false);
-		rx.markAsReadoperation(true);
+		rx.markAsReadOperation(true);
 		rx.setRepeatedStart(false);
 
 		msgs.pushback(&tx);
@@ -119,7 +119,7 @@ namespace lwiot
 		uint8_t stopbit;
 
 		tx.setAddress(SlaveAddress, false);
-		tx.markAsReadoperation(false);
+		tx.markAsReadOperation(false);
 		tx.setRepeatedStart(false);
 
 		tx.write(RTC_SECONDS);
@@ -149,7 +149,7 @@ namespace lwiot
 		I2CMessage tx(2);
 
 		tx.setAddress(SlaveAddress, false);
-		tx.markAsReadoperation(false);
+		tx.markAsReadOperation(false);
 		tx.setRepeatedStart(false);
 		tx.write(addr);
 		tx.write(data);
@@ -167,11 +167,11 @@ namespace lwiot
 		tx.write(addr);
 		tx.setRepeatedStart(true);
 		tx.setAddress(SlaveAddress, false);
-		tx.markAsReadoperation(false);
+		tx.markAsReadOperation(false);
 
 		rx.setRepeatedStart(true);
 		rx.setAddress(SlaveAddress, false);
-		tx.markAsReadoperation(true);
+		tx.markAsReadOperation(true);
 		rx.setRepeatedStart(false);
 
 		msgs.pushback(&tx);

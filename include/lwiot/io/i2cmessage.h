@@ -32,7 +32,7 @@ namespace lwiot
 
 		void setAddress(uint16_t addr, bool is10bit, bool readop);
 		void setAddress(uint16_t addr, bool is10bit);
-		void markAsReadoperation(bool read);
+		void markAsReadOperation(bool read);
 
 		void setRepeatedStart(bool repstart);
 		bool repstart() const;

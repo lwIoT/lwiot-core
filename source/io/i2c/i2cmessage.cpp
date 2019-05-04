@@ -73,7 +73,7 @@ namespace lwiot
 		this->_readop = readop;
 	}
 
-	void I2CMessage::markAsReadoperation(bool read)
+	void I2CMessage::markAsReadOperation(bool read)
 	{
 		this->_readop = read;
 	}
