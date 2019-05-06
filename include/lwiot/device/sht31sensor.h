@@ -33,6 +33,7 @@ namespace lwiot
 		explicit Sht31Sensor(I2CBus& io);
 		virtual ~Sht31Sensor() = default;
 
+		bool begin();
 		double humidity();
 		double temperature();
 		void reset();

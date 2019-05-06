@@ -82,6 +82,15 @@ namespace lwiot
 		lwiot_sleep(10);
 	}
 
+	bool Sht31Sensor::begin()
+	{
+		this->reset();
+		this->_result.humidity = 0.0;
+		this->_result.temperature = 0.0;
+
+		return true;
+	}
+
 	void Sht31Sensor::measure()
 	{
 		I2CMessage rx(6);
@@ -135,5 +144,9 @@ namespace lwiot
 	void Sht31Sensor::setBus(lwiot::I2CBus &io)
 	{
 		this->_bus = io;
+		this->_result.humidity = 0.0;
+		this->_result.temperature = 0.0;
+
+		this->reset();
 	}
 }
