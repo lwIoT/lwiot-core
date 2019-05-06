@@ -119,7 +119,7 @@ namespace lwiot
 
 	void HttpServer::on(const String &uri, HTTPMethod method, HttpServer::THandlerFunction fn)
 	{
-		on(uri, method, fn, _fileUploadHandler);
+		this->on(uri, method, fn, _fileUploadHandler);
 	}
 
 	void HttpServer::on(const String &uri, HTTPMethod method, HttpServer::THandlerFunction fn,
@@ -147,20 +147,20 @@ namespace lwiot
 	void HttpServer::handleClient()
 	{
 		if(_currentStatus == HC_NONE) {
-			UniquePointer<TcpClient> client = lwiot::stl::move(this->_server->accept());
-			if(client.get() == nullptr) {
+			this->_currentClient.reset();
+			this->_currentClient = stl::move(this->_server->accept());
+
+			if(this->_currentClient.get() == nullptr) {
 				return;
 			}
 
-			this->_currentClient.reset();
-			this->_currentClient = lwiot::stl::move(client);
 			_currentStatus = HC_WAIT_READ;
 			_statusChange = lwiot_tick_ms();
 		}
 
 		bool keepCurrentClient = false;
 		bool callYield = false;
-		lwiot_sleep(100);
+		lwiot_sleep(20);
 
 		if(_currentClient->connected()) {
 			switch(_currentStatus) {
@@ -264,7 +264,6 @@ namespace lwiot
 		} else if(_contentLength != CONTENT_LENGTH_UNKNOWN) {
 			sendHeader(String(FPSTR(Content_Length)), String(_contentLength));
 		} else if(_contentLength == CONTENT_LENGTH_UNKNOWN && _currentVersion) { //HTTP/1.1 or above client
-			//let's do chunked
 			_chunked = true;
 			sendHeader(String(F("Accept-Ranges")), String(F("none")));
 			sendHeader(String(F("Transfer-Encoding")), String(F("chunked")));
