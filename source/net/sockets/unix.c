@@ -28,6 +28,17 @@
 #define CONFIG_CLIENT_QUEUE_LENGTH 10
 #endif
 
+void socket_set_timeout(socket_t* sock, time_t tmo)
+{
+	struct timeval timeout;
+
+	timeout.tv_sec = tmo;
+	timeout.tv_usec = 0;
+
+	setsockopt(*sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+	setsockopt(*sock, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
+}
+
 static bool ip4_connect(socket_t* sock, remote_addr_t* addr)
 {
 	struct sockaddr_in sockaddr;
@@ -77,12 +88,6 @@ socket_t* tcp_socket_create(remote_addr_t* remote)
 	}
 
 	return sock;
-}
-
-void socket_set_timeout(socket_t *sock, int tmo)
-{
-	assert(sock);
-	setsockopt(*sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &tmo, sizeof(int));
 }
 
 ssize_t tcp_socket_send(socket_t* socket, const void* data, size_t length)
