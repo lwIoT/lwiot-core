@@ -6,4 +6,5 @@ SET(SENSOR_SOURCES
 	sensors/ccs811sensor.cpp
 	sensors/apds9301sensor.cpp
 	sensors/sht31sensor.cpp
+	sensors/sgp30sensor.cpp
 )
