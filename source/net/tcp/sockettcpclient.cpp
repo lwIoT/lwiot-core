@@ -159,4 +159,9 @@ namespace lwiot
 	{
 		return tcp_socket_read(this->_socket, output, length);
 	}
+
+	void SocketTcpClient::setTimeout(time_t seconds)
+	{
+		socket_set_timeout(this->_socket, seconds);
+	}
 }

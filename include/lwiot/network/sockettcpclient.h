@@ -50,6 +50,7 @@ namespace lwiot
 
 		bool connect(const IPAddress& addr, uint16_t port) override;
 		bool connect(const String& host, uint16_t port) override;
+		void setTimeout(time_t seconds) override;
 
 		void close() override;
 
