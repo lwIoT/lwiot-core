@@ -150,6 +150,8 @@ namespace lwiot
 			this->_currentClient.reset();
 			this->_currentClient = stl::move(this->_server->accept());
 
+			this->_currentClient->setTimeout(5);
+
 			if(this->_currentClient.get() == nullptr) {
 				return;
 			}
@@ -160,7 +162,6 @@ namespace lwiot
 
 		bool keepCurrentClient = false;
 		bool callYield = false;
-		lwiot_sleep(20);
 
 		if(_currentClient->connected()) {
 			switch(_currentStatus) {
@@ -567,7 +568,7 @@ namespace lwiot
 			int tries = timeout_ms;
 			size_t newLength;
 			while(!(newLength = client.available()) && tries--)
-				lwiot_sleep(1);
+				lwiot_sleep(10);
 			if(!newLength) {
 				break;
 			}
