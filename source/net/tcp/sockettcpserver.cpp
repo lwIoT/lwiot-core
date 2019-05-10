@@ -41,7 +41,8 @@ namespace lwiot
 		this->_socket = server_socket_create(SOCKET_STREAM, this->_bind_addr.isIPv6());
 	}
 
-	SocketTcpServer::SocketTcpServer(SocketTcpServer &&other) : TcpServer(other._bind_addr, other._bind_port), _socket(other._socket)
+	SocketTcpServer::SocketTcpServer(SocketTcpServer &&other) noexcept
+		: TcpServer(other._bind_addr, other._bind_port), _socket(other._socket)
 	{
 		other._socket = nullptr;
 	}
@@ -57,7 +58,7 @@ namespace lwiot
 			this->close();
 	}
 
-	SocketTcpServer& SocketTcpServer::operator=(lwiot::SocketTcpServer &&other)
+	SocketTcpServer& SocketTcpServer::operator=(lwiot::SocketTcpServer &&other) noexcept
 	{
 		this->_bind_addr = other._bind_addr;
 		this->_bind_port = other._bind_port;
@@ -115,6 +116,11 @@ namespace lwiot
 
 		return this->bind();
 	}*/
+
+	void SocketTcpServer::setTimeout(time_t seconds)
+	{
+		socket_set_timeout(this->_socket, seconds);
+	}
 
 	bool SocketTcpServer::bind(BindAddress addr, uint16_t port)
 	{

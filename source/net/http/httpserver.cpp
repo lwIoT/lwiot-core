@@ -69,7 +69,13 @@ namespace lwiot
 	bool HttpServer::begin()
 	{
 		this->_server->connect();
-		return this->_server->bind();
+		auto value = this->_server->bind();
+
+		if(!value)
+			return false;
+
+		this->_server->setTimeout(5);
+		return true;
 	}
 
 	String HttpServer::_extractParam(String &authReq, const String &param, char delimit)
@@ -150,8 +156,6 @@ namespace lwiot
 			this->_currentClient.reset();
 			this->_currentClient = stl::move(this->_server->accept());
 
-			this->_currentClient->setTimeout(5);
-
 			if(this->_currentClient.get() == nullptr) {
 				return;
 			}
@@ -170,7 +174,7 @@ namespace lwiot
 			case HC_WAIT_READ:
 				if(this->_currentClient->available()) {
 					if(_parseRequest(*_currentClient)) {
-						//_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
+						_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
 						_contentLength = CONTENT_LENGTH_NOT_SET;
 						_handleRequest();
 
@@ -194,7 +198,7 @@ namespace lwiot
 		}
 
 		if(!keepCurrentClient) {
-			this->_currentClient->close();
+			//this->_currentClient->close();
 			_currentStatus = HC_NONE;
 			_currentUpload.reset();
 		}

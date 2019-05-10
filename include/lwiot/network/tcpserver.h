@@ -34,6 +34,8 @@ namespace lwiot
 		virtual bool bind() const = 0;
 		virtual bool bind(const IPAddress& addr, uint16_t port);
 
+		virtual void setTimeout(time_t seconds) = 0;
+
 		virtual void connect() = 0;
 
 		virtual UniquePointer<TcpClient> accept() = 0;

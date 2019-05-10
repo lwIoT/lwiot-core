@@ -30,11 +30,11 @@ namespace lwiot
 		explicit SocketTcpServer(BindAddress addr, uint16_t port);
 		explicit SocketTcpServer(const IPAddress& addr, uint16_t port);
 
-		SocketTcpServer(SocketTcpServer&& server);
+		SocketTcpServer(SocketTcpServer&& server) noexcept ;
 		~SocketTcpServer() override;
 
 		SocketTcpServer& operator =(const SocketTcpServer& other);
-		SocketTcpServer& operator =(SocketTcpServer&& other);
+		SocketTcpServer& operator =(SocketTcpServer&& other) noexcept ;
 
 		bool operator ==(const SocketTcpServer& other);
 		bool operator !=(const SocketTcpServer& other);
@@ -46,9 +46,10 @@ namespace lwiot
 		void connect() override;
 		UniquePointer<TcpClient> accept() override;
 		void close() override;
+		void setTimeout(time_t seconds) override ;
 
 #ifdef HAVE_LWIP
-		static constexpr int BacklogSize = 2;
+		static constexpr int BacklogSize = 16;
 #else
 		static constexpr int BacklogSize = 128;
 #endif
