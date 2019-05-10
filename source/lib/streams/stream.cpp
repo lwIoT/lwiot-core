@@ -57,7 +57,7 @@ namespace lwiot {
 		int c;
 
 		c = this->read();
-		while(c >= 0 && c != terminator) {
+		while(c >= 0 && c != terminator && this->available()) {
 			retval += (char)c;
 			c = this->read();
 		}

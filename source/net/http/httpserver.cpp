@@ -161,7 +161,6 @@ namespace lwiot
 		}
 
 		bool keepCurrentClient = false;
-		bool callYield = false;
 
 		if(_currentClient->connected()) {
 			switch(_currentStatus) {
@@ -185,13 +184,11 @@ namespace lwiot
 					if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_DATA_WAIT) {
 						keepCurrentClient = true;
 					}
-					callYield = true;
 				}
 				break;
 			case HC_WAIT_CLOSE:
 				if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_CLOSE_WAIT) {
 					keepCurrentClient = true;
-					callYield = true;
 				}
 			}
 		}
@@ -202,9 +199,9 @@ namespace lwiot
 			_currentUpload.reset();
 		}
 
-		if(callYield) {
+		/*if(callYield) {
 			Thread::yield();
-		}
+		}*/
 	}
 
 	void HttpServer::close()
@@ -337,7 +334,7 @@ namespace lwiot
 	}
 
 
-	String HttpServer::arg(String name)
+	String HttpServer::arg(const String& name)
 	{
 		for(int i = 0; i < _currentArgCount; ++i) {
 			if(_currentArgs[i].key == name)
@@ -365,7 +362,7 @@ namespace lwiot
 		return _currentArgCount;
 	}
 
-	bool HttpServer::hasArg(String name)
+	bool HttpServer::hasArg(const String& name)
 	{
 		for(int i = 0; i < _currentArgCount; ++i) {
 			if(_currentArgs[i].key == name)
@@ -375,7 +372,7 @@ namespace lwiot
 	}
 
 
-	String HttpServer::header(String name)
+	String HttpServer::header(const String& name)
 	{
 		for(int i = 0; i < _headerKeysCount; ++i) {
 			if(_currentHeaders[i].key.equalsIgnoreCase(name))
@@ -415,7 +412,7 @@ namespace lwiot
 		return _headerKeysCount;
 	}
 
-	bool HttpServer::hasHeader(String name)
+	bool HttpServer::hasHeader(const String& name)
 	{
 		for(int i = 0; i < _headerKeysCount; ++i) {
 			if((_currentHeaders[i].key.equalsIgnoreCase(name)) && (_currentHeaders[i].value.length() > 0))
@@ -771,7 +768,6 @@ namespace lwiot
 
 			_parseArguments(searchStr);
 		}
-		//client.flush();
 
 		return true;
 	}
@@ -787,7 +783,7 @@ namespace lwiot
 		return false;
 	}
 
-	void HttpServer::_parseArguments(String data)
+	void HttpServer::_parseArguments(const String& data)
 	{
 
 		delete[] _currentArgs;
@@ -859,7 +855,7 @@ namespace lwiot
 		return (uint8_t) res;
 	}
 
-	bool HttpServer::_parseForm(TcpClient &client, String boundary, uint32_t len)
+	bool HttpServer::_parseForm(TcpClient &client, const String& boundary, uint32_t len)
 	{
 		(void) len;
 		String line;
