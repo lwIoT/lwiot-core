@@ -50,9 +50,10 @@ namespace lwiot {
 		virtual ssize_t write(const void *bytes, const size_t& length) = 0;
 		virtual ssize_t write(const String& data);
 
-	private:
+		virtual void setTimeout(time_t tmo);
+
+	protected:
 		time_t _timeout;
-		time_t _millis;
 	};
 }
 #endif

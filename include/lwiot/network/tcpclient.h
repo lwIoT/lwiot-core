@@ -61,7 +61,8 @@ namespace lwiot
 
 		virtual bool connect(const IPAddress& addr, uint16_t port) = 0;
 		virtual bool connect(const String& host, uint16_t port)    = 0;
-		virtual void setTimeout(time_t seconds) = 0;
+
+		using Stream::setTimeout;
 
 		virtual void close() = 0;
 

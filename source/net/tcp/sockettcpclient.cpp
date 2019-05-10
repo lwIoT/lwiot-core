@@ -13,9 +13,10 @@
 #include <lwiot/types.h>
 #include <lwiot/log.h>
 #include <lwiot/stl/string.h>
-#include <lwiot/network/sockettcpclient.h>
 #include <lwiot/error.h>
+
 #include <lwiot/network/stdnet.h>
+#include <lwiot/network/sockettcpclient.h>
 
 namespace lwiot
 {
@@ -162,6 +163,7 @@ namespace lwiot
 
 	void SocketTcpClient::setTimeout(time_t seconds)
 	{
+		TcpClient::setTimeout(seconds);
 		socket_set_timeout(this->_socket, seconds);
 	}
 }

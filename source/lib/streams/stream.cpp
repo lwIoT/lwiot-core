@@ -20,7 +20,6 @@ namespace lwiot {
 
 	Stream::Stream(const time_t& timeout)
 	{
-		this->_millis = 0;
 		this->_timeout = timeout;
 	}
 
@@ -28,9 +27,14 @@ namespace lwiot {
 	{
 		char x;
 		ssize_t bytes;
+		time_t tmo = lwiot_tick_ms() + this->_timeout;
 
 		bytes = 0;
 		while((x = this->read()) != '\n') {
+			if(this->_timeout > 0 && lwiot_tick_ms() > tmo) {
+				return 0;
+			}
+
 			bytes++;
 			output += x;
 		}
@@ -41,6 +45,11 @@ namespace lwiot {
 	ssize_t Stream::write(const String& data)
 	{
 		return this->write((const uint8_t*)data.c_str(), (ssize_t)data.length());
+	}
+
+	void Stream::setTimeout(time_t tmo)
+	{
+		this->_timeout = tmo;
 	}
 
 	String Stream::readString()
@@ -55,9 +64,15 @@ namespace lwiot {
 	{
 		String retval;
 		int c;
+		time_t tmo = lwiot_tick_ms() + this->_timeout;
 
 		c = this->read();
-		while(c >= 0 && c != terminator && this->available()) {
+
+		while(c >= 0 && c != terminator) {
+			if(this->_timeout > 0 && lwiot_tick_ms() > tmo) {
+				return String("");
+			}
+
 			retval += (char)c;
 			c = this->read();
 		}
