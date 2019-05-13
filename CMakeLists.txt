@@ -93,5 +93,6 @@ if(WIN32 OR UNIX)
 endif()
 
 INSTALL(PROGRAMS scripts/avr_upload.rb DESTINATION bin RENAME avr_upload)
+INSTALL(PROGRAMS scripts/spiffsgen.py DESTINATION scripts RENAME spiffsgen.py)
 
 add_subdirectory(source)
