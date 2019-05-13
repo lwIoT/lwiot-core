@@ -31,7 +31,6 @@ namespace lwiot
 		explicit DnsServer();
 		virtual ~DnsServer();
 
-		void begin();
 		void begin(UdpServer* server);
 		void end();
 
@@ -39,6 +38,7 @@ namespace lwiot
 
 	protected:
 		void run() override;
+		void begin();
 
 	private:
 		Lock _lock;

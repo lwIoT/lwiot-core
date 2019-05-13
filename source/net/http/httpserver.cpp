@@ -70,12 +70,8 @@ namespace lwiot
 	{
 		this->_server->connect();
 		auto value = this->_server->bind();
-
-		if(!value)
-			return false;
-
-		this->_server->setTimeout(5);
-		return true;
+		//this->_server->setTimeout(1);
+		return value;
 	}
 
 	String HttpServer::_extractParam(String &authReq, const String &param, char delimit)
@@ -152,19 +148,23 @@ namespace lwiot
 
 	void HttpServer::handleClient()
 	{
+		bool keep_client = false;
+
 		if(_currentStatus == HC_NONE) {
 			this->_currentClient.reset();
 			this->_currentClient = stl::move(this->_server->accept());
 
 			if(this->_currentClient.get() == nullptr) {
+				print_dbg("No client connected..\n");
 				return;
 			}
 
+			_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
 			_currentStatus = HC_WAIT_READ;
 			_statusChange = lwiot_tick_ms();
 		}
 
-		bool keepCurrentClient = false;
+		lwiot_sleep(10);
 
 		if(_currentClient->connected()) {
 			switch(_currentStatus) {
@@ -174,38 +174,33 @@ namespace lwiot
 			case HC_WAIT_READ:
 				if(this->_currentClient->available()) {
 					if(_parseRequest(*_currentClient)) {
-						_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
 						_contentLength = CONTENT_LENGTH_NOT_SET;
 						_handleRequest();
 
 						if(_currentClient->connected()) {
 							_currentStatus = HC_WAIT_CLOSE;
 							_statusChange = lwiot_tick_ms();
-							keepCurrentClient = true;
+							keep_client = true;
 						}
 					}
-				} else {
-					if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_DATA_WAIT) {
-						keepCurrentClient = true;
-					}
+				} else if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_CLOSE_WAIT) {
+					keep_client = true;
 				}
+
 				break;
 			case HC_WAIT_CLOSE:
 				if(lwiot_tick_ms() - _statusChange <= HTTP_MAX_CLOSE_WAIT) {
-					keepCurrentClient = true;
+					keep_client = true;
 				}
+				break;
 			}
 		}
 
-		if(!keepCurrentClient) {
-			//this->_currentClient->close();
+		if(!keep_client) {
+			this->_currentClient->close();
 			_currentStatus = HC_NONE;
 			_currentUpload.reset();
 		}
-
-		/*if(callYield) {
-			Thread::yield();
-		}*/
 	}
 
 	void HttpServer::close()
