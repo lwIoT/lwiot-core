@@ -14,6 +14,9 @@ ENDIF()
 add_executable(tcp-client_test tcp-client_test.cpp)
 target_link_libraries(tcp-client_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
+add_executable(dns-server_test dns-server_test.cpp)
+target_link_libraries(dns-server_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
 add_executable(tcp-server_test tcp-server_test.cpp)
 target_link_libraries(tcp-server_test lwiot ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
