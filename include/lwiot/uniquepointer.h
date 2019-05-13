@@ -107,6 +107,9 @@ namespace lwiot
 	private:
 		void destroy() noexcept
 		{
+			if(px == nullptr)
+				return;
+
 			delete px;
 			px = nullptr;
 		}
