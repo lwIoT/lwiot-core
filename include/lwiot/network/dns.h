@@ -71,4 +71,22 @@ typedef struct PACKED_ATTR {
 
 CDECL_END
 
+#ifdef __cplusplus
+namespace lwiot
+{
+	enum class DnsReplyCode
+	{
+		NoError = 0,
+		FormError = 1,
+		ServerFailure = 2,
+		NonExistentDomain = 3,
+		NotImplemented = 4,
+		Refused = 5,
+		YXDomain = 6,
+		YXRRSet = 7,
+		NXRRSet = 8
+	};
+}
+#endif
+
 #endif //LWIOT_DNS_H

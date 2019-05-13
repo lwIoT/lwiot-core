@@ -78,7 +78,7 @@ static char *label_to_str(char *packet, char *labelPtr, int packetSz, char *res,
 	return endPtr;
 }
 
-static char *strToLabel(char *str, char *label, int maxLen)
+static char *str_to_label(char *str, char *label, int maxLen)
 {
 	char *len = label;
 	char *p = label + 1;
@@ -186,7 +186,7 @@ namespace lwiot
 			p += sizeof(DnsQuestionFooter);
 			print_dbg("DNS: Q (type 0x%X class 0x%X) for %s\n", local_ntohs(&qf->type), local_ntohs(&qf->q_class), buff);
 			if(local_ntohs(&qf->type) == QTYPE_A) {
-				rend = strToLabel(buff, rend, DNS_LEN - (rend - reply));
+				rend = str_to_label(buff, rend, DNS_LEN - (rend - reply));
 				if(rend == NULL)
 					goto finish;
 				DnsResourceFooter *rf = (DnsResourceFooter *) rend;
@@ -201,7 +201,7 @@ namespace lwiot
 				*rend++ = ipaddr[3];
 				setn16(&rhdr->ancount, local_ntohs(&rhdr->ancount) + 1);
 			} else if(local_ntohs(&qf->type) == QTYPE_NS) {
-				rend = strToLabel(buff, rend, DNS_LEN - (rend - reply)); //Add the label
+				rend = str_to_label(buff, rend, DNS_LEN - (rend - reply)); //Add the label
 				DnsResourceFooter *rf = (DnsResourceFooter *) rend;
 				rend += sizeof(DnsResourceFooter);
 				setn16(&rf->type, QTYPE_NS);
@@ -214,7 +214,7 @@ namespace lwiot
 				*rend++ = 0;
 				setn16(&rhdr->ancount, local_ntohs(&rhdr->ancount) + 1);
 			} else if(local_ntohs(&qf->type) == QTYPE_URI) {
-				rend = strToLabel(buff, rend, DNS_LEN - (rend - reply));
+				rend = str_to_label(buff, rend, DNS_LEN - (rend - reply));
 				DnsResourceFooter *rf = (DnsResourceFooter *) rend;
 				rend += sizeof(DnsResourceFooter);
 				DnsUriHdr *uh = (DnsUriHdr *) rend;
