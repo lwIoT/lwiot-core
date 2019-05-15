@@ -11,12 +11,14 @@
 #include <stdarg.h>
 #include <lwiot.h>
 
+#include <lwiot/scopedlock.h>
 #include <lwiot/stream.h>
+
 #include <lwiot/io/file.h>
 
 namespace lwiot
 {
-	File::File(const lwiot::String &fname, lwiot::FileMode mode) : _mode(mode)
+	File::File(const lwiot::String &fname, lwiot::FileMode mode) : _lock(new Lock(false)), _mode(mode)
 	{
 		char fmode[3] = {0,0,0};
 
@@ -33,6 +35,8 @@ namespace lwiot
 
 	File::~File()
 	{
+		ScopedLock lock(this->_lock.get());
+
 		if(this->_io == nullptr)
 			return;
 
@@ -78,6 +82,7 @@ namespace lwiot
 
 	size_t File::available() const
 	{
+		ScopedLock lock(this->_lock.get());
 		return this->_available;
 	}
 
@@ -166,12 +171,16 @@ namespace lwiot
 
 	uint8_t File::read()
 	{
+		ScopedLock lock(this->_lock.get());
+
 		this->_available--;
 		return static_cast<uint8_t>(getc(this->_io));
 	}
 
 	ssize_t File::read(void *output, const size_t &length)
 	{
+		ScopedLock lock(this->_lock.get());
+
 		auto bytes = fread(output, length, 1, this->_io) * length;
 		this->_available -= bytes;
 
@@ -180,16 +189,20 @@ namespace lwiot
 
 	bool File::write(uint8_t byte)
 	{
+		ScopedLock lock(this->_lock.get());
 		return fputc(byte, this->_io) != EOF;
 	}
 
 	ssize_t File::write(const void *bytes, const size_t &length)
 	{
+		ScopedLock lock(this->_lock.get());
 		return fwrite(bytes, length, 1, this->_io) * length;
 	}
 
 	ssize_t File::writef(const String &format, ...)
 	{
+		ScopedLock lock(this->_lock.get());
+
 		va_list list;
 		ssize_t rv;
 

@@ -57,7 +57,7 @@ namespace lwiot
 		using Stream::write;
 
 		ssize_t writef(const String& format, ...);
-
+		
 	private:
 		SharedPointer<Lock> _lock;
 		FILE* _io;
