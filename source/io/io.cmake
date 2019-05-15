@@ -4,6 +4,10 @@
 
 SET(DIR ${PROJECT_SOURCE_DIR}/source/io)
 
+if(HAVE_UNISTD_H)
+	SET(FILEIO_SRC io/fs/file.cpp)
+endif()
+
 SET(IO_SOURCES
 	io/gpio/gpiochip.cpp
 	io/gpio/gpiopin.cpp
@@ -31,4 +35,6 @@ SET(IO_SOURCES
 	io/i2c/hardwarei2calgorithm.cpp
 	io/i2c/i2cbus.cpp
 	io/i2c/gpioi2calgorithm.cpp
+
+	${FILEIO_SRC}
 )

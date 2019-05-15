@@ -30,14 +30,16 @@ namespace lwiot {
 		time_t tmo = lwiot_tick_ms() + this->_timeout;
 
 		bytes = 0;
-		while((x = this->read()) != '\n') {
-			if(this->_timeout > 0 && lwiot_tick_ms() > tmo) {
+
+		do {
+			x = this->read();
+
+			if(x == EOF || (this->_timeout > 0 && lwiot_tick_ms() > tmo))
 				return 0;
-			}
 
 			bytes++;
 			output += x;
-		}
+		} while(x != '\n');
 
 		return bytes;
 	}
