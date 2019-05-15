@@ -67,3 +67,6 @@ target_link_libraries(sharedpointer_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTH
 
 add_executable(tuple_test tuple_test.cpp)
 target_link_libraries(tuple_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(fileio_test fileio_test.cpp)
+target_link_libraries(fileio_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
