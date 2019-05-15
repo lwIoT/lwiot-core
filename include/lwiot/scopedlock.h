@@ -19,6 +19,7 @@ namespace lwiot
 	class ScopedLock {
 	public:
 		explicit ScopedLock(Lock& lock);
+		ScopedLock(Lock* lock);
 		virtual ~ScopedLock();
 
 		ScopedLock& operator=(const ScopedLock& lock) = delete;

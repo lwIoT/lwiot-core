@@ -20,6 +20,10 @@ namespace lwiot
 		this->_locked = true;
 	}
 
+	ScopedLock::ScopedLock(lwiot::Lock *lock) : ScopedLock(*lock)
+	{
+	}
+
 	ScopedLock::~ScopedLock()
 	{
 		if(this->_locked)
