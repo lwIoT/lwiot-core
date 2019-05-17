@@ -36,6 +36,7 @@ SET(SOURCES
     util/string.cpp
     util/vector.cpp
     util/system.cpp
+	util/randstring.cpp
     ${WRAPPER_SOURCES}
     ${IO_SOURCES}
     ${DRIVER_SOURCES}
