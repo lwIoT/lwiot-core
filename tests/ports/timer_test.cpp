@@ -15,6 +15,7 @@
 #endif
 
 #include <lwiot/kernel/timer.h>
+#include <lwiot/kernel/functionaltimer.h>
 #include <lwiot/kernel/thread.h>
 #include <lwiot/log.h>
 #include <lwiot/test.h>
@@ -57,11 +58,11 @@ protected:
 		TestTimer *timer;
 
 		timer = new TestTimer("Test tmr", 500, 0, nullptr);
-		lwiot_sleep(1020);
+		lwiot_sleep(1000);
 		assert(timer->ticks() == 0);
 
 		timer->start();
-		lwiot_sleep(2020);
+		lwiot_sleep(2010);
 		assert(timer->ticks() == 4);
 
 		for(int idx = 0; idx < 4; idx++) {
@@ -70,12 +71,25 @@ protected:
 		}
 
 		assert(timer->ticks() == 4);
-		lwiot_sleep(520);
+		lwiot_sleep(510);
 		assert(timer->ticks() == 5);
 
 		timer->stop();
 		lwiot_sleep(1000);
 		delete timer;
+
+		lwiot::FunctionalTimer<void>  ft1(lwiot::TimerType::OneShot, 2500);
+		lwiot::FunctionalTimer<int>   ft2(lwiot::TimerType::OneShot, 2000, 2);
+
+		ft1.start([&]() {
+			print_dbg("Timer 1 triggered!\n");
+		});
+
+		ft2.start([&](int x) {
+			print_dbg("Timer %i triggered!\n", x);
+		});
+
+		lwiot_sleep(3000);
 
 #ifdef HAVE_RTOS
 		vTaskEndScheduler();
