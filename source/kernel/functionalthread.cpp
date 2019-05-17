@@ -32,4 +32,10 @@ namespace lwiot
 		if(this->_runner.valid())
 			this->_runner();
 	}
+
+	void FunctionalThread::start(const lwiot::FunctionalThread::Runner &runner)
+	{
+		this->_runner = runner;
+		Thread::start();
+	}
 }
