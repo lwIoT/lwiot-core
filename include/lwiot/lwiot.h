@@ -25,4 +25,16 @@
 #define BIT(__x) (1U << __x)
 #endif
 
+#ifdef __cplusplus
+namespace lwiot
+{
+	namespace stl
+	{
+		class String;
+	}
+
+	stl::String randstr(const stl::String& prefix, size_t size);
+}
+#endif
+
 #define BITS_PER_BYTE 8U

@@ -16,7 +16,8 @@
 #include <lwiot/error.h>
 #include <lwiot/stl/string.h>
 
-namespace lwiot {
+namespace lwiot
+{
 	class Timer {
 	public:
 		explicit Timer(const lwiot::String& name, unsigned long ms, uint32_t flags, void *arg);

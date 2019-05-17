@@ -34,6 +34,16 @@ namespace lwiot
 			return *this;
 		}
 
+		void start(const Runner& runner);
+		using Thread::start;
+
+		template <typename Func>
+		CONSTEXPR void start(Func&& functor)
+		{
+			this->_runner = functor;
+			Thread::start();
+		}
+
 	protected:
 		virtual void run() override;
 
