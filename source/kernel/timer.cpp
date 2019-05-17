@@ -86,6 +86,6 @@ namespace lwiot {
 	bool Timer::isExpired()
 	{
 		auto expiry = lwiot_timer_get_expiry(this->timer);
-		return expiry <= lwiot_tick();
+		return expiry <= lwiot_tick_ms();
 	}
 }
