@@ -111,6 +111,7 @@ int main(int argc, char **argv)
 #endif
 
 	wait_close();
+	t1.stop();
 	lwiot_destroy();
 
 	return -EXIT_SUCCESS;

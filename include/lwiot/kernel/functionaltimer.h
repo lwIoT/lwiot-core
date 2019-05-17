@@ -40,16 +40,16 @@ namespace lwiot
 			}
 
 			template <typename Func>
-			void setHandler(Func&& handler)
+			constexpr void setHandler(Func&& handler)
 			{
 				this->_handler = stl::forward<Func>(handler);
 			}
 
 		private:
-			typedef Function<void(Arg)> type;
+			typedef Function<void(Arg)> HandlerType;
 
 			Arg _value;
-			type _handler;
+			HandlerType _handler;
 		};
 
 		template <>
@@ -61,14 +61,14 @@ namespace lwiot
 			}
 
 			template <typename Func>
-			void setHandler(Func&& handler)
+			constexpr void setHandler(Func&& handler)
 			{
 				this->_handler = stl::forward<Func>(handler);
 			}
 
 		private:
-			typedef Function<void()> type;
-			type _handler;
+			typedef Function<void()> HandlerType;
+			HandlerType _handler;
 		};
 
 	}
@@ -83,10 +83,9 @@ namespace lwiot
 	private:
 		template <typename Type>
 		static constexpr bool IsVoid = traits::IsSame<Type, void>::value;
-
-	public:
 		using ParameterType = T;
 
+	public:
 		template <typename U = FunctionalTimer<T>, typename traits::EnableIf<!IsVoid<typename U::ParameterType>, int>::type = 0>
 		FunctionalTimer(TimerType type, time_t interval, typename U::ParameterType param) :
 			Timer(randstr("ft-", 4), interval, type, nullptr), _handler(param)
@@ -95,6 +94,8 @@ namespace lwiot
 		template <typename U = T, typename traits::EnableIf<traits::IsSame<U, void>::value, int>::type = 0>
 		FunctionalTimer(TimerType type, time_t interval) : Timer(randstr("ft-", 4), interval, type, nullptr)
 		{ }
+
+		virtual ~FunctionalTimer() = default;
 
 		template <typename Func>
 		void start(Func&& handler)
