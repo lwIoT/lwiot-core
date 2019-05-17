@@ -53,6 +53,11 @@ namespace lwiot {
 			return this->_running;
 		}
 
+		static void sleep(time_t ms)
+		{
+			lwiot_sleep(ms);
+		}
+
 	protected:
 		virtual void run() = 0;
 		void *_argument;

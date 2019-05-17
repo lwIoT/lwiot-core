@@ -75,7 +75,7 @@ static void main_thread(void *arg)
 			lock->lock();
 			print_dbg("Lambda thread 2 ping! Atomic: %li\n", value);
 			lock->unlock();
-			lwiot_sleep(750);
+			lwiot::Thread::sleep(750);
 		}
 	};
 
