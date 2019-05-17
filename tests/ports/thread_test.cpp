@@ -82,8 +82,21 @@ static void main_thread(void *arg)
 	lock->lock();
 	lwiot::FunctionalThread tp1("ft-tp1", lambda1);
 	lwiot::FunctionalThread tp2("ft-tp2", lambda2);
+	lwiot::FunctionalThread tp3("ft-tp3");
 	tp1.start();
 	tp2.start();
+	tp3.start([&]() {
+		int i = 0;
+
+		while(i++ <= 5) {
+			auto value = counter.load();
+			lock->lock();
+			print_dbg("Lambda thread 3 ping! Atomic: %li\n", value);
+			lock->unlock();
+			lwiot_sleep(750);
+		}
+	});
+
 	lock->unlock();
 
 	lwiot_sleep(6000);
