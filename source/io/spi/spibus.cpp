@@ -57,8 +57,8 @@ namespace lwiot
 		const uint8_t *txbytes;
 		uint8_t *rxbytes;
 
-		txbytes = msg.txdata().begin();
-		rxbytes = (uint8_t*)msg.rxdata().begin();
+		txbytes = msg.txdata().data();
+		rxbytes = msg.rxdata().data();
 		auto retval = this->transfer(txbytes, rxbytes, msg.size());
 		msg.rxdata().setIndex(msg.size());
 
