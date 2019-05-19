@@ -25,7 +25,7 @@ namespace lwiot {
 
 	ssize_t Stream::read(String& output)
 	{
-		char x;
+		int x;
 		ssize_t bytes;
 		time_t tmo = lwiot_tick_ms() + this->_timeout;
 
@@ -38,7 +38,7 @@ namespace lwiot {
 				return 0;
 
 			bytes++;
-			output += x;
+			output += static_cast<char>(x);
 		} while(x != '\n');
 
 		return bytes;
