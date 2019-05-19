@@ -12,6 +12,7 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
+#include <lwiot/sharedpointer.h>
 
 #include <lwiot/io/i2calgorithm.h>
 #include <lwiot/io/gpiopin.h>
@@ -46,6 +47,7 @@ namespace lwiot
 
 		bool transfer() const;
 		bool isBusy() const;
+		virtual void move(I2CAlgorithm& other);
 		void copy(I2CAlgorithm& other) override;
 
 	private:
@@ -54,7 +56,7 @@ namespace lwiot
 		mutable GpioPin _scl;
 		mutable GpioPin _sda;
 		mutable Logger log;
-		Lock _lock;
+		SharedPointer<Lock> _lock;
 
 		void sdahi() const;
 		void sdalow() const;
