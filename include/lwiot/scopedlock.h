@@ -10,8 +10,10 @@
 #include <lwiot.h>
 #include <stdlib.h>
 
-#include <lwiot/kernel/lock.h>
 #include <lwiot/log.h>
+#include <lwiot/sharedpointer.h>
+
+#include <lwiot/kernel/lock.h>
 #include <lwiot/stl/referencewrapper.h>
 
 namespace lwiot
@@ -19,7 +21,8 @@ namespace lwiot
 	class ScopedLock {
 	public:
 		explicit ScopedLock(Lock& lock);
-		ScopedLock(Lock* lock);
+		explicit ScopedLock(Lock* lock);
+		explicit ScopedLock(SharedPointer<Lock>& sp);
 		virtual ~ScopedLock();
 
 		ScopedLock& operator=(const ScopedLock& lock) = delete;

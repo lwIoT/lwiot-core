@@ -24,6 +24,10 @@ namespace lwiot
 	{
 	}
 
+	ScopedLock::ScopedLock(lwiot::SharedPointer<lwiot::Lock> &sp) : ScopedLock(sp.get())
+	{
+	}
+
 	ScopedLock::~ScopedLock()
 	{
 		if(this->_locked)
