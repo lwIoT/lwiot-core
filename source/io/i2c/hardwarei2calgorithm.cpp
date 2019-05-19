@@ -142,7 +142,7 @@ namespace lwiot
 		rv = msg.count();
 
 		if(unlikely(!success)) {
-			log << "I2C hardware error!" << Logger::newline;
+			this->log << "I2C hardware error!" << Logger::newline;
 			rv = -EINVALID;
 		}
 
@@ -195,7 +195,7 @@ namespace lwiot
 		i2c_reset();
 
 		if(unlikely(!success)) {
-			log << "I2C hardware error!" << Logger::newline;
+			this->log << "I2C hardware error!" << Logger::newline;
 			total = -EINVALID;
 		}
 
