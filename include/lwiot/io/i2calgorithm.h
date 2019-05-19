@@ -42,7 +42,7 @@ namespace lwiot
 	protected:
 		uint32_t _frequency;
 		static constexpr int DefaultRetryDelay = 200;
-		virtual void copy(I2CAlgorithm& other);
+		virtual void copy(const I2CAlgorithm& other);
 
 	private:
 		int _delay;

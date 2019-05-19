@@ -41,7 +41,7 @@ namespace lwiot
 			this->_frequency = freq;
 		}
 
-		void I2CAlgorithm::copy(lwiot::I2CAlgorithm &other)
+		void I2CAlgorithm::copy(const I2CAlgorithm &other)
 		{
 			this->_frequency = other.frequency();
 			this->_delay = other._delay;

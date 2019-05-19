@@ -27,12 +27,12 @@ namespace lwiot
 		explicit HardwareI2CAlgorithm(const GpioPin& scl, const GpioPin& sda);
 
 		explicit HardwareI2CAlgorithm(HardwareI2CAlgorithm&& other) noexcept;
-		explicit HardwareI2CAlgorithm(const HardwareI2CAlgorithm&) = delete;
+		explicit HardwareI2CAlgorithm(const HardwareI2CAlgorithm& other) noexcept;
 
 		virtual ~HardwareI2CAlgorithm();
 
 		HardwareI2CAlgorithm& operator=(HardwareI2CAlgorithm&& rhs) noexcept;
-		HardwareI2CAlgorithm& operator=(const HardwareI2CAlgorithm&) = delete;
+		HardwareI2CAlgorithm& operator=(const HardwareI2CAlgorithm& other) noexcept;
 
 		ssize_t transfer(I2CMessage &msg) override;
 		ssize_t transfer(stl::Vector<I2CMessage *> &msgs) override;
@@ -48,7 +48,7 @@ namespace lwiot
 		bool transfer() const;
 		bool isBusy() const;
 		virtual void move(I2CAlgorithm& other);
-		void copy(I2CAlgorithm& other) override;
+		void copy(const I2CAlgorithm& other) override;
 
 	private:
 		static constexpr int MaxRiseTime = 20;

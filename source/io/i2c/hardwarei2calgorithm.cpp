@@ -48,10 +48,16 @@ namespace lwiot
 	{
 	}
 
-	HardwareI2CAlgorithm::HardwareI2CAlgorithm(HardwareI2CAlgorithm &&other) noexcept :
+	HardwareI2CAlgorithm::HardwareI2CAlgorithm(const HardwareI2CAlgorithm& other) noexcept :
 		I2CAlgorithm(I2CAlgorithm::DefaultRetryDelay, other.frequency())
 	{
 		this->copy(other);
+	}
+
+	HardwareI2CAlgorithm::HardwareI2CAlgorithm(HardwareI2CAlgorithm &&other) noexcept :
+		I2CAlgorithm(I2CAlgorithm::DefaultRetryDelay, other.frequency())
+	{
+		this->move(other);
 	}
 
 	HardwareI2CAlgorithm::~HardwareI2CAlgorithm()
@@ -61,6 +67,12 @@ namespace lwiot
 		i2c_disable();
 		this->_scl.input();
 		this->_sda.input();
+	}
+
+	HardwareI2CAlgorithm& HardwareI2CAlgorithm::operator=(const lwiot::HardwareI2CAlgorithm & rhs) noexcept
+	{
+		this->copy(rhs);
+		return *this;
 	}
 
 	HardwareI2CAlgorithm& HardwareI2CAlgorithm::operator=(HardwareI2CAlgorithm&& rhs) noexcept
@@ -83,10 +95,10 @@ namespace lwiot
 		this->_lock->unlock();
 	}
 
-	void HardwareI2CAlgorithm::copy(lwiot::I2CAlgorithm &other)
+	void HardwareI2CAlgorithm::copy(const I2CAlgorithm &other)
 	{
-		HardwareI2CAlgorithm& tocopy = static_cast<HardwareI2CAlgorithm&>(other);
-		ScopedLock lock(tocopy._lock);
+		const HardwareI2CAlgorithm& tocopy = static_cast<const HardwareI2CAlgorithm&>(other);
+		ScopedLock lock(tocopy._lock.get());
 
 		I2CAlgorithm::copy(other);
 		this->_scl = tocopy._scl;
