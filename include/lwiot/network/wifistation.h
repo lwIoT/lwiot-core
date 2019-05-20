@@ -33,11 +33,13 @@ namespace lwiot
 
 		virtual void connectTo(const String& ssid);
 		virtual void connectTo(const String& ssid, const String& password);
+		virtual void disconnect();
 
 		virtual void setStatus(wireless_status_t status);
 		wireless_status_t status() const;
+
 		const IPAddress& address() const;
-		void setAddress(const IPAddress& addr);
+		virtual void setAddress(const IPAddress& addr);
 
 		virtual operator bool () const = 0;
 

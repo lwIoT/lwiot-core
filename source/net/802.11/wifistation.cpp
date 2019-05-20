@@ -51,4 +51,12 @@ namespace lwiot
 	{
 		this->_addr = addr;
 	}
+
+	void WifiStation::disconnect()
+	{
+		this->_addr = IPAddress(0U);
+		this->_ssid = "";
+		this->_password = "";
+		this->_status = WL_DISCONNECTED;
+	}
 }
