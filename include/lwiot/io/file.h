@@ -56,7 +56,7 @@ namespace lwiot
 		ssize_t write(const void *bytes, const size_t &length) override;
 		using Stream::write;
 
-		ssize_t writef(const String& format, ...);
+		ssize_t write(const String& format, ...);
 		
 	private:
 		SharedPointer<Lock> _lock;

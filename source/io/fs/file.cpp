@@ -165,7 +165,7 @@ namespace lwiot
 
 	Stream &File::operator<<(const char *cstr)
 	{
-		this->writef(cstr);
+		this->write(cstr, strlen(cstr));
 		return *this;
 	}
 
@@ -199,7 +199,7 @@ namespace lwiot
 		return fwrite(bytes, length, 1, this->_io) * length;
 	}
 
-	ssize_t File::writef(const String &format, ...)
+	ssize_t File::write(const String &format, ...)
 	{
 		ScopedLock lock(this->_lock.get());
 
