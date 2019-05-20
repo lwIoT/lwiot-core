@@ -5,8 +5,6 @@
  * @email  dev@bietje.net
  */
 
-#pragma once
-
 #include <stdlib.h>
 #include <lwiot.h>
 
@@ -17,7 +15,7 @@
 
 namespace lwiot
 {
-	WifiStation::WifiStation() : _addr(0U), _ssid(""), _password(""), _status(WL_DISCONNECTED)
+	WifiStation::WifiStation() : _addr(0U), _status(WL_DISCONNECTED), _ssid(""), _password("")
 	{
 	}
 

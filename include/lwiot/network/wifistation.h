@@ -43,11 +43,13 @@ namespace lwiot
 
 		virtual operator bool () const = 0;
 
-	private:
+	protected:
 		IPAddress _addr;
+		wireless_status_t _status;
+
+	private:
 		String _ssid;
 		String _password;
-		wireless_status_t _status;
 
 	};
 }
