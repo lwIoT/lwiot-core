@@ -42,6 +42,11 @@ namespace lwiot
 		return this->_clk;
 	}
 
+	void SpiBus::setFrequency(uint32_t freq)
+	{
+		this->_freq = freq;
+	}
+
 	bool SpiBus::transfer(stl::Vector<SpiMessage>& msgs)
 	{
 		for(SpiMessage& msg : msgs) {

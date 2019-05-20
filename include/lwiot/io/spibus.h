@@ -30,7 +30,7 @@ namespace lwiot
 
 		virtual bool transfer(SpiMessage& msg);
 		virtual bool transfer(stl::Vector<SpiMessage>& msgs);
-		virtual void setFrequency(uint32_t freq) = 0;
+		virtual void setFrequency(uint32_t freq);
 
 	protected:
 		GpioPin _miso;
