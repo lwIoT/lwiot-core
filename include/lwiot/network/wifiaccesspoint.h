@@ -15,37 +15,43 @@
 #include <lwiot/network/ipaddress.h>
 #include <lwiot/log.h>
 
-
 namespace lwiot
 {
 	class WifiAccessPoint {
 	public:
-		static WifiAccessPoint& instance()
-		{
-			static WifiAccessPoint instance;
-			return instance;
-		}
+		explicit WifiAccessPoint();
+		virtual ~WifiAccessPoint() = default;
 
 		WifiAccessPoint(const WifiAccessPoint&) = delete;
 		void operator =(const WifiAccessPoint&) = delete;
 
-		void start();
+		virtual void start() = 0;
 
-		void begin(const String& ssid, const String& pass = "", int chan = 1, bool hidden = false, int max = 4);
-		void config(const IPAddress& local, const IPAddress& gw, const IPAddress& sn);
-		operator bool() const;
-		void end();
+		virtual void begin(const String& ssid, const String& pass = "", int chan = 1, bool hidden = false, int max = 4);
+		virtual void config(const IPAddress& local, const IPAddress& gw, const IPAddress& subnet);
+		virtual operator bool() const = 0;
+		virtual void stop() = 0;
 
-		String mac() const;
+		virtual String mac() const = 0;
 		const String& hostname() const;
 		void setHostname(const String& host);
 
-	private:
-		IPAddress _local, _gw, _subnet;
-		String _host;
+		const String& ssid() const;
+		const String& password() const;
+		int channel() const;
+		bool hidden() const;
+		int max() const;
 
-		explicit WifiAccessPoint();
-		virtual ~WifiAccessPoint() = default;
+	protected:
+		IPAddress _local, _gw, _subnet;
+
+	private:
+		String _host;
+		String _ssid;
+		String _password;
+		int _channel;
+		bool _hidden;
+		int _maxclients;
 	};
 }
 

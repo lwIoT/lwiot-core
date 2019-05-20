@@ -30,4 +30,6 @@ SET(NET_SOURCES
 	net/http/mimetable.cpp
 	net/http/mimetable.h
 	net/http/requesthandlerimpl.h
+
+	net/802.11/wifiaccesspoint.cpp
 )
