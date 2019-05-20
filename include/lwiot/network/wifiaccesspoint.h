@@ -27,7 +27,7 @@ namespace lwiot
 
 		virtual void start() = 0;
 
-		virtual void begin(const String& ssid, const String& pass = "", int chan = 1, bool hidden = false, int max = 4);
+		virtual void begin(const String& ssid, const String& pass, int chan, bool hidden, int max);
 		virtual void config(const IPAddress& local, const IPAddress& gw, const IPAddress& subnet);
 		virtual operator bool() const = 0;
 		virtual void stop() = 0;
