@@ -34,11 +34,17 @@ namespace lwiot {
 		do {
 			x = this->read();
 
-			if(x == EOF || (this->_timeout > 0 && lwiot_tick_ms() > tmo))
-				return 0;
+			if(x == static_cast<uint8_t>(EOF) || (this->_timeout > 0 && lwiot_tick_ms() > tmo)) {
+				print_dbg("EOF or timeout!\n");
+				return bytes;
+			}
 
 			bytes++;
 			output += static_cast<char>(x);
+
+			if(x == '\n') {
+				print_dbg("New line found!\n");
+			}
 		} while(x != '\n');
 
 		return bytes;
