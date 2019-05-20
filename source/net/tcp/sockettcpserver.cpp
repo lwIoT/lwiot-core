@@ -140,17 +140,15 @@ namespace lwiot
 	bool SocketTcpServer::bind() const
 	{
 		bool rv;
+		remote_addr_t remote;
 
 		if(this->_socket == nullptr) {
 			print_dbg("Invalid socket descriptor, unable to bind!\n");
 			return false;
 		}
 
-		if(this->_bind_addr.isIPv6()) {
-			rv = server_socket_bind(this->_socket, BIND6_ADDR_ANY, this->_bind_port);
-		} else {
-			rv = server_socket_bind(this->_socket, BIND_ADDR_ANY, this->_bind_port);
-		}
+		this->_bind_addr.toRemoteAddress(remote);
+		rv = server_socket_bind_to(this->_socket, &remote, this->_bind_port);
 
 		if(!rv) {
 			print_dbg("Unable to bind TCP server socket!\n");
