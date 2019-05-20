@@ -46,8 +46,8 @@ void returnFail(lwiot::HttpServer &server, const lwiot::String &msg)
 static void handle_root(lwiot::HttpServer &server)
 {
 	if(server.hasArg("cert")) {
-		printf("Page submitted\n");
-		//handleSubmit(server);
+		print_dbg("Page submitted\n");
+		server.send(200, "text/html", INDEX_HTML);
 	} else {
 		server.send(200, "text/html", INDEX_HTML);
 	}
@@ -87,7 +87,7 @@ static void handle_upload(lwiot::HttpServer &server)
 
 static void test_httpserver()
 {
-	lwiot::SocketTcpServer *srv = new lwiot::SocketTcpServer(BIND_ADDR_ANY, 8080);
+	lwiot::SocketTcpServer *srv = new lwiot::SocketTcpServer(lwiot::IPAddress(127,0,0,1), 8080);
 	lwiot::HttpServer server(srv);
 
 	server.on("/", lwiot::HTTP_GET, &handle_root);
