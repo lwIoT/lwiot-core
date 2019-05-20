@@ -32,4 +32,5 @@ SET(NET_SOURCES
 	net/http/requesthandlerimpl.h
 
 	net/802.11/wifiaccesspoint.cpp
+	net/802.11/wifistation.cpp
 )

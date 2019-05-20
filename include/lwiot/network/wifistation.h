@@ -12,34 +12,40 @@
 
 namespace lwiot
 {
+	typedef enum {
+		WL_NO_SHIELD        = 255,
+		WL_IDLE_STATUS      = 0,
+		WL_NO_SSID_AVAIL    = 1,
+		WL_SCAN_COMPLETED   = 2,
+		WL_CONNECTED        = 3,
+		WL_CONNECT_FAILED   = 4,
+		WL_CONNECTION_LOST  = 5,
+		WL_DISCONNECTED     = 6
+	} wireless_status_t;
+
 	class WifiStation {
 	public:
-		static WifiStation& instance()
-		{
-			static WifiStation instance;
-			return instance;
-		}
+		explicit WifiStation();
 		virtual ~WifiStation() = default;
 
 		WifiStation(const WifiStation&) = delete;
 		void operator =(const WifiStation&) = delete;
 
-		void connectTo(const String& ssid);
-		void connectTo(const String& ssid, const String& password);
+		virtual void connectTo(const String& ssid);
+		virtual void connectTo(const String& ssid, const String& password);
 
-		void setStatus(wireless_status_t status);
+		virtual void setStatus(wireless_status_t status);
 		wireless_status_t status() const;
 		const IPAddress& address() const;
 		void setAddress(const IPAddress& addr);
 
-		operator bool () const;
+		virtual operator bool () const = 0;
 
 	private:
-		IPAddress addr;
-		String ssid;
-		String password;
+		IPAddress _addr;
+		String _ssid;
+		String _password;
 		wireless_status_t _status;
 
-		explicit WifiStation();
 	};
 }
