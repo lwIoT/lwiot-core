@@ -56,17 +56,4 @@ namespace lwiot
 
 		return true;
 	}
-
-	bool SpiBus::transfer(SpiMessage& msg)
-	{
-		const uint8_t *txbytes;
-		uint8_t *rxbytes;
-
-		txbytes = msg.txdata().data();
-		rxbytes = msg.rxdata().data();
-		auto retval = this->transfer(txbytes, rxbytes, msg.size());
-		msg.rxdata().setIndex(msg.size());
-
-		return retval;
-	}
 }
