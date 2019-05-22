@@ -5,4 +5,5 @@ SET(DRIVER_SOURCES
 	drivers/clock/dsrealtimeclock.cpp
 	drivers/clock/realtimeclock.cpp
 	drivers/eeprom/eeprom24c02.cpp
+	drivers/sram/sram23k256.cpp
 )
