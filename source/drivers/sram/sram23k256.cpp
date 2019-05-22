@@ -45,7 +45,7 @@ namespace lwiot
 
 	void SRAM23K256::mode(uint16_t mode)
 	{
-		SpiMessage msg(2);
+		SpiMessage msg(2, this->_cs);
 
 		auto& buf = msg.txdata();
 		buf[0] = WRSR;
@@ -58,7 +58,7 @@ namespace lwiot
 
 	void SRAM23K256::write(size_t addr, const lwiot::ByteBuffer &buffer)
 	{
-		SpiMessage msg(buffer.count() + 3);
+		SpiMessage msg(buffer.count() + 3, this->_cs);
 
 		auto& tx = msg.txdata();
 		tx.write(WRDA);
@@ -76,7 +76,7 @@ namespace lwiot
 
 	ByteBuffer SRAM23K256::read(size_t addr, size_t length)
 	{
-		SpiMessage msg(length+3);
+		SpiMessage msg(length+3, this->_cs);
 		ByteBuffer rv(length);
 
 		auto& tx = msg.txdata();
@@ -97,6 +97,7 @@ namespace lwiot
 	void SRAM23K256::begin()
 	{
 		this->_cs.output();
+		this->_cs.write(true);
 		this->mode(SPI_SEQ_MODE);
 	}
 
