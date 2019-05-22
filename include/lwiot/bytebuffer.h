@@ -43,7 +43,7 @@ namespace lwiot
 	public:
 		explicit ByteBuffer();
 		explicit ByteBuffer(const size_t& size, bool exactfit = false);
-		explicit ByteBuffer(const ByteBuffer& other);
+		ByteBuffer(const ByteBuffer& other);
 		explicit ByteBuffer(ByteBuffer&& other) noexcept;
 		virtual ~ByteBuffer();
 
@@ -69,7 +69,7 @@ namespace lwiot
 		void write(const ByteBuffer& buffer);
 
 		template<typename Func>
-		void foreach(Func f)
+		void foreach(Func f) const
 		{
 			for(auto idx = 0UL; idx < this->_index; idx++) {
 				f(this->_data[idx]);
