@@ -28,7 +28,7 @@ namespace lwiot
 		const GpioPin& mosi() const;
 		const GpioPin& clk() const;
 
-		virtual bool transfer(SpiMessage& msg);
+		virtual bool transfer(SpiMessage& msg) = 0;
 		virtual bool transfer(stl::Vector<SpiMessage>& msgs);
 		virtual void setFrequency(uint32_t freq);
 
@@ -36,8 +36,6 @@ namespace lwiot
 		GpioPin _miso;
 		GpioPin _mosi;
 		GpioPin _clk;
-
-		virtual bool transfer(const uint8_t *tx, uint8_t *rx, size_t length) = 0;
 
 	private:
 		uint32_t _freq;
