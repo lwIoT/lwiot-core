@@ -33,4 +33,6 @@ SET(NET_SOURCES
 
 	net/802.11/wifiaccesspoint.cpp
 	net/802.11/wifistation.cpp
+
+	net/iot/mqttclient.cpp
 )
