@@ -48,6 +48,12 @@ namespace lwiot
 		return *this;
 	}
 
+	void ByteBuffer::reset()
+	{
+		memset(this->_data, 0, this->_count);
+		this->_index = 0;
+	}
+
 	void ByteBuffer::move(ByteBuffer& other)
 	{
 		if(likely(this->_data))

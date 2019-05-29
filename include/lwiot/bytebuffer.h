@@ -76,6 +76,8 @@ namespace lwiot
 			}
 		}
 
+		void reset();
+
 	protected:
 		size_t _index;
 
