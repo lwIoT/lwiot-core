@@ -44,6 +44,12 @@ namespace lwiot
 				copy(cstr, strlen(cstr));
 		}
 
+		String::String(const lwiot::ByteBuffer &buf)
+		{
+			this->init();
+			this->copy(buf.data(), buf.count());
+		}
+
 		String::String(const String &value)
 		{
 			init();
@@ -197,6 +203,14 @@ namespace lwiot
 		/*********************************************/
 		/*  Copy and Move                            */
 		/*********************************************/
+
+		String& String::copy(const uint8_t *cstr, unsigned int length)
+		{
+			String& rv = this->copy(reinterpret_cast<const char *>(cstr), length);
+
+			this->buffer[length] = 0;
+			return rv;
+		}
 
 		String &String::copy(const char *cstr, unsigned int length)
 		{

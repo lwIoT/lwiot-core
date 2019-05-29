@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <lwiot.h>
+#include <lwiot/bytebuffer.h>
 
 #ifdef __cplusplus
 namespace lwiot
@@ -36,7 +37,7 @@ namespace lwiot
 			// fails, the string will be marked as invalid (i.e. "if (s)" will
 			// be false).
 			String(const char *cstr = "");
-
+			String(const lwiot::ByteBuffer& buf);
 			String(const String &str);
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
@@ -349,6 +350,7 @@ namespace lwiot
 
 			// copy and move
 			String &copy(const char *cstr, unsigned int length);
+			String &copy(const uint8_t *cstr, unsigned int length);
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 
