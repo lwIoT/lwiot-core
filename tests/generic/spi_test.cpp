@@ -36,9 +36,9 @@ public:
 	{
 	}
 
-	virtual bool transfer(const uint8_t *tx, uint8_t *rx, size_t length)
+	bool transfer(lwiot::SpiMessage& msg) override
 	{
-		reverse(tx, rx, length);
+		reverse(msg.txdata().data(), msg.rxdata().data(), msg.size());
 		return true;
 	}
 	using SpiBus::transfer;
