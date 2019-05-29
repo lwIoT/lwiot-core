@@ -21,7 +21,7 @@
 static void write_test(const lwiot::stl::String& path)
 {
 	lwiot::File file(path, lwiot::FileMode::ReadWrite);
-	file.writef("Dit is een %s", "test");
+	file.write("Dit is een %s", "test");
 }
 
 static void read_test(const lwiot::stl::String& path)
