@@ -29,8 +29,13 @@ namespace lwiot
 		this->connect();
 	}
 
-	SocketTcpClient::SocketTcpClient(const lwiot::String &host, uint16_t port) : TcpClient(host, port), _socket(nullptr)
+	SocketTcpClient::SocketTcpClient(const lwiot::String &host, uint16_t port) : TcpClient(0, port), _socket(nullptr)
 	{
+		remote_addr_t remote;
+
+		dns_resolve_host(host.c_str(), &remote);
+		this->_remote_addr = IPAddress(remote);
+
 		this->connect();
 	}
 
