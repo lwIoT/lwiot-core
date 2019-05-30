@@ -21,7 +21,7 @@ namespace lwiot
 	}
 
 	SpiMessage::SpiMessage(const size_t &size, const lwiot::GpioPin &pin) :
-		_tx(size), _rx(size), _idx(0), _size(size), _cspin(pin)
+		_tx(size, true), _rx(size, true), _idx(0), _size(size), _cspin(pin)
 	{
 	}
 

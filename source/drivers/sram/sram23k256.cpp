@@ -78,11 +78,11 @@ namespace lwiot
 	{
 		SpiMessage msg(length+3, this->_cs);
 		ByteBuffer rv(length);
-
 		auto& tx = msg.txdata();
-		tx[0] = RDDA;
-		tx[1] = (addr >> 8) & 0xFF;
-		tx[2] = addr & 0xFF;
+
+		tx.write(RDDA);
+		tx.write((addr >> 8) & 0xFF);
+		tx.write( addr & 0xFF);
 
 		if(!this->_bus->transfer(msg)) {
 			print_dbg("Unable to read from SRAM chip!\n");
@@ -91,13 +91,12 @@ namespace lwiot
 
 		auto data = msg.rxdata().data();
 		rv.write(data + 3, length);
+
 		return stl::move(rv);
 	}
 
 	void SRAM23K256::begin()
 	{
-		this->_cs.output();
-		this->_cs.write(true);
 		this->mode(SPI_SEQ_MODE);
 	}
 
