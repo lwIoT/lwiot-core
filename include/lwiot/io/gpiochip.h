@@ -39,6 +39,7 @@ namespace lwiot
 		virtual void odWrite(int pin, bool value) = 0;
 
 		virtual void attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge) = 0;
+		virtual void detachIrqHandler(int pin) = 0;
 
 		virtual void input(int pin);
 		virtual void output(int pin);
