@@ -33,9 +33,10 @@ namespace lwiot
 		};
 
 		explicit MqttClient();
+		virtual ~MqttClient() = default;
 
 		void begin(TcpClient& client);
-		void reconnect();
+		bool reconnect();
 
 		void setCallback(const Handler& cb)
 		{
@@ -49,16 +50,18 @@ namespace lwiot
 		}
 
 		bool connect(const String& id, const String& user, const String& pass);
-		bool connect(const String& id, const String& user, const String& pass, const String& willTopic, uint8_t willQos, bool willRetain, const String& willMessage, bool cleanSession);
+		virtual bool connect(const String& id, const String& user, const String& pass,
+				const String& willTopic, uint8_t willQos, bool willRetain,
+				const String& willMessage, bool cleanSession);
 		void disconnect();
 
-		bool subscribe(const stl::String& topic, QoS qos = QOS0);
-		bool unsubscribe(const stl::String& topic);
+		bool subscribe(const stl::String& topic, QoS qos);
+		virtual bool unsubscribe(const stl::String& topic);
 
 		bool loop();
 		bool connected();
 
-		bool publish(const stl::String& topic, const ByteBuffer& data, bool retained = false);
+		virtual bool publish(const stl::String& topic, const ByteBuffer& data, bool retained);
 		bool publish(const stl::String& topic, const stl::String& data, bool retained = false);
 
 		constexpr int state() const
