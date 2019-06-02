@@ -50,6 +50,10 @@ namespace lwiot
 	void HostedGpioChip::attachIrqHandler(int pin, irq_handler_t handler, IrqEdge edge)
 	{
 	}
+
+	void HostedGpioChip::detachIrqHandler(int pin)
+	{
+	}
 }
 
 static lwiot::HostedGpioChip hosted_gpio(10);
