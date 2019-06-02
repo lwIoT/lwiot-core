@@ -33,6 +33,7 @@ namespace lwiot
 	{
 		remote_addr_t remote;
 
+		remote.version = 4;
 		dns_resolve_host(host.c_str(), &remote);
 		this->_remote_addr = IPAddress(remote);
 
