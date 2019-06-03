@@ -59,12 +59,15 @@ namespace lwiot
 		virtual bool unsubscribe(const stl::String& topic);
 
 		bool loop();
-		bool connected();
+		virtual bool connected()
+		{
+			return this->isConnected();
+		}
 
 		virtual bool publish(const stl::String& topic, const ByteBuffer& data, bool retained);
 		bool publish(const stl::String& topic, const stl::String& data, bool retained = false);
 
-		constexpr int state() const
+		virtual inline int state() const
 		{
 			return this->_state;
 		}
@@ -97,5 +100,6 @@ namespace lwiot
 		uint16_t write(const stl::String& data, uint16_t pos);
 		size_t write(uint8_t);
 		bool write(uint8_t header, size_t length);
+		bool isConnected();
 	};
 }

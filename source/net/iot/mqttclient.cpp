@@ -59,9 +59,9 @@ namespace lwiot
 		this->_io = client;
 	}
 
-	void MqttClient::reconnect()
+	bool MqttClient::reconnect()
 	{
-		this->_io->connect(this->_io->remote(), this->_io->port());
+		return this->_io->connect(this->_io->remote(), this->_io->port());
 	}
 
 	bool MqttClient::publish(const lwiot::String &topic, const lwiot::String &data, bool retained)
@@ -78,7 +78,7 @@ namespace lwiot
 		auto rv = false;
 		uint8_t header = MQTTPUBLISH;
 
-		if(connected()) {
+		if(isConnected()) {
 			if(MQTT_MAX_PACKET_SIZE < MQTT_MAX_HEADER_SIZE + 2 + topic.length() + plength)
 				return false;
 
@@ -110,7 +110,7 @@ namespace lwiot
 			if(MQTT_MAX_PACKET_SIZE < 9 + topic.length())
 				return rv;
 
-		if(this->connected()) {
+		if(this->isConnected()) {
 			this->_buffer.reset();
 
 			uint16_t length = MQTT_MAX_HEADER_SIZE;
@@ -137,7 +137,7 @@ namespace lwiot
 		if(MQTT_MAX_PACKET_SIZE < 9 + topic.length())
 			return rv;
 
-		if(connected()) {
+		if(isConnected()) {
 			uint16_t length = MQTT_MAX_HEADER_SIZE;
 			this->_nextMsgId++;
 
@@ -156,17 +156,16 @@ namespace lwiot
 	uint16_t MqttClient::write(const lwiot::String &data, uint16_t pos)
 	{
 		const char *idp = data.c_str();
-		uint16_t i = 0;
+		uint16_t len = data.length();
 
 		pos += 2;
 
-		while(*idp) {
+		for(int idx = 0; idx < len; idx++) {
 			this->_buffer[pos++] = *idp++;
-			i++;
 		}
 
-		this->_buffer[pos - i - 2] = (i >> 8);
-		this->_buffer[pos - i - 1] = (i & 0xFF);
+		this->_buffer[pos - len - 2] = (len >> 8);
+		this->_buffer[pos - len - 1] = (len & 0xFF);
 
 		return pos;
 	}
@@ -314,7 +313,7 @@ namespace lwiot
 	                         const lwiot::String &willTopic, uint8_t willQos, bool willRetain,
 	                         const lwiot::String &willMessage, bool cleanSession)
 	{
-		if(!connected()) {
+		if(!this->isConnected()) {
 
 			bool result = this->_io->connected();
 
@@ -448,7 +447,7 @@ namespace lwiot
 	{
 		unsigned long t = lwiot_tick_ms();
 
-		if(!this->connected())
+		if(!this->isConnected())
 			return false;
 
 		if((t - this->_lastInActivity > MQTT_KEEPALIVE * 1000UL) ||
@@ -514,7 +513,7 @@ namespace lwiot
 				} else if(type == MQTTPINGRESP) {
 					this->_pingOutstanding = false;
 				}
-			} else if(!this->connected()) {
+			} else if(!this->isConnected()) {
 				return false;
 			}
 		}
@@ -532,7 +531,7 @@ namespace lwiot
 		this->_io->close();
 	}
 
-	bool MqttClient::connected()
+	bool MqttClient::isConnected()
 	{
 		bool rc;
 
