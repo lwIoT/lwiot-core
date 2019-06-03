@@ -15,7 +15,7 @@
 #include <lwiot/test.h>
 
 #include <lwiot/network/ipaddress.h>
-#include <lwiot/network/mqttclient.h>
+#include <lwiot/network/asyncmqttclient.h>
 #include <lwiot/network/sockettcpserver.h>
 #include <lwiot/network/sockettcpclient.h>
 #include <lwiot/kernel/thread.h>
@@ -24,25 +24,41 @@ class MqttClientTest : public lwiot::Functor {
 	void run() override
 	{
 		lwiot::SocketTcpClient client("mail.sonatolabs.com", 1883);
-		lwiot::MqttClient mqtt;
+		lwiot::AsyncMqttClient mqtt;
+		int a = 0,
+		    b = 0;
 
-		mqtt.begin(client);
-		mqtt.setCallback([](const lwiot::stl::String& topic, const lwiot::ByteBuffer& payload) {
-			lwiot::stl::String msg(payload);
-			print_dbg("Received MQTT message on topic: %s\n", topic.c_str());
-			print_dbg("Received msg: %s\n", msg.c_str());
-		});
+		mqtt.start(client);
 
 		mqtt.connect("lwiot-test", "test", "test");
-		mqtt.subscribe("test/subscribe");
+		mqtt.subscribe("test/subscribe/1", [&a](const lwiot::ByteBuffer& payload) {
+			lwiot::stl::String str(payload);
 
-		while(true) {
+			a++;
+			print_dbg("Data (subscribe/1): %s\n", str.c_str());
+		}, lwiot::MqttClient::QOS0);
+
+		mqtt.subscribe("test/subscribe/2", [&b](const lwiot::ByteBuffer& payload) {
+			lwiot::stl::String str(payload);
+
+			b++;
+			print_dbg("Data (subscribe/2): %s\n", str.c_str());
+		}, lwiot::MqttClient::QOS0);
+
+		for(int idx = 0; idx < 5; idx++) {
 			print_dbg("Connected? :: %u :: State: %i\n", mqtt.connected(), mqtt.state());
-			mqtt.publish("test/publish", "Test message");
-			mqtt.loop();
+
+			mqtt.publish("test/subscribe/1", "Test message for s1", false);
+			mqtt.publish("test/subscribe/2", "Test message for s2", false);
+
 			fflush(stdout);
 			lwiot::Thread::sleep(1000);
 		}
+
+		mqtt.stop();
+
+		assert(a == 5);
+		assert(b == 5);
 	}
 };
 
