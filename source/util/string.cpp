@@ -181,23 +181,36 @@ namespace lwiot
 		{
 			if(buffer && capacity >= size)
 				return 1;
+
 			if(changeBuffer(size)) {
-				if(len == 0)
-					buffer[0] = 0;
+				for(auto idx = length(); idx < this->capacity + 1; idx++) {
+					this->buffer[idx] = 0;
+				}
+
 				return 1;
 			}
+
 			return 0;
 		}
 
 		unsigned char String::changeBuffer(unsigned int maxStrLen)
 		{
+			unsigned char rv = 0;
 			char *newbuffer = (char *) lwiot_mem_realloc(buffer, maxStrLen + 1);
-			if(newbuffer) {
+
+			if(capacity == 0) {
 				buffer = newbuffer;
 				capacity = maxStrLen;
-				return 1;
+
+				memset(newbuffer, 0, maxStrLen + 1);
+				rv = 1;
+			} else if(newbuffer) {
+				buffer = newbuffer;
+				capacity = maxStrLen;
+				rv = 1;
 			}
-			return 0;
+
+			return rv;
 		}
 
 		/*********************************************/
@@ -218,8 +231,10 @@ namespace lwiot
 				invalidate();
 				return *this;
 			}
+
 			len = length;
-			strcpy(buffer, cstr);
+			memcpy(buffer, cstr, length);
+
 			return *this;
 		}
 
