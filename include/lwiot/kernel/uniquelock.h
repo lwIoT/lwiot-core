@@ -24,7 +24,7 @@ namespace lwiot
 			this->lock();
 		}
 
-		explicit UniqueLock(SharedPointer<Lock>& ptr) : UniqueLock(ptr.get())
+		explicit UniqueLock(SharedPointer<LockType >& ptr) : UniqueLock(ptr.get())
 		{
 		}
 
