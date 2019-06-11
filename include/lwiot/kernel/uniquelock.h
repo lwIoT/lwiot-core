@@ -7,7 +7,10 @@
 
 #pragma once
 
+#include <lwiot/sharedpointer.h>
+
 #include <lwiot/kernel/lock.h>
+#include <lwiot/stl/referencewrapper.h>
 
 namespace lwiot
 {
@@ -21,6 +24,14 @@ namespace lwiot
 			this->lock();
 		}
 
+		explicit UniqueLock(SharedPointer<Lock>& ptr) : UniqueLock(ptr.get())
+		{
+		}
+
+		explicit UniqueLock(LockType* lock) : UniqueLock(*lock)
+		{
+		}
+
 		~UniqueLock()
 		{
 			if(this->_locked) {
@@ -32,18 +43,18 @@ namespace lwiot
 
 		void lock() const
 		{
-			this->_lock.lock();
+			this->_lock->lock();
 			this->_locked = true;
 		}
 
 		void unlock() const
 		{
 			this->_locked = false;
-			this->_lock.unlock();
+			this->_lock->unlock();
 		}
 
 	private:
-		LockType & _lock;
+		stl::ReferenceWrapper<LockType> _lock;
 		mutable bool _locked;
 	};
 }
