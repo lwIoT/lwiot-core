@@ -50,6 +50,16 @@ namespace lwiot
 		virtual void move(I2CAlgorithm& other);
 		void copy(const I2CAlgorithm& other) override;
 
+		virtual void start(uint16_t sla, bool repeated) = 0;
+		virtual void stop() = 0;
+		virtual void reset() = 0;
+
+		virtual void write(const uint8_t *byte, bool ack) = 0;
+		virtual void write(const uint8_t *bytes, size_t length, bool ack) = 0;
+		virtual void read(uint8_t* byte, bool ack) = 0;
+		virtual void read(uint8_t* bytes, size_t length, bool ack) = 0;
+		virtual int flush() const = 0;
+
 	private:
 		static constexpr int MaxRiseTime = 20;
 

@@ -9,7 +9,6 @@
 #include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/scopedlock.h>
 #include <lwiot/log.h>
 #include <lwiot/function.h>
 
@@ -18,8 +17,8 @@
 #include <lwiot/io/i2calgorithm.h>
 #include <lwiot/io/i2cmessage.h>
 #include <lwiot/io/hardwarei2calgorithm.h>
-#include <lwiot/io/i2chal.h>
 
+#include <lwiot/kernel/uniquelock.h>
 #include <lwiot/stl/move.h>
 
 namespace lwiot
@@ -35,7 +34,6 @@ namespace lwiot
 		this->_sda << true;
 
 		this->test();
-		i2c_setup(sclpin, sdapin, frequency);
 	}
 
 	HardwareI2CAlgorithm::HardwareI2CAlgorithm(const GpioPin &scl, const GpioPin &sda) :
@@ -62,11 +60,16 @@ namespace lwiot
 
 	HardwareI2CAlgorithm::~HardwareI2CAlgorithm()
 	{
-		ScopedLock lock(this->_lock);
+		if(this->_lock.get() == nullptr)
+			return;
 
-		i2c_disable();
-		this->_scl.input();
-		this->_sda.input();
+		UniqueLock<Lock> lock(this->_lock);
+
+		if(this->_scl.pin() >= 0)
+			this->_scl.input();
+
+		if(this->_sda.pin() >= 0)
+			this->_sda.input();
 	}
 
 	HardwareI2CAlgorithm& HardwareI2CAlgorithm::operator=(const lwiot::HardwareI2CAlgorithm & rhs) noexcept
@@ -87,18 +90,29 @@ namespace lwiot
 
 		tocopy._lock->lock();
 		I2CAlgorithm::copy(other);
+		GpioPin scl_tmp = this->_scl;
+		GpioPin sda_tmp = this->_sda;
 
 		this->_sda = stl::move(tocopy._sda);
 		this->_scl = stl::move(tocopy._scl);
 		this->_lock = stl::move(tocopy._lock);
 		this->log = stl::move(tocopy.log);
 		this->_lock->unlock();
+
+		if(scl_tmp.pin() != this->_scl.pin())
+			scl_tmp.input();
+
+		if(sda_tmp.pin() != this->_sda.pin())
+			sda_tmp.input();
+
+		tocopy._scl = -1;
+		tocopy._sda = -1;
 	}
 
 	void HardwareI2CAlgorithm::copy(const I2CAlgorithm &other)
 	{
 		const HardwareI2CAlgorithm& tocopy = static_cast<const HardwareI2CAlgorithm&>(other);
-		ScopedLock lock(tocopy._lock.get());
+		UniqueLock<Lock> lock(tocopy._lock.get());
 
 		I2CAlgorithm::copy(other);
 		this->_scl = tocopy._scl;
@@ -109,10 +123,8 @@ namespace lwiot
 
 	void HardwareI2CAlgorithm::setFrequency(const uint32_t &freq)
 	{
-		ScopedLock(this->_lock);
-
+		UniqueLock<Lock>(this->_lock);
 		I2CAlgorithm::setFrequency(freq);
-		i2c_set_frequency(freq);
 	}
 
 	ssize_t HardwareI2CAlgorithm::transfer(I2CMessage& msg)
@@ -121,7 +133,7 @@ namespace lwiot
 		uint16_t addr;
 		bool success;
 		ssize_t rv;
-		ScopedLock lock(this->_lock);
+		UniqueLock<Lock> lock(this->_lock);
 
 		if(unlikely(!this->isBusy())) {
 			print_dbg("I2C bus busy\n");
@@ -134,21 +146,21 @@ namespace lwiot
 		addr <<= 1;
 		addr |= msg.isRead();
 
-		i2c_start(addr, false);
+		this->start(addr, false);
 
 		if(msg.isRead()) {
 			auto count = msg.count();
 
 			if(count > 1)
-				i2c_read_buffer(data, count - 1, true);
+				this->read(data, count - 1, true);
 
-			i2c_read_byte(&data[count - 1], false);
+			this->read(&data[count - 1], false);
 			msg.setIndex(count);
 		} else {
-			i2c_write_buffer(data, msg.count(), true);
+			this->write(data, msg.count(), true);
 		}
 
-		i2c_stop();
+		this->stop();
 
 		success = this->transfer();
 		rv = msg.count();
@@ -158,7 +170,7 @@ namespace lwiot
 			rv = -EINVALID;
 		}
 
-		i2c_reset();
+		this->reset();
 		return rv;
 	}
 
@@ -167,7 +179,7 @@ namespace lwiot
 		bool success;
 		ssize_t total = 0L;
 		bool started = false;
-		ScopedLock lock(this->_lock);
+		UniqueLock<Lock> lock(this->_lock);
 
 		if(unlikely(!this->isBusy())) {
 			print_dbg("I2C bus busy\n");
@@ -180,19 +192,19 @@ namespace lwiot
 			auto data = msg.data();
 
 			address = address << 1U | msg.isRead();
-			i2c_start(address, started);
+			this->start(address, started);
 			started = true;
 
 			if(msg.isRead()) {
 				auto count = msg.count();
 
 				if(count > 1)
-					i2c_read_buffer(data, count - 1, true);
+					this->read(data, count - 1, true);
 
-				i2c_read_byte(&data[count - 1], false);
+				this->read(&data[count - 1], false);
 				msg.setIndex(count);
 			} else {
-				i2c_write_buffer(data, msg.count(), true);
+				this->write(data, msg.count(), true);
 			}
 
 			total += msg.count();
@@ -200,11 +212,11 @@ namespace lwiot
 			if(msg.repstart())
 				continue;
 
-			i2c_stop();
+			this->stop();
 		}
 
 		success = this->transfer();
-		i2c_reset();
+		this->reset();
 
 		if(unlikely(!success)) {
 			this->log << "I2C hardware error!" << Logger::newline;
@@ -222,7 +234,7 @@ namespace lwiot
 		int retries = 0;
 
 		do {
-			err = i2c_write_buffers();
+			err = this->flush();
 
 			if(unlikely(err != -EOK)) {
 				lwiot_sleep(this->delay());
@@ -235,7 +247,7 @@ namespace lwiot
 
 	bool HardwareI2CAlgorithm::busy()
 	{
-		ScopedLock lock(this->_lock);
+		UniqueLock<Lock> lock(this->_lock);
 		return this->isBusy();
 	}
 
@@ -260,7 +272,7 @@ namespace lwiot
 	bool HardwareI2CAlgorithm::test()
 	{
 		bool sclvalue, sdavalue;
-		ScopedLock lock(this->_lock);
+		UniqueLock<Lock> lock(this->_lock);
 
 		sdavalue = this->_sda;
 		sclvalue = this->_scl;
