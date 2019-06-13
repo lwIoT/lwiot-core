@@ -45,7 +45,7 @@ static inline uint32_t to_netorderl(uint32_t ip)
 #endif
 }
 
-static inline uint32_t to_netorders(uint16_t s)
+static inline uint16_t to_netorders(uint16_t s)
 {
 #ifdef HAVE_BIG_ENDIAN
 	return s;
