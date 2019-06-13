@@ -18,8 +18,9 @@
 #include <lwiot/kernel/thread.h>
 
 #include <lwiot/io/i2cbus.h>
-#include <lwiot/io/hardwarei2calgorithm.h>
 #include <lwiot/io/gpiopin.h>
+
+#include <lwiot/hosted/hardwarei2calgorithm.h>
 
 #include <lwiot/log.h>
 #include <lwiot/test.h>
@@ -85,13 +86,14 @@ protected:
 	void run() override
 	{
 		lwiot::GpioPin scl(1), sda(2);
-		lwiot::HardwareI2CAlgorithm *algo = new lwiot::HardwareI2CAlgorithm(scl, sda, 400000);
+		lwiot::hosted::HardwareI2CAlgorithm *algo = new lwiot::hosted::HardwareI2CAlgorithm(scl, sda, 400000);
 		lwiot::I2CBus bus(algo);
 
 		print_dbg("---------- Starting MOVE test ----------\n");
-		lwiot::HardwareI2CAlgorithm a1(5, 6, 100000);
-		lwiot::HardwareI2CAlgorithm a2(3, 4, 100000);
+		lwiot::hosted::HardwareI2CAlgorithm a1(5, 6, 100000);
+		lwiot::hosted::HardwareI2CAlgorithm a2(3, 4, 100000);
 		a1 = lwiot::stl::move(a2);
+		a1.setFrequency(400);
 		print_dbg("---------- End of MOVE test ----------\n");
 
 		print_dbg("---------- Starting I2C test... ----------\n");
