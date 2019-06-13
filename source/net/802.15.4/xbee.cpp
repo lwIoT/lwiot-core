@@ -19,7 +19,7 @@
 
 namespace lwiot
 {
-	XBee::XBee() : _response(XBeeResponse()), _serial(nullptr)
+	XBee::XBee() : _response(XBeeResponse())
 	{
 		_pos = 0;
 		_escape = false;
@@ -28,6 +28,42 @@ namespace lwiot
 
 		_response.init();
 		_response.setFrameData(_responseFrameData);
+	}
+
+	XBee::XBee(const lwiot::XBee &xb)
+	{
+		this->copy(xb);
+	}
+
+	XBee::XBee(const lwiot::XBee &&xb) noexcept
+	{
+		this->copy(xb);
+	}
+
+	XBee& XBee::operator=(const lwiot::XBee &xb)
+	{
+		this->copy(xb);
+		return *this;
+	}
+
+	XBee& XBee::operator=(const lwiot::XBee &&xb) noexcept
+	{
+		this->copy(xb);
+		return *this;
+	}
+
+	void XBee::copy(const XBee& rhs)
+	{
+		this->_checksumTotal = rhs._checksumTotal;
+		this->_escape = rhs._escape;
+		this->_nextFrameId = rhs._nextFrameId;
+		this->_pos = rhs._pos;
+		this->_checksumTotal = rhs._checksumTotal;
+		this->_response = rhs._response;
+		this->_nextFrameId = rhs._nextFrameId;
+		this->_serial = rhs._serial;
+
+		memcpy(this->_responseFrameData, rhs._responseFrameData, MAX_FRAME_DATA_SIZE);
 	}
 
 	void XBee::resetResponse()
@@ -40,8 +76,6 @@ namespace lwiot
 
 	void XBee::send(XBeeRequest &request)
 	{
-		// the new new deal
-
 		sendByte(START_BYTE, false);
 
 		// send length
@@ -101,7 +135,7 @@ namespace lwiot
 
 	void XBee::setSerial(Stream &serial)
 	{
-		_serial = &serial;
+		this->_serial = serial;
 	}
 
 	bool XBee::available()

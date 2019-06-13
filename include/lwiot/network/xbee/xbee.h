@@ -19,11 +19,19 @@
 #include <lwiot/network/xbee/xbeeresponse.h>
 #include <lwiot/network/xbee/xbeerequest.h>
 
+#include <lwiot/stl/referencewrapper.h>
+
 namespace lwiot
 {
 	class XBee {
 	public:
 		explicit XBee();
+		virtual ~XBee() = default;
+		explicit XBee(const XBee& xb);
+		explicit XBee(const XBee&& xb) noexcept ;
+
+		XBee& operator=(const XBee& xb);
+		XBee& operator=(const XBee&& xb) noexcept ;
 
 		void readPacket();
 		bool readPacket(int timeout);
@@ -35,6 +43,9 @@ namespace lwiot
 		uint8_t getNextFrameId();
 		void setSerial(Stream &serial);
 
+	protected:
+		virtual void copy(const XBee& rhs);
+
 	private:
 		XBeeResponse _response;
 		bool _escape;
@@ -44,7 +55,7 @@ namespace lwiot
 		uint8_t _nextFrameId;
 		uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
 
-		Stream* _serial;
+		stl::ReferenceWrapper<Stream> _serial;
 
 		bool available();
 		uint8_t read();
