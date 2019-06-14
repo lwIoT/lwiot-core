@@ -45,10 +45,11 @@ namespace lwiot
 		uint8_t getNextFrameId();
 		void setSerial(Stream &serial);
 
-		void setNetworkID(uint16_t netid);
-		void setChannel(uint16_t channel);
 		void apply();
 		uint64_t getNetworkAddress();
+		void setNetworkID(uint16_t netid);
+		void setChannel(uint16_t channel);
+		void setZigbeePro(bool enabled);
 
 	protected:
 		virtual void copy(const XBee& rhs);

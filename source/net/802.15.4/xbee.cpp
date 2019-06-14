@@ -265,6 +265,15 @@ namespace lwiot
 		}
 	}
 
+	void XBee::setZigbeePro(bool enabled)
+	{
+		uint8_t value;
+		uint8_t cmd[] = {'Z', 'S'};
+
+		value = enabled ? 2 : 0;
+		this->sendCommand(cmd, 100, &value, sizeof(value));
+	}
+
 	bool XBee::readPacket(int timeout)
 	{
 		time_t tick;

@@ -44,12 +44,8 @@ namespace lwiot
 
 	void AsyncXbee::init()
 	{
-		uint8_t value = 0x2; /* ZIGBEE-PRO */
-		uint8_t cmd[] = {'Z', 'S'};
-
+		this->_xb.setZigbeePro(true);
 		this->_running = true;
-
-		this->_xb.sendCommand(cmd, 100, &value, sizeof(value));
 		this->start();
 	}
 
@@ -81,6 +77,24 @@ namespace lwiot
 				this->_handler(rx);
 			}
 		}
+	}
+
+	void AsyncXbee::setNetworkID(uint16_t netid)
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.setNetworkID(netid);
+	}
+
+	void AsyncXbee::setChannel(uint16_t channel)
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.setChannel(channel);
+	}
+
+	uint64_t AsyncXbee::getNetworkAddress()
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		return this->_xb.getNetworkAddress();
 	}
 
 	void AsyncXbee::setDevice(lwiot::XBee &xb)

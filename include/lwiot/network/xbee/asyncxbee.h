@@ -53,6 +53,9 @@ namespace lwiot
 			this->_handler = stl::forward<Func>(handler);
 		}
 
+		uint64_t getNetworkAddress();
+		void setNetworkID(uint16_t netid);
+		void setChannel(uint16_t channel);
 
 	protected:
 		void run() override;
