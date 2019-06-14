@@ -28,6 +28,11 @@ SET(SOURCES
 
 	kernel/lock.cpp
 
+	net/802.15.4/xbee.cpp
+	net/802.15.4/xbeeresponse.cpp
+	net/802.15.4/xbeerequest.cpp
+	net/802.15.4/asyncxbee.cpp
+
     util/log.c
     util/bytebuffer.cpp
     util/datetime.cpp
