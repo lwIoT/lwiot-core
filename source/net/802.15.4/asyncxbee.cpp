@@ -16,7 +16,7 @@
 
 namespace lwiot
 {
-	AsyncXbee::AsyncXbee() : _lock(false), _running(false)
+	AsyncXbee::AsyncXbee() : Thread("axbee"), _lock(false), _running(false)
 	{
 	}
 
@@ -33,12 +33,23 @@ namespace lwiot
 	void AsyncXbee::begin(lwiot::AsyncXbee::ResponseHandler &&handler)
 	{
 		this->_handler = stl::move(handler);
-		this->start();
+		this->init();
 	}
 
 	void AsyncXbee::begin(const lwiot::AsyncXbee::ResponseHandler &handler)
 	{
 		this->_handler = handler;
+		this->init();
+	}
+
+	void AsyncXbee::init()
+	{
+		uint8_t value = 0x2; /* ZIGBEE-PRO */
+		uint8_t cmd[] = {'Z', 'S'};
+
+		this->_running = true;
+
+		this->sendCommand(cmd, 100, &value, sizeof(value));
 		this->start();
 	}
 
@@ -57,6 +68,7 @@ namespace lwiot
 	void AsyncXbee::run()
 	{
 		while(true) {
+			Thread::sleep(100);
 			UniqueLock<Lock> lock(this->_lock);
 
 			if(!this->_running || !this->_handler)
@@ -81,12 +93,18 @@ namespace lwiot
 		return this->_xb;
 	}
 
+	void AsyncXbee::apply()
+	{
+		uint8_t cmd[] = {'A', 'C'};
+		this->sendCommand(cmd, 400);
+	}
+
 	void AsyncXbee::setNetworkID(uint16_t netid)
 	{
 		uint16_t id = to_netorders(netid);
 		uint8_t cmd[] = {'I', 'D'};
 
-		this->sendCommand(cmd, (uint8_t*) &id, sizeof(id));
+		this->sendCommand(cmd, 10, (uint8_t*) &id, sizeof(id));
 	}
 
 	uint64_t AsyncXbee::getNetworkAddress()
@@ -97,8 +115,8 @@ namespace lwiot
 		uint8_t* buf;
 		uint64_t addr;
 
-		auto sl_value = stl::move(this->sendCommand(sl));
-		auto sh_value = stl::move(this->sendCommand(sh));
+		auto sl_value = stl::move(this->sendCommand(sl, 10));
+		auto sh_value = stl::move(this->sendCommand(sh, 10));
 
 		if(sl_value.index() != 4 || sh_value.index() != 4)
 			return 0ULL;
@@ -126,7 +144,7 @@ namespace lwiot
 		return addr;
 	}
 
-	ByteBuffer AsyncXbee::sendCommand(const uint8_t *cmd, const uint8_t *value, size_t length)
+	ByteBuffer AsyncXbee::sendCommand(const uint8_t *cmd, int tmo, const uint8_t *value, size_t length)
 	{
 		AtCommandRequest rq;
 		AtCommandResponse response;
@@ -142,8 +160,8 @@ namespace lwiot
 		UniqueLock<Lock> lock(this->_lock);
 
 		this->_xb.send(rq);
-		Thread::sleep(10);
-		this->_xb.readPacket();
+		Thread::sleep(tmo);
+		this->_xb.readPacketUntilAvailable();
 
 		if(this->_xb.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			this->_xb.getResponse().getAtCommandResponse(response);
@@ -171,9 +189,11 @@ namespace lwiot
 		return stl::move(buffer);
 	}
 
-	void AsyncXbee::setChannel(uint8_t channel)
+	void AsyncXbee::setChannel(uint16_t channel)
 	{
-		uint8_t cmd[] = {'C', 'H'};
-		this->sendCommand(cmd, &channel, sizeof(channel));
+		uint8_t cmd[] = {'S', 'C'};
+
+		channel = to_netorders(channel);
+		this->sendCommand(cmd, 10, (uint8_t*) &channel, sizeof(channel));
 	}
 }

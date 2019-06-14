@@ -32,7 +32,7 @@ namespace lwiot
 {
 	class AsyncXbee : public Thread {
 	public:
-		typedef Function<void(const XBeeResponse&)> ResponseHandler;
+		typedef Function<void(XBeeResponse&)> ResponseHandler;
 
 		explicit AsyncXbee();
 		explicit AsyncXbee(XBee& xb);
@@ -54,11 +54,13 @@ namespace lwiot
 		}
 
 		void setNetworkID(uint16_t netid);
-		void setChannel(uint8_t channel);
+		void setChannel(uint16_t channel);
+		void apply();
 		uint64_t getNetworkAddress();
 
 	protected:
 		void run() override;
+		void init();
 
 	private:
 		mutable Lock _lock;
@@ -67,6 +69,6 @@ namespace lwiot
 		XBee _xb;
 
 		/* Methods */
-		ByteBuffer sendCommand(const uint8_t* cmd, const uint8_t* value = nullptr, size_t length = 0U);
+		ByteBuffer sendCommand(const uint8_t* cmd, int tmo, const uint8_t* value = nullptr, size_t length = 0U);
 	};
 }
