@@ -26,4 +26,9 @@ namespace lwiot
 	{
 		this->_state = state;
 	}
+
+	void System::delay(int ms)
+	{
+		lwiot_sleep(ms);
+	}
 }

@@ -53,10 +53,6 @@ namespace lwiot
 			this->_handler = stl::forward<Func>(handler);
 		}
 
-		void setNetworkID(uint16_t netid);
-		void setChannel(uint16_t channel);
-		void apply();
-		uint64_t getNetworkAddress();
 
 	protected:
 		void run() override;
@@ -67,8 +63,5 @@ namespace lwiot
 		ResponseHandler _handler;
 		bool _running;
 		XBee _xb;
-
-		/* Methods */
-		ByteBuffer sendCommand(const uint8_t* cmd, int tmo, const uint8_t* value = nullptr, size_t length = 0U);
 	};
 }

@@ -23,6 +23,8 @@
 
 namespace lwiot
 {
+	class AsyncXbee;
+
 	class XBee {
 	public:
 		explicit XBee();
@@ -43,10 +45,17 @@ namespace lwiot
 		uint8_t getNextFrameId();
 		void setSerial(Stream &serial);
 
+		void setNetworkID(uint16_t netid);
+		void setChannel(uint16_t channel);
+		void apply();
+		uint64_t getNetworkAddress();
+
 	protected:
 		virtual void copy(const XBee& rhs);
 
 	private:
+		friend class AsyncXbee;
+
 		XBeeResponse _response;
 		bool _escape;
 		uint8_t _pos;
@@ -62,5 +71,6 @@ namespace lwiot
 		void write(uint8_t val);
 		void sendByte(uint8_t b, bool escape);
 		void resetResponse();
+		ByteBuffer sendCommand(const uint8_t* cmd, int tmo, const uint8_t* value = nullptr, size_t length = 0U);
 	};
 }

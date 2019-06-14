@@ -27,6 +27,7 @@ namespace lwiot
 		virtual void restart() const = 0;
 		const SleepState& sleepState() const;
 		void setSleepSate(const SleepState& state);
+		static void delay(int ms);
 
 	private:
 		SleepState _state;

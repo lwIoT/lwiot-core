@@ -10,12 +10,17 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
+#include <lwiot/system.h>
 
 #include <lwiot/network/xbee/constants.h>
 #include <lwiot/network/xbee/xbeeaddress.h>
 #include <lwiot/network/xbee/xbeeresponse.h>
 #include <lwiot/network/xbee/xbeerequest.h>
 #include <lwiot/network/xbee/xbee.h>
+
+#include <lwiot/stl/move.h>
+#include <lwiot/kernel/uniquelock.h>
+#include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {
@@ -285,5 +290,108 @@ namespace lwiot
 		}
 
 		return false;
+	}
+
+
+	void XBee::apply()
+	{
+		uint8_t cmd[] = {'A', 'C'};
+		this->sendCommand(cmd, 400);
+	}
+
+	void XBee::setNetworkID(uint16_t netid)
+	{
+		uint16_t id = to_netorders(netid);
+		uint8_t cmd[] = {'I', 'D'};
+
+		this->sendCommand(cmd, 10, (uint8_t*) &id, sizeof(id));
+	}
+
+	uint64_t XBee::getNetworkAddress()
+	{
+		uint32_t lo, hi;
+		uint8_t sl[] = {'S', 'L'};
+		uint8_t sh[] = {'S', 'H'};
+		uint8_t* buf;
+		uint64_t addr;
+
+		auto sl_value = stl::move(this->sendCommand(sl, 10));
+		auto sh_value = stl::move(this->sendCommand(sh, 10));
+
+		if(sl_value.index() != 4 || sh_value.index() != 4)
+			return 0ULL;
+
+		lo = hi = 0U;
+		buf = (uint8_t*) &lo;
+
+		for(auto idx = 0; idx < sl_value.index(); idx++) {
+			buf[idx] = sl_value[idx];
+		}
+
+		buf = (uint8_t*) &hi;
+
+		for(auto idx = 0; idx < sh_value.index(); idx++) {
+			buf[idx] = sh_value[idx];
+		}
+
+		hi = to_netorderl(hi);
+		lo = to_netorderl(lo);
+
+		addr = lo;
+		addr |= ((uint64_t )hi) << 32;
+
+		print_dbg("64-bit network address: 0x%llX\n", addr);
+		return addr;
+	}
+
+	ByteBuffer XBee::sendCommand(const uint8_t *cmd, int tmo, const uint8_t *value, size_t length)
+	{
+		AtCommandRequest rq;
+		AtCommandResponse response;
+		ByteBuffer buffer(4, true);
+
+		rq.setCommand((uint8_t*)cmd);
+
+		if(length > 0) {
+			rq.setCommandValue((uint8_t*)value);
+			rq.setCommandValueLength(length);
+		}
+
+		this->send(rq);
+		System::delay(tmo);
+		this->readPacketUntilAvailable();
+
+		if(this->getResponse().getApiId() == AT_COMMAND_RESPONSE) {
+			this->getResponse().getAtCommandResponse(response);
+
+			if(response.isOk()) {
+				if(response.getValueLength() > 0)
+					buffer = ByteBuffer(response.getValueLength(), true);
+
+				print_dbg("AT command: %c%c - Value: 0x",
+				          response.getCommand()[0], response.getCommand()[1]);
+
+				for(auto idx = 0; idx < response.getValueLength(); idx++) {
+					auto value = response.getValue();
+
+					printf("%X", value[idx]);
+					buffer.write(value[idx]);
+				}
+
+				printf("\n");
+				buffer.setIndex(response.getValueLength());
+			}
+		}
+
+
+		return stl::move(buffer);
+	}
+
+	void XBee::setChannel(uint16_t channel)
+	{
+		uint8_t cmd[] = {'S', 'C'};
+
+		channel = to_netorders(channel);
+		this->sendCommand(cmd, 10, (uint8_t*) &channel, sizeof(channel));
 	}
 }
