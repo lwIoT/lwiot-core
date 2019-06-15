@@ -79,7 +79,7 @@ namespace lwiot
 		_response.reset();
 	}
 
-	void XBee::send(XBeeRequest &request)
+	void XBee::send(XBeeRequest &request) const
 	{
 		sendByte(START_BYTE, false);
 
@@ -112,7 +112,7 @@ namespace lwiot
 		sendByte(checksum, true);
 	}
 
-	void XBee::sendByte(uint8_t byte, bool escape)
+	void XBee::sendByte(uint8_t byte, bool escape) const
 	{
 		if(escape && (byte == START_BYTE || byte == ESCAPE || byte == XON || byte == XOFF)) {
 			write(ESCAPE);
@@ -153,7 +153,7 @@ namespace lwiot
 		return _serial->read();
 	}
 
-	void XBee::write(uint8_t val)
+	void XBee::write(uint8_t val) const
 	{
 		_serial->write(val);
 	}
@@ -316,7 +316,7 @@ namespace lwiot
 		this->sendCommand(cmd, 10, (uint8_t*) &id, sizeof(id));
 	}
 
-	uint64_t XBee::getNetworkAddress()
+	uint64_t XBee::getHardwareAddress()
 	{
 		uint32_t lo, hi;
 		uint8_t sl[] = {'S', 'L'};
@@ -394,6 +394,19 @@ namespace lwiot
 
 
 		return stl::move(buffer);
+	}
+
+	uint16_t XBee::getNetworkAddress()
+	{
+		uint8_t cmd[] = {'M', 'Y'};
+		uint16_t rv;
+
+		auto value = this->sendCommand(cmd, 10);
+		rv = value[1];
+		rv <<= 8;
+		rv |= value[0];
+
+		return rv;
 	}
 
 	void XBee::setChannel(uint16_t channel)

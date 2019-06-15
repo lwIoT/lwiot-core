@@ -27,6 +27,13 @@ namespace lwiot
 
 	class XBee {
 	public:
+		enum class SleepMode {
+			NoSleep,
+			PinHibernate,
+			CyclicSleep,
+			CyclicSleepPinWakeUp
+		};
+
 		explicit XBee();
 		virtual ~XBee() = default;
 		explicit XBee(const XBee& xb);
@@ -41,15 +48,16 @@ namespace lwiot
 		void begin(Stream &serial);
 		void getResponse(XBeeResponse &response);
 		XBeeResponse& getResponse();
-		void send(XBeeRequest &request);
+		void send(XBeeRequest &request) const;
 		uint8_t getNextFrameId();
 		void setSerial(Stream &serial);
 
 		void apply();
-		uint64_t getNetworkAddress();
+		uint64_t getHardwareAddress();
 		void setNetworkID(uint16_t netid);
 		void setChannel(uint16_t channel);
 		void setZigbeePro(bool enabled);
+		uint16_t getNetworkAddress();
 
 	protected:
 		virtual void copy(const XBee& rhs);
@@ -69,8 +77,8 @@ namespace lwiot
 
 		bool available();
 		uint8_t read();
-		void write(uint8_t val);
-		void sendByte(uint8_t b, bool escape);
+		void write(uint8_t val) const;
+		void sendByte(uint8_t b, bool escape) const;
 		void resetResponse();
 		ByteBuffer sendCommand(const uint8_t* cmd, int tmo, const uint8_t* value = nullptr, size_t length = 0U);
 	};
