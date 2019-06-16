@@ -27,11 +27,17 @@ namespace lwiot
 
 	class XBee {
 	public:
-		enum class SleepMode {
-			NoSleep,
-			PinHibernate,
-			CyclicSleep,
-			CyclicSleepPinWakeUp
+		enum SleepMode {
+			NoSleep = 0,
+			PinHibernate = 1,
+			CyclicSleep = 4,
+			CyclicSleepPinWakeUp = 5
+		};
+
+		enum EncryptionOptions {
+			None = 0,
+			TrustCenter = 2,
+			UseTrustCenter = 8
 		};
 
 		explicit XBee();
@@ -58,6 +64,13 @@ namespace lwiot
 		void setChannel(uint16_t channel);
 		void setZigbeePro(bool enabled);
 		uint16_t getNetworkAddress();
+
+		void enableEncryption(bool enabled);
+		void setEncryptionOptions(EncryptionOptions opts);
+		void setLinkKey(const ByteBuffer& key);
+		void setNetworkKey(const ByteBuffer& key);
+
+		void setSleepMode(SleepMode sleepmode);
 
 	protected:
 		virtual void copy(const XBee& rhs);

@@ -79,22 +79,58 @@ namespace lwiot
 		}
 	}
 
-	void AsyncXbee::setNetworkID(uint16_t netid)
+	void AsyncXbee::setNetworkID(uint16_t netid) const
 	{
 		UniqueLock<Lock> lock(this->_lock);
 		this->_xb.setNetworkID(netid);
 	}
 
-	void AsyncXbee::setChannel(uint16_t channel)
+	void AsyncXbee::setChannel(uint16_t channel) const
 	{
 		UniqueLock<Lock> lock(this->_lock);
 		this->_xb.setChannel(channel);
 	}
 
-	uint64_t AsyncXbee::getNetworkAddress()
+	uint64_t AsyncXbee::getHardwareAddress() const
 	{
 		UniqueLock<Lock> lock(this->_lock);
 		return this->_xb.getNetworkAddress();
+	}
+
+	void AsyncXbee::setZigbeePro(bool enabled) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.setZigbeePro(enabled);
+	}
+
+	uint16_t AsyncXbee::getNetworkAddress() const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		return this->_xb.getNetworkAddress();
+	}
+
+	void AsyncXbee::enableEncryption(bool enabled) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.enableEncryption(enabled);
+	}
+
+	void AsyncXbee::setNetworkKey(const lwiot::ByteBuffer &key) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.setNetworkKey(key);
+	}
+
+	void AsyncXbee::setLinkKey(const lwiot::ByteBuffer &key) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.setLinkKey(key);
+	}
+
+	void AsyncXbee::setEncryptionOptions(lwiot::XBee::EncryptionOptions opts) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.getNetworkAddress();
 	}
 
 	void AsyncXbee::setDevice(lwiot::XBee &xb)

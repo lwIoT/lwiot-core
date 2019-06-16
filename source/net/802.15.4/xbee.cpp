@@ -402,9 +402,7 @@ namespace lwiot
 		uint16_t rv;
 
 		auto value = this->sendCommand(cmd, 10);
-		rv = value[1];
-		rv <<= 8;
-		rv |= value[0];
+		rv = (value[0] << 8) | value[1];
 
 		return rv;
 	}
@@ -415,5 +413,65 @@ namespace lwiot
 
 		channel = to_netorders(channel);
 		this->sendCommand(cmd, 10, (uint8_t*) &channel, sizeof(channel));
+	}
+
+	void XBee::setSleepMode(lwiot::XBee::SleepMode sleepmode)
+	{
+		uint8_t cmd[] = {'S', 'M'};
+		uint8_t value = sleepmode;
+
+		this->sendCommand(cmd, 100, &value, sizeof(value));
+	}
+
+	void XBee::enableEncryption(bool enabled)
+	{
+		uint8_t cmd[] = {'E', 'E'};
+		uint8_t enable = enabled;
+
+		this->sendCommand(cmd, 100, &enable, sizeof(enable));
+	}
+
+	void XBee::setEncryptionOptions(lwiot::XBee::EncryptionOptions opts)
+	{
+		uint8_t options = opts;
+		uint8_t cmd[] = {'E', 'O'};
+
+		this->sendCommand(cmd, 100, &options, sizeof(options));
+	}
+
+	void XBee::setNetworkKey(const lwiot::ByteBuffer &key)
+	{
+		uint8_t* data;
+		uint8_t null = 0;
+		uint8_t cmd[] = {'N', 'K'};
+		size_t length;
+
+		if(key.index() == 0) {
+			data = &null;
+			length = sizeof(null);
+		} else {
+			data = key.data();
+			length = key.index();
+		}
+
+		this->sendCommand(cmd, 100, data, length);
+	}
+
+	void XBee::setLinkKey(const lwiot::ByteBuffer &key)
+	{
+		uint8_t* data;
+		uint8_t null = 0;
+		uint8_t cmd[] = {'K', 'Y'};
+		size_t length;
+
+		if(key.index() == 0) {
+			data = &null;
+			length = sizeof(null);
+		} else {
+			data = key.data();
+			length = key.index();
+		}
+
+		this->sendCommand(cmd, 100, data, length);
 	}
 }

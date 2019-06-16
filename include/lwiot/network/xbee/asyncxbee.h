@@ -46,6 +46,11 @@ namespace lwiot
 		void setDevice(XBee& xb);
 		XBee& getDevice();
 
+		void send(XBeeRequest& request) const;
+
+		template <typename Func>
+		void send(XBeeRequest& rq, Func&& callback) const;
+
 		template <typename Func>
 		void setHandler(Func&& handler)
 		{
@@ -53,9 +58,17 @@ namespace lwiot
 			this->_handler = stl::forward<Func>(handler);
 		}
 
-		uint64_t getNetworkAddress();
-		void setNetworkID(uint16_t netid);
-		void setChannel(uint16_t channel);
+		uint64_t getHardwareAddress() const;
+		uint16_t getNetworkAddress() const;
+
+		void setNetworkID(uint16_t netid) const;
+		void setChannel(uint16_t channel) const;
+		void setZigbeePro(bool enabled) const;
+
+		void enableEncryption(bool enabled) const;
+		void setEncryptionOptions(XBee::EncryptionOptions opts) const;
+		void setLinkKey(const ByteBuffer& key) const;
+		void setNetworkKey(const ByteBuffer& key) const;
 
 	protected:
 		void run() override;
@@ -65,6 +78,6 @@ namespace lwiot
 		mutable Lock _lock;
 		ResponseHandler _handler;
 		bool _running;
-		XBee _xb;
+		mutable XBee _xb;
 	};
 }
