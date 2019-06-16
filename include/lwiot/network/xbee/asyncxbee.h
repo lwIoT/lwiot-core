@@ -77,6 +77,8 @@ namespace lwiot
 		void setLinkKey(const ByteBuffer& key) const;
 		void setNetworkKey(const ByteBuffer& key) const;
 
+		void setSleepMode(XBee::SleepMode mode) const;
+
 	protected:
 		void run() override;
 		void init();

@@ -180,4 +180,10 @@ namespace lwiot
 		UniqueLock<Lock> lock(this->_lock);
 		this->_xb.send(request);
 	}
+
+	void AsyncXbee::setSleepMode(lwiot::XBee::SleepMode mode) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.setSleepMode(mode);
+	}
 }
