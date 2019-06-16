@@ -27,7 +27,7 @@
 
 // This value is determined by the largest packet size (100 byte payload + 64-bit address + option byte and rssi byte)
 // of a series 1 radio
-#define MAX_FRAME_DATA_SIZE 110
+#define MAX_FRAME_DATA_SIZE 255
 
 #define BROADCAST_ADDRESS 0xffff
 #define ZB_BROADCAST_ADDRESS 0xfffe
