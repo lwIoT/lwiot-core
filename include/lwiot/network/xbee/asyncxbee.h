@@ -46,17 +46,17 @@ namespace lwiot
 		void setDevice(XBee& xb);
 		XBee& getDevice();
 
-		void send(XBeeRequest& request) const;
+		bool send(XBeeRequest& request) const;
 
 		template <typename Func>
 		void send(XBeeRequest& rq, Func&& callback) const
 		{
-			this->send(rq);
-			callback();
+			auto success = this->send(rq);
+			callback(success);
 		}
 
-		void transmit(const stl::String& data, uint16_t addr) const;
-		void transmit(const stl::String& data, uint64_t addr) const;
+		bool transmit(const stl::String& data, uint16_t addr) const;
+		bool transmit(const stl::String& data, uint64_t addr) const;
 
 		template <typename Func>
 		void setHandler(Func&& handler)

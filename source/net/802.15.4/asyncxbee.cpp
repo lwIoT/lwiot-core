@@ -143,10 +143,11 @@ namespace lwiot
 		return this->_xb;
 	}
 
-	void AsyncXbee::transmit(const lwiot::String &data, uint16_t addr) const
+	bool AsyncXbee::transmit(const lwiot::String &data, uint16_t addr) const
 	{
 		UniqueLock<Lock> lock(this->_lock);
 		ZBExplicitTxRequest transmit;
+		ZBTxStatusResponse tx;
 
 		transmit.setAddress64(0xFFFFFFFFFFFFFFFF);
 		transmit.setAddress16(addr);
@@ -157,12 +158,17 @@ namespace lwiot
 		transmit.setClusterId(DEFAULT_CLUSTER_ID);
 
 		this->_xb.send(transmit);
+		this->_xb.readPacketUntilAvailable();
+
+		this->_xb.getResponse(tx);
+		return tx.isSuccess();
 	}
 
-	void AsyncXbee::transmit(const lwiot::String &data, uint64_t addr) const
+	bool AsyncXbee::transmit(const lwiot::String &data, uint64_t addr) const
 	{
 		UniqueLock<Lock> lock(this->_lock);
 		ZBExplicitTxRequest transmit;
+		ZBTxStatusResponse tx;
 
 		transmit.setAddress64(addr);
 		transmit.setAddress16(0xFFFE);
@@ -173,12 +179,22 @@ namespace lwiot
 		transmit.setClusterId(DEFAULT_CLUSTER_ID);
 
 		this->_xb.send(transmit);
+		this->_xb.readPacketUntilAvailable();
+		this->_xb.getResponse(tx);
+
+		return tx.isSuccess();
 	}
 
-	void AsyncXbee::send(lwiot::XBeeRequest &request) const
+	bool AsyncXbee::send(lwiot::XBeeRequest &request) const
 	{
 		UniqueLock<Lock> lock(this->_lock);
+		ZBTxStatusResponse zbtx;
+
 		this->_xb.send(request);
+		this->_xb.readPacketUntilAvailable();
+		this->_xb.getResponse(zbtx);
+
+		return zbtx.isSuccess();
 	}
 
 	void AsyncXbee::setSleepMode(lwiot::XBee::SleepMode mode) const
