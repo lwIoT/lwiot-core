@@ -20,6 +20,7 @@
 #include <lwiot/network/xbee/xbeerequest.h>
 
 #include <lwiot/stl/referencewrapper.h>
+#include <lwiot/io/gpiopin.h>
 
 namespace lwiot
 {
@@ -57,6 +58,7 @@ namespace lwiot
 		void send(XBeeRequest &request) const;
 		uint8_t getNextFrameId();
 		void setSerial(Stream &serial);
+		void setSleepPin(const GpioPin& pin);
 
 		void apply();
 		uint64_t getHardwareAddress();
@@ -71,6 +73,8 @@ namespace lwiot
 		void setNetworkKey(const ByteBuffer& key);
 
 		void setSleepMode(SleepMode sleepmode);
+		void sleep();
+		void wakeUp();
 
 	protected:
 		virtual void copy(const XBee& rhs);
@@ -87,6 +91,7 @@ namespace lwiot
 		uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
 
 		stl::ReferenceWrapper<Stream> _serial;
+		GpioPin _sleep_pin;
 
 		bool available();
 		uint8_t read();

@@ -57,6 +57,29 @@ namespace lwiot
 		return *this;
 	}
 
+	void XBee::setSleepPin(const lwiot::GpioPin &pin)
+	{
+		this->_sleep_pin = pin;
+		this->_sleep_pin.output();
+	}
+
+	void XBee::sleep()
+	{
+		/* Assert the sleep pin (high) */
+		if(this->_sleep_pin.pin() <= 0)
+			return;
+
+		this->_sleep_pin.write(true);
+	}
+
+	void XBee::wakeUp()
+	{
+		if(this->_sleep_pin.pin() <= 0)
+			return;
+
+		this->_sleep_pin.write(false);
+	}
+
 	void XBee::copy(const XBee& rhs)
 	{
 		this->_checksumTotal = rhs._checksumTotal;
@@ -83,20 +106,17 @@ namespace lwiot
 	{
 		sendByte(START_BYTE, false);
 
-		// send length
 		uint8_t msbLen = ((request.getFrameDataLength() + 2) >> 8) & 0xff;
 		uint8_t lsbLen = (request.getFrameDataLength() + 2) & 0xff;
 
 		sendByte(msbLen, true);
 		sendByte(lsbLen, true);
 
-		// api id
 		sendByte(request.getApiId(), true);
 		sendByte(request.getFrameId(), true);
 
 		uint8_t checksum = 0;
 
-		// compute checksum, start at api id
 		checksum += request.getApiId();
 		checksum += request.getFrameId();
 
@@ -105,10 +125,7 @@ namespace lwiot
 			checksum += request.getFrameData(i);
 		}
 
-		// perform 2s complement
 		checksum = 0xff - checksum;
-
-		// send checksum
 		sendByte(checksum, true);
 	}
 
@@ -238,10 +255,12 @@ namespace lwiot
 				break;
 
 			default:
+#if MAX_FRAME_DATA_SIZE < UINT8_MAX
 				if(_pos > MAX_FRAME_DATA_SIZE) {
 					_response.setErrorCode(PACKET_EXCEEDS_BYTE_ARRAY_LENGTH);
 					return;
 				}
+#endif
 
 				if(_pos == (_response.getPacketLength() + 3)) {
 					if((_checksumTotal & 0xff) == 0xff) {
@@ -391,7 +410,6 @@ namespace lwiot
 				buffer.setIndex(response.getValueLength());
 			}
 		}
-
 
 		return stl::move(buffer);
 	}
