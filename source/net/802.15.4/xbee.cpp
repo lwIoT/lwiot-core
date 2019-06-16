@@ -387,10 +387,12 @@ namespace lwiot
 
 		this->send(rq);
 		System::delay(tmo);
+
 		this->readPacketUntilAvailable();
 
 		if(this->getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			this->getResponse().getAtCommandResponse(response);
+			this->resetResponse();
 
 			if(response.isOk()) {
 				if(response.getValueLength() > 0)
@@ -419,7 +421,7 @@ namespace lwiot
 		uint8_t cmd[] = {'M', 'Y'};
 		uint16_t rv;
 
-		auto value = this->sendCommand(cmd, 10);
+		auto value = this->sendCommand(cmd, 100);
 		rv = (value[0] << 8) | value[1];
 
 		return rv;

@@ -88,5 +88,7 @@ namespace lwiot
 		ResponseHandler _handler;
 		bool _running;
 		mutable XBee _xb;
+
+		bool validateTxRequest() const;
 	};
 }
