@@ -142,4 +142,42 @@ namespace lwiot
 	{
 		return this->_xb;
 	}
+
+	void AsyncXbee::transmit(const lwiot::String &data, uint16_t addr) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		ZBExplicitTxRequest transmit;
+
+		transmit.setAddress64(0xFFFFFFFFFFFFFFFF);
+		transmit.setAddress16(addr);
+		transmit.setPayload((uint8_t *)data.c_str());
+		transmit.setPayloadLength(data.length());
+		transmit.setProfileId(DEFAULT_PROFILE_ID);
+		transmit.setFrameId(DEFAULT_FRAME_ID);
+		transmit.setClusterId(DEFAULT_CLUSTER_ID);
+
+		this->_xb.send(transmit);
+	}
+
+	void AsyncXbee::transmit(const lwiot::String &data, uint64_t addr) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		ZBExplicitTxRequest transmit;
+
+		transmit.setAddress64(addr);
+		transmit.setAddress16(0xFFFE);
+		transmit.setPayload((uint8_t *)data.c_str());
+		transmit.setPayloadLength(data.length());
+		transmit.setProfileId(DEFAULT_PROFILE_ID);
+		transmit.setFrameId(DEFAULT_FRAME_ID);
+		transmit.setClusterId(DEFAULT_CLUSTER_ID);
+
+		this->_xb.send(transmit);
+	}
+
+	void AsyncXbee::send(lwiot::XBeeRequest &request) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.send(request);
+	}
 }

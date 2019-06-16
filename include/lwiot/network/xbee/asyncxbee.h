@@ -49,7 +49,14 @@ namespace lwiot
 		void send(XBeeRequest& request) const;
 
 		template <typename Func>
-		void send(XBeeRequest& rq, Func&& callback) const;
+		void send(XBeeRequest& rq, Func&& callback) const
+		{
+			this->send(rq);
+			callback();
+		}
+
+		void transmit(const stl::String& data, uint16_t addr) const;
+		void transmit(const stl::String& data, uint64_t addr) const;
 
 		template <typename Func>
 		void setHandler(Func&& handler)
