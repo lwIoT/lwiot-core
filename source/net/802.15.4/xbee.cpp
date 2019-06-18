@@ -392,7 +392,6 @@ namespace lwiot
 
 		if(this->getResponse().getApiId() == AT_COMMAND_RESPONSE) {
 			this->getResponse().getAtCommandResponse(response);
-			this->resetResponse();
 
 			if(response.isOk()) {
 				if(response.getValueLength() > 0)
@@ -410,6 +409,7 @@ namespace lwiot
 
 				printf("\n");
 				buffer.setIndex(response.getValueLength());
+				this->resetResponse();
 			}
 		}
 

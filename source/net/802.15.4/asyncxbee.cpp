@@ -75,6 +75,7 @@ namespace lwiot
 
 				this->_xb.getResponse(rx);
 				this->_handler(rx);
+				this->_xb.resetResponse();
 			}
 		}
 	}
@@ -206,9 +207,8 @@ namespace lwiot
 	bool AsyncXbee::validateTxRequest() const
 	{
 		ZBTxStatusResponse zbtx;
-		UniqueLock<Lock> lock(this->_lock);
 
-		this->_xb.readPacketUntilAvailable();
+		this->_xb.readPacket(500);
 		this->_xb.getResponse(zbtx);
 		this->_xb.resetResponse();
 
