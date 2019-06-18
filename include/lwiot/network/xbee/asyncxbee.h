@@ -80,6 +80,8 @@ namespace lwiot
 		void setSleepMode(XBee::SleepMode mode) const;
 		uint16_t getParentAddress() const;
 		uint8_t getMaxPayloadSize() const;
+		void setMaxHops(uint8_t max) const;
+		void setNodeIdentifier(const stl::String& id) const;
 
 	protected:
 		void run() override;

@@ -72,6 +72,8 @@ namespace lwiot
 		void setEncryptionOptions(EncryptionOptions opts);
 		void setLinkKey(const ByteBuffer& key);
 		void setNetworkKey(const ByteBuffer& key);
+		void setNodeIdentifier(const stl::String& id);
+		void setMaxHops(uint8_t max);
 
 		uint8_t getMaxPayloadSize() const;
 

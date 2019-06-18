@@ -204,6 +204,18 @@ namespace lwiot
 		return this->_xb.getMaxPayloadSize();
 	}
 
+	void AsyncXbee::setNodeIdentifier(const lwiot::stl::String &id) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		return this->_xb.setNodeIdentifier(id);
+	}
+
+	void AsyncXbee::setMaxHops(uint8_t max) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		return this->_xb.setMaxHops(max);
+	}
+
 	bool AsyncXbee::validateTxRequest() const
 	{
 		ZBTxStatusResponse zbtx;

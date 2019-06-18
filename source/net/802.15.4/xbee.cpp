@@ -488,6 +488,23 @@ namespace lwiot
 		this->sendCommand(cmd, 100, data, length);
 	}
 
+	void XBee::setNodeIdentifier(const lwiot::stl::String &id)
+	{
+		uint8_t cmd[] = {'N', 'I'};
+
+		if(id.length() == 0) {
+			this->sendCommand(cmd, 100);
+		} else {
+			this->sendCommand(cmd, 100, (uint8_t *)id.c_str(), id.length());
+		}
+	}
+
+	void XBee::setMaxHops(uint8_t max)
+	{
+		uint8_t cmd[] = {'N', 'H'};
+		this->sendCommand(cmd, 1000, &max, sizeof(max));
+	}
+
 	void XBee::setLinkKey(const lwiot::ByteBuffer &key)
 	{
 		uint8_t* data;
