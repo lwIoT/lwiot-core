@@ -153,6 +153,7 @@ namespace lwiot
 	void XBee::begin(Stream &serial)
 	{
 		this->setSerial(serial);
+		this->fetchMaxPayloadSize();
 	}
 
 	void XBee::setSerial(Stream &serial)
@@ -194,7 +195,6 @@ namespace lwiot
 	void XBee::readPacketUntilAvailable()
 	{
 		while(!(getResponse().isAvailable() || getResponse().isError())) {
-			// read some more
 			readPacket();
 		}
 	}
@@ -459,6 +459,17 @@ namespace lwiot
 		this->sendCommand(cmd, 100, &options, sizeof(options));
 	}
 
+	uint16_t XBee::getParentAddress()
+	{
+		uint16_t rv;
+		uint8_t cmd[] = {'M', 'P'};
+
+		auto result = stl::move(this->sendCommand(cmd, 100));
+		rv = (result[0] << 8) | result[1];
+
+		return rv;
+	}
+
 	void XBee::setNetworkKey(const lwiot::ByteBuffer &key)
 	{
 		uint8_t* data;
@@ -493,5 +504,18 @@ namespace lwiot
 		}
 
 		this->sendCommand(cmd, 100, data, length);
+	}
+
+	uint8_t XBee::getMaxPayloadSize() const
+	{
+		return this->_max_payload;
+	}
+
+	void XBee::fetchMaxPayloadSize()
+	{
+		uint8_t cmd[] = {'N', 'P'};
+
+		auto result = stl::move(this->sendCommand(cmd, 100));
+		this->_max_payload = result.at(0);
 	}
 }

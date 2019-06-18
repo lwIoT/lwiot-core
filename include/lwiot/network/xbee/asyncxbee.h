@@ -78,6 +78,8 @@ namespace lwiot
 		void setNetworkKey(const ByteBuffer& key) const;
 
 		void setSleepMode(XBee::SleepMode mode) const;
+		uint16_t getParentAddress() const;
+		uint8_t getMaxPayloadSize() const;
 
 	protected:
 		void run() override;

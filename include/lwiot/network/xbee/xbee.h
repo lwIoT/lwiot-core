@@ -66,11 +66,14 @@ namespace lwiot
 		void setChannel(uint16_t channel);
 		void setZigbeePro(bool enabled);
 		uint16_t getNetworkAddress();
+		uint16_t getParentAddress();
 
 		void enableEncryption(bool enabled);
 		void setEncryptionOptions(EncryptionOptions opts);
 		void setLinkKey(const ByteBuffer& key);
 		void setNetworkKey(const ByteBuffer& key);
+
+		uint8_t getMaxPayloadSize() const;
 
 		void setSleepMode(SleepMode sleepmode);
 		void sleep();
@@ -89,6 +92,7 @@ namespace lwiot
 		uint8_t _checksumTotal;
 		uint8_t _nextFrameId;
 		uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
+		uint8_t _max_payload;
 
 		stl::ReferenceWrapper<Stream> _serial;
 		GpioPin _sleep_pin;
@@ -99,5 +103,6 @@ namespace lwiot
 		void sendByte(uint8_t b, bool escape) const;
 		void resetResponse();
 		ByteBuffer sendCommand(const uint8_t* cmd, int tmo, const uint8_t* value = nullptr, size_t length = 0U);
+		void fetchMaxPayloadSize();
 	};
 }

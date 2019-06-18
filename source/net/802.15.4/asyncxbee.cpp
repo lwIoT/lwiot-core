@@ -177,6 +177,12 @@ namespace lwiot
 		return this->validateTxRequest();
 	}
 
+	uint16_t AsyncXbee::getParentAddress() const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		return this->_xb.getParentAddress();
+	}
+
 	bool AsyncXbee::send(lwiot::XBeeRequest &request) const
 	{
 		UniqueLock<Lock> lock(this->_lock);
@@ -189,6 +195,12 @@ namespace lwiot
 	{
 		UniqueLock<Lock> lock(this->_lock);
 		this->_xb.setSleepMode(mode);
+	}
+
+	uint8_t AsyncXbee::getMaxPayloadSize() const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		return this->_xb.getMaxPayloadSize();
 	}
 
 	bool AsyncXbee::validateTxRequest() const
