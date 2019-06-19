@@ -216,6 +216,12 @@ namespace lwiot
 		return this->_xb.setMaxHops(max);
 	}
 
+	void AsyncXbee::enableCoordinator(bool enable) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.enableCoordinator(enable);
+	}
+
 	bool AsyncXbee::validateTxRequest() const
 	{
 		ZBTxStatusResponse zbtx;

@@ -75,6 +75,8 @@ namespace lwiot
 		void setNodeIdentifier(const stl::String& id);
 		void setMaxHops(uint8_t max);
 
+		void enableCoordinator(bool enable);
+
 		uint8_t getMaxPayloadSize() const;
 
 		void setSleepMode(SleepMode sleepmode);

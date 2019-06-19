@@ -82,6 +82,7 @@ namespace lwiot
 		uint8_t getMaxPayloadSize() const;
 		void setMaxHops(uint8_t max) const;
 		void setNodeIdentifier(const stl::String& id) const;
+		void enableCoordinator(bool enable) const;
 
 	protected:
 		void run() override;

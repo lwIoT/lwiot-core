@@ -535,4 +535,12 @@ namespace lwiot
 		auto result = stl::move(this->sendCommand(cmd, 100));
 		this->_max_payload = result.at(0);
 	}
+
+	void XBee::enableCoordinator(bool enable)
+	{
+		uint8_t cmd[] = {'C', 'E'};
+		uint8_t arg = enable;
+
+		this->sendCommand(cmd, 300, &arg, sizeof(arg));
+	}
 }
