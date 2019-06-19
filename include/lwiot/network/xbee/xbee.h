@@ -74,8 +74,9 @@ namespace lwiot
 		void setNetworkKey(const ByteBuffer& key);
 		void setNodeIdentifier(const stl::String& id);
 		void setMaxHops(uint8_t max);
-
 		void enableCoordinator(bool enable);
+
+		void writeToFlash();
 
 		uint8_t getMaxPayloadSize() const;
 

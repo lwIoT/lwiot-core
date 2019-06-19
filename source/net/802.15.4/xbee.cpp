@@ -94,6 +94,12 @@ namespace lwiot
 		memcpy(this->_responseFrameData, rhs._responseFrameData, MAX_FRAME_DATA_SIZE);
 	}
 
+	void XBee::writeToFlash()
+	{
+		uint8_t cmd[] = {'W', 'R'};
+		this->sendCommand(cmd, 1000);
+	}
+
 	void XBee::resetResponse()
 	{
 		_pos = 0;
@@ -541,6 +547,8 @@ namespace lwiot
 		uint8_t cmd[] = {'C', 'E'};
 		uint8_t arg = enable;
 
-		this->sendCommand(cmd, 300, &arg, sizeof(arg));
+		this->sendCommand(cmd, 100, &arg, sizeof(arg));
+		this->readPacket(200);
+		this->resetResponse();
 	}
 }

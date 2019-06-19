@@ -84,6 +84,8 @@ namespace lwiot
 		void setNodeIdentifier(const stl::String& id) const;
 		void enableCoordinator(bool enable) const;
 
+		void writeToFlash() const;
+
 	protected:
 		void run() override;
 		void init();

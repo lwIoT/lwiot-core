@@ -232,4 +232,10 @@ namespace lwiot
 
 		return zbtx.isSuccess();
 	}
+
+	void AsyncXbee::writeToFlash() const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+		this->_xb.writeToFlash();
+	}
 }
