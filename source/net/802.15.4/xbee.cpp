@@ -102,10 +102,42 @@ namespace lwiot
 
 	void XBee::resetResponse()
 	{
-		_pos = 0;
-		_escape = false;
-		_checksumTotal = 0;
-		_response.reset();
+		this->_pos = 0;
+		this->_escape = false;
+		this->_checksumTotal = 0;
+		this->_response.reset();
+	}
+
+	void XBee::send(ZigbeeAddress addr, const lwiot::ByteBuffer &buffer) const
+	{
+		auto raw = buffer.data();
+		ZBTxRequest tx;
+
+		tx.setPayload(raw);
+		tx.setPayloadLength(buffer.index());
+
+		if(addr.is64Bit())
+			tx.setAddress64(addr.getAddress64());
+		else
+			tx.setAddress16(addr.getAddress16());
+
+		this->send(tx);
+	}
+
+	void XBee::send(lwiot::ZigbeeAddress addr, const lwiot::ByteBuffer &buffer, uint16_t profile, uint16_t cluster) const
+	{
+		auto raw = buffer.data();
+		ZBExplicitTxRequest tx;
+
+		if(addr.is64Bit())
+			tx.setAddress64(addr.getAddress64());
+		else
+			tx.setAddress16(addr.getAddress16());
+
+		tx.setPayload(raw, buffer.index());
+		tx.setClusterId(cluster);
+		tx.setProfileId(profile);
+		this->send(tx);
 	}
 
 	void XBee::send(XBeeRequest &request) const

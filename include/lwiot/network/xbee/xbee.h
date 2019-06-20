@@ -19,6 +19,8 @@
 #include <lwiot/network/xbee/xbeeresponse.h>
 #include <lwiot/network/xbee/xbeerequest.h>
 
+#include <lwiot/network/zigbeeaddress.h>
+
 #include <lwiot/stl/referencewrapper.h>
 #include <lwiot/io/gpiopin.h>
 
@@ -56,6 +58,8 @@ namespace lwiot
 		void getResponse(XBeeResponse &response);
 		XBeeResponse& getResponse();
 		void send(XBeeRequest &request) const;
+		void send(ZigbeeAddress addr, const ByteBuffer& buffer) const;
+		void send(ZigbeeAddress addr, const ByteBuffer& buffer, uint16_t profile, uint16_t cluster) const;
 		uint8_t getNextFrameId();
 		void setSerial(Stream &serial);
 		void setSleepPin(const GpioPin& pin);
