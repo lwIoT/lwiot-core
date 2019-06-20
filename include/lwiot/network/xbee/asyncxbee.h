@@ -57,6 +57,8 @@ namespace lwiot
 
 		bool transmit(const stl::String& data, uint16_t addr) const;
 		bool transmit(const stl::String& data, uint64_t addr) const;
+		bool transmit(ZigbeeAddress addr, const ByteBuffer& buffer) const;
+		bool transmit(ZigbeeAddress addr, const ByteBuffer& buffer, uint16_t profile, uint16_t cluster) const;
 
 		template <typename Func>
 		void setHandler(Func&& handler)

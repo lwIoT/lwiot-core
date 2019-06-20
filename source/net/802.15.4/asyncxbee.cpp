@@ -178,6 +178,22 @@ namespace lwiot
 		return this->validateTxRequest();
 	}
 
+	bool AsyncXbee::transmit(lwiot::ZigbeeAddress addr, const lwiot::ByteBuffer &buffer) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+
+		this->_xb.send(addr, buffer);
+		return this->validateTxRequest();
+	}
+
+	bool AsyncXbee::transmit(lwiot::ZigbeeAddress addr, const lwiot::ByteBuffer &buffer, uint16_t profile, uint16_t cluster) const
+	{
+		UniqueLock<Lock> lock(this->_lock);
+
+		this->_xb.send(addr, buffer, profile, cluster);
+		return this->validateTxRequest();
+	}
+
 	uint16_t AsyncXbee::getParentAddress() const
 	{
 		UniqueLock<Lock> lock(this->_lock);
