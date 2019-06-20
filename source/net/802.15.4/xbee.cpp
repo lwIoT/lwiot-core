@@ -121,6 +121,7 @@ namespace lwiot
 		else
 			tx.setAddress16(addr.getAddress16());
 
+		tx.setFrameId(DEFAULT_FRAME_ID);
 		this->send(tx);
 	}
 
@@ -137,6 +138,7 @@ namespace lwiot
 		tx.setPayload(raw, buffer.index());
 		tx.setClusterId(cluster);
 		tx.setProfileId(profile);
+		tx.setFrameId(DEFAULT_FRAME_ID);
 		this->send(tx);
 	}
 
