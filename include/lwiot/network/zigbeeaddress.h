@@ -13,6 +13,9 @@ namespace lwiot
 		{
 		}
 
+		explicit ZigbeeAddress(uint16_t addr) : _addr({addr}), _is64bit(false)
+		{ }
+
 		constexpr void setAddress16(uint16_t addr)
 		{
 			this->_is64bit = false;

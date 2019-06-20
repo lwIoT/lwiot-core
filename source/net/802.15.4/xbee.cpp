@@ -116,11 +116,15 @@ namespace lwiot
 		tx.setPayload(raw);
 		tx.setPayloadLength(buffer.index());
 
-		if(addr.is64Bit())
+		if(addr.is64Bit()) {
 			tx.setAddress64(addr.getAddress64());
-		else
+			tx.setAddress16(0xFFFE);
+		} else {
+			tx.setAddress64(0xFFFFFFFFFFFFFFFF);
 			tx.setAddress16(addr.getAddress16());
+		}
 
+		//print_dbg("Transmitting (%u) to 0x%X\n", buffer.index(), addr.getAddress16());
 		tx.setFrameId(DEFAULT_FRAME_ID);
 		this->send(tx);
 	}
@@ -130,10 +134,13 @@ namespace lwiot
 		auto raw = buffer.data();
 		ZBExplicitTxRequest tx;
 
-		if(addr.is64Bit())
+		if(addr.is64Bit()) {
 			tx.setAddress64(addr.getAddress64());
-		else
+			tx.setAddress16(0xFFFE);
+		} else {
+			tx.setAddress64(0xFFFFFFFFFFFFFFFF);
 			tx.setAddress16(addr.getAddress16());
+		}
 
 		tx.setPayload(raw, buffer.index());
 		tx.setClusterId(cluster);
