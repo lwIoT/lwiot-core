@@ -88,7 +88,6 @@ namespace lwiot
 			ScopedLock lock(this->_lock);
 
 			while(!MqttClient::connected() && this->_running) {
-				print_dbg("Attempting to reconnect!\n");
 				if(!this->reconnect())
 					continue;
 
@@ -97,7 +96,6 @@ namespace lwiot
 				                    this->_will_retain, this->_will, this->_clean);
 
 				if(MqttClient::connected()) {
-					print_dbg("Calling reconnect handler!\n");
 					lock.unlock();
 					this->_reconnect_handler();
 					lock.lock();
