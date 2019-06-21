@@ -125,7 +125,7 @@ namespace lwiot
 
 	IPAddress& IPAddress::operator=(const IPAddress& addr)
 	{
-		memcpy(this->_address.bytes, addr._address.bytes, sizeof(_address.bytes));
+		memcpy(this->_address.bytes, addr._address.bytes, sizeof(addr._address.bytes));
 		this->_version = addr._version;
 		return *this;
 	}

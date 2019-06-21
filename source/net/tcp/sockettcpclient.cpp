@@ -17,6 +17,7 @@
 
 #include <lwiot/network/stdnet.h>
 #include <lwiot/network/sockettcpclient.h>
+#include <lwiot/stl/move.h>
 
 namespace lwiot
 {
@@ -35,7 +36,9 @@ namespace lwiot
 
 		remote.version = 4;
 		dns_resolve_host(host.c_str(), &remote);
-		this->_remote_addr = IPAddress(remote);
+		//this->_remote_addr = IPAddress(remote);
+
+		this->_remote_addr = stl::move(IPAddress(remote));
 
 		this->connect();
 	}
