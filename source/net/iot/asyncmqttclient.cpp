@@ -26,6 +26,11 @@ namespace lwiot
 	{
 	}
 
+	AsyncMqttClient::AsyncMqttClient(const lwiot::AsyncMqttClient::ReconnectHandler &handler) : AsyncMqttClient()
+	{
+		this->_reconnect_handler = handler;
+	}
+
 	AsyncMqttClient::~AsyncMqttClient()
 	{
 		ScopedLock lock(this->_lock);
@@ -35,6 +40,11 @@ namespace lwiot
 
 		lock.unlock();
 		this->stop();
+	}
+
+	void AsyncMqttClient::setReconnectHandler(const lwiot::AsyncMqttClient::ReconnectHandler &handler)
+	{
+		this->_reconnect_handler = handler;
 	}
 
 	void AsyncMqttClient::start(lwiot::TcpClient &client)
@@ -83,6 +93,9 @@ namespace lwiot
 				MqttClient::connect(this->_id, this->_user, this->_pass,
 				                    this->_will_topic, this->_will_qos,
 				                    this->_will_retain, this->_will, this->_clean);
+
+				if(MqttClient::connected())
+					this->_reconnect_handler();
 			}
 
 			this->loop();

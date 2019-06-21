@@ -24,10 +24,14 @@ namespace lwiot
 {
 	class AsyncMqttClient : private MqttClient {
 	public:
+		typedef Function<void(const ByteBuffer&)> AsyncHandler;
+		typedef Function<void(void)> ReconnectHandler;
+
 		explicit AsyncMqttClient();
+		explicit AsyncMqttClient(const ReconnectHandler& handler);
 		virtual ~AsyncMqttClient();
 
-		typedef Function<void(const ByteBuffer&)> AsyncHandler;
+		void setReconnectHandler(const ReconnectHandler& handler);
 
 		void start(TcpClient& client);
 		void stop();
@@ -52,7 +56,6 @@ namespace lwiot
 		bool publish(const stl::String& topic, const ByteBuffer& data, bool retained) override;
 		using MqttClient::publish;
 
-
 		inline bool connected() override
 		{
 			ScopedLock lock(this->_lock);
@@ -70,6 +73,7 @@ namespace lwiot
 
 	private:
 		stl::Map<stl::String, AsyncHandler> _handlers;
+		ReconnectHandler _reconnect_handler;
 		FunctionalThread _executor;
 		mutable Lock _lock;
 		bool _running;

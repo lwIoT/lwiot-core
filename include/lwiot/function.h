@@ -111,6 +111,14 @@ namespace lwiot
 			}
 		}
 
+		template <typename Func>
+		Function<ReturnType(Xs...)> operator=(Func& f)
+		{
+			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
+			new(memory) SFModel<Func, ReturnType, Xs...>(f);
+			return *this;
+		}
+
 		template<class...Ys>
 		ReturnType operator()(Ys &&...ys)
 		{
