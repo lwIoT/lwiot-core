@@ -21,6 +21,7 @@ SET(NET_SOURCES
 	net/util/base64.c
 	net/util/captiveportal.cpp
 	net/util/ipaddress.cpp
+	net/util/ntpclient.cpp
 
 	net/http/httpserver.cpp
 	net/http/mimetable.cpp
