@@ -39,6 +39,28 @@ namespace lwiot
 		this->init();
 	}
 
+	void SocketUdpClient::begin()
+	{
+		this->resolve();
+		this->close();
+		this->init();
+	}
+
+	void SocketUdpClient::begin(const lwiot::String &host, uint16_t port)
+	{
+		this->_host = host;
+		this->_port = port;
+		this->begin();
+	}
+
+	void SocketUdpClient::begin(const lwiot::IPAddress &addr, uint16_t port)
+	{
+		this->_host = "";
+		this->_remote = addr;
+		this->_port = port;
+		this->begin();
+	}
+
 	void SocketUdpClient::init()
 	{
 		remote_addr_t remote;
@@ -64,7 +86,14 @@ namespace lwiot
 	{
 		remote_addr_t remote;
 
-		assert(this->_socket != nullptr);
+		if(this->_socket == nullptr) {
+			this->resolve();
+			this->init();
+		}
+
+		if(this->_socket == nullptr)
+			return -EINVALID;
+
 		this->address().toRemoteAddress(remote);
 		remote.version = this->address().version();
 		remote.port = this->port();
@@ -75,13 +104,23 @@ namespace lwiot
 	{
 		remote_addr_t remote;
 
-		assert(this->_socket != nullptr);
+		if(this->_socket == nullptr) {
+			this->resolve();
+			this->init();
+		}
+
+		if(this->_socket == nullptr)
+			return -EINVALID;
+
 		remote.version = this->address().version();
 		return udp_recv_from(this->_socket, buffer, length, &remote);
 	}
 
 	size_t SocketUdpClient::available() const
 	{
+		if(this->_socket == nullptr)
+			return -EINVALID;
+
 		return udp_socket_available(this->_socket);
 	}
 }

@@ -21,6 +21,10 @@ namespace lwiot
 		explicit UdpClient(const String& host, uint16_t port);
 		virtual ~UdpClient() = default;
 
+		virtual void begin() = 0;
+		virtual void begin(const stl::String& host, uint16_t port) = 0;
+		virtual void begin(const IPAddress& addr, uint16_t port) = 0;
+
 		Stream &operator<<(char x) override;
 		Stream &operator<<(short x) override;
 		Stream &operator<<(int x) override;
@@ -47,8 +51,11 @@ namespace lwiot
 		const IPAddress& address() const;
 		uint16_t port() const;
 
-	private:
+		void resolve();
+
+	protected:
 		IPAddress _remote;
 		uint16_t _port;
+		stl::String _host;
 	};
 }

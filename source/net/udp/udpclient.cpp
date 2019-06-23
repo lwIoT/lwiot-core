@@ -30,13 +30,9 @@ namespace lwiot
 	{
 	}
 
-	UdpClient::UdpClient(const lwiot::String &host, uint16_t port) : _remote((uint32_t)0), _port(to_netorders(port))
+	UdpClient::UdpClient(const lwiot::String &host, uint16_t port) : _remote((uint32_t)0), _port(to_netorders(port)), _host(host)
 	{
-		remote_addr_t remote;
-
-		if(dns_resolve_host(host.c_str(), &remote) == -EOK) {
-			this->_remote = lwiot::stl::move(IPAddress(remote));
-		}
+		this->resolve();
 	}
 
 	const IPAddress& lwiot::UdpClient::address() const
@@ -48,6 +44,20 @@ namespace lwiot
 	{
 		return this->_port;
 	}
+
+	void UdpClient::resolve()
+	{
+		remote_addr_t remote;
+
+		if(this->_host.length() <= 0)
+			return;
+
+
+		remote.version = 4;
+		dns_resolve_host(this->_host.c_str(), &remote);
+		this->_remote = stl::move(IPAddress(remote));
+	}
+
 	uint8_t UdpClient::read()
 	{
 		uint8_t tmp;
