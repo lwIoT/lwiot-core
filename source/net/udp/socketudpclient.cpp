@@ -21,7 +21,7 @@
 
 namespace lwiot
 {
-	SocketUdpClient::SocketUdpClient()
+	SocketUdpClient::SocketUdpClient() : UdpClient(), _socket(nullptr), _noclose(false)
 	{
 	}
 
@@ -49,7 +49,7 @@ namespace lwiot
 	void SocketUdpClient::begin(const lwiot::String &host, uint16_t port)
 	{
 		this->_host = host;
-		this->_port = port;
+		this->_port = to_netorders(port);
 		this->begin();
 	}
 
@@ -57,7 +57,7 @@ namespace lwiot
 	{
 		this->_host = "";
 		this->_remote = addr;
-		this->_port = port;
+		this->_port = to_netorders(port);
 		this->begin();
 	}
 
@@ -77,7 +77,7 @@ namespace lwiot
 
 	void SocketUdpClient::close()
 	{
-		if(!this->_noclose) {
+		if(!this->_noclose && this->_socket != nullptr) {
 			socket_close(this->_socket);
 		}
 	}
