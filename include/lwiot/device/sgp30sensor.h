@@ -17,7 +17,7 @@ namespace lwiot
 {
 	class Sgp30Sensor {
 	public:
-		constexpr Sgp30Sensor() : _bus(), _tvoc(0), _co2(0)
+		explicit Sgp30Sensor() : _bus(), _tvoc(0), _co2(0)
 		{ }
 
 		explicit Sgp30Sensor(I2CBus& bus);
@@ -26,12 +26,12 @@ namespace lwiot
 		bool setHumidity(uint32_t abs);
 		bool measure();
 
-		constexpr uint16_t tvoc() const
+		inline uint16_t tvoc() const
 		{
 			return this->_tvoc;
 		}
 
-		constexpr uint16_t co2() const
+		inline uint16_t co2() const
 		{
 			return this->_co2;
 		}
