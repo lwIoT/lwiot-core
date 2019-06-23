@@ -14,26 +14,23 @@
 #include <lwiot/test.h>
 
 #include <lwiot/network/udpclient.h>
-#include <lwiot/network/udpserver.h>
 #include <lwiot/network/socketudpclient.h>
+#include <lwiot/network/ntpclient.h>
 
+#include <lwiot/util/datetime.h>
 #include <lwiot/stl/move.h>
 
 static void test_udp_client()
 {
-	char buffer[] = "Hello, World!";
-	char readback[sizeof(buffer) + 1];
-	//auto ip = lwiot::stl::move(lwiot::IPAddress::fromString("127.0.0.1"));
-	lwiot::IPAddress ip(127, 0, 0, 1);
-	lwiot::SocketUdpClient client(ip, 5000);
+	lwiot::SocketUdpClient io("pool.ntp.org", 123);
+	lwiot::NtpClient client;
 
-	assert(client.write(buffer, sizeof(buffer)) > 0);
-	memset(readback, 0, sizeof(readback));
+	client.begin(io);
+	print_dbg("Testing NTP client\n");
 
-	while(client.available() == 0);
-	assert(client.read(readback, sizeof(readback)) > 0);
-	print_dbg("Read back: %s\n", readback);
-	//client.close();
+	client.update();
+	lwiot::DateTime dt(client.time());
+	print_dbg("Date time: %s\n", dt.toString().c_str());
 }
 
 int main(int argc, char **argv)
