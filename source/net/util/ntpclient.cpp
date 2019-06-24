@@ -80,6 +80,11 @@ namespace lwiot
 
 	time_t NtpClient::time() const
 	{
-		return this->_current_epoch;
+		time_t rv;
+
+		rv = lwiot_tick_ms() - this->_last_update;
+		rv /= 1000;
+		rv += this->_current_epoch;
+		return rv;
 	}
 }
