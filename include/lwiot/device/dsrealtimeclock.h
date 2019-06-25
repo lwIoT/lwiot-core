@@ -19,11 +19,33 @@ namespace lwiot
 {
 	class DsRealTimeClock : public RealTimeClock {
 	public:
+		enum AlarmType {
+			ALARM1_EVERY_SECOND = 0x0F,
+			ALARM1_MATCH_SECONDS = 0x0E,
+			ALARM1_MATCH_MINUTES = 0x0C,
+			ALARM1_MATCH_HOURS = 0x08,
+			ALARM1_MATCH_DATE = 0x00,
+			ALARM1_MATCH_DAY = 0x10,
+			ALARM2_EVERY_MINUTE = 0x8E,
+			ALARM2_MATCH_MINUTES = 0x8C,
+			ALARM2_MATCH_HOURS = 0x88,
+			ALARM2_MATCH_DATE = 0x80,
+			ALARM2_MATCH_DAY = 0x90,
+		};
+
+		enum Alarm {
+			ALARM_ONE = 1,
+			ALARM_TWO = 2
+		};
+
 		explicit DsRealTimeClock(const I2CBus& bus);
 		explicit DsRealTimeClock(const DateTime& now, const I2CBus& bus);
 
 		DateTime now() override;
 		void set(const DateTime &dt) override;
+
+		void setAlarm(AlarmType type,  const DateTime& dt);
+		bool alarm(Alarm id);
 
 	private:
 		I2CBus _bus;

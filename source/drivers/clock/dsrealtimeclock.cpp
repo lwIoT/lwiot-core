@@ -23,7 +23,32 @@
 #define RTC_YEAR 0x06
 #define RTC_STATUS 0x0F
 
+#define ALM1_SECONDS 0x07
+#define ALM1_MINUTES 0x08
+#define ALM1_HOURS 0x09
+#define ALM1_DAYDATE 0x0A
+#define ALM2_MINUTES 0x0B
+#define ALM2_HOURS 0x0C
+#define ALM2_DAYDATE 0x0D
+#define RTC_CONTROL 0x0E
+#define RTC_STATUS 0x0F
+#define RTC_AGING 0x10
+#define RTC_TEMP_MSB 0x11
+#define RTC_TEMP_LSB 0x12
+#define SRAM_START_ADDR 0x14
+#define SRAM_SIZE 236
+
+
 #define YEAR_OFFSET 2000
+
+/* Alarm mask bits */
+#define A1M1 7
+#define A1M2 7
+#define A1M3 7
+#define A1M4 7
+#define A2M2 7
+#define A2M3 7
+#define A2M4 7
 
 /* Control register bits */
 #define EOSC 7
@@ -80,7 +105,7 @@ namespace lwiot
 	DateTime DsRealTimeClock::now()
 	{
 		I2CMessage tx(1), rx(ReadLength);
-		stl::Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage *> msgs;
 		struct tm tm{};
 		time_t stamp;
 
@@ -103,7 +128,7 @@ namespace lwiot
 		auto century = rx[5] & _BV(CENTURY);
 		rx[5] &= ~_BV(CENTURY);
 
-		for(uint8_t& byte : rx) {
+		for(uint8_t &byte : rx) {
 			byte = this->decode(byte);
 		}
 
@@ -161,7 +186,7 @@ namespace lwiot
 	uint8_t DsRealTimeClock::read(uint8_t addr)
 	{
 		I2CMessage tx(1), rx(1);
-		stl::Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage *> msgs;
 
 		tx.setAddress(SlaveAddress, false);
 		tx.markAsReadOperation(false);
@@ -181,6 +206,57 @@ namespace lwiot
 		}
 
 		return rx[0];
+	}
+
+	void DsRealTimeClock::setAlarm(lwiot::DsRealTimeClock::AlarmType id, const lwiot::DateTime &dt)
+	{
+		uint8_t addr;
+		auto seconds = this->encode(dt.second());
+		auto minutes = this->encode(dt.minute());
+		auto hours = this->encode(dt.hour());
+		auto day = this->encode(dt.dayOfWeek() + 1);
+
+		if(id & 0x01)
+			seconds |= _BV(A1M1);
+		if(id & 0x02)
+			minutes |= _BV(A1M2);
+		if(id & 0x04)
+			hours |= _BV(A1M3);
+		if(id & 0x10)
+			day |= _BV(DYDT);
+		if(id & 0x08)
+			day |= _BV(A1M4);
+
+		if(id & 0x80) {
+			addr = ALM1_SECONDS;
+			this->write(addr, seconds);
+
+			addr += 1;
+		} else {
+			addr = ALM2_MINUTES;
+		}
+
+		this->write(addr++, minutes);
+		this->write(addr++, hours);
+		this->write(addr, day);
+	}
+
+	bool DsRealTimeClock::alarm(lwiot::DsRealTimeClock::Alarm id)
+	{
+		uint8_t num = id - 1;
+		uint8_t status, mask;
+		bool rv = false;
+
+		status = this->read(RTC_STATUS);
+		mask = _BV(A1F) << num;
+
+		if(status & mask) {
+			status &= ~mask;
+			this->write(RTC_STATUS, status);
+			rv = true;
+		}
+
+		return rv;
 	}
 
 	uint8_t __never_inline DsRealTimeClock::encode(uint8_t byte)
