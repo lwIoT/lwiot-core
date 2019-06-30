@@ -84,22 +84,25 @@ namespace lwiot
 	bool BmpSensor::read(uint8_t reg, uint8_t *rv, size_t num)
 	{
 		I2CMessage wr(1), rd(num);
-		stl::Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage> msgs;
+		size_t idx;
 
 		wr.write(reg);
 		wr.setAddress(this->_addr, false, false);
 		wr.setRepeatedStart(true);
 		rd.setAddress(this->_addr, false, true);
 
-		msgs.pushback(&wr);
-		msgs.pushback(&rd);
+		msgs.pushback(stl::move(wr));
+		msgs.pushback(stl::move(rd));
 
 		if(!this->_bus.transfer(msgs)) {
 			print_dbg("Unable to write %u bytes to BMP sensor\n", num);
 			return false;
 		}
 
-		size_t idx = 0;
+		rd = stl::move(msgs.back());
+		idx = 0UL;
+
 		for(auto byte : rd) {
 			rv[idx++] = byte;
 		}

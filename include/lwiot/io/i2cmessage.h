@@ -22,7 +22,12 @@ namespace lwiot
 		explicit I2CMessage(const ByteBuffer& buffer);
 		explicit I2CMessage(const size_t& size);
 		I2CMessage(const I2CMessage& other);
+		I2CMessage(I2CMessage&& other) noexcept ;
 		~I2CMessage() override = default;
+
+		I2CMessage& operator=(const I2CMessage& msg);
+		I2CMessage& operator=(I2CMessage&& msg) noexcept ;
+
 
 		uint16_t address() const;
 		bool isRead() const;

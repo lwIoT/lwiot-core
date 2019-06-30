@@ -14,6 +14,7 @@
 #include <lwiot/types.h>
 
 #include <lwiot/io/i2cmessage.h>
+#include <lwiot/stl/forward.h>
 
 #define I2CMESSAGE_DEFAULT_SIZE 8UL
 
@@ -41,6 +42,36 @@ namespace lwiot
 	I2CMessage::I2CMessage(const lwiot::ByteBuffer &buffer) :
 		ByteBuffer(buffer), _addr(0), _is_10bit(false), _readop(false), _repstart(false)
 	{
+	}
+
+	I2CMessage::I2CMessage(lwiot::I2CMessage &&other) noexcept : ByteBuffer(stl::forward<I2CMessage>(other)),
+		_addr(other.address()), _is_10bit(other.is10Bit()),
+		_readop(other.isRead()), _repstart(other._repstart)
+	{
+	}
+
+	I2CMessage& I2CMessage::operator=(lwiot::I2CMessage &&msg) noexcept
+	{
+		ByteBuffer::move(msg);
+
+		this->_addr = msg.address();
+		this->_is_10bit = msg.is10Bit();
+		this->_readop = msg.isRead();
+		this->_repstart = msg.repstart();
+
+		return *this;
+	}
+
+	I2CMessage& I2CMessage::operator=(const lwiot::I2CMessage &msg)
+	{
+		ByteBuffer::copy(msg);
+
+		this->_addr = msg.address();
+		this->_is_10bit = msg.is10Bit();
+		this->_readop = msg.isRead();
+		this->_repstart = msg.repstart();
+
+		return *this;
 	}
 
 	uint16_t I2CMessage::address() const

@@ -105,7 +105,7 @@ namespace lwiot
 	DateTime DsRealTimeClock::now()
 	{
 		I2CMessage tx(1), rx(ReadLength);
-		stl::Vector<I2CMessage *> msgs;
+		stl::Vector<I2CMessage> msgs;
 		struct tm tm{};
 		time_t stamp;
 
@@ -118,12 +118,14 @@ namespace lwiot
 		rx.markAsReadOperation(true);
 		rx.setRepeatedStart(false);
 
-		msgs.pushback(&tx);
-		msgs.pushback(&rx);
+		msgs.pushback(stl::move(tx));
+		msgs.pushback(stl::move(rx));
 
 		if(!this->_bus.transfer(msgs)) {
 			return DateTime();
 		}
+
+		rx = stl::move(msgs[1]);
 
 		auto century = rx[5] & _BV(CENTURY);
 		rx[5] &= ~_BV(CENTURY);
@@ -186,7 +188,7 @@ namespace lwiot
 	uint8_t DsRealTimeClock::read(uint8_t addr)
 	{
 		I2CMessage tx(1), rx(1);
-		stl::Vector<I2CMessage *> msgs;
+		stl::Vector<I2CMessage> msgs;
 
 		tx.setAddress(SlaveAddress, false);
 		tx.markAsReadOperation(false);
@@ -197,13 +199,15 @@ namespace lwiot
 		rx.markAsReadOperation(true);
 		rx.setRepeatedStart(false);
 
-		msgs.pushback(&tx);
-		msgs.pushback(&rx);
+		msgs.pushback(stl::move(tx));
+		msgs.pushback(stl::move(rx));
 
 		if(!this->_bus.transfer(msgs)) {
 			print_dbg("Unable to read RTC!");
 			return 0;
 		}
+
+		rx = stl::move(msgs.back());
 
 		return rx[0];
 	}

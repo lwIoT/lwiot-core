@@ -81,22 +81,24 @@ namespace lwiot
 	bool Ccs811Sensor::read(uint8_t reg, uint8_t *buf, size_t length)
 	{
 		I2CMessage wr(1), rd(length);
-		stl::Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage> msgs;
 
 		wr.setAddress(SlaveAddress, false, false);
 		wr.setRepeatedStart(true);
 		wr.write(reg);
 		rd.setAddress(SlaveAddress, false, true);
 
-		msgs.pushback(&wr);
-		msgs.pushback(&rd);
+		msgs.pushback(stl::move(wr));
+		msgs.pushback(stl::move(rd));
 
 		if(!this->_bus.transfer(msgs)) {
 			print_dbg("Unable to read %u bytes to CCS811 sensor\n", length);
 			return false;
 		}
 
+		rd = stl::move(msgs.back());
 		auto idx = 0UL;
+
 		for(auto byte : rd) {
 			buf[idx++] = byte;
 		}
@@ -187,21 +189,22 @@ namespace lwiot
 	uint8_t Ccs811Sensor::read8(uint8_t reg)
 	{
 		I2CMessage wr(1), rd(1);
-		stl::Vector<I2CMessage*> msgs;
+		stl::Vector<I2CMessage> msgs;
 
 		wr.setAddress(SlaveAddress, false, false);
 		wr.setRepeatedStart(true);
 		wr.write(reg);
 		rd.setAddress(SlaveAddress, false, true);
 
-		msgs.pushback(&wr);
-		msgs.pushback(&rd);
+		msgs.pushback(stl::move(wr));
+		msgs.pushback(stl::move(rd));
 
 		if(!this->_bus.transfer(msgs)) {
 			print_dbg("Unable to read byte from CCS811 sensor\n");
 			return 0;
 		}
 
+		rd = stl::move(msgs.back());
 		return rd.at(0);
 	}
 

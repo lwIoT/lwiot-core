@@ -31,7 +31,7 @@ namespace lwiot
 		I2CBus& operator=(const I2CBus& bus);
 
 		bool transfer(I2CMessage& msg);
-		bool transfer(stl::Vector<I2CMessage*>& msgs);
+		bool transfer(stl::Vector<I2CMessage>& msgs);
 
 		bool send(int8_t  sla, const ByteBuffer& buffer);
 		bool send(int8_t sla, const void *buffer, size_t size);

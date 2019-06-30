@@ -53,7 +53,7 @@ namespace lwiot
 		return this->_algo.get();
 	}
 
-	bool I2CBus::transfer(stl::Vector<I2CMessage*>& msgs)
+	bool I2CBus::transfer(stl::Vector<I2CMessage>& msgs)
 	{
 		int rv = -EINVALID;
 		ScopedLock lock(*this->_lock);
