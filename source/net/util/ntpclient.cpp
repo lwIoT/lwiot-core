@@ -35,6 +35,7 @@ namespace lwiot
 	void NtpClient::begin()
 	{
 		this->_client->begin();
+		this->_client->setTimeout(2);
 	}
 
 	void NtpClient::sendRequest() const
@@ -57,14 +58,13 @@ namespace lwiot
 
 #define merge(h, l) ((h << 8) | l)
 
-#define UPDATE_DELAY 100
+#define UPDATE_DELAY 500
 	bool NtpClient::update()
 	{
 		ByteBuffer buffer(NtpClient::NTP_PACKET_SIZE, true);
 		uint32_t hi, lo, result;
 
 		this->sendRequest();
-		lwiot_sleep(UPDATE_DELAY);
 
 		if(unlikely(this->_client->read(buffer.data(), buffer.count()) <= 0))
 			return false;
