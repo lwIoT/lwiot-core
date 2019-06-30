@@ -82,6 +82,12 @@ namespace lwiot
 		}
 	}
 
+	void SocketUdpClient::setTimeout(time_t seconds)
+	{
+		UdpClient::setTimeout(seconds);
+		socket_set_timeout(this->_socket, seconds);
+	}
+
 	ssize_t SocketUdpClient::write(const void *buffer, const size_t& length)
 	{
 		remote_addr_t remote;

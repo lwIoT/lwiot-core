@@ -29,6 +29,7 @@ namespace lwiot
 
 		ssize_t read(void *output, const size_t &length) override;
 		ssize_t write(const void *bytes, const size_t& length) override;
+		void setTimeout(time_t seconds) override;
 
 	private:
 		socket_t* _socket;
