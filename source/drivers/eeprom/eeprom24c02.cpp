@@ -34,7 +34,7 @@ namespace lwiot
 	{
 		I2CMessage rx(1);
 		I2CMessage tx(1);
-		stl::Vector<I2CMessage *> msgs;
+		stl::Vector<I2CMessage> msgs;
 		ScopedLock lock(this->_lock);
 
 		tx.setRepeatedStart(true);
@@ -42,14 +42,15 @@ namespace lwiot
 		tx.setAddress(Eeprom24C02::SlaveAddress, false, false);
 		rx.setAddress(Eeprom24C02::SlaveAddress, false, true);
 
-		msgs.pushback(&tx);
-		msgs.pushback(&rx);
+		msgs.pushback(stl::move(tx));
+		msgs.pushback(stl::move(rx));
 
 		if(!this->_bus.transfer(msgs) || rx.length() == 0UL) {
 			print_dbg("Unable to read byte from 24C02! Msg size: %u\n", rx.available());
 			return 0;
 		}
 
+		rx = stl::move(msgs.back());
 		return rx.at(0);
 	}
 
@@ -91,7 +92,7 @@ namespace lwiot
 	ssize_t Eeprom24C02::read(uint8_t addr, void *data, size_t length)
 	{
 		I2CMessage tx(1), rx(length);
-		stl::Vector<I2CMessage *> msgs;
+		stl::Vector<I2CMessage> msgs;
 		ScopedLock lock(this->_lock);
 
 		tx.setRepeatedStart(true);
@@ -99,14 +100,15 @@ namespace lwiot
 		tx.write(addr);
 		rx.setAddress(Eeprom24C02::SlaveAddress, false, true);
 
-		msgs.pushback(&tx);
-		msgs.pushback(&rx);
+		msgs.pushback(stl::move(tx));
+		msgs.pushback(stl::move(rx));
 
 		if(!this->_bus.transfer(msgs) || rx.length() != length) {
 			print_dbg("Failed to read from 24C02. Received length: %lu\n", rx.length());
 			return -EINVALID;
 		}
 
+		rx = stl::move(msgs.back());
 		memcpy(data, rx.data(), rx.length());
 		return rx.length();
 	}

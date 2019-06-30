@@ -18,6 +18,8 @@
 #include <lwiot/stl/move.h>
 #include <lwiot/traits/typechoice.h>
 
+#include <vector>
+
 namespace lwiot
 {
 	namespace stl
@@ -229,7 +231,28 @@ namespace lwiot
 
 			void reserve(size_t newalloc);
 
+			CONSTEXPR ObjectType& back()
+			{
+				return this->_objects[this->_index - 1];
+			}
+
+			CONSTEXPR const ObjectType& back() const
+			{
+				return this->_objects[this->_index - 1];
+			}
+
 			CONSTEXPR void pushback(const ObjectType &val);
+
+			CONSTEXPR void pushback(ObjectType&& value)
+			{
+				if(this->_space == 0UL)
+					this->reserve(4);
+				else if(this->_index == this->_space)
+					this->reserve(2 * this->_space);
+
+				this->_alloc.move(&this->_objects[this->_index], value);
+				this->_index++;
+			}
 
 			CONSTEXPR void add(const ObjectType &val)
 			{

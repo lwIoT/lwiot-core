@@ -245,7 +245,7 @@ namespace lwiot
 	{
 		uint16_t data = 0;
 		lwiot::I2CMessage wr(1), rd(2);
-		lwiot::stl::Vector<lwiot::I2CMessage *> msgs;
+		lwiot::stl::Vector<lwiot::I2CMessage> msgs;
 
 		wr.write(CMD_REG | addr);
 		wr.setAddress(this->_addr, false, false);
@@ -254,11 +254,13 @@ namespace lwiot
 		rd.setRepeatedStart(false);
 		rd.setAddress(this->_addr, false, true);
 
-		msgs.pushback(&wr);
-		msgs.pushback(&rd);
+		msgs.pushback(stl::move(wr));
+		msgs.pushback(stl::move(rd));
+
 		if(!this->_bus.transfer(msgs))
 			return false;
 
+		rd = stl::move(msgs.back());
 		data = rd[0] | (rd[1] << BITS_PER_BYTE);
 		print_dbg("Data: %u\n", data);
 
@@ -269,7 +271,7 @@ namespace lwiot
 	bool Apds9301Sensor::read(uint8_t addr, uint8_t &byte)
 	{
 		lwiot::I2CMessage wr(1), rd(1);
-		lwiot::stl::Vector<lwiot::I2CMessage *> msgs;
+		lwiot::stl::Vector<lwiot::I2CMessage> msgs;
 
 		wr.write(addr);
 		wr.setAddress(this->_addr, false, false);
@@ -277,12 +279,15 @@ namespace lwiot
 		rd.setRepeatedStart(false);
 		rd.setAddress(this->_addr, false, true);
 
-		msgs.pushback(&wr);
-		msgs.pushback(&rd);
+		msgs.pushback(stl::move(wr));
+		msgs.pushback(stl::move(rd));
+
 		if(!this->_bus.transfer(msgs))
 			return false;
 
+		rd = stl::move(msgs.back());
 		byte = rd[0];
+
 		return true;
 	}
 }

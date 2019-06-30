@@ -174,7 +174,7 @@ namespace lwiot
 		return rv;
 	}
 
-	ssize_t HardwareI2CAlgorithm::transfer(stl::Vector<lwiot::I2CMessage*>& msgs)
+	ssize_t HardwareI2CAlgorithm::transfer(stl::Vector<lwiot::I2CMessage>& msgs)
 	{
 		bool success;
 		ssize_t total = 0L;
@@ -186,8 +186,7 @@ namespace lwiot
 			return -ETRYAGAIN;
 		}
 
-		for(auto ptr : msgs) {
-			I2CMessage& msg = *ptr;
+		for(auto& msg : msgs) {
 			auto address = msg.address();
 			auto data = msg.data();
 

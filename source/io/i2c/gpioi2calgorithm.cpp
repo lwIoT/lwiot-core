@@ -354,7 +354,7 @@ namespace lwiot
 		return true;
 	}
 
-	ssize_t GpioI2CAlgorithm::transfer(stl::Vector<I2CMessage*>& msgs)
+	ssize_t GpioI2CAlgorithm::transfer(stl::Vector<I2CMessage>& msgs)
 	{
 		ssize_t total;
 		int rv;
@@ -371,8 +371,7 @@ namespace lwiot
 		enter_critical();
 		this->start();
 
-		for(auto& _msg : msgs) {
-			auto& msg = *_msg;
+		for(auto& msg : msgs) {
 			if(!first) {
 				if(msg.repstart()) {
 					this->repstart();
