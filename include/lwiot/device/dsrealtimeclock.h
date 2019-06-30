@@ -44,8 +44,10 @@ namespace lwiot
 		DateTime now() override;
 		void set(const DateTime &dt) override;
 
-		void setAlarm(AlarmType type,  const DateTime& dt);
+		void setAlarm(AlarmType type, int seconds = 0, int minutes = 0, int hours = 0, int day = 1);
+		void setAlarm(AlarmType type, const DateTime& dt);
 		bool alarm(Alarm id);
+		void enableAlarmInterrupt(Alarm id, bool enabled);
 
 	private:
 		I2CBus _bus;

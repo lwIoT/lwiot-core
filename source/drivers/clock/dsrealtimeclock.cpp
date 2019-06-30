@@ -150,7 +150,7 @@ namespace lwiot
 		tx.write(this->encode(dt.second()));
 		tx.write(this->encode(dt.minute()));
 		tx.write(this->encode(dt.hour()));
-		tx.write(this->encode(dt.dayOfWeek()));
+		tx.write(this->encode(dt.dayOfWeek() + 1));
 		tx.write(this->encode(dt.day()));
 		tx.write(this->encode(dt.month() + 1));
 
@@ -208,26 +208,34 @@ namespace lwiot
 		return rx[0];
 	}
 
-	void DsRealTimeClock::setAlarm(lwiot::DsRealTimeClock::AlarmType id, const lwiot::DateTime &dt)
+	void DsRealTimeClock::setAlarm(lwiot::DsRealTimeClock::AlarmType id, int seconds, int minutes, int hours, int day)
 	{
 		uint8_t addr;
-		auto seconds = this->encode(dt.second());
-		auto minutes = this->encode(dt.minute());
-		auto hours = this->encode(dt.hour());
-		auto day = this->encode(dt.dayOfWeek() + 1);
+
+		seconds = this->encode(seconds);
+		minutes = this->encode(minutes);
+		hours = this->encode(hours);
 
 		if(id & 0x01)
 			seconds |= _BV(A1M1);
+
 		if(id & 0x02)
 			minutes |= _BV(A1M2);
+
 		if(id & 0x04)
 			hours |= _BV(A1M3);
-		if(id & 0x10)
-			day |= _BV(DYDT);
-		if(id & 0x08)
-			day |= _BV(A1M4);
 
-		if(id & 0x80) {
+		if(id & 0x10) {
+			day = this->encode(day);
+			day |= _BV(DYDT);
+		}
+
+		if(id & 0x08) {
+			day = this->encode(day);
+			day |= _BV(A1M4);
+		}
+
+		if((id & 0x80) == 0) {
 			addr = ALM1_SECONDS;
 			this->write(addr, seconds);
 
@@ -241,6 +249,37 @@ namespace lwiot
 		this->write(addr, day);
 	}
 
+	void DsRealTimeClock::enableAlarmInterrupt(lwiot::DsRealTimeClock::Alarm id, bool enabled)
+	{
+		uint8_t control;
+		uint8_t mask;
+
+		control = this->read(RTC_CONTROL);
+		mask = _BV(A1IE) << (id - 1);
+
+		if(enabled)
+			control |= mask;
+		else
+			control &= ~mask;
+
+		this->write(RTC_CONTROL, control);
+	}
+
+	void DsRealTimeClock::setAlarm(lwiot::DsRealTimeClock::AlarmType type, const lwiot::DateTime &dt)
+	{
+		auto seconds = dt.second();
+		auto minutes = dt.minute();
+		auto hours = dt.hour();
+		uint8_t day;
+
+		if(type == ALARM1_MATCH_DATE || type == ALARM2_MATCH_DATE)
+			day = dt.day();
+		else
+			day = dt.dayOfWeek() + 1;
+
+		this->setAlarm(type, seconds, minutes, hours, day);
+	}
+
 	bool DsRealTimeClock::alarm(lwiot::DsRealTimeClock::Alarm id)
 	{
 		uint8_t num = id - 1;
@@ -249,6 +288,8 @@ namespace lwiot
 
 		status = this->read(RTC_STATUS);
 		mask = _BV(A1F) << num;
+
+		print_dbg("Status: 0x%X\n", status);
 
 		if(status & mask) {
 			status &= ~mask;
