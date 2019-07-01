@@ -18,8 +18,6 @@
 #include <lwiot/stl/move.h>
 #include <lwiot/traits/typechoice.h>
 
-#include <vector>
-
 namespace lwiot
 {
 	namespace stl
