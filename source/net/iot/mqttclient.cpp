@@ -47,6 +47,7 @@
  */
 
 #define CHECK_STRING_LENGTH(l, s) if (l+2+s.length() > MQTT_MAX_PACKET_SIZE) {_io->close();return false;}
+#define MQTT_TIMEOUT 2
 
 namespace lwiot
 {
@@ -57,6 +58,7 @@ namespace lwiot
 	void MqttClient::begin(lwiot::TcpClient &client)
 	{
 		this->_io = client;
+		this->_io->setTimeout(MQTT_TIMEOUT);
 	}
 
 	bool MqttClient::reconnect()

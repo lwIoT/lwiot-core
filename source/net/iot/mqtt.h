@@ -47,7 +47,7 @@
 #endif
 
 #ifndef MQTT_KEEPALIVE
-#define MQTT_KEEPALIVE 15
+#define MQTT_KEEPALIVE 5
 #endif
 
 #ifndef MQTT_SOCKET_TIMEOUT
