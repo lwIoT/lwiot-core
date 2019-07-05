@@ -102,10 +102,10 @@ namespace lwiot
 		raw = this->read16(MCP9808_REG_AMBIENT_TEMP);
 
 		if(raw != 0xFFFF) {
-			temp = raw;
+			temp = raw & 0xFFF;
 			temp /= 16.0f;
 
-			if((uint32_t)temp & 0x1000f)
+			if(raw & 0x1000)
 				temp -= 256;
 		}
 
@@ -185,7 +185,8 @@ namespace lwiot
 
 		rx = stl::move(msgs.back());
 		value = rx[0];
-		value |= (rx[1] << 8);
+		value <<= 8;
+		value |= rx[1];
 
 		return value;
 	}
