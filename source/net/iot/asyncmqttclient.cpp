@@ -87,7 +87,7 @@ namespace lwiot
 		while(running) {
 			ScopedLock lock(this->_lock);
 
-			while(!MqttClient::connected() && this->_running) {
+			while(!MqttClient::connected() && this->_running && this->_id.length() != 0) {
 				if(!this->reconnect())
 					continue;
 
