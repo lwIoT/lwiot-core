@@ -60,7 +60,7 @@ namespace lwiot
 
 		step = diff / step_size;
 
-		while(diff >= 0.0) {
+		while(diff >= 0.0 && target != this->_brightness) {
 			if(neg)
 				this->_brightness -= step;
 			else
