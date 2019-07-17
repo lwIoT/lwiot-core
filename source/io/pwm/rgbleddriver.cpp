@@ -14,6 +14,8 @@
 #include <lwiot/io/rgbleddriver.h>
 #include <lwiot/io/leddriver.h>
 
+#define FIX_DIF(_d_) if(_d_ < 0.0) _d_ *= -1.0
+
 namespace lwiot
 {
 	RgbLedDriver::RgbLedDriver() : _red(), _green(), _blue()
@@ -66,6 +68,10 @@ namespace lwiot
 		gstep = gdiff / stepsize;
 		bstep = bdiff / stepsize;
 
+		FIX_DIF(rdiff);
+		FIX_DIF(gdiff);
+		FIX_DIF(bdiff);
+
 		while(rdiff != 0.0 || gdiff != 0.0 || rdiff != 0.0) {
 			if(rdiff != 0.0)
 				this->_red.setBrightness(this->_red.brightness() + rstep);
@@ -85,20 +91,17 @@ namespace lwiot
 
 	void RgbLedDriver::updateDiffValue(double &diff, double &step)
 	{
-		if(diff < 0.0) {
-			if((diff + step) >= 0.0) {
+		auto tmp = (step < 0) ? step : step * -1.0;
+
+		if((diff + tmp) <= 0.0) {
+			if(step < 0)
+				step = diff * -1.0;
+			else
 				step = diff;
-				diff = 0.0;
-			} else {
-				diff += step;
-			}
+
+			diff = 0.0;
 		} else {
-			if((diff - step) <= 0.0) {
-				step = diff;
-				diff = 0.0;
-			} else {
-				diff -= step;
-			}
+			diff += tmp;
 		}
 	}
 }
