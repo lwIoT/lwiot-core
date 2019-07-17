@@ -26,7 +26,15 @@ namespace lwiot
 
 		void fade(double target, int ms, int step_size = 50);
 
-		double brightness() const;
+		constexpr double brightness() const
+		{
+			return this->_brightness;
+		}
+
+		constexpr PwmChannel& channel() const
+		{
+			return this->_channel.get();
+		}
 
 	private:
 		stl::ReferenceWrapper<PwmChannel> _channel;

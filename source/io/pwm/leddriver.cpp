@@ -29,23 +29,6 @@ namespace lwiot
 		this->_channel->reload();
 	}
 
-	void LedDriver::setChannel(lwiot::PwmChannel &channel)
-	{
-		this->_channel = channel;
-		channel.setDutyCycle(this->_brightness);
-		this->_channel->reload();
-	}
-
-	void LedDriver::setBrightness(double brightness)
-	{
-		if(brightness < 0.0)
-			brightness = 0.0;
-
-		this->_brightness = brightness;
-		this->_channel->setDutyCycle(brightness);
-		this->_channel->reload();
-	}
-
 	void LedDriver::fade(double target, int ms, int step_size)
 	{
 		double diff = target - this->_brightness;
@@ -82,8 +65,20 @@ namespace lwiot
 		}
 	}
 
-	double LedDriver::brightness() const
+	void LedDriver::setChannel(lwiot::PwmChannel &channel)
 	{
-		return this->_brightness;
+		this->_channel = channel;
+		channel.setDutyCycle(this->_brightness);
+		this->_channel->reload();
+	}
+
+	void LedDriver::setBrightness(double brightness)
+	{
+		if(brightness < 0.0)
+			brightness = 0.0;
+
+		this->_brightness = brightness;
+		this->_channel->setDutyCycle(brightness);
+		this->_channel->reload();
 	}
 }
