@@ -21,6 +21,8 @@ SET(IO_SOURCES
 
 	io/pwm/pwmchannel.cpp
 	io/pwm/pwmtimer.cpp
+	io/pwm/leddriver.cpp
+	io/pwm/rgbleddriver.cpp
 
 	io/onewire/onewirebus.cpp
 	io/onewire/dhtbus.cpp
