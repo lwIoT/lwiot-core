@@ -29,11 +29,6 @@ namespace lwiot
 			CONSTEXPR ReferenceWrapper(const ReferenceWrapper& other) noexcept : _value(other._value)
 			{ }
 
-			~ReferenceWrapper()
-			{
-				this->_value = nullptr;
-			}
-
 			CONSTEXPR ReferenceWrapper& operator=(type& other)
 			{
 				this->_value = &other;
