@@ -18,7 +18,10 @@ namespace lwiot
 {
 	class LedDriver {
 	public:
-		explicit LedDriver(double brightness = 0.0);
+		constexpr LedDriver() : _brightness(0.0)
+		{ }
+
+		explicit LedDriver(double brightness);
 		explicit LedDriver(PwmChannel& channel, double brightness = 0.0);
 
 		void setChannel(PwmChannel& channel);
