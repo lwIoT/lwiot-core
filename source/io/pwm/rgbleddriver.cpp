@@ -103,6 +103,12 @@ namespace lwiot
 		}
 	}
 
+	/*
+	 * This implementation is based on:
+	 *
+	 *  -> https://github.com/BretStateham/RGBLED/blob/master/RGBLED.cpp
+	 *  -> http://www.splinter.com.au/converting-hsv-to-rgb-colour-using-c/
+	 */
 	void RgbLedDriver::setHSV(uint8_t h, uint8_t s, uint8_t v)
 	{
 		double r = 0;
