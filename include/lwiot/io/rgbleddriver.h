@@ -34,7 +34,7 @@ namespace lwiot
 		void setLedDrivers(const LedDriver &r, const LedDriver &g, const LedDriver &b);
 		void set(uint8_t r, uint8_t g, uint8_t b);
 		void fade(uint8_t r, uint8_t g, uint8_t b, int ms = 30, double stepsize = 50.0);
-		void setHSV(double h, uint8_t s, uint8_t v);
+		void setHSV(int h, double s, double v);
 
 		void rotate(int ms = 30);
 

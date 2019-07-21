@@ -111,7 +111,7 @@ namespace lwiot
 	 *  -> https://github.com/BretStateham/RGBLED/blob/master/RGBLED.cpp
 	 *  -> http://www.splinter.com.au/converting-hsv-to-rgb-colour-using-c/
 	 */
-	void RgbLedDriver::setHSV(double h, uint8_t s, uint8_t v)
+	void RgbLedDriver::setHSV(int h, double s, double v)
 	{
 		double r = 0;
 		double g = 0;
@@ -120,9 +120,9 @@ namespace lwiot
 		auto i = static_cast<int>(::floor(h / 60.0));
 
 		double f = h / 60.0 - i;
-		double pv = v * (1.0 - s);
-		double qv = v * (1.0 - s * f);
-		double tv = v * (1.0 - s * (1 - f));
+		double pv = v * (1 - s);
+		double qv = v * (1 - s * f);
+		double tv = v * (1 - s * (1 - f));
 
 		switch(i) {
 		case 0:
@@ -130,11 +130,13 @@ namespace lwiot
 			g = tv;
 			b = pv;
 			break;
+
 		case 1:
 			r = qv;
 			g = v;
 			b = pv;
 			break;
+
 		case 2:
 			r = pv;
 			g = v;
@@ -145,16 +147,22 @@ namespace lwiot
 			g = qv;
 			b = v;
 			break;
+
 		case 4:
 			r = tv;
 			g = pv;
 			b = v;
 			break;
+
 		case 5:
 			r = v;
 			g = pv;
 			b = qv;
 			break;
+
+		default:
+			print_dbg("Invalid HSV value!\n");
+			return;
 		}
 
 		r *= 255;
