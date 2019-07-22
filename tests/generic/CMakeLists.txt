@@ -53,6 +53,9 @@ target_link_libraries(function-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LI
 add_executable(typetraits-test typetraits_test.cpp)
 target_link_libraries(typetraits-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
+add_executable(leddriver-test leddriver_test.cpp)
+target_link_libraries(leddriver-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
 add_executable(linkedlist_test linkedlist_test.cpp)
 target_link_libraries(linkedlist_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
