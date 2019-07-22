@@ -49,7 +49,7 @@ namespace lwiot
 		this->_blue.setBrightness(b_percent);
 	}
 
-	void RgbLedDriver::fade(bool out, int ms, double stepsize)
+	void RgbLedDriver::fadeBrightness(bool out, int ms, double stepsize)
 	{
 		double r,g,b;
 
@@ -100,7 +100,7 @@ namespace lwiot
 			this->updateDiffValue(rdiff, rstep);
 			this->updateDiffValue(gdiff, gstep);
 			this->updateDiffValue(bdiff, bstep);
-			lwiot_sleep(30);
+			lwiot_sleep(ms);
 		}
 	}
 
