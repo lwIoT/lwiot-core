@@ -23,7 +23,7 @@
 namespace lwiot
 {
 	RgbLedDriver::RgbLedDriver(lwiot::PwmChannel &r, lwiot::PwmChannel &g, lwiot::PwmChannel &b) :
-			_red(r), _green(g), _blue(b)
+			_red(r), _green(g), _blue(b), _r(0), _g(0), _b(0)
 	{
 	}
 
@@ -49,16 +49,31 @@ namespace lwiot
 		this->_blue.setBrightness(b_percent);
 	}
 
-	void RgbLedDriver::fade(uint8_t r, uint8_t g, uint8_t b, int ms, double stepsize)
+	void RgbLedDriver::fade(bool out, int ms, double stepsize)
 	{
-		double r_percent, rdiff;
-		double g_percent, gdiff;
-		double b_percent, bdiff;
-		double rstep, gstep, bstep;
+		double r,g,b;
 
-		r_percent = (static_cast<double>(r) / UINT8_MAX) * 100.0;
-		g_percent = (static_cast<double>(g) / UINT8_MAX) * 100.0;
-		b_percent = (static_cast<double>(b) / UINT8_MAX) * 100.0;
+		if(out) {
+			this->_r = this->_red.brightness();
+			this->_g = this->_green.brightness();
+			this->_b = this->_blue.brightness();
+
+			r = g = b = 0.0;
+		} else {
+			r = this->_r;
+			g = this->_g;
+			b = this->_b;
+		}
+
+		this->fade(r, g, b, ms, stepsize);
+	}
+
+	void RgbLedDriver::fade(double r_percent, double g_percent, double b_percent, int ms, double stepsize)
+	{
+		double rdiff;
+		double gdiff;
+		double bdiff;
+		double rstep, gstep, bstep;
 
 		rdiff = r_percent - this->_red.brightness();
 		gdiff = g_percent - this->_green.brightness();
@@ -87,6 +102,19 @@ namespace lwiot
 			this->updateDiffValue(bdiff, bstep);
 			lwiot_sleep(30);
 		}
+	}
+
+	void RgbLedDriver::fade(uint8_t r, uint8_t g, uint8_t b, int ms, double stepsize)
+	{
+		double r_percent;
+		double g_percent;
+		double b_percent;
+
+		r_percent = (static_cast<double>(r) / UINT8_MAX) * 100.0;
+		g_percent = (static_cast<double>(g) / UINT8_MAX) * 100.0;
+		b_percent = (static_cast<double>(b) / UINT8_MAX) * 100.0;
+
+		this->fade(r_percent, g_percent, b_percent, ms, stepsize);
 	}
 
 	void RgbLedDriver::updateDiffValue(double &diff, double &step)
