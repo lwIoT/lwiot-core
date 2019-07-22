@@ -123,7 +123,7 @@ namespace lwiot
 
 	void HardwareI2CAlgorithm::setFrequency(const uint32_t &freq)
 	{
-		UniqueLock<Lock>(this->_lock);
+		UniqueLock<Lock> lock(this->_lock);
 		I2CAlgorithm::setFrequency(freq);
 	}
 
@@ -354,25 +354,25 @@ namespace lwiot
 		return true;
 	}
 
-	void RAM_ATTR HardwareI2CAlgorithm::sdahi() const
+	void HardwareI2CAlgorithm::sdahi() const
 	{
 		this->_sda << true;
 		lwiot_udelay(MaxRiseTime);
 	}
 
-	void RAM_ATTR HardwareI2CAlgorithm::sdalow() const
+	void HardwareI2CAlgorithm::sdalow() const
 	{
 		this->_sda << false;
 		lwiot_udelay(MaxRiseTime);
 	}
 
-	void RAM_ATTR HardwareI2CAlgorithm::scllow() const
+	void HardwareI2CAlgorithm::scllow() const
 	{
 		this->_scl << false;
 		lwiot_udelay(MaxRiseTime);
 	}
 
-	int RAM_ATTR HardwareI2CAlgorithm::sclhi() const
+	int HardwareI2CAlgorithm::sclhi() const
 	{
 		time_t tmo;
 		bool scl;
