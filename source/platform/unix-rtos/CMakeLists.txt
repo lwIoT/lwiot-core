@@ -15,6 +15,7 @@ SET(HOSTED_DIR ${PROJECT_SOURCE_DIR}/source/platform/hosted)
 SET(UNIX_SOURCE_FILES
 	${HOSTED_DIR}/hostedgpiochip.cpp
 	${HOSTED_DIR}/hardwarei2calgorithm.cpp
+	${HOSTED_DIR}/hostedwatchdog.cpp
 	${HOSTED_DIR}/i2chal.c
 	${HOSTED_DIR}/i2cdbg.c
 )

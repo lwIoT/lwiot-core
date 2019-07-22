@@ -13,6 +13,7 @@ SET(UNIX_SOURCE_FILES
 	${UNIX_DIR}/unix.c
 	${HOSTED_DIR}/timer.c
 	${HOSTED_DIR}/hostedgpiochip.cpp
+	${HOSTED_DIR}/hostedwatchdog.cpp
 	${HOSTED_DIR}/hardwarei2calgorithm.cpp
 	${HOSTED_DIR}/i2chal.c
 	${HOSTED_DIR}/i2cdbg.c
