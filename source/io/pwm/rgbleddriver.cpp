@@ -100,7 +100,9 @@ namespace lwiot
 			this->updateDiffValue(rdiff, rstep);
 			this->updateDiffValue(gdiff, gstep);
 			this->updateDiffValue(bdiff, bstep);
-			lwiot_sleep(ms);
+
+			System::delay(ms);
+			wdt.reset();
 		}
 	}
 
