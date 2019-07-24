@@ -70,7 +70,7 @@ namespace lwiot
 	{
 		this->_server->connect();
 		auto value = this->_server->bind();
-		//this->_server->setTimeout(1);
+		this->_server->setTimeout(HTTP_MAX_SEND_WAIT);
 		return value;
 	}
 
@@ -158,6 +158,9 @@ namespace lwiot
 				print_dbg("No client connected..\n");
 				return;
 			}
+
+			if(!this->_currentClient->connected())
+				return;
 
 			_currentClient->setTimeout(HTTP_MAX_SEND_WAIT);
 			_currentStatus = HC_WAIT_READ;
