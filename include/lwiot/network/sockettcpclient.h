@@ -28,11 +28,11 @@ namespace lwiot
 		explicit SocketTcpClient(const IPAddress& addr, uint16_t port);
 		explicit SocketTcpClient(const String& host, uint16_t port);
 		explicit SocketTcpClient(const SocketTcpClient& other) ;
-		explicit SocketTcpClient(SocketTcpClient&& other);
+		explicit SocketTcpClient(SocketTcpClient&& other) noexcept ;
 		~SocketTcpClient() override;
 
 		SocketTcpClient& operator =(const SocketTcpClient& client);
-		SocketTcpClient& operator =( SocketTcpClient&& client);
+		SocketTcpClient& operator =( SocketTcpClient&& client) noexcept ;
 
 		bool operator ==(const SocketTcpClient& other);
 		bool operator !=(const SocketTcpClient& other);

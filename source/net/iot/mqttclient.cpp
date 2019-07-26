@@ -57,13 +57,27 @@ namespace lwiot
 
 	void MqttClient::begin(lwiot::TcpClient &client)
 	{
+		this->setClient(client);
+	}
+
+	void MqttClient::setClient(lwiot::TcpClient &client)
+	{
+		if(this->_io) {
+			this->disconnect();
+		}
+
 		this->_io = client;
 		this->_io->setTimeout(MQTT_TIMEOUT);
 	}
 
 	bool MqttClient::reconnect()
 	{
-		return this->_io->connect(this->_io->remote(), this->_io->port());
+		auto ip = this->_io->remote();
+		auto port = this->_io->port();
+
+		print_dbg("Reconnecting to: %s:%u\n", this->_io->remote().toString().c_str(), this->_io->port());
+		auto rv = this->_io->connect(ip, port);
+		return rv;
 	}
 
 	bool MqttClient::publish(const lwiot::String &topic, const lwiot::String &data, bool retained)
@@ -80,7 +94,7 @@ namespace lwiot
 		auto rv = false;
 		uint8_t header = MQTTPUBLISH;
 
-		if(isConnected()) {
+		if(this->isConnected()) {
 			if(MQTT_MAX_PACKET_SIZE < MQTT_MAX_HEADER_SIZE + 2 + topic.length() + plength)
 				return false;
 
@@ -320,7 +334,7 @@ namespace lwiot
 			bool result = this->_io->connected();
 
 			if(!result)
-				result = this->_io->connect(this->_addr, this->_port);
+				result = this->_io->connect(this->_io->remote(), this->_io->port());
 
 			if(result) {
 				uint16_t length = MQTT_MAX_HEADER_SIZE;

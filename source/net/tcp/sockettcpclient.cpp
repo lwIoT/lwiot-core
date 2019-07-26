@@ -30,13 +30,12 @@ namespace lwiot
 		this->connect();
 	}
 
-	SocketTcpClient::SocketTcpClient(const lwiot::String &host, uint16_t port) : TcpClient(0, port), _socket(nullptr)
+	SocketTcpClient::SocketTcpClient(const lwiot::String &host, uint16_t port) : TcpClient(IPAddress(), port), _socket(nullptr)
 	{
 		remote_addr_t remote;
 
 		remote.version = 4;
 		dns_resolve_host(host.c_str(), &remote);
-		//this->_remote_addr = IPAddress(remote);
 
 		this->_remote_addr = stl::move(IPAddress(remote));
 
@@ -48,7 +47,8 @@ namespace lwiot
 		this->connect();
 	}
 
-	SocketTcpClient::SocketTcpClient(lwiot::SocketTcpClient &&other) : TcpClient(other._remote_addr, other._remote_port), _socket(nullptr)
+	SocketTcpClient::SocketTcpClient(lwiot::SocketTcpClient &&other) noexcept :
+		TcpClient(other._remote_addr, other._remote_port), _socket(nullptr)
 	{
 		this->_socket = other._socket;
 		other._socket = nullptr;
@@ -78,7 +78,7 @@ namespace lwiot
 		return *this;
 	}
 
-	SocketTcpClient& SocketTcpClient::operator=(SocketTcpClient &&client)
+	SocketTcpClient& SocketTcpClient::operator=(SocketTcpClient &&client) noexcept
 	{
 		if(this->_socket == client._socket)
 			return *this;
@@ -86,9 +86,12 @@ namespace lwiot
 		if(this->connected())
 			this->close();
 
-		this->_remote_addr = client._remote_addr;
-		this->_remote_port = client.port();
+		this->_remote_addr = stl::move( client._remote_addr);
+		this->_remote_port = client._remote_port;
 		this->_socket = client._socket;
+
+		client._socket = nullptr;
+		client._remote_port = 0;
 
 		return *this;
 	}
@@ -116,7 +119,7 @@ namespace lwiot
 	bool SocketTcpClient::connect(const lwiot::IPAddress &addr, uint16_t port)
 	{
 		this->_remote_addr = addr;
-		this->_remote_port = port;
+		this->_remote_port = to_netorders(port);
 
 		return this->connect();
 	}
@@ -128,7 +131,14 @@ namespace lwiot
 		this->_remote_addr.toRemoteAddress(remote);
 		remote.port = this->_remote_port;
 
+		if(this->_socket != nullptr) {
+			this->close();
+		}
+
 		this->_socket = tcp_socket_create(&remote);
+
+		if(this->_timeout != 0)
+			this->setTimeout(this->_timeout);
 
 		return this->_socket != nullptr;
 	}
@@ -142,7 +152,20 @@ namespace lwiot
 		if(dns_resolve_host(hname, &remote) != -EOK)
 			return false;
 
+		remote.port = to_netorders(port);
+
+		if(this->_socket != nullptr) {
+			this->close();
+		}
+
 		this->_socket = tcp_socket_create(&remote);
+
+		if(this->_timeout != 0)
+			this->setTimeout(this->_timeout);
+
+		this->_remote_port = to_netorders(port);
+		this->_remote_addr = stl::move(IPAddress(remote));
+
 		return this->_socket != nullptr;
 	}
 

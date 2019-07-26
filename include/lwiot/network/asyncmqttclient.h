@@ -27,13 +27,18 @@ namespace lwiot
 		typedef Function<void(const ByteBuffer&)> AsyncHandler;
 		typedef Function<void(void)> ReconnectHandler;
 
-		explicit AsyncMqttClient();
-		explicit AsyncMqttClient(const ReconnectHandler& handler);
+		explicit AsyncMqttClient(int tmo = 1000);
+		explicit AsyncMqttClient(const ReconnectHandler& handler, int tmo = 1000);
+		explicit AsyncMqttClient(const AsyncMqttClient& rhs) = delete;
+		explicit AsyncMqttClient(AsyncMqttClient&& rhs) noexcept  = delete;
 		virtual ~AsyncMqttClient();
+
+		AsyncMqttClient& operator=(const AsyncMqttClient& rhs) = delete;
+		AsyncMqttClient& operator=(AsyncMqttClient&& rhs) noexcept  = delete;
 
 		void setReconnectHandler(const ReconnectHandler& handler);
 
-		void start(TcpClient& client);
+		bool start(TcpClient& client);
 		void stop();
 
 		bool connect(const String& id, const String& user, const String& pass,
@@ -82,6 +87,7 @@ namespace lwiot
 		uint8_t _will_qos;
 		bool _will_retain;
 		bool _clean;
+		int _tmo;
 
 		/* Methods */
 		void invoke(const String& topic, const ByteBuffer& data) const;

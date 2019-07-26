@@ -41,6 +41,11 @@ namespace lwiot
 				return *this;
 			}
 
+			constexpr operator bool() const
+			{
+				return this->_value != nullptr;
+			}
+
 			constexpr type& get() const noexcept
 			{
 				assert(this->_value != nullptr);

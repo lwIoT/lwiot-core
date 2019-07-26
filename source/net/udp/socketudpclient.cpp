@@ -79,6 +79,7 @@ namespace lwiot
 	{
 		if(!this->_noclose && this->_socket != nullptr) {
 			socket_close(this->_socket);
+			this->_socket = nullptr;
 		}
 	}
 

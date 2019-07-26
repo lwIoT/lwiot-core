@@ -65,7 +65,7 @@ namespace lwiot
 
 	uint16_t TcpClient::port() const
 	{
-		return this->_remote_port;
+		return to_netorders(this->_remote_port);
 	}
 
 	uint8_t TcpClient::read()

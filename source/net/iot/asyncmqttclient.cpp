@@ -18,15 +18,19 @@
 #include <lwiot/network/asyncmqttclient.h>
 
 #include <lwiot/kernel/functionalthread.h>
+#include <lwiot/kernel/uniquetrylock.h>
 #include <lwiot/kernel/lock.h>
 
 namespace lwiot
 {
-	AsyncMqttClient::AsyncMqttClient() : MqttClient(), _executor("mqtt"), _lock(false), _running(false)
+	AsyncMqttClient::AsyncMqttClient(int tmo) :
+		MqttClient(), _executor("mqtt"), _lock(false),
+		_running(false), _will_qos(0), _will_retain(false), _clean(true), _tmo(tmo)
 	{
 	}
 
-	AsyncMqttClient::AsyncMqttClient(const lwiot::AsyncMqttClient::ReconnectHandler &handler) : AsyncMqttClient()
+	AsyncMqttClient::AsyncMqttClient(const lwiot::AsyncMqttClient::ReconnectHandler &handler, int tmo) :
+		AsyncMqttClient(tmo)
 	{
 		this->_reconnect_handler = handler;
 	}
@@ -48,20 +52,31 @@ namespace lwiot
 		this->_reconnect_handler = handler;
 	}
 
-	void AsyncMqttClient::start(lwiot::TcpClient &client)
+	bool AsyncMqttClient::start(lwiot::TcpClient &client)
 	{
-		ScopedLock lock(this->_lock);
+		UniqueTryLock<Lock> lock(this->_lock, this->_tmo);
+
+		if(!lock.locked())
+			return false;
 
 		this->begin(client);
 		this->_running = true;
 		this->_executor.start([&]() -> void {
 			this->run();
 		});
+
+		return true;
 	}
 
 	void AsyncMqttClient::stop()
 	{
 		ScopedLock lock(this->_lock);
+
+		if(!this->_running) {
+			this->disconnect();
+			return;
+		}
+
 		this->_running = false;
 
 		lock.unlock();
@@ -88,6 +103,10 @@ namespace lwiot
 			ScopedLock lock(this->_lock);
 
 			while(!MqttClient::connected() && this->_running && this->_id.length() != 0) {
+				lock.unlock();
+				Thread::sleep(100);
+				lock.lock();
+
 				if(!this->reconnect())
 					continue;
 
@@ -95,9 +114,15 @@ namespace lwiot
 				                    this->_will_topic, this->_will_qos,
 				                    this->_will_retain, this->_will, this->_clean);
 
+				lock.unlock();
+				Thread::sleep(100);
+				lock.lock();
+
 				if(MqttClient::connected()) {
 					lock.unlock();
+
 					this->_reconnect_handler();
+					Thread::sleep(100);
 					lock.lock();
 				}
 
@@ -116,13 +141,21 @@ namespace lwiot
 
 	bool AsyncMqttClient::unsubscribe(const lwiot::String &topic)
 	{
-		ScopedLock lock(this->_lock);
+		UniqueTryLock<Lock> lock(this->_lock, this->_tmo);
+
+		if(!lock.locked())
+			return false;
+
 		return MqttClient::unsubscribe(topic);
 	}
 
 	bool AsyncMqttClient::publish(const lwiot::String &topic, const lwiot::ByteBuffer &data, bool retained)
 	{
-		ScopedLock lock(this->_lock);
+		UniqueTryLock<Lock> lock(this->_lock, this->_tmo);
+
+		if(!lock.locked())
+			return false;
+
 		return MqttClient::publish(topic, data, retained);
 	}
 
@@ -130,7 +163,10 @@ namespace lwiot
 	                              const lwiot::String &willTopic, uint8_t willQos, bool willRetain,
 	                              const lwiot::String &willMessage, bool cleanSession)
 	{
-		ScopedLock lock(this->_lock);
+		UniqueTryLock<Lock> lock(this->_lock, this->_tmo);
+
+		if(!lock.locked())
+			return false;
 
 		this->_id = id;
 		this->_user = user;
@@ -146,7 +182,10 @@ namespace lwiot
 
 	bool AsyncMqttClient::subscribe(const String &topic, AsyncMqttClient::AsyncHandler handler, QoS qos)
 	{
-		ScopedLock lock(this->_lock);
+		UniqueTryLock<Lock> lock(this->_lock, this->_tmo);
+
+		if(!lock.locked())
+			return false;
 
 		this->_handlers.add(topic, stl::move(handler));
 		return MqttClient::subscribe(topic, qos);

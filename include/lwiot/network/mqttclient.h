@@ -36,6 +36,7 @@ namespace lwiot
 		virtual ~MqttClient() = default;
 
 		void begin(TcpClient& client);
+		void setClient(TcpClient& client);
 		bool reconnect();
 
 		void setCallback(const Handler& cb)
@@ -77,8 +78,6 @@ namespace lwiot
 		static constexpr int MQTT_SOCKET_TIMEOUT  =  15;
 
 	private:
-		uint16_t _port;
-		IPAddress _addr;
 		stl::ReferenceWrapper<TcpClient> _io;
 		Stream* _stream;
 		int _state;

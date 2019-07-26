@@ -112,8 +112,8 @@ namespace lwiot {
 			{
 				auto result = lwiot_mutex_lock(this->_lock, tmo) == -EOK;
 
-				if(result == -EOK)
-					++this->_lockdepth;
+				if(result)
+					this->_lockdepth += 1;
 
 				return result;
 			}
