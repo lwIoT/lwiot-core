@@ -52,10 +52,12 @@ namespace lwiot
 		if(this->_host.length() <= 0)
 			return;
 
-
 		remote.version = 4;
-		dns_resolve_host(this->_host.c_str(), &remote);
-		this->_remote = stl::move(IPAddress(remote));
+		if(dns_resolve_host(this->_host.c_str(), &remote) != -EOK) {
+			this->_remote = stl::move(IPAddress(0,0,0,0));
+		} else {
+			this->_remote = stl::move(IPAddress(remote));
+		}
 	}
 
 	uint8_t UdpClient::read()
