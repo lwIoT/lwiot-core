@@ -13,7 +13,7 @@ namespace lwiot
 {
 	class Watchdog {
 	public:
-		virtual bool enable(uint32_t tmo = 2000);
+		virtual bool enable(uint32_t tmo);
 		virtual bool disable();
 		virtual void reset() = 0;
 
