@@ -59,6 +59,8 @@
 #cmakedefine ARDUINO_UNO
 #cmakedefine CONFIG_PIN_VECTOR
 
+#cmakedefine CONFIG_DNS_TIMEOUT ${CONFIG_DNS_TIMEOUT}
+
 #cmakedefine ESP32
 #cmakedefine ESP8266
 #ifndef AVR
