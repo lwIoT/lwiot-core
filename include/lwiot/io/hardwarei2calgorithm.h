@@ -26,10 +26,10 @@ namespace lwiot
 		explicit HardwareI2CAlgorithm(const GpioPin& scl, const GpioPin& sda, uint32_t frequency);
 		explicit HardwareI2CAlgorithm(const GpioPin& scl, const GpioPin& sda);
 
-		explicit HardwareI2CAlgorithm(HardwareI2CAlgorithm&& other) noexcept;
-		explicit HardwareI2CAlgorithm(const HardwareI2CAlgorithm& other) noexcept;
+		HardwareI2CAlgorithm(HardwareI2CAlgorithm&& other) noexcept;
+		HardwareI2CAlgorithm(const HardwareI2CAlgorithm& other) noexcept;
 
-		virtual ~HardwareI2CAlgorithm();
+		~HardwareI2CAlgorithm() override;
 
 		HardwareI2CAlgorithm& operator=(HardwareI2CAlgorithm&& rhs) noexcept;
 		HardwareI2CAlgorithm& operator=(const HardwareI2CAlgorithm& other) noexcept;
