@@ -154,10 +154,8 @@ namespace lwiot
 			this->_currentClient.reset();
 			this->_currentClient = stl::move(this->_server->accept());
 
-			if(this->_currentClient.get() == nullptr) {
-				print_dbg("No client connected..\n");
+			if(this->_currentClient.get() == nullptr)
 				return;
-			}
 
 			if(!this->_currentClient->connected())
 				return;
