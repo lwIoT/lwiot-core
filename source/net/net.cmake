@@ -17,6 +17,7 @@ SET(NET_SOURCES
 	net/udp/socketudpclient.cpp
 	net/udp/socketudpserver.cpp
 	net/udp/dnsserver.cpp
+	net/udp/dnsclient.cpp
 
 	net/util/base64.c
 	net/util/captiveportal.cpp
