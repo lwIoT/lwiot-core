@@ -18,12 +18,17 @@
 #include <lwiot/network/asyncmqttclient.h>
 #include <lwiot/network/sockettcpserver.h>
 #include <lwiot/network/sockettcpclient.h>
+#include <lwiot/network/dnsclient.h>
+
 #include <lwiot/kernel/thread.h>
 
 class MqttClientTest : public lwiot::Functor {
 	void run() override
 	{
-		lwiot::SocketTcpClient client("mail.sonatolabs.com", 1883);
+		lwiot::DnsClient dns;
+		lwiot::IPAddress host = lwiot::stl::move(dns.lookup("mail.sonatolabs.com"));
+
+		lwiot::SocketTcpClient client(host, 1883);
 		lwiot::AsyncMqttClient mqtt;
 		int a = 0,
 		    b = 0;
