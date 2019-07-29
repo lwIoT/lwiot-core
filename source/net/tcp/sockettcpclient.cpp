@@ -160,13 +160,16 @@ namespace lwiot
 
 		this->_socket = tcp_socket_create(&remote);
 
+		if(this->_socket == nullptr)
+			return false;
+
 		if(this->_timeout != 0)
 			this->setTimeout(this->_timeout);
 
 		this->_remote_port = to_netorders(port);
 		this->_remote_addr = stl::move(IPAddress(remote));
 
-		return this->_socket != nullptr;
+		return true;
 	}
 
 	void SocketTcpClient::close()
