@@ -4,8 +4,6 @@ if(NOT CONFIG_STANDALONE)
 	SET(CONFIG_TASK_PRIO  8 CACHE STRING "Task priority.")
 endif()
 
-SET(CONFIG_DNS_TIMEOUT 0 CACHE STRING "DNS timeout.")
-
 SET(HAVE_DEBUG False CACHE BOOL "Enable debug output.")
 SET(CONFIG_BUILD_TESTS False CACHE BOOL "Build unit tests.")
 SET(CONFIG_PIN_VECTOR False CACHE BOOL "Build a vector of pins the the GPIO chip.")
