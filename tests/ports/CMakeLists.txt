@@ -27,14 +27,14 @@ target_link_libraries(thread-test lwiot ${PLATFORM} lwiot  ${LWIOT_SYSTEM_LIBS})
 add_executable(events-test events_test.cpp)
 target_link_libraries(events-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
 
-add_executable(dispatchqueue-policy-test dispatchqueue-policy_test.cpp)
-target_link_libraries(dispatchqueue-policy-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+#add_executable(dispatchqueue-policy-test dispatchqueue-policy_test.cpp)
+#target_link_libraries(dispatchqueue-policy-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
 
-add_executable(dispatchqueue-test dispatchqueue_test.cpp)
-target_link_libraries(dispatchqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+#add_executable(dispatchqueue-test dispatchqueue_test.cpp)
+#target_link_libraries(dispatchqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
 
-add_executable(eventqueue-test eventqueue_test.cpp)
-target_link_libraries(eventqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+#add_executable(eventqueue-test eventqueue_test.cpp)
+#target_link_libraries(eventqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
 
 add_executable(hardwarei2c-test hardwarei2c_test.cpp)
 target_link_libraries(hardwarei2c-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
