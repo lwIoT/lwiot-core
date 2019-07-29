@@ -57,8 +57,7 @@ namespace lwiot
 			this->on(stl::move(s), stl::forward<Func>(handler));
 		}
 
-		[[stack_protect]]
-		inline void signal(const stl::String& key, Args&&... args)
+		void signal(const stl::String& key, Args&&... args)
 		{
 			time_t tick = lwiot_tick_ms();
 			typename Base::LockGuard g(this->_lock);

@@ -148,8 +148,21 @@ namespace lwiot
 				{
 				}
 
-				Work(Work&& other) = default;
-				Work(const Work& other) = default;
+				Work(Work&& rhs) noexcept
+				{
+					this->_is_allocated = rhs._is_allocated;
+					this->_buffer = stl::move(rhs._buffer);
+					this->_handler = stl::move(rhs._handler);
+
+					rhs._is_allocated = false;
+				}
+
+				Work(const Work& other)
+				{
+					this->_is_allocated = other._is_allocated;
+					this->_buffer = other._buffer;
+					this->_handler = other._handler;
+				}
 
 				template <typename T>
 				Work(T&& handler) : _handler(handler), _buffer(), _is_allocated(false)
@@ -168,7 +181,7 @@ namespace lwiot
 
 					this->_is_allocated = rhs._is_allocated;
 					this->_buffer = stl::move(rhs._buffer);
-					this->_handler = stl::move(this->_handler);
+					this->_handler = stl::move(rhs._handler);
 
 					rhs._is_allocated = false;
 
@@ -182,7 +195,7 @@ namespace lwiot
 
 					this->_is_allocated = rhs._is_allocated;
 					this->_buffer = rhs._buffer;
-					this->_handler = this->_handler;
+					this->_handler = rhs._handler;
 
 					return *this;
 				}
