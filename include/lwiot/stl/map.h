@@ -77,6 +77,11 @@ namespace lwiot
 				this->_data.clear();
 			}
 
+			void clear()
+			{
+				this->_data.clear();
+			}
+
 			Map<K, V> &operator=(const Map<K, V> &rhs)
 			{
 				return *this;
