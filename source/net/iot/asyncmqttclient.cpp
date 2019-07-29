@@ -119,8 +119,9 @@ namespace lwiot
 				lock.lock();
 
 				if(MqttClient::connected()) {
-					lock.unlock();
+					this->_handlers.clear();
 
+					lock.unlock();
 					this->_reconnect_handler();
 					Thread::sleep(100);
 					lock.lock();
