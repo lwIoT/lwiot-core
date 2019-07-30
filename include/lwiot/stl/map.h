@@ -95,12 +95,26 @@ namespace lwiot
 
 			CONSTEXPR void add(const MapKey &key, const MapValue &value)
 			{
+				for(auto& entry : this->_data) {
+					if(entry == key) {
+						entry.value = value;
+						return;
+					}
+				}
+
 				Entry e(key, value);
 				this->_data.push_front(e);
 			}
 
 			CONSTEXPR void add(MapKey &&key, MapValue &&value)
 			{
+				for(auto& entry : this->_data) {
+					if(entry == key) {
+						entry.value = stl::move(value);
+						return;
+					}
+				}
+
 				Entry e(stl::forward<MapKey>(key), stl::forward<MapValue>(value));
 				this->_data.push_front(stl::move(e));
 			}
