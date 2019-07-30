@@ -108,6 +108,8 @@ SET(GENERIC_HEADERS
 	lwiot/io/adcpin.h
 	lwiot/io/watchdog.h
 	lwiot/io/pwm.h
+	lwiot/io/leddriver.h
+	lwiot/io/rgbleddriver.h
 	lwiot/io/i2cmessage.h
 	lwiot/io/uart.h
 	lwiot/io/spimessage.h
@@ -146,8 +148,6 @@ SET(GENERIC_HEADERS
 	lwiot/util/json.h
 	lwiot/util/datetime.h
 	lwiot/kernel/atomic.h
-	#lwiot/kernel/dispatchqueue.h
-	#lwiot/kernel/eventqueue.h
 	lwiot/util/measurementvector.h
 	lwiot/util/defaultallocator.h
 	lwiot/util/pair.h
