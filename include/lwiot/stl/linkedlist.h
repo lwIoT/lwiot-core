@@ -108,7 +108,7 @@ namespace lwiot
 					return *this;
 				}
 
-				CONSTEXPR Iterator operator++(int)
+				CONSTEXPR const Iterator operator++(int)
 				{
 					Iterator iter = *this;
 
@@ -189,7 +189,7 @@ namespace lwiot
 				return *this;
 			}
 
-			LinkedList &operator=(LinkedList<T> &&rhs)
+			LinkedList &operator=(LinkedList<T> &&rhs) noexcept
 			{
 				if(this->_size > 0UL)
 					this->clear();
