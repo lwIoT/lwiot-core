@@ -64,11 +64,11 @@ namespace lwiot
 			{
 			}
 
-			CONSTEXPR explicit Map(const Map &map) : _data(map._data)
+			CONSTEXPR Map(const Map &map) : _data(map._data)
 			{
 			}
 
-			CONSTEXPR explicit Map(Map &&map) : _data(stl::move(map._data))
+			CONSTEXPR Map(Map &&map) noexcept : _data(stl::move(map._data))
 			{
 			}
 
@@ -87,7 +87,7 @@ namespace lwiot
 				return *this;
 			}
 
-			CONSTEXPR Map<K, V> &operator=(Map<K, V> &&rhs)
+			CONSTEXPR Map<K, V> &operator=(Map<K, V> &&rhs) noexcept
 			{
 				this->_data = stl::move(rhs._data);
 				return *this;
