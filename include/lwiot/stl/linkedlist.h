@@ -285,6 +285,28 @@ namespace lwiot
 				return *this->begin();
 			}
 
+			CONSTEXPR value_type& back()
+			{
+				if(this->_head == nullptr)
+					return this->front();
+
+				if(this->_head->prev == nullptr)
+					return this->front();
+
+				return this->_head->prev->_data;
+			}
+
+			CONSTEXPR const value_type& back() const
+			{
+				if(this->_head == nullptr)
+					return this->front();
+
+				if(this->_head->prev == nullptr)
+					return this->front();
+
+				return this->_head->prev->_data;
+			}
+
 			CONSTEXPR void push_back(const value_type &data)
 			{
 				node_type *node = new node_type(data);
@@ -337,10 +359,10 @@ namespace lwiot
 				return this->size() == 0UL;
 			}
 
-			friend struct list::Node<T>;
 
 		private:
 
+			friend struct list::Node<T>;
 			node_type *_head;
 			size_t _size;
 
