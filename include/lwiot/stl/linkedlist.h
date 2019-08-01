@@ -213,7 +213,7 @@ namespace lwiot
 				return stl::exchange(node->_data, stl::forward<value_type &&>(value));
 			}
 
-			CONSTEXPR void remove(const node_type *node)
+			void remove(const node_type *node)
 			{
 				if(!removeAndKeepNode(node))
 					return;
@@ -221,7 +221,7 @@ namespace lwiot
 				delete node;
 			}
 
-			CONSTEXPR void erase(const_iterator&  iter)
+			void erase(const_iterator&  iter)
 			{
 				this->remove(iter.node());
 
@@ -229,7 +229,7 @@ namespace lwiot
 					iter.clear();
 			}
 
-			CONSTEXPR void erase(iterator& iter)
+			void erase(iterator& iter)
 			{
 				this->remove(iter.node());
 
@@ -237,7 +237,7 @@ namespace lwiot
 					iter.clear();
 			}
 
-			CONSTEXPR void copy(const LinkedList<T> &list)
+			void copy(const LinkedList<T> &list)
 			{
 				for(const value_type &value : list) {
 					this->push_back(value);
@@ -307,31 +307,31 @@ namespace lwiot
 				return this->_head->prev->_data;
 			}
 
-			CONSTEXPR void push_back(const value_type &data)
+			void push_back(const value_type &data)
 			{
 				node_type *node = new node_type(data);
 				this->add_back(node);
 			}
 
-			CONSTEXPR void push_back(value_type &&data)
+			void push_back(value_type &&data)
 			{
 				node_type *node = new node_type(stl::forward<value_type>(data));
 				this->add_back(node);
 			}
 
-			CONSTEXPR void push_front(const value_type &data)
+			void push_front(const value_type &data)
 			{
 				node_type *node = new node_type(data);
 				this->add_front(node);
 			}
 
-			CONSTEXPR void push_front(value_type &&data)
+			void push_front(value_type &&data)
 			{
 				node_type *node = new node_type(stl::forward<value_type>(data));
 				this->add_front(node);
 			}
 
-			CONSTEXPR void clear()
+			void clear()
 			{
 				if(this->_size == 0UL)
 					return;
@@ -344,6 +344,7 @@ namespace lwiot
 				}
 
 				size_t cached = this->_size;
+
 				for(size_t idx = 0; idx < cached; idx++) {
 					this->remove(this->_head);
 				}
@@ -366,7 +367,7 @@ namespace lwiot
 			node_type *_head;
 			size_t _size;
 
-			CONSTEXPR bool removeAndKeepNode(const node_type *node)
+			constexpr bool removeAndKeepNode(const node_type *node)
 			{
 				if(this->_head == nullptr || !(node->next || node->prev))
 					return false;
@@ -399,7 +400,7 @@ namespace lwiot
 				prev->next = lnew;
 			}
 
-			CONSTEXPR void add_front(node_type *node)
+			constexpr void add_front(node_type *node)
 			{
 				node->prev = node->next = node;
 				this->_size++;
@@ -413,7 +414,7 @@ namespace lwiot
 				this->_head = node;
 			}
 
-			CONSTEXPR void add_back(node_type *node)
+			constexpr void add_back(node_type *node)
 			{
 				assert(node);
 
