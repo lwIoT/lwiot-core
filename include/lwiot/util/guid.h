@@ -20,7 +20,7 @@ namespace lwiot
 	public:
 		explicit Guid();
 		Guid(const Guid& other);
-		explicit Guid(Guid&& other) noexcept;
+		Guid(Guid&& other) noexcept;
 
 		Guid& operator=(const Guid& rhs);
 		Guid& operator=(Guid&& rhs) noexcept;
