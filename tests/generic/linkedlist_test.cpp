@@ -18,7 +18,7 @@
 #include <lwiot/stl/foreach.h>
 
 struct Token {
-	explicit Token(const Token&) = default;
+	Token(const Token&) = default;
 	Token( Token&& token) = default;
 
 	Token(int& x, double y, const char *str) : x(x), y(y), tst(str)
@@ -38,13 +38,74 @@ struct Token {
 
 	bool operator==(const Token& other)
 	{
-		return other.x == x;
+		return other.x.get() == this->x.get();
 	}
 
 	lwiot::stl::ReferenceWrapper<int> x;
 	double y;
 	lwiot::String tst;
 };
+
+static bool should_assert = true;
+
+class Entry {
+public:
+	explicit Entry(lwiot::stl::String data) : _data(lwiot::stl::move(data))
+	{ }
+
+	Entry(Entry&& other) noexcept
+	{
+		this->_data = lwiot::stl::move(other._data);
+	}
+
+	~Entry()
+	{
+		if(should_assert)
+			assert(this->_data.length() == 0);
+	}
+
+	Entry& operator=(Entry&& rhs) noexcept
+	{
+		this->_data = lwiot::stl::move(rhs._data);
+		return *this;
+	}
+
+	lwiot::stl::String _data;
+};
+
+static void append_test()
+{
+	lwiot::stl::LinkedList<Entry> ll;
+	lwiot::stl::LinkedList<Entry> temp;
+	Entry e1("Hello");
+	Entry e2("World!");
+	Entry e3("Test");
+	Entry e4("Again");
+	Entry e5("This");
+	Entry e6("is");
+	Entry e7("a");
+	Entry e8("list!");
+
+	ll.push_back(lwiot::stl::move(e1));
+	ll.push_back(lwiot::stl::move(e2));
+	ll.push_back(lwiot::stl::move(e3));
+	ll.push_back(lwiot::stl::move(e4));
+
+	temp.push_back(lwiot::stl::move(e5));
+	temp.push_back(lwiot::stl::move(e6));
+	temp.push_back(lwiot::stl::move(e7));
+	temp.push_back(lwiot::stl::move(e8));
+
+
+	lwiot::stl::foreach(temp, [&](lwiot::stl::LinkedList<Entry>::iterator& iter) {
+		ll.push_back(lwiot::stl::move(*iter));
+	});
+
+	temp.clear();
+	should_assert = false;
+
+	assert(ll.back()._data == "list!");
+}
 
 int main(int argc, char **argv)
 {
@@ -97,6 +158,8 @@ int main(int argc, char **argv)
 	}
 
 	list.clear();
+
+	append_test();
 	wait_close();
 	lwiot_destroy();
 

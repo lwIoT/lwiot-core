@@ -15,6 +15,7 @@
 int main(int argc, char **argv)
 {
 	lwiot_init();
+	lwiot::stl::String s1("test..");
 
 	lwiot::stl::Map<int, lwiot::String> m1;
 	m1.add(5, "Hello");
@@ -27,10 +28,12 @@ int main(int argc, char **argv)
 	m2[6] = "Testing..";
 	m2[9] = "More testing..";
 
+	m2.add(6, lwiot::stl::move(s1));
+
 	lwiot::String six = lwiot::stl::move(m2.at(6));
 	print_dbg("Value at 6: %s\n", six.c_str());
 
-	assert(m2[6].equals("Testing.."));
+	assert(m2[6].equals("test.."));
 	assert(m2.contains(4));
 	assert(m2.contains(1));
 

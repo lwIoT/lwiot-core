@@ -59,6 +59,9 @@ target_link_libraries(leddriver-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_L
 add_executable(linkedlist_test linkedlist_test.cpp)
 target_link_libraries(linkedlist_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
+add_executable(skiplist_test skiplist_test.cpp)
+target_link_libraries(skiplist_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
 add_executable(guid_test guid_test.cpp)
 target_link_libraries(guid_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
