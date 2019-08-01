@@ -9,11 +9,16 @@
 
 #include <lwiot/traits/integralconstant.h>
 
-namespace lwiot { namespace traits
+namespace lwiot
 {
-	template <typename T, typename V>
-	struct IsSame : FalseType { };
+	namespace traits
+	{
+		template<typename T, typename V>
+		struct IsSame : FalseType {
+		};
 
-	template <typename T>
-	struct IsSame<T,T> : TrueType { };
-}}
+		template<typename T>
+		struct IsSame<T, T> : TrueType {
+		};
+	}
+}

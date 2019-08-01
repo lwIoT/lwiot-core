@@ -78,4 +78,8 @@ namespace lwiot { namespace traits {
 		template<typename _Pp>
 		struct Not : public BoolConstant <!bool(_Pp::value)>
 		{ };
-}}
+
+		template<typename _Base, typename _Derived>
+		struct IsBaseOf : public IntegralConstant<bool, __is_base_of(_Base, _Derived)>
+		{ };
+	}}

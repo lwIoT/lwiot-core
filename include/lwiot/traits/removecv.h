@@ -33,4 +33,7 @@ namespace lwiot { namespace traits
 	struct RemoveCv {
 		typedef typename RemoveConst<typename RemoveVolatile<T>::type>::type type;
 	};
+
+	template<typename _Tp>
+	using __remove_cvref_t = typename RemoveCv<typename RemoveReference<_Tp>::type>::type;
 }}
