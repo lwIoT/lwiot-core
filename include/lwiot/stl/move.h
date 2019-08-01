@@ -10,6 +10,7 @@
 #include <lwiot/stl/forward.h>
 #include <lwiot/traits/removereference.h>
 #include <lwiot/traits/removecv.h>
+#include <lwiot/traits/enableif.h>
 
 namespace lwiot {
 	namespace stl {
@@ -27,12 +28,18 @@ namespace lwiot {
 			return old;
 		}
 
-		template <typename T>
+		/*template <typename T>
 		constexpr void swap(T& a, T& b)
 		{
 			auto old = move(a);
 
 			a = stl::move(b);
 			b = stl::move(old);
+		}*/
+
+		template <typename T>
+		constexpr void swap(T& a, T& b)
+		{
+			b = move(exchange(a, move(b)));
 		}
 } }

@@ -18,6 +18,7 @@
 #include <lwiot/stl/integersequence.h>
 
 #include <lwiot/traits/decay.h>
+#include <lwiot/traits/removecv.h>
 #include <lwiot/traits/enableif.h>
 
 namespace lwiot
@@ -31,8 +32,7 @@ namespace lwiot
 		struct cat_index_sequence;
 
 		template<size_t I, size_t... Indices>
-		struct cat_index_sequence<I, IndexSequence < Indices...>> : IndexSequence <Indices..., I>
-		{
+		struct cat_index_sequence<I, IndexSequence<Indices...>> : IndexSequence<Indices..., I> {
 		};
 
 		template<size_t N>
@@ -41,7 +41,7 @@ namespace lwiot
 		};
 
 		template<>
-		struct make_index_sequence<1> : IndexSequence <0> {
+		struct make_index_sequence<1> : IndexSequence<0> {
 		};
 
 		template<size_t, typename T>
@@ -50,38 +50,44 @@ namespace lwiot
 			Type _value;
 
 
-			explicit TupleElement(T const& value) : _value(value) {}
-			explicit TupleElement(T&& value) : _value(stl::forward<T>(value)) {}
+			explicit TupleElement(T const &value) : _value(value)
+			{
+			}
 
-			template <typename U>
-			explicit TupleElement(U&& value) : _value(stl::forward<U>(value))
-			{ }
+			explicit TupleElement(T &&value) : _value(stl::forward<T>(value))
+			{
+			}
+
+			template<typename U>
+			explicit TupleElement(U &&value) : _value(stl::forward<U>(value))
+			{
+			}
 		};
 
 
 		template<typename seq, typename ... T>
 		struct TupleImpl;
 
-		template <typename >
-		struct IsTupleImpl : traits::FalseType
-		{ };
+		template<typename>
+		struct IsTupleImpl : traits::FalseType {
+		};
 
-		template <size_t ... Indices, typename ... Types>
-		struct IsTupleImpl<TupleImpl<IndexSequence <Indices...>, Types...>> : traits::TrueType
-		{ };
+		template<size_t ... Indices, typename ... Types>
+		struct IsTupleImpl<TupleImpl<IndexSequence<Indices...>, Types...>> : traits::TrueType {
+		};
 
 #ifndef WIN32
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
-		template <template <class> typename>
+		template<template<class> typename>
 		constexpr bool is_any_of()
 		{
 			return false;
 		}
 
-		template <template <class> typename Op, typename Head, typename... Tail>
+		template<template<class> typename Op, typename Head, typename... Tail>
 		constexpr bool is_any_of()
 		{
 			return Op<Head>::value || is_any_of<Op, Tail...>();
@@ -92,136 +98,142 @@ namespace lwiot
 #endif
 
 		template<size_t... indices, typename... types>
-		struct TupleImpl<IndexSequence < indices...>, types...> : public TupleElement<indices, types>... {
-			template <typename... OtherTypes,
+		struct TupleImpl<IndexSequence<indices...>, types...> : public TupleElement<indices, types> ... {
+			template<typename... OtherTypes,
 					typename = typename traits::EnableIf<
-					        !is_any_of<IsTupleImpl, typename traits::Decay<OtherTypes>::type...>()
-					        >::type >
-			explicit TupleImpl(OtherTypes&&... elems) : TupleElement<indices, types>(stl::forward<OtherTypes>(elems))...
+							!is_any_of<IsTupleImpl, typename traits::Decay<OtherTypes>::type...>()
+					>::type>
+			explicit
+			TupleImpl(OtherTypes &&... elems) : TupleElement<indices, types>(stl::forward<OtherTypes>(elems))...
 			{
 
 			}
 		};
 
 
-		template <typename ... Types>
+		template<typename ... Types>
 		class Tuple : public TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...> {
 		private:
-			using tuple_base_t = TupleImpl<typename make_index_sequence<sizeof...(Types)>::type , Types...>;
+			using tuple_base_t = TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...>;
 
 		public:
 			explicit Tuple() = default;
-			 Tuple(Tuple const&) = default;
-			 Tuple(Tuple&&) = default;
 
-			template <typename ... OtherTypes,
-			        typename = typename traits::EnableIf<
-			                sizeof...(OtherTypes) == sizeof...(Types)>::type
-		                >
-			explicit Tuple(OtherTypes&&... elems) : tuple_base_t (stl::forward<OtherTypes>(elems)...)
-			{ }
+			Tuple(Tuple const &) = default;
+
+			Tuple(Tuple &&) noexcept = default;
+
+			template<typename ... OtherTypes,
+					typename = typename traits::EnableIf<
+							sizeof...(OtherTypes) == sizeof...(Types)>::type
+			>
+			explicit Tuple(OtherTypes &&... elems) : tuple_base_t(stl::forward<OtherTypes>(elems)...)
+			{
+			}
 
 
-			Tuple& operator=(Tuple const& rhs) = default;
-			Tuple& operator=(Tuple&&) = default;
+			Tuple &operator=(Tuple const &rhs) = default;
+
+			Tuple &operator=(Tuple &&) noexcept = default;
 		};
 
-		template <>
+		template<>
 		class Tuple<> {
 		};
 
-		template <size_t I, typename, typename ... Tail>
+		template<size_t I, typename, typename ... Tail>
 		struct TypeAtIndex {
-			using type = typename TypeAtIndex<I-1, Tail...>::type;
+			using type = typename TypeAtIndex<I - 1, Tail...>::type;
 		};
 
-		template <typename Head, typename ... Tail>
+		template<typename Head, typename ... Tail>
 		struct TypeAtIndex<0, Head, Tail...> {
 			using type = Head;
 		};
 
-		template <size_t I, typename... Types>
-		using type_at_index_t = typename TypeAtIndex<I, Types...>::type ;
+		template<size_t I, typename... Types>
+		using type_at_index_t = typename TypeAtIndex<I, Types...>::type;
 
-		template <typename >
+		template<typename>
 		constexpr int count()
 		{
 			return 0;
 		}
 
-		template <typename T, typename Head, typename... Tail>
+		template<typename T, typename Head, typename... Tail>
 		constexpr int count()
 		{
 			return (traits::IsSame<T, Head>::value ? 1 : 0) + count<T, Tail...>();
 		}
 
-		template <typename >
+		template<typename>
 		constexpr int find(int idx)
 		{
 			return -1;
 		}
 
-		template <typename T, typename Head, typename ... Tail>
+		template<typename T, typename Head, typename ... Tail>
 		constexpr int find(int idx = 0)
 		{
-			return traits::IsSame<T,Head>::value ? idx : find<T, Tail...>(idx + 1);
+			return traits::IsSame<T, Head>::value ? idx : find<T, Tail...>(idx + 1);
 		}
 
-		template <typename T, typename ... Types>
-		T& get(Tuple<Types...>& tuple)
+		template<typename T, typename ... Types>
+		T &get(Tuple<Types...> &tuple)
 		{
 			static_assert(count<T, Types...>() == 1, "T must appear exactly once in the tuple!");
 			constexpr auto idx = find<T, Types...>();
 			return get<idx>(tuple);
 		}
 
-		template <size_t I, typename ... Types>
-		constexpr typename traits::RemoveReference<type_at_index_t<I, Types...>>::type && get(Tuple<Types...>&& tuple)
+		template<size_t I, typename ... Types>
+		constexpr typename traits::RemoveReference<type_at_index_t<I, Types...>>::type &&get(Tuple<Types...> &&tuple)
 		{
-			TupleElement<I, type_at_index_t<I, Types...>>& base = tuple;
+			TupleElement<I, type_at_index_t<I, Types...>> &base = tuple;
 			return stl::move(base._value);
 		}
 
-		template <size_t I, typename... Types>
-		constexpr type_at_index_t<I, Types...> const& get(Tuple<Types...> const& tup)
+		template<size_t I, typename... Types>
+		constexpr type_at_index_t<I, Types...> const &get(Tuple<Types...> const &tup)
 		{
-			TupleElement<I, type_at_index_t<I, Types...>>& base = tup;
+			TupleElement<I, type_at_index_t<I, Types...>> &base = tup;
 			return base._value;
 		}
 
-		template <size_t I, typename... Types>
-		constexpr type_at_index_t<I, Types...>& get(Tuple<Types...>& tup)
+		template<size_t I, typename... Types>
+		constexpr type_at_index_t<I, Types...> &get(Tuple<Types...> &tup)
 		{
-			TupleElement<I, type_at_index_t<I, Types...>>& base = tup;
+			TupleElement<I, type_at_index_t<I, Types...>> &base = tup;
 			return base._value;
 		}
 
 		/* Size calculation */
-		template <typename >
+		template<typename>
 		struct TupleSize;
 
-		template <typename ... Types>
+		template<typename ... Types>
 		struct TupleSize<Tuple<Types...>> : traits::IntegralConstant<size_t, sizeof...(Types)> {
 		};
 
-		template <typename T>
+		template<typename T>
 		struct UnwrapRefwrapper {
 			using type = T;
 		};
 
-		template <typename Ref>
+		template<typename Ref>
 		struct UnwrapRefwrapper<stl::ReferenceWrapper<Ref>> {
-			using type = Ref&;
+			using type = Ref &;
 		};
 
-		template <class T>
-		using special_decay_t = typename UnwrapRefwrapper<typename traits::Decay<T>::type>::type ;
+		template<class T>
+		using special_decay_t = typename UnwrapRefwrapper<typename traits::Decay<T>::type>::type;
 
-		template <class... Types>
-		constexpr Tuple<special_decay_t<Types>...> MakeTuple(Types&&... args)
+		template<class... Types>
+		constexpr Tuple<special_decay_t<Types>...> MakeTuple(Types &&... args)
 		{
 			return lwiot::stl::Tuple<special_decay_t<Types>...>(stl::forward<Types>(args)...);
 		}
+
 
 /*template<typename Value>
 struct Tuple<Value> {
