@@ -38,7 +38,7 @@ namespace lwiot
 				{
 				}
 
-				CONSTEXPR Iterator(ObjectType *start, size_t idx = 0) : _base(start), _index(idx)
+				CONSTEXPR explicit Iterator(ObjectType *start, size_t idx = 0) : _base(start), _index(idx)
 				{
 				}
 
@@ -61,7 +61,7 @@ namespace lwiot
 					return *this;
 				}
 
-				Iterator operator++(int num)
+				const Iterator operator++(int num)
 				{
 					Iterator iter(*this);
 
@@ -126,7 +126,7 @@ namespace lwiot
 				}
 			}
 
-			explicit CONSTEXPR Vector(Vector<T, A> &&other) :
+			CONSTEXPR Vector(Vector<T, A> &&other) noexcept :
 					_index(other._index), _objects(other._objects), _space(other._space)
 			{
 				this->_alloc = other._alloc;
@@ -138,7 +138,7 @@ namespace lwiot
 
 			Vector<T, A> &operator=(const Vector &a);
 
-			Vector<T, A> &operator=(Vector<T, A> &&rhs)
+			Vector<T, A> &operator=(Vector<T, A> &&rhs) noexcept
 			{
 				this->release();
 
@@ -169,6 +169,11 @@ namespace lwiot
 				}
 
 				this->_index = 0;
+			}
+
+			constexpr ObjectType* data()
+			{
+				return &this->_objects[0];
 			}
 
 			iterator begin()
@@ -252,6 +257,12 @@ namespace lwiot
 				this->_index++;
 			}
 
+			template <typename... Args>
+			auto push_back(Args&&... args) -> decltype(f(stl::forward<Args>(args)...))
+			{
+				return pushback(stl::forward<Args>(args)...);
+			}
+
 			CONSTEXPR void add(const ObjectType &val)
 			{
 				this->pushback(val);
@@ -263,6 +274,28 @@ namespace lwiot
 				for(size_t idx = 0U; idx < this->_index; idx++) {
 					functor(this->_objects[idx]);
 				}
+			}
+
+			void assign(size_t n, const ObjectType& value)
+			{
+				this->release();
+				this->_index = 0;
+				this->_space = 0;
+
+				this->reserve(n);
+
+				for(size_t idx = 0; idx < n; idx++)
+					this->pushback(value);
+			}
+
+			void popback()
+			{
+				if(this->_index == 0)
+					return;
+
+				this->_index -= 1;
+				this->_alloc.destroy(&this->_objects[this->_index]);
+				memset(&this->_objects[this->_index], 0, sizeof(ObjectType));
 			}
 
 		private:
