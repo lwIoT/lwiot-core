@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include <string.h>
 #include <lwiot.h>
+#include <string.h>
+
 #include <lwiot/bytebuffer.h>
 
 #ifdef __cplusplus
@@ -37,14 +37,14 @@ namespace lwiot
 			// fails, the string will be marked as invalid (i.e. "if (s)" will
 			// be false).
 			String(const char *cstr = "");
-			String(const lwiot::ByteBuffer& buf);
+			explicit String(const lwiot::ByteBuffer& buf);
 			String(const String &str);
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 
-			String(String &&rval);
+			String(String &&rval) noexcept;
 
-			String(StringSumHelper &&rval);
+			explicit String(StringSumHelper &&rval);
 
 #endif
 
@@ -87,7 +87,7 @@ namespace lwiot
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 
-			String &operator=(String &&rval);
+			String &operator=(String &&rval) noexcept;
 
 			String &operator=(StringSumHelper &&rval);
 
@@ -205,7 +205,7 @@ namespace lwiot
 			// comparison (only works w/ Strings and "strings")
 			operator StringIfHelperType() const
 			{
-				return buffer ? &String::StringIfHelper : 0;
+				return buffer ? &String::StringIfHelper : nullptr;
 			}
 
 			int compareTo(const String &s) const;
@@ -324,18 +324,18 @@ namespace lwiot
 
 			void remove(unsigned int index, unsigned int count);
 
-			void toLowerCase(void);
+			void toLowerCase();
 
-			void toUpperCase(void);
+			void toUpperCase();
 
-			void trim(void);
+			void trim();
 
 			// parsing/conversion
-			long toInt(void) const;
+			long toInt() const;
 
-			float toFloat(void) const;
+			float toFloat() const;
 
-			double toDouble(void) const;
+			double toDouble() const;
 
 		protected:
 			char *buffer;
@@ -343,8 +343,8 @@ namespace lwiot
 			unsigned int len;
 
 		protected:
-			void init(void);
-			void invalidate(void);
+			void init();
+			void invalidate();
 			unsigned char changeBuffer(unsigned int maxStrLen);
 			unsigned char concat(const char *cstr, unsigned int length);
 
@@ -369,35 +369,35 @@ namespace lwiot
 			{
 			}
 
-			StringSumHelper(char c) : String(c)
+			explicit StringSumHelper(char c) : String(c)
 			{
 			}
 
-			StringSumHelper(unsigned char num) : String(num)
+			explicit StringSumHelper(unsigned char num) : String(num)
 			{
 			}
 
-			StringSumHelper(int num) : String(num)
+			explicit StringSumHelper(int num) : String(num)
 			{
 			}
 
-			StringSumHelper(unsigned int num) : String(num)
+			explicit StringSumHelper(unsigned int num) : String(num)
 			{
 			}
 
-			StringSumHelper(long num) : String(num)
+			explicit StringSumHelper(long num) : String(num)
 			{
 			}
 
-			StringSumHelper(unsigned long num) : String(num)
+			explicit StringSumHelper(unsigned long num) : String(num)
 			{
 			}
 
-			StringSumHelper(float num) : String(num)
+			explicit StringSumHelper(float num) : String(num)
 			{
 			}
 
-			StringSumHelper(double num) : String(num)
+			explicit StringSumHelper(double num) : String(num)
 			{
 			}
 		};
