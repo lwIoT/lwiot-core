@@ -360,7 +360,7 @@ namespace lwiot
 				return this->size() == 0UL;
 			}
 
-			constexpr friend void swap(LinkedList<value_type> l1, LinkedList<value_type> l2)
+			constexpr friend void swap(LinkedList<value_type>& l1, LinkedList<value_type>& l2)
 			{
 				using stl::swap;
 

@@ -157,6 +157,14 @@ int main(int argc, char **argv)
 		print_dbg("List enry value: [%i][%f]\n", token.x.get(), token.y);
 	}
 
+	list2.push_back(t3);
+	iter = list2.begin();
+	list2.erase(iter);
+
+	swap(list, list2);
+
+	assert(list.front().x.get() == c);
+
 	list.clear();
 
 	append_test();
