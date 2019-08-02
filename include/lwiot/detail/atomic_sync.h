@@ -33,19 +33,32 @@ namespace lwiot
 		public:
 			static_assert(traits::IsIntegral<T>::value, "Atomic only works for integral types!");
 
-			CONSTEXPR Atomic() : _value(0) { }
-			CONSTEXPR Atomic(T value) : _value(value) { }
+			constexpr Atomic() : _value() { }
 
-			constexpr T operator = (T value) noexcept
+			explicit constexpr Atomic(T value) : _value(value) { }
+
+			constexpr Atomic& operator=(const Atomic& value)
 			{
-				this->store(value);
-				return value;
+				this->store(value.load());
+				return *this;
 			}
 
-			constexpr T operator = (T value) volatile noexcept
+			constexpr Atomic& operator=(Atomic&& value) noexcept
+			{
+				this->store(value.load());
+				return *this;
+			}
+
+			constexpr Atomic& operator = (const T& value) noexcept
 			{
 				this->store(value);
-				return this->_value;
+				return *this;
+			}
+
+			constexpr Atomic& operator = (const T& value) volatile noexcept
+			{
+				this->store(value);
+				return *this;
 			}
 
 			T operator ++()
@@ -59,12 +72,12 @@ namespace lwiot
 			}
 
 			// Post-increment
-			T operator ++(int)
+			const T operator ++(int)
 			{
 				return fetch_add(1);
 			}
 
-			T operator ++(int) volatile
+			const T operator ++(int) volatile
 			{
 				return fetch_add(1);
 			}
@@ -81,12 +94,12 @@ namespace lwiot
 			}
 
 			// Post-decrement
-			T operator --(int)
+			const T operator --(int)
 			{
 				return fetch_sub(1);
 			}
 
-			T operator --(int) volatile
+			const T operator --(int) volatile
 			{
 				return fetch_sub(1);
 			}
@@ -147,12 +160,12 @@ namespace lwiot
 			}
 
 			// Conversion operator
-			operator T () const
+			explicit operator T () const
 			{
 				return __sync_fetch_and_add((T*) &this->_value, 0);
 			}
 
-			operator T() volatile const
+			explicit operator T() volatile const
 			{
 				return __sync_fetch_and_add((T*) &this->_value, 0);
 			}
