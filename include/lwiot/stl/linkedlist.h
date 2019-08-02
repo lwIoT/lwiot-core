@@ -14,8 +14,9 @@
 
 #include <lwiot/stl/move.h>
 #include <lwiot/stl/container_of.h>
+#include <lwiot/stl/foreach.h>
+
 #include <lwiot/traits/typechoice.h>
-#include "foreach.h"
 
 namespace lwiot
 {
@@ -39,7 +40,7 @@ namespace lwiot
 				{
 				}
 
-				CONSTEXPR bool operator==(const Node<T> &other)
+				constexpr bool operator==(const Node<T> &other)
 				{
 					return this->_data == other._data && this->next == other.next && this->prev == other.prev;
 				}
@@ -67,17 +68,17 @@ namespace lwiot
 				typedef typename traits::TypeChoice<is_const, const value_type &, value_type &>::type reference;
 				typedef typename traits::TypeChoice<is_const, const value_type *, value_type *>::type pointer;
 
-				CONSTEXPR explicit Iterator() : Iterator(nullptr)
+				constexpr explicit Iterator() : Iterator(nullptr)
 				{
 				}
 
-				CONSTEXPR explicit Iterator(node_type *node) : _current(node), _start(node), _next(nullptr)
+				constexpr explicit Iterator(node_type *node) : _current(node), _start(node), _next(nullptr)
 				{
 					if(node)
 						this->_next = node->next;
 				}
 
-				CONSTEXPR Iterator &operator=(typename LinkedList<T>::node_type *node)
+				constexpr Iterator &operator=(typename LinkedList<T>::node_type *node)
 				{
 					this->_current = node;
 					this->_start = node;
@@ -88,12 +89,12 @@ namespace lwiot
 					return *this;
 				}
 
-				explicit CONSTEXPR operator bool() const
+				explicit constexpr operator bool() const
 				{
 					return this->_current != nullptr;
 				}
 
-				CONSTEXPR Iterator &operator++()
+				constexpr Iterator &operator++()
 				{
 					if(this->_current == nullptr)
 						return *this;
@@ -108,7 +109,7 @@ namespace lwiot
 					return *this;
 				}
 
-				CONSTEXPR const Iterator operator++(int)
+				constexpr const Iterator operator++(int)
 				{
 					Iterator iter = *this;
 
@@ -116,29 +117,29 @@ namespace lwiot
 					return iter;
 				}
 
-				CONSTEXPR bool operator==(const Iterator &iter) const
+				constexpr bool operator==(const Iterator &iter) const
 				{
 					return this->_current == iter._current;
 				}
 
-				CONSTEXPR bool operator!=(const Iterator &iter) const
+				constexpr bool operator!=(const Iterator &iter) const
 				{
 					return !(*this == iter);
 				}
 
-				CONSTEXPR reference operator*() const
+				constexpr reference operator*() const
 				{
 					assert(this->_current);
 					return this->_current->_data;
 				}
 
-				CONSTEXPR pointer operator->() const
+				constexpr pointer operator->() const
 				{
 					assert(this->_current);
 					return &this->_current->_data;
 				}
 
-				CONSTEXPR node_type *node() const
+				constexpr node_type *node() const
 				{
 					return this->_current;
 				}
@@ -160,7 +161,7 @@ namespace lwiot
 			typedef Iterator<false> iterator;
 			typedef Iterator<true> const_iterator;
 
-			CONSTEXPR explicit LinkedList() : _head(nullptr), _size(0UL)
+			constexpr explicit LinkedList() : _head(nullptr), _size(0UL)
 			{
 			}
 
@@ -169,7 +170,7 @@ namespace lwiot
 				this->copy(other);
 			}
 
-			CONSTEXPR LinkedList(LinkedList<T> &&other) noexcept : _head(nullptr), _size(0)
+			constexpr LinkedList(LinkedList<T> &&other) noexcept : _head(nullptr), _size(0)
 			{
 				this->_size = other._size;
 				this->_head = other._head;
@@ -244,7 +245,7 @@ namespace lwiot
 				}
 			}
 
-			CONSTEXPR void append(LinkedList&& list)
+			constexpr void append(LinkedList&& list)
 			{
 				stl::foreach(list, [&](iterator& iter) {
 					auto node = iter.node();
@@ -255,37 +256,37 @@ namespace lwiot
 				});
 			}
 
-			CONSTEXPR iterator begin()
+			constexpr iterator begin()
 			{
 				return iterator(this->_head);
 			}
 
-			CONSTEXPR const_iterator begin() const
+			constexpr const_iterator begin() const
 			{
 				return const_iterator(this->_head);
 			}
 
-			CONSTEXPR iterator end()
+			constexpr iterator end()
 			{
 				return iterator(nullptr);
 			}
 
-			CONSTEXPR const_iterator end() const
+			constexpr const_iterator end() const
 			{
 				return const_iterator(nullptr);
 			}
 
-			CONSTEXPR value_type &front()
+			constexpr value_type &front()
 			{
 				return *this->begin();
 			}
 
-			CONSTEXPR const value_type &front() const
+			constexpr const value_type &front() const
 			{
 				return *this->begin();
 			}
 
-			CONSTEXPR value_type& back()
+			constexpr value_type& back()
 			{
 				if(this->_head == nullptr)
 					return this->front();
@@ -296,7 +297,7 @@ namespace lwiot
 				return this->_head->prev->_data;
 			}
 
-			CONSTEXPR const value_type& back() const
+			constexpr const value_type& back() const
 			{
 				if(this->_head == nullptr)
 					return this->front();
