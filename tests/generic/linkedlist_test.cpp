@@ -167,6 +167,10 @@ int main(int argc, char **argv)
 
 	list.clear();
 
+	lwiot::stl::foreach(list, [](auto& iter) {
+		assert(false);
+	});
+
 	append_test();
 	wait_close();
 	lwiot_destroy();
