@@ -7,12 +7,13 @@
 
 #pragma once
 
+#include <stdint.h>
 #include <lwiot.h>
 
 #ifdef HAVE_SYNC_FETCH
-#include "detail/atomic_sync.h"
+#include <lwiot/detail/atomic_sync.h>
 #else
-#include "detail/atomic_crit.h"
+#include <lwiot/detail/atomic_crit.h>
 #endif
 
 namespace lwiot
@@ -27,18 +28,15 @@ namespace lwiot
 	typedef lwiot::Atomic<long> atomic_long_t;
 	typedef lwiot::Atomic<long long> atomic_long_long_t;
 
-	class AtomicBool : public Atomic<uint8_t> {
+	class AtomicBool : public lwiot::detail::Atomic<uint8_t> {
 	public:
-		AtomicBool(bool value = false) : Atomic(uint8_t(value))
+		explicit AtomicBool(bool value = false) : detail::Atomic<uint8_t>((uint8_t)value)
 		{
 		}
 
 		AtomicBool& operator=(bool v) noexcept
 		{
-			if(v)
-				this->store(1);
-			else
-				this->store(0);
+			this->store(uint8_t(v));
 
 			return *this;
 		}
@@ -51,7 +49,7 @@ namespace lwiot
 			return *this;
 		}
 
-		operator bool() noexcept
+		explicit operator bool() noexcept
 		{
 			bool value = this->load();
 			return value != 0;
