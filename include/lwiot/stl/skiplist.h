@@ -296,6 +296,16 @@ namespace lwiot
 				}
 			}
 
+			value_type& at(const key_type& key)
+			{
+				return *this->find(key);
+			}
+
+			const value_type& at(const key_type& key) const
+			{
+				return *this->find(key);
+			}
+
 			iterator find(const key_type &key)
 			{
 				auto level = this->_head.size();
