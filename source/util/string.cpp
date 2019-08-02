@@ -22,9 +22,9 @@
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cctype>
 
 #include <lwiot/lwiot.h>
 #include <lwiot/stl/string.h>
@@ -37,20 +37,20 @@ namespace lwiot
 {
 	namespace stl
 	{
-		String::String(const char *cstr)
+		String::String(const char *cstr) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			if(cstr)
 				copy(cstr, strlen(cstr));
 		}
 
-		String::String(const lwiot::ByteBuffer &buf)
+		String::String(const lwiot::ByteBuffer &buf) : buffer(nullptr), capacity(0), len(0)
 		{
 			this->init();
 			this->copy(buf.data(), buf.count());
 		}
 
-		String::String(const String &value)
+		String::String(const String &value) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			*this = value;
@@ -58,13 +58,13 @@ namespace lwiot
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
 
-		String::String(String &&rval)
+		String::String(String &&rval) noexcept : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			move(rval);
 		}
 
-		String::String(StringSumHelper &&rval)
+		String::String(StringSumHelper &&rval) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			move(rval);
@@ -72,7 +72,7 @@ namespace lwiot
 
 #endif
 
-		String::String(char c)
+		String::String(char c) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			char buf[2];
@@ -81,7 +81,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(unsigned char value, unsigned char base)
+		String::String(unsigned char value, unsigned char base) : buffer(nullptr), capacity(0), len(0)
 		{
 			char buf[1 + 8 * sizeof(unsigned char)];
 			UNUSED(base);
@@ -91,7 +91,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(int value, unsigned char base)
+		String::String(int value, unsigned char base) : buffer(nullptr), capacity(0), len(0)
 		{
 			char buf[2 + 8 * sizeof(int)];
 			UNUSED(base);
@@ -101,7 +101,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(unsigned int value, unsigned char base)
+		String::String(unsigned int value, unsigned char base) : buffer(nullptr), capacity(0), len(0)
 		{
 			UNUSED(base);
 			char buf[1 + 8 * sizeof(unsigned int)];
@@ -111,7 +111,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(long value, unsigned char base)
+		String::String(long value, unsigned char base) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			char buf[2 + 8 * sizeof(long)];
@@ -121,7 +121,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(unsigned long value, unsigned char base)
+		String::String(unsigned long value, unsigned char base) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			char buf[1 + 8 * sizeof(unsigned long)];
@@ -131,7 +131,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(float value, unsigned char decimalPlaces)
+		String::String(float value, unsigned char decimalPlaces) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			char buf[33];
@@ -141,7 +141,7 @@ namespace lwiot
 			*this = buf;
 		}
 
-		String::String(double value, unsigned char decimalPlaces)
+		String::String(double value, unsigned char decimalPlaces) : buffer(nullptr), capacity(0), len(0)
 		{
 			init();
 			char buf[33];
@@ -255,7 +255,7 @@ namespace lwiot
 			buffer = rhs.buffer;
 			capacity = rhs.capacity;
 			len = rhs.len;
-			rhs.buffer = NULL;
+			rhs.buffer = nullptr;
 			rhs.capacity = 0;
 			rhs.len = 0;
 		}
@@ -277,7 +277,7 @@ namespace lwiot
 
 #if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 
-		String &String::operator=(String &&rval)
+		String &String::operator=(String &&rval) noexcept
 		{
 			if(this != &rval)
 				move(rval);
@@ -505,8 +505,8 @@ namespace lwiot
 		unsigned char String::equals(const char *cstr) const
 		{
 			if(len == 0)
-				return (cstr == NULL || *cstr == 0);
-			if(cstr == NULL)
+				return (cstr == nullptr || *cstr == 0);
+			if(cstr == nullptr)
 				return buffer[0] == 0;
 			return strcmp(buffer, cstr) == 0;
 		}
@@ -630,7 +630,7 @@ namespace lwiot
 			if(fromIndex >= len)
 				return -1;
 			const char *temp = strchr(buffer + fromIndex, ch);
-			if(temp == NULL)
+			if(temp == nullptr)
 				return -1;
 			return temp - buffer;
 		}
@@ -645,7 +645,7 @@ namespace lwiot
 			if(fromIndex >= len)
 				return -1;
 			const char *found = strstr(buffer + fromIndex, s2.buffer);
-			if(found == NULL)
+			if(found == nullptr)
 				return -1;
 			return found - buffer;
 		}
@@ -663,7 +663,7 @@ namespace lwiot
 			buffer[fromIndex + 1] = '\0';
 			char *temp = strrchr(buffer, ch);
 			buffer[fromIndex + 1] = tempchar;
-			if(temp == NULL)
+			if(temp == nullptr)
 				return -1;
 			return temp - buffer;
 		}
@@ -731,13 +731,13 @@ namespace lwiot
 			char *readFrom = buffer;
 			char *foundAt;
 			if(diff == 0) {
-				while((foundAt = strstr(readFrom, find.buffer)) != NULL) {
+				while((foundAt = strstr(readFrom, find.buffer)) != nullptr) {
 					memcpy(foundAt, replace.buffer, replace.len);
 					readFrom = foundAt + replace.len;
 				}
 			} else if(diff < 0) {
 				char *writeTo = buffer;
-				while((foundAt = strstr(readFrom, find.buffer)) != NULL) {
+				while((foundAt = strstr(readFrom, find.buffer)) != nullptr) {
 					unsigned int n = foundAt - readFrom;
 					memcpy(writeTo, readFrom, n);
 					writeTo += n;
@@ -750,7 +750,7 @@ namespace lwiot
 				memmove(writeTo, readFrom, strlen(writeTo));
 			} else {
 				unsigned int size = len; // compute size needed for result
-				while((foundAt = strstr(readFrom, find.buffer)) != NULL) {
+				while((foundAt = strstr(readFrom, find.buffer)) != nullptr) {
 					readFrom = foundAt + find.len;
 					size += diff;
 				}
@@ -795,7 +795,7 @@ namespace lwiot
 			buffer[len] = 0;
 		}
 
-		void String::toLowerCase(void)
+		void String::toLowerCase()
 		{
 			if(!buffer)
 				return;
@@ -804,7 +804,7 @@ namespace lwiot
 			}
 		}
 
-		void String::toUpperCase(void)
+		void String::toUpperCase()
 		{
 			if(!buffer)
 				return;
@@ -813,7 +813,7 @@ namespace lwiot
 			}
 		}
 
-		void String::trim(void)
+		void String::trim()
 		{
 			if(!buffer || len == 0)
 				return;
@@ -833,19 +833,19 @@ namespace lwiot
 		/*  Parsing / Conversion                     */
 		/*********************************************/
 
-		long String::toInt(void) const
+		long String::toInt() const
 		{
 			if(buffer)
 				return atol(buffer);
 			return 0;
 		}
 
-		float String::toFloat(void) const
+		float String::toFloat() const
 		{
 			return float(toDouble());
 		}
 
-		double String::toDouble(void) const
+		double String::toDouble() const
 		{
 			if(buffer)
 				return atof(buffer);
