@@ -8,10 +8,8 @@
 #pragma once
 
 #include <lwiot/stl/vector.h>
-
-#include <vector>
-#include <algorithm>
-#include "foreach.h"
+#include <lwiot/stl/foreach.h>
+#include <lwiot/stl/pair.h>
 
 namespace lwiot
 {
@@ -101,7 +99,7 @@ namespace lwiot
 				constexpr bool operator>(const IteratorBase &b) const
 				{
 					if(this->_current != nullptr && b._current != nullptr)
-						return this->_current->value.first > b.curr->value.first;
+						return this->_current->_key > b._current->_key;
 					else
 						return _current == nullptr && b._current != nullptr;
 				}
@@ -245,6 +243,16 @@ namespace lwiot
 				}
 
 				return *iter;
+			}
+
+			iterator insert(const Pair<key_type, value_type>& p)
+			{
+				return this->insert(p.first, p.second);
+			}
+
+			iterator insert(Pair<key_type, value_type>&& p)
+			{
+				return this->insert(stl::move<key_type>(p.first), stl::move<value_type>(p.second));
 			}
 
 			iterator insert(key_type &&key, value_type &&value)
