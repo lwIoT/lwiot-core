@@ -33,6 +33,11 @@ static void skiplist_test()
 	sl1[-1] = bac;
 
 	sl2.erase(4);
+	const auto& v1 = sl2.at(7);
+
+	assert(v1 == "DEF");
+	const auto& v2 = sl1.at(4);
+	assert(v2 == "XYZ");
 
 	print_dbg("Insert test done!");
 }
