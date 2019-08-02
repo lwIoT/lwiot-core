@@ -360,6 +360,14 @@ namespace lwiot
 				return this->size() == 0UL;
 			}
 
+			constexpr friend void swap(LinkedList<value_type> l1, LinkedList<value_type> l2)
+			{
+				using stl::swap;
+
+				swap(l1._head, l2._head);
+				swap(l1._size, l2._size);
+			}
+
 
 		private:
 
