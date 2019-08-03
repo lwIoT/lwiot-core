@@ -23,7 +23,7 @@ namespace lwiot {
 		explicit Lock(bool recursive = false);
 		virtual ~Lock() = default;
 
-		explicit Lock(Lock &&rhs) noexcept : _mtx(stl::move(rhs._mtx))
+		Lock(Lock &&rhs) noexcept : _mtx(stl::move(rhs._mtx))
 		{
 		}
 

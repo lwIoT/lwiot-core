@@ -20,11 +20,11 @@ namespace lwiot {
 	public:
 		explicit Event(int length = 4);
 		explicit Event(const Event& event) = delete;
-		explicit Event(Event&& event);
+		Event(Event&& event) noexcept ;
 		virtual ~Event();
 
 		Event& operator=(const Event& rhs) = delete;
-		Event& operator=(Event&& rhs);
+		Event& operator=(Event&& rhs) noexcept ;
 
 		const lwiot_event_t* getEvent() const;
 

@@ -18,7 +18,7 @@ namespace lwiot {
 		this->_event = lwiot_event_create(length);
 	}
 
-	Event::Event(lwiot::Event &&event) : _event(nullptr), _waiters(0)
+	Event::Event(lwiot::Event &&event) noexcept : _event(nullptr), _waiters(0)
 	{
 		this->_event = event._event;
 		event._event = nullptr;
@@ -30,7 +30,7 @@ namespace lwiot {
 		this->_event = nullptr;
 	}
 
-	Event& Event::operator=(lwiot::Event &&rhs)
+	Event& Event::operator=(lwiot::Event &&rhs) noexcept
 	{
 		this->_event = rhs._event;
 		rhs._event = nullptr;
