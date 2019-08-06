@@ -18,7 +18,7 @@ namespace lwiot {
 		this->_event = lwiot_event_create(length);
 	}
 
-	Event::Event(lwiot::Event &&event) noexcept : _event(nullptr), _waiters(0)
+	Event::Event(lwiot::Event &&event) noexcept : _event(nullptr), _waiters(0), _lock(stl::move(event._lock))
 	{
 		this->_event = event._event;
 		event._event = nullptr;
@@ -26,6 +26,9 @@ namespace lwiot {
 
 	Event::~Event()
 	{
+		if(this->_event == nullptr)
+			return;
+
 		lwiot_event_destroy(this->_event);
 		this->_event = nullptr;
 	}
