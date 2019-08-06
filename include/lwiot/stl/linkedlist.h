@@ -222,7 +222,7 @@ namespace lwiot
 				delete node;
 			}
 
-			void erase(const_iterator&  iter)
+			void erase(const_iterator  iter)
 			{
 				this->remove(iter.node());
 
@@ -230,7 +230,7 @@ namespace lwiot
 					iter.clear();
 			}
 
-			void erase(iterator& iter)
+			void erase(iterator iter)
 			{
 				this->remove(iter.node());
 
