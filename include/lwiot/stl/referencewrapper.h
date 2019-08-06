@@ -20,22 +20,22 @@ namespace lwiot
 		public:
 			typedef T type;
 
-			CONSTEXPR ReferenceWrapper() noexcept : _value(nullptr)
+			constexpr ReferenceWrapper() noexcept : _value(nullptr)
 			{ }
 
-			CONSTEXPR ReferenceWrapper(type& value) noexcept : _value(&value)
+			explicit constexpr ReferenceWrapper(type& value) noexcept : _value(&value)
 			{ }
 
-			CONSTEXPR ReferenceWrapper(const ReferenceWrapper& other) noexcept : _value(other._value)
+			constexpr ReferenceWrapper(const ReferenceWrapper& other) noexcept : _value(other._value)
 			{ }
 
-			CONSTEXPR ReferenceWrapper& operator=(type& other)
+			constexpr ReferenceWrapper& operator=(type& other)
 			{
 				this->_value = &other;
 				return *this;
 			}
 
-			CONSTEXPR ReferenceWrapper& operator=(const ReferenceWrapper& other)
+			constexpr ReferenceWrapper& operator=(const ReferenceWrapper& other)
 			{
 				this->_value = other._value;
 				return *this;

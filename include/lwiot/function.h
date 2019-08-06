@@ -27,16 +27,14 @@ namespace lwiot
 		virtual ReturnType operator()(Xs...) = 0;
 		virtual void copy(void *) const = 0;
 
-		virtual ~SFConcept()
-		{
-		};
+		virtual ~SFConcept() = default;
 	};
 
 	template<class F, typename ReturnType, typename...Xs>
 	struct SFModel final : SFConcept<ReturnType, Xs...> {
         F f;
 
-		SFModel(F const &f) : f(f)
+		explicit SFModel(F const &f) : f(f)
 		{
 		}
 
@@ -55,9 +53,7 @@ namespace lwiot
 			return f(xs...);
 		}
 
-		virtual ~SFModel()
-		{
-		}
+		virtual ~SFModel() = default;
 	};
 
 
@@ -67,19 +63,19 @@ namespace lwiot
 	template<typename ReturnType, typename ...Xs, size_t size>
 	class Function<ReturnType(Xs...), size> {
 	public:
-		Function() : allocated(false)
+		Function() : memory(), allocated(false)
 		{
 		}
 
 		template <typename Func>
-		Function(Func const &f) : allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		Function(Func const &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
 		{
 			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
 			new(memory) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
 		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
-		Function(Function<ReturnType(Xs...), s> const &sf) : allocated(sf.allocated)
+		Function(Function<ReturnType(Xs...), s> const &sf) : memory(), allocated(sf.allocated)
 		{
 			sf.copy(memory);
 		}
@@ -112,7 +108,7 @@ namespace lwiot
 		}
 
 		template <typename Func>
-		Function<ReturnType(Xs...)> operator=(Func& f)
+		Function& operator=(Func& f)
 		{
 			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
 			new(memory) SFModel<Func, ReturnType, Xs...>(f);

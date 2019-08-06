@@ -25,7 +25,7 @@ namespace lwiot
 		explicit FunctionalThread(const String& name);
 		explicit FunctionalThread(const char* name);
 		FunctionalThread(const String& name, Runner& runner);
-		virtual ~FunctionalThread() = default;
+		~FunctionalThread() override = default;
 
 		template <typename Func>
 		FunctionalThread& operator=(Func&& runner)
@@ -40,12 +40,12 @@ namespace lwiot
 		template <typename Func>
 		CONSTEXPR void start(Func&& functor)
 		{
-			this->_runner = functor;
+			this->_runner = stl::forward<Func>(functor);
 			Thread::start();
 		}
 
 	protected:
-		virtual void run() override;
+		void run() override;
 
 	private:
 		Runner _runner;
