@@ -40,6 +40,12 @@ namespace lwiot {
 		bool try_lock(int tmo = 100);
 		void unlock();
 
+		friend void swap(Lock& a, Lock& b)
+		{
+			using stl::swap;
+			swap(a._mtx, b._mtx);
+		}
+
 	private:
 		struct LockValue {
 		public:

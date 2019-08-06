@@ -22,7 +22,7 @@ namespace lwiot {
 		explicit Thread(const char *name, void *argument = nullptr);
 		explicit Thread(const String& name, void *argument = nullptr);
 		explicit Thread(const String& name, int priority, size_t stacksize, void *argument = nullptr);
-		explicit Thread(Thread&& other);
+		Thread(Thread&& other) noexcept ;
 		explicit Thread(Thread&) = delete;
 		virtual ~Thread();
 
@@ -40,7 +40,7 @@ namespace lwiot {
 			this->_name = stl::move(name);
 		}
 
-		Thread& operator=(Thread&& rhs);
+		Thread& operator=(Thread&& rhs) noexcept ;
 		Thread& operator=(Thread& rhs) = delete;
 
 		static void yield()
@@ -56,6 +56,23 @@ namespace lwiot {
 		static void sleep(time_t ms)
 		{
 			lwiot_sleep(ms);
+		}
+
+		inline void *argument()
+		{
+			return this->_argument;
+		}
+
+		friend void swap(Thread& a, Thread& b)
+		{
+			using stl::swap;
+			swap(a._join, b._join);
+			swap(a._argument, b._argument);
+			swap(a._running, b._running);
+			swap(a._internal, b._internal);
+			swap(a._prio, b._prio);
+			swap(a.stacksize, b.stacksize);
+			swap(a._name, b._name);
 		}
 
 	protected:

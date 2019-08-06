@@ -104,6 +104,12 @@ namespace lwiot
 			return px;
 		}
 
+		friend void swap(UniquePointer& a, UniquePointer& b)
+		{
+			using stl::swap;
+			swap(a.px, b.px);
+		}
+
 	private:
 		void destroy() noexcept
 		{

@@ -27,13 +27,14 @@ namespace lwiot
 	{
 	}
 
-	Thread::Thread(const char *name, void *argument) :_prio(-1), stacksize(0), _name(name)
+	Thread::Thread(const char *name, void *argument) : _internal(nullptr), _prio(-1), stacksize(0), _name(name)
 	{
 		this->_running = false;
 		this->_argument = argument;
 	}
 
-	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) : _prio(priority), stacksize(stacksize), _name(name)
+	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) :
+		_argument(nullptr), _running(false), _internal(nullptr), _prio(priority), stacksize(stacksize), _name(name)
 	{
 		this->_running = false;
 		this->_argument = argument;
@@ -43,9 +44,9 @@ namespace lwiot
 	{
 	}
 
-	Thread::Thread(lwiot::Thread &&other) :
-		_running(other._running), _internal(other._internal), _prio(other._prio),
-		stacksize(other.stacksize), _name(other._name)
+	Thread::Thread(lwiot::Thread &&other) noexcept :
+		_argument(other._argument), _running(other._running), _internal(other._internal), _join(stl::move(other._join)),
+		_lock(stl::move(other._lock)), _prio(other._prio), stacksize(other.stacksize), _name(stl::move(other._name))
 	{
 	}
 
@@ -59,7 +60,7 @@ namespace lwiot
 		}
 	}
 
-	Thread& Thread::operator=(lwiot::Thread &&rhs)
+	Thread& Thread::operator=(lwiot::Thread &&rhs) noexcept
 	{
 		this->move(rhs);
 		return *this;
@@ -67,19 +68,11 @@ namespace lwiot
 
 	void Thread::move(lwiot::Thread &rhs)
 	{
-		if(this->_running) {
-			stl::swap(this->_running, rhs._running);
-			stl::swap(this->_internal, rhs._internal);
-			stl::swap(this->_prio, rhs._prio);
-			stl::swap(this->stacksize, rhs.stacksize);
-			stl::swap(this->_name, rhs._name);
-		} else {
-			this->_running = rhs._running;
-			this->_internal = rhs._internal;
-			this->_prio = rhs._prio;
-			this->stacksize = rhs.stacksize;
-			this->_name = stl::move(rhs._name);
-		}
+		ScopedLock l1(this->_lock);
+		ScopedLock l2(rhs._lock);
+
+		using stl::swap;
+		swap(*this, rhs);
 	}
 
 	void Thread::start()
@@ -107,13 +100,19 @@ namespace lwiot
 	{
 		ScopedLock g(this->_lock);
 
-		if(this->_running)
+		if(this->_running) {
 			this->_join.wait(g, FOREVER);
+			lwiot_thread_destroy(this->_internal);
+		}
 	}
 
 	void Thread::stop()
 	{
 		ScopedLock g(this->_lock);
+
+		if(!this->_running)
+			return;
+
 		this->_running = false;
 		this->_join.signal();
 
