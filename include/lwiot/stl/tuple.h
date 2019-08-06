@@ -234,7 +234,11 @@ namespace lwiot
 			return lwiot::stl::Tuple<special_decay_t<Types>...>(stl::forward<Types>(args)...);
 		}
 
-
+		template <typename... T>
+		constexpr Tuple<T&...> tie(T&... args)
+		{
+			return Tuple<T&...>(args...);
+		}
 /*template<typename Value>
 struct Tuple<Value> {
 	constexpr Tuple()
