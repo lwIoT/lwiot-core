@@ -49,7 +49,7 @@ namespace lwiot
 			return *this;
 		}
 
-		explicit operator bool() noexcept
+		operator bool() noexcept
 		{
 			bool value = this->load();
 			return value != 0;
