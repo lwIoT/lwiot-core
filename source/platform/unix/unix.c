@@ -210,7 +210,8 @@ int lwiot_event_wait(lwiot_event_t *event, int tmo)
 
 	assert(event);
 
-	pthread_mutex_lock(&event->mtx);
+	if(pthread_mutex_lock(&event->mtx) != -EOK)
+		return -EINVALID;
 
 	while(!event->signalled) {
 		if(tmo == FOREVER) {
