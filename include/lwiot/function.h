@@ -15,6 +15,7 @@
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/sharedpointer.h>
+#include <lwiot/functor.h>
 
 #include <lwiot/traits/isfunction.h>
 #include <lwiot/traits/enableif.h>
@@ -32,7 +33,7 @@ namespace lwiot
 
 	template<class F, typename ReturnType, typename...Xs>
 	struct SFModel final : SFConcept<ReturnType, Xs...> {
-        F f;
+        typename traits::RemoveCv<F>::type f;
 
 		explicit SFModel(F const &f) : f(f)
 		{
@@ -68,7 +69,7 @@ namespace lwiot
 		}
 
 		template <typename Func>
-		Function(Func const &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		Function(const Func &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
 		{
 			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
 			new(memory) SFModel<Func, ReturnType, Xs...>(f);
