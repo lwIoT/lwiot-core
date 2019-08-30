@@ -198,6 +198,12 @@ namespace lwiot
 				return *this;
 			}
 
+			inline void clear()
+			{
+				this->freeAllNodes(this->_head[0]);
+				this->_head.assign(1, nullptr);
+			}
+
 			constexpr bool empty() const noexcept
 			{
 				return this->_head[0] == nullptr;
@@ -382,7 +388,7 @@ namespace lwiot
 				const auto node_size = sizeof(node_type) + (levels - 1) * sizeof(node_type *);
 				const auto node = lwiot_mem_zalloc(node_size);
 
-				new(node) node_type{stl::forward<key_type>(key), stl::forward<value_type>(value), levels, nullptr};
+				new(node) node_type{stl::forward<key_type>(key), stl::forward<value_type>(value), levels, {nullptr}};
 				return reinterpret_cast<node_type *>(node);
 			}
 
@@ -391,7 +397,7 @@ namespace lwiot
 				const auto node_size = sizeof(node_type) + (levels - 1) * sizeof(node_type *);
 				const auto node = lwiot_mem_zalloc(node_size);
 
-				new(node) node_type{key, value, levels, nullptr};
+				new(node) node_type{key, value, levels, {nullptr}};
 				return reinterpret_cast<node_type *>(node);
 			}
 
@@ -411,6 +417,8 @@ namespace lwiot
 					index = index->next[0];
 					this->destroyNode(temp);
 				}
+
+				this->_size = 0;
 			}
 
 			friend auto swap(SkipList &a, SkipList &b) noexcept
