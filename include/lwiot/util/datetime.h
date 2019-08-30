@@ -29,8 +29,11 @@ namespace lwiot
 	class DateTime {
 	public:
 		explicit DateTime();
-		explicit DateTime(const DateTime& dt);
-		DateTime(const time_t& ts);
+		DateTime(const DateTime& dt);
+		explicit DateTime(const time_t& ts);
+
+		DateTime(DateTime&& dt) = default;
+		DateTime& operator=(DateTime&& dt) = default;
 
 		virtual ~DateTime() = default;
 
