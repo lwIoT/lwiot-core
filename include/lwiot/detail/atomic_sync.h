@@ -37,6 +37,12 @@ namespace lwiot
 
 			explicit constexpr Atomic(T value) : _value(value) { }
 
+			Atomic(const Atomic& value) : _value(value.load())
+			{ }
+
+			Atomic(Atomic&& value) noexcept : _value(value.load())
+			{ }
+
 			constexpr Atomic& operator=(const Atomic& value)
 			{
 				this->store(value.load());
