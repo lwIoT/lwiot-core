@@ -364,6 +364,7 @@ namespace lwiot
 				return;
 
 			T *p = _alloc.allocate(newalloc);
+			memset(p, 0, newalloc * sizeof(T));
 
 			for(size_t i = 0; i < this->_index; i++) {
 				_alloc.construct(&p[i], _objects[i]);
