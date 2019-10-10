@@ -33,8 +33,8 @@ namespace lwiot
 
 				key_type _key;
 				value_type _value;
-				size_type levels;
-				SkipListNode *next[1];
+				size_type _levels;
+				SkipListNode *_next[1];
 			};
 		}
 
@@ -124,7 +124,7 @@ namespace lwiot
 					if(this->_current == nullptr)
 						return *this;
 
-					this->_current = this->_current->next[0];
+					this->_current = this->_current->_next[0];
 					return *this;
 				}
 
@@ -147,7 +147,7 @@ namespace lwiot
 					return it;
 				}
 
-				constexpr value_type &operator*()
+				constexpr value_type& operator*()
 				{
 					return this->_current->_value;
 				}
@@ -292,10 +292,10 @@ namespace lwiot
 						--level;
 					} else if(next[link_index]->_key == key) {
 						node = next[link_index];
-						next[link_index] = node->next[link_index];
+						next[link_index] = node->_next[link_index];
 						--level;
 					} else {
-						next = next[link_index]->next;
+						next = next[link_index]->_next;
 					}
 				}
 
@@ -333,9 +333,10 @@ namespace lwiot
 					} else if(next[index]->_key == key) {
 						return iterator{next[index]};
 					} else {
-						next = next[index]->next;
+						next = next[index]->_next;
 					}
 				}
+
 				return this->end();
 			}
 
@@ -352,11 +353,32 @@ namespace lwiot
 					} else if(next[index]->_key == key) {
 						return const_iterator{next[index]};
 					} else {
-						next = next[index]->next;
+						next = next[index]->_next;
 					}
 				}
+
 				return this->end();
 			}
+
+#ifndef NDEBUG
+			void dump( )
+			{
+				auto level = this->_head.size();
+
+				for(int idx = 0; idx < level; idx++) {
+					auto node = this->_head[idx];
+
+					printf("Level %i\n\t", idx);
+
+					while(node != nullptr) {
+						printf("%i ", node->_key);
+						node = node->_next[idx];
+					}
+
+					printf("\n");
+				}
+			}
+#endif
 
 		private:
 			stl::Vector<node_type *> _head;
@@ -414,7 +436,7 @@ namespace lwiot
 			{
 				for(auto index = head; index != nullptr;) {
 					const auto temp = index;
-					index = index->next[0];
+					index = index->_next[0];
 					this->destroyNode(temp);
 				}
 
@@ -444,14 +466,14 @@ namespace lwiot
 
 					if(node == nullptr || node->_key > new_node->_key) {
 						if(level <= node_level) {
-							new_node->next[index] = next[index];
+							new_node->_next[index] = next[index];
 							next[index] = new_node;
 
 						}
 
 						--level;
 					} else if(node->_key == new_node->_key) {
-						if(node->levels >= node_level) {
+						if(node->_levels >= node_level) {
 							node->_value = stl::move(new_node->_value);
 							this->destroyNode(node);
 
@@ -460,11 +482,11 @@ namespace lwiot
 
 						old = node;
 
-						new_node->next[index] = node->next[index];
+						new_node->_next[index] = node->_next[index];
 						next[index] = new_node;
 						--level;
 					} else {
-						next = node->next;
+						next = node->_next;
 					}
 				}
 
@@ -489,12 +511,12 @@ namespace lwiot
 					tail.pushback(&(*iter));
 				});
 
-				for(node_type *node = other._head[0]; node != nullptr; node = node->next[0]) {
-					const auto copy_node = this->allocateNode(node->_key, node->_value, node->levels);
+				for(node_type *node = other._head[0]; node != nullptr; node = node->_next[0]) {
+					const auto copy_node = this->allocateNode(node->_key, node->_value, node->_levels);
 
-					for(auto i = 0u; i < copy_node->levels; ++i) {
+					for(auto i = 0u; i < copy_node->_levels; ++i) {
 						*tail[i] = copy_node;
-						tail[i] = &copy_node->next[i];
+						tail[i] = &copy_node->_next[i];
 					}
 				}
 
