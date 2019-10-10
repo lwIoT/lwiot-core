@@ -29,6 +29,11 @@ namespace lwiot
 			constexpr ReferenceWrapper(const ReferenceWrapper& other) noexcept : _value(other._value)
 			{ }
 
+			constexpr ReferenceWrapper(ReferenceWrapper&& other) noexcept : _value(other._value)
+			{
+				other._value = nullptr;
+			}
+
 			constexpr ReferenceWrapper& operator=(type& other)
 			{
 				this->_value = &other;
@@ -38,6 +43,14 @@ namespace lwiot
 			constexpr ReferenceWrapper& operator=(const ReferenceWrapper& other)
 			{
 				this->_value = other._value;
+				return *this;
+			}
+
+			constexpr ReferenceWrapper& operator=(ReferenceWrapper&& other) noexcept
+			{
+				this->_value = other._value;
+				other._value = nullptr;
+
 				return *this;
 			}
 
