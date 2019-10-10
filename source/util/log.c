@@ -33,6 +33,7 @@ static void vfprint_dbg(const char *prefix, const char *fmt, va_list va)
 
 	fprintf(dbg_file, "%s", prefix);
 	vfprintf(dbg_file, fmt, va);
+	fflush(dbg_file);
 }
 
 #ifdef HAVE_DEBUG
