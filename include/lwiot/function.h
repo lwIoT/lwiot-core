@@ -64,26 +64,36 @@ namespace lwiot
 	template<typename ReturnType, typename ...Xs, size_t size>
 	class Function<ReturnType(Xs...), size> {
 	public:
+		static_assert(sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>) <= size, "Expression too big!");
+
 		Function() : memory(), allocated(false)
 		{
 		}
 
 		template <typename Func>
-		Function(const Func &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		explicit Function(const Func &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
 		{
-			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
 			new(memory) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
-		Function(Function<ReturnType(Xs...), s> const &sf) : memory(), allocated(sf.allocated)
+		Function(const Function &sf) : memory(), allocated(sf.allocated)
 		{
 			sf.copy(memory);
 		}
 
+		Function(Function &&sf) noexcept : memory(), allocated(sf.allocated)
+		{
+			sf.copy(memory);
+		}
 
-		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
-		Function &operator=(Function<ReturnType(Xs...), s> const &sf)
+		template <typename Func>
+		Function(Func&& func) noexcept : memory(), allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		{
+			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
+			new(memory) SFModel<Func, ReturnType, Xs...>(func);
+		}
+
+		Function &operator=(Function const &sf)
 		{
 			clean();
 			allocated = sf.allocated;
@@ -106,6 +116,14 @@ namespace lwiot
 				auto c = this->as_concept();
 				c->~concept();
 			}
+		}
+
+		Function& operator=(Function&& func) noexcept
+		{
+			this->clean();
+			this->allocated = func.allocated;
+			func.copy(this->memory);
+			return *this;
 		}
 
 		template <typename Func>

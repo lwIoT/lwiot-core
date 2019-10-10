@@ -23,15 +23,10 @@ public:
 	FunctorTest& operator=(FunctorTest&& rhs) = default;
 	FunctorTest& operator=(const FunctorTest& rhs) = default;
 
-	void operator()() const
-	{
-		print_dbg("Const operator called!\n");
-	}
-
 protected:
 	void run() override
 	{
-		print_dbg("Functor called!");
+		print_dbg("Functor called!\n");
 	}
 
 };
@@ -39,6 +34,8 @@ protected:
 int main(int argc, char **argv)
 {
 	lwiot::Function<int(int)> fn;
+	lwiot::Function<void(void)> fn2;
+	int x = 0;
 
 	lwiot_init();
 	print_dbg("Testing lambda wrapping..\n");
@@ -52,7 +49,22 @@ int main(int argc, char **argv)
 		return a + 1;
 	};
 
-	print_dbg("Fn of 15 = %i\n", fn(15));
+	fn2 = [&]() {
+		print_dbg("Test func called..\n");
+		x++;
+	};
+
+	fn2();
+	fn2 = lwiot::stl::move(functor_wrapper);
+	fn2();
+	fn2 = [&]() {
+		print_dbg("Test func called..\n");
+		x++;
+	};
+
+	fn2();
+
+	assert(x == 2);
 
 	lwiot_destroy();
 	wait_close();
