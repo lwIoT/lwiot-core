@@ -19,6 +19,9 @@ namespace lwiot
 	public:
 		typedef T LockType;
 
+		explicit UniqueLock() : _lock(),  _locked(false)
+		{}
+
 		explicit UniqueLock(LockType & lock) : _lock(lock), _locked(false)
 		{
 			this->lock();
@@ -32,6 +35,11 @@ namespace lwiot
 		{
 		}
 
+		UniqueLock(UniqueLock&& other) noexcept : _lock(stl::move(other.lock())), _locked(other._locked)
+		{
+			other._locked = false;
+		}
+
 		~UniqueLock()
 		{
 			if(this->_locked) {
@@ -39,7 +47,17 @@ namespace lwiot
 			}
 		}
 
+		constexpr UniqueLock& operator=(UniqueLock&& rhs) noexcept
+		{
+			this->_lock = stl::move(rhs.lock);
+			this->_locked = rhs._locked;
+			rhs._locked = false;
+
+			return *this;
+		}
+
 		LockType & operator=(const LockType & lock) = delete;
+		UniqueLock & operator=(const UniqueLock & lock) = delete;
 
 		void lock() const
 		{
