@@ -27,6 +27,7 @@ namespace lwiot
 		public:
 			typedef A Allocator;
 			typedef T ObjectType;
+			typedef size_t size_type;
 
 			template<bool is_const>
 			class Iterator {
@@ -47,7 +48,7 @@ namespace lwiot
 					return this->_base != nullptr;
 				}
 
-				CONSTEXPR reference operator=(ObjectType *obj)
+				CONSTEXPR Iterator& operator=(ObjectType *obj)
 				{
 					this->_base = obj;
 					this->_index = 0UL;
@@ -55,7 +56,7 @@ namespace lwiot
 					return *this;
 				}
 
-				Iterator &operator++()
+				Iterator& operator++()
 				{
 					++this->_index;
 					return *this;
@@ -159,34 +160,18 @@ namespace lwiot
 				this->release();
 			}
 
-			CONSTEXPR void clear()
-			{
-				if(this->length() == 0UL)
-					return;
-
-				for(auto idx = 0UL; idx < this->_index; idx++) {
-					this->_alloc.destroy(&_objects[idx]);
-				}
-
-				this->_index = 0;
-			}
-
-			constexpr ObjectType* data()
-			{
-				return &this->_objects[0];
-			}
-
-			iterator begin()
+			/* ITERATORS */
+			iterator begin() noexcept
 			{
 				return Iterator<false>(&this->_objects[0]);
 			}
 
-			const_iterator begin() const
+			const_iterator begin() const noexcept
 			{
 				return const_iterator(&this->_objects[0]);
 			}
 
-			iterator end()
+			iterator end() noexcept
 			{
 				Iterator<false> it;
 
@@ -194,7 +179,7 @@ namespace lwiot
 				return it;
 			}
 
-			const_iterator end() const
+			const_iterator end() const noexcept
 			{
 				const_iterator it;
 
@@ -202,21 +187,58 @@ namespace lwiot
 				return it;
 			}
 
-			constexpr const T &get(int n) const
+			/* ELEMENT ACCESS */
+			constexpr const ObjectType& at(size_type n) const
 			{
 				return this->_objects[n];
 			}
 
-			CONSTEXPR T &operator[](int n)
+			constexpr ObjectType & at(size_type n)
 			{
 				return this->_objects[n];
 			}
 
-			CONSTEXPR const T &operator[](int n) const
+			constexpr ObjectType& operator[](size_type n)
 			{
 				return this->_objects[n];
 			}
 
+			constexpr const T &operator[](size_type n) const
+			{
+				return this->_objects[n];
+			}
+
+			constexpr const ObjectType& back() const
+			{
+				return this->_objects[this->_index - 1];
+			}
+
+			constexpr ObjectType& back()
+			{
+				return this->_objects[this->_index - 1];
+			}
+
+			constexpr ObjectType* data()
+			{
+				return &this->_objects[0];
+			}
+
+			constexpr ObjectType& front()
+			{
+				return this->_objects[0];
+			}
+
+			constexpr const ObjectType& front() const
+			{
+				return this->_objects[0];
+			}
+
+			constexpr const ObjectType* data() const
+			{
+				return &this->_objects[0];
+			}
+
+			/* CAPACITY */
 			constexpr size_t size() const
 			{
 				return _index;
@@ -234,19 +256,10 @@ namespace lwiot
 
 			void reserve(size_t newalloc);
 
-			CONSTEXPR ObjectType& back()
-			{
-				return this->_objects[this->_index - 1];
-			}
+			/* Modifiers */
+			void pushback(const ObjectType &val);
 
-			CONSTEXPR const ObjectType& back() const
-			{
-				return this->_objects[this->_index - 1];
-			}
-
-			CONSTEXPR void pushback(const ObjectType &val);
-
-			CONSTEXPR void pushback(ObjectType&& value)
+			void pushback(ObjectType&& value)
 			{
 				if(this->_space == 0UL)
 					this->reserve(4);
@@ -258,34 +271,14 @@ namespace lwiot
 			}
 
 			template <typename... Args>
-			auto push_back(Args&&... args) -> decltype(f(stl::forward<Args>(args)...))
+			inline void push_back(Args&&... args)
 			{
-				return pushback(stl::forward<Args>(args)...);
+				this->pushback(stl::forward<Args>(args)...);
 			}
 
-			CONSTEXPR void add(const ObjectType &val)
+			inline void add(const ObjectType &val)
 			{
 				this->pushback(val);
-			}
-
-			template<typename Func>
-			CONSTEXPR void foreach(Func functor)
-			{
-				for(size_t idx = 0U; idx < this->_index; idx++) {
-					functor(this->_objects[idx]);
-				}
-			}
-
-			void assign(size_t n, const ObjectType& value)
-			{
-				this->release();
-				this->_index = 0;
-				this->_space = 0;
-
-				this->reserve(n);
-
-				for(size_t idx = 0; idx < n; idx++)
-					this->pushback(value);
 			}
 
 			void popback()
@@ -296,6 +289,41 @@ namespace lwiot
 				this->_index -= 1;
 				this->_alloc.destroy(&this->_objects[this->_index]);
 				memset(&this->_objects[this->_index], 0, sizeof(ObjectType));
+			}
+
+			void pop_back() { this->popback(); }
+
+			inline void clear()
+			{
+				if(this->length() == 0UL)
+					return;
+
+				for(auto idx = 0UL; idx < this->_index; idx++) {
+					this->_alloc.destroy(&_objects[idx]);
+				}
+
+				this->_index = 0;
+			}
+
+			/* UTILITY */
+			template<typename Func>
+			inline void foreach(Func functor)
+			{
+				for(size_t idx = 0U; idx < this->_index; idx++) {
+					functor(this->_objects[idx]);
+				}
+			}
+
+			void assign(size_type n, const ObjectType& value)
+			{
+				this->release();
+				this->_index = 0;
+				this->_space = 0;
+
+				this->reserve(n);
+
+				for(size_t idx = 0; idx < n; idx++)
+					this->pushback(value);
 			}
 
 		private:
@@ -381,7 +409,7 @@ namespace lwiot
 		}
 
 		template<class T, class A>
-		CONSTEXPR void Vector<T, A>::pushback(const T &val)
+		void Vector<T, A>::pushback(const T &val)
 		{
 			if(this->_space == 0UL)
 				reserve(4);
