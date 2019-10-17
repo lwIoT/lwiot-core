@@ -17,6 +17,38 @@
 #include <lwiot/stl/move.h>
 #include <lwiot/stl/foreach.h>
 
+static void dumplist()
+{
+	lwiot::stl::SkipList<int, lwiot::String> sl1;
+
+	sl1.insert(1, "ABC");
+	sl1.insert(2, "ABC");
+	sl1.insert(3, "ABC");
+	sl1.insert(4, "ABC");
+	sl1.insert(5, "ABC");
+	sl1.insert(6, "ABC");
+	sl1.insert(7, "ABC");
+	sl1.insert(8, "ABC");
+	sl1.insert(9, "ABC");
+	sl1.insert(0, "ABC");
+
+	sl1.insert(10, "ABC");
+	sl1.insert(20, "ABC");
+	sl1.insert(30, "ABC");
+	sl1.insert(40, "ABC");
+	sl1.insert(50, "ABC");
+	sl1.insert(60, "ABC");
+	sl1.insert(70, "ABC");
+	sl1.insert(80, "ABC");
+	sl1.insert(90, "ABC");
+	sl1.insert(100, "ABC");
+
+	print_dbg("Value at 6: %s\n", sl1[6].c_str());
+
+	assert(sl1.size() == 20);
+	sl1.dump();
+}
+
 static void skiplist_test()
 {
 	lwiot::stl::SkipList<int, lwiot::String> sl1;
@@ -39,13 +71,14 @@ static void skiplist_test()
 	const auto& v2 = sl1.at(4);
 	assert(v2 == "XYZ");
 
-	print_dbg("Insert test done!");
+	print_dbg("Insert test done!\n");
 }
 
 int main(int argc, char **argv)
 {
 	lwiot_init();
 	skiplist_test();
+	dumplist();
 
 	wait_close();
 	lwiot_destroy();
