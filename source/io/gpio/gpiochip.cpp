@@ -51,7 +51,7 @@ namespace lwiot
 
 	GpioPin& GpioChip::pin(size_t pin)
 	{
-		return *this->_iopins.get(pin);
+		return *this->_iopins.at(pin);
 	}
 #endif
 
@@ -101,9 +101,9 @@ namespace lwiot
 	{
 		for(auto idx = 0; idx < count; idx++) {
 			if(lsb)
-				this->write(dpin, !!(val & (1 << idx)));
+				this->write(dpin, val & (1 << idx));
 			else
-				this->write( dpin, !!(val & (1 << ((count - 1) - idx))) );
+				this->write(dpin, (val & (1 << ((count - 1) - idx))) != 0);
 
 			this->write(cpin, true);
 			lwiot_udelay(delay);
