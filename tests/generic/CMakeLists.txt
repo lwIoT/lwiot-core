@@ -76,3 +76,6 @@ target_link_libraries(tuple_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRA
 
 add_executable(fileio_test fileio_test.cpp)
 target_link_libraries(fileio_test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+
+add_executable(hashmap-test hashmap_test.cpp)
+target_link_libraries(hashmap-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
