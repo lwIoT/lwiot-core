@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <lwiot/util/application.h>
+
 #include <lwiot/stl/vector.h>
 #include <lwiot/stl/foreach.h>
 #include <lwiot/stl/pair.h>
@@ -38,15 +40,20 @@ namespace lwiot
 			};
 		}
 
-		template<typename K, typename V>
+		template<typename K, typename V, typename A = DefaultAllocator<detail::SkipListNode<K,V>>>
 		class SkipList {
 		private:
+			template<typename, typename >
+			class HashMap;
+
+			friend class HashMap<K,V>;
 			typedef detail::SkipListNode<K, V> node_type;
 
 		public:
 			typedef K key_type;
 			typedef V value_type;
 			typedef size_t size_type;
+			typedef A allocator_type;
 
 			template<bool is_const>
 			class IteratorBase {
@@ -54,7 +61,9 @@ namespace lwiot
 				typedef typename traits::TypeChoice<is_const, const SkipList::value_type,
 						SkipList::value_type>::type value_type;
 				typedef typename traits::TypeChoice<is_const, const SkipList::key_type, SkipList::key_type>::type key_type;
-				typedef typename traits::TypeChoice<is_const, const stl::SkipList<K, V>::node_type, stl::SkipList<K, V>::node_type>::type node_type;
+				typedef typename traits::TypeChoice<is_const,
+					const typename stl::SkipList<key_type , value_type, allocator_type>::node_type,
+					typename stl::SkipList<key_type, value_type, allocator_type>::node_type>::type node_type;
 
 				constexpr explicit IteratorBase() : _current(nullptr)
 				{
@@ -166,16 +175,19 @@ namespace lwiot
 			typedef IteratorBase<true> const_iterator;
 			typedef IteratorBase<false> iterator;
 
-			explicit SkipList() : _head(1), _size(0UL)
+			explicit SkipList() : _head(1), _size(0UL), _prob(DefaultProbability), _max(DefaultLevel), _alloc()
 			{
 			}
 
-			SkipList(const SkipList &other) : _head(other._head.size()), _size(other._size)
+			SkipList(const SkipList &other) :
+				_head(other._head.size()), _size(other._size), _prob(other._prob), _max(DefaultLevel), _alloc(other._alloc)
 			{
 				this->copy(other);
 			}
 
-			SkipList(SkipList &&other) noexcept : _head(stl::move(other._head)), _size(other._size)
+			SkipList(SkipList &&other) noexcept :
+				_head(stl::move(other._head)), _size(other._size), _prob(other._prob), _max(DefaultLevel),
+				_alloc(stl::move(other._alloc))
 			{
 				other._head.assign(1, nullptr);
 			}
@@ -251,6 +263,18 @@ namespace lwiot
 				return *iter;
 			}
 
+			value_type & operator[] (key_type &&key)
+			{
+				auto iter = this->find(key);
+
+				if(iter == this->end()) {
+					V value;
+					return *(this->insert(stl::forward<key_type>(key), stl::move(value)));
+				}
+
+				return *iter;
+			}
+
 			iterator insert(const Pair<key_type, value_type>& p)
 			{
 				return this->insert(p.first, p.second);
@@ -258,7 +282,7 @@ namespace lwiot
 
 			iterator insert(Pair<key_type, value_type>&& p)
 			{
-				return this->insert(stl::move<key_type>(p.first), stl::move<value_type>(p.second));
+				return this->insert(stl::move(p.first), stl::move(p.second));
 			}
 
 			iterator insert(key_type &&key, value_type &&value)
@@ -276,6 +300,20 @@ namespace lwiot
 				auto new_node = this->allocateNode(key, value, node_level);
 
 				return this->insert(new_node, node_level);
+			}
+
+			template <typename... Args>
+			stl::Pair<iterator, bool> emplace(Args&&... args)
+			{
+				auto level = this->generateLevel();
+				auto node = this->allocateNode(stl::forward<Args>(args)..., level);
+				auto rv = this->insert(node, level, true);
+				auto ok = rv == this->end();
+
+				if(rv == this->end())
+					this->destroyNode(node);
+
+				return stl::Pair<iterator, bool>(rv, ok);
 			}
 
 			bool erase(const key_type &key)
@@ -304,6 +342,7 @@ namespace lwiot
 
 				if(node) {
 					this->destroyNode(node);
+					this->_size -= 1;
 					return true;
 				} else {
 					return false;
@@ -360,6 +399,11 @@ namespace lwiot
 				return this->end();
 			}
 
+			size_type size() const
+			{
+				return this->_size;
+			}
+
 #ifndef NDEBUG
 			void dump( )
 			{
@@ -371,7 +415,7 @@ namespace lwiot
 					printf("Level %i\n\t", idx);
 
 					while(node != nullptr) {
-						printf("%i ", node->_key);
+						printf("%lu ", node->_key);
 						node = node->_next[idx];
 					}
 
@@ -383,9 +427,12 @@ namespace lwiot
 		private:
 			stl::Vector<node_type *> _head;
 			size_type _size;
+			float _prob;
+			size_type _max;
+			allocator_type _alloc;
 
 			static constexpr double DefaultProbability = 0.5;
-			static constexpr int DefaultLevel = 5;
+			static constexpr size_type DefaultLevel = 5;
 
 			size_type generateLevel()
 			{
@@ -395,20 +442,22 @@ namespace lwiot
 				do {
 					++new_level;
 					nxtlvl = this->shouldProgress();
-				} while(new_level <= this->_head.size() && nxtlvl);
+				} while(new_level <= this->_head.size() && nxtlvl && new_level < this->_max);
 
 				return new_level;
 			}
 
 			bool shouldProgress()
 			{
-				return rand() & 0x1;
+				double p = lwiot::random();
+
+				p /= static_cast<double>(RAND_MAX);
+				return p >= this->_prob;
 			}
 
 			node_type *allocateNode(key_type &&key, value_type &&value, size_type levels)
 			{
-				const auto node_size = sizeof(node_type) + (levels - 1) * sizeof(node_type *);
-				const auto node = lwiot_mem_zalloc(node_size);
+				const auto node = this->_alloc.allocate(levels);
 
 				new(node) node_type{stl::forward<key_type>(key), stl::forward<value_type>(value), levels, {nullptr}};
 				return reinterpret_cast<node_type *>(node);
@@ -416,8 +465,7 @@ namespace lwiot
 
 			node_type *allocateNode(const key_type &key, const value_type &value, size_type levels)
 			{
-				const auto node_size = sizeof(node_type) + (levels - 1) * sizeof(node_type *);
-				const auto node = lwiot_mem_zalloc(node_size);
+				const auto node = this->_alloc.allocate(levels);
 
 				new(node) node_type{key, value, levels, {nullptr}};
 				return reinterpret_cast<node_type *>(node);
@@ -428,8 +476,8 @@ namespace lwiot
 				if(node == nullptr)
 					return;
 
-				node->~node_type();
-				lwiot_mem_free(node);
+				this->_alloc.destroy(node);
+				this->_alloc.deallocate(node, 1);
 			}
 
 			void freeAllNodes(node_type *head)
@@ -448,14 +496,17 @@ namespace lwiot
 				using stl::swap;
 				swap(a._head, b._head);
 				swap(a._size, b._size);
+				swap(a._prob, b._prob);
+				swap(a._max,  b._max);
+				swap(a._alloc, b._alloc);
 			}
 
-			iterator insert(node_type *new_node, int node_level)
+			iterator insert(node_type *new_node, int node_level, bool once = false)
 			{
 				node_type *old = nullptr;
 
 				while(this->_head.size() < node_level)
-					this->_head.pushback(nullptr);
+					this->_head.push_back(nullptr);
 
 				auto level = this->_head.size();
 				auto next = this->_head.data();
@@ -473,6 +524,9 @@ namespace lwiot
 
 						--level;
 					} else if(node->_key == new_node->_key) {
+						if(once)
+							return this->end();
+
 						if(node->_levels >= node_level) {
 							node->_value = stl::move(new_node->_value);
 							this->destroyNode(node);
@@ -502,13 +556,14 @@ namespace lwiot
 
 			void copy(const SkipList &other)
 			{
+				this->_alloc = other._alloc;
 				this->_head.assign(other._head.size(), nullptr);
 
 				auto tail = stl::Vector<node_type **>{};
 
 				tail.reserve(this->_head.size());
 				stl::foreach(this->_head, [&](auto &iter) {
-					tail.pushback(&(*iter));
+					tail.push_back(&(*iter));
 				});
 
 				for(node_type *node = other._head[0]; node != nullptr; node = node->_next[0]) {
@@ -523,6 +578,10 @@ namespace lwiot
 				stl::foreach(tail, [](auto &iter) {
 					*iter = nullptr;
 				});
+
+				this->_size = other._size;
+				this->_prob = other._prob;
+				this->_max  = other._max;
 			}
 		};
 	}
