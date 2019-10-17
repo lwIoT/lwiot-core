@@ -57,21 +57,22 @@ namespace lwiot
 
 	template<typename ReturnType, typename ...Xs>
 	class Function<ReturnType(Xs...)> {
+	public:
 		typedef size_t size_type;
-		static constexpr size_type SIZE = sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>);
+#define FUNC_SIZE sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>)
 
 	public:
-		Function() : _buffer(SIZE), allocated(false)
+		Function() : _buffer(FUNC_SIZE), allocated(false)
 		{
 		}
 
 		template <typename Func>
-		explicit Function(const Func &f) : _buffer(SIZE),  allocated(true)
+		explicit Function(const Func &f) : _buffer(FUNC_SIZE),  allocated(true)
 		{
 			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		Function(const Function &sf) : _buffer(SIZE), allocated(sf.allocated)
+		Function(const Function &sf) : _buffer(FUNC_SIZE), allocated(sf.allocated)
 		{
 			this->_buffer = sf._buffer;
 		}
@@ -82,9 +83,8 @@ namespace lwiot
 		}
 
 		template <typename Func>
-		Function(Func&& func) noexcept : _buffer(SIZE), allocated(true)
+		Function(Func&& func) noexcept : _buffer(sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>)), allocated(true)
 		{
-			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= SIZE, "Expression too big!");
 			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(func);
 		}
 
