@@ -37,18 +37,17 @@ namespace lwiot
 			lwiot_mem_free(obj);
 		}
 
-		CONSTEXPR void move(ObjectType *obj, ObjectType& t)
+		void move(ObjectType *obj, ObjectType& t) const
 		{
-			new(obj) ObjectType();
-			*obj = stl::move(t);
+			new(obj) ObjectType(stl::move(t));
 		}
 
-		CONSTEXPR void construct(ObjectType *obj, const ObjectType& t) const
+		void construct(ObjectType *obj, const ObjectType& t) const
 		{
 			new(obj) ObjectType(t);
 		}
 
-		CONSTEXPR void destroy(ObjectType* obj) const
+		void destroy(ObjectType* obj) const noexcept
 		{
 			obj->~ObjectType();
 		}
