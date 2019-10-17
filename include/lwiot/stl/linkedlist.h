@@ -18,11 +18,13 @@
 
 #include <lwiot/traits/typechoice.h>
 
+#include <lwiot/util/defaultallocator.h>
+
 namespace lwiot
 {
 	namespace stl
 	{
-		template<typename T>
+		template<typename T, typename A>
 		class LinkedList;
 
 		namespace list
@@ -31,36 +33,32 @@ namespace lwiot
 
 			template<typename T>
 			struct Node {
-			public:
-				explicit Node(const T &data) : _data(data), next(nullptr), prev(nullptr)
+				explicit Node(const T &data) : _data(data), _next(nullptr), _prev(nullptr)
 				{
 				}
 
-				explicit Node(T &&data) : _data(stl::forward<T>(data)), next(nullptr), prev(nullptr)
+				explicit Node(T &&data) : _data(stl::forward<T>(data)), _next(nullptr), _prev(nullptr)
 				{
 				}
 
 				constexpr bool operator==(const Node<T> &other)
 				{
-					return this->_data == other._data && this->next == other.next && this->prev == other.prev;
+					return this->_data == other._data && this->_next == other._next && this->_prev == other._prev;
 				}
 
 				T _data;
-				friend class LinkedList<T>;
 
-			private:
-				friend class Iterator;
-
-				Node<T> *next;
-				Node<T> *prev;
+				Node<T> *_next;
+				Node<T> *_prev;
 			};
 		}
 
-		template<typename T>
+		template<typename T, typename A = DefaultAllocator<list::Node<T>>>
 		class LinkedList {
 		public:
 			typedef T value_type;
 			typedef list::Node<value_type> node_type;
+			typedef A allocator_type;
 
 			template<bool is_const>
 			class Iterator {
@@ -75,16 +73,16 @@ namespace lwiot
 				constexpr explicit Iterator(node_type *node) : _current(node), _start(node), _next(nullptr)
 				{
 					if(node)
-						this->_next = node->next;
+						this->_next = node->_next;
 				}
 
-				constexpr Iterator &operator=(typename LinkedList<T>::node_type *node)
+				constexpr Iterator &operator=(LinkedList::node_type *node)
 				{
 					this->_current = node;
 					this->_start = node;
 
 					if(node)
-						this->_next = node->next;
+						this->_next = node->_next;
 
 					return *this;
 				}
@@ -105,7 +103,7 @@ namespace lwiot
 					}
 
 					this->_current = this->_next;
-					this->_next = this->_next->next;
+					this->_next = this->_next->_next;
 					return *this;
 				}
 
@@ -152,7 +150,7 @@ namespace lwiot
 				}
 
 			private:
-				friend class LinkedList<T>;
+				friend class LinkedList;
 				node_type *_current;
 				node_type *_start;
 				node_type *_next;
@@ -161,16 +159,16 @@ namespace lwiot
 			typedef Iterator<false> iterator;
 			typedef Iterator<true> const_iterator;
 
-			constexpr explicit LinkedList() : _head(nullptr), _size(0UL)
+			constexpr explicit LinkedList() : _head(nullptr), _size(0UL), _alloc()
 			{
 			}
 
-			LinkedList(const LinkedList<T> &other) : _head(nullptr), _size(0UL)
+			LinkedList(const LinkedList &other) : _head(nullptr), _size(0UL), _alloc(other._alloc)
 			{
 				this->copy(other);
 			}
 
-			constexpr LinkedList(LinkedList<T> &&other) noexcept : _head(nullptr), _size(0)
+			constexpr LinkedList(LinkedList &&other) noexcept : _head(nullptr), _size(0), _alloc(stl::move(other._alloc))
 			{
 				this->_size = other._size;
 				this->_head = other._head;
@@ -197,6 +195,7 @@ namespace lwiot
 
 				this->_size = rhs._size;
 				this->_head = rhs._head;
+				this->_alloc = stl::move(rhs._alloc);
 
 				rhs._head = nullptr;
 				rhs._size = 0UL;
@@ -214,47 +213,7 @@ namespace lwiot
 				return stl::exchange(node->_data, stl::forward<value_type &&>(value));
 			}
 
-			void remove(const node_type *node)
-			{
-				if(!removeAndKeepNode(node))
-					return;
-
-				delete node;
-			}
-
-			void erase(const_iterator  iter)
-			{
-				this->remove(iter.node());
-
-				if(this->_size == 0UL)
-					iter.clear();
-			}
-
-			void erase(iterator iter)
-			{
-				this->remove(iter.node());
-
-				if(this->_size == 0UL)
-					iter.clear();
-			}
-
-			void copy(const LinkedList<T> &list)
-			{
-				for(const value_type &value : list) {
-					this->push_back(value);
-				}
-			}
-
-			constexpr void append(LinkedList&& list)
-			{
-				stl::foreach(list, [&](iterator& iter) {
-					auto node = iter.node();
-					list.removeAndKeepNode(node);
-					node->next = nullptr;
-					node->prev = nullptr;
-					this->add_back(node);
-				});
-			}
+			/* ITERATORS */
 
 			constexpr iterator begin()
 			{
@@ -276,6 +235,8 @@ namespace lwiot
 				return const_iterator(nullptr);
 			}
 
+			/* ELEMENT ACCESS */
+
 			constexpr value_type &front()
 			{
 				return *this->begin();
@@ -291,10 +252,10 @@ namespace lwiot
 				if(this->_head == nullptr)
 					return this->front();
 
-				if(this->_head->prev == nullptr)
+				if(this->_head->_prev == nullptr)
 					return this->front();
 
-				return this->_head->prev->_data;
+				return this->_head->_prev->_data;
 			}
 
 			constexpr const value_type& back() const
@@ -302,15 +263,62 @@ namespace lwiot
 				if(this->_head == nullptr)
 					return this->front();
 
-				if(this->_head->prev == nullptr)
+				if(this->_head->_prev == nullptr)
 					return this->front();
 
-				return this->_head->prev->_data;
+				return this->_head->_prev->_data;
+			}
+
+			/* MODIFIERS */
+
+			void erase(const_iterator  iter)
+			{
+				this->remove(iter.node());
+
+				if(this->_size == 0UL)
+					iter.clear();
+			}
+
+			void erase(iterator iter)
+			{
+				this->remove(iter.node());
+
+				if(this->_size == 0UL)
+					iter.clear();
+			}
+
+			constexpr void merge(LinkedList&& list)
+			{
+				if(this == &list)
+					return;
+
+				stl::foreach(list, [&](iterator& iter) {
+					auto node = iter.node();
+					list.removeAndKeepNode(node);
+					node->_next = nullptr;
+					node->_prev = nullptr;
+					this->add_back(node);
+				});
+			}
+
+			constexpr void merge(LinkedList& list)
+			{
+				this->append(stl::move(list));
+			}
+
+			void copy(const LinkedList &list)
+			{
+				this->_alloc = list._alloc;
+
+				for(const value_type &value : list) {
+					this->push_back(value);
+				}
 			}
 
 			void push_back(const value_type &data)
 			{
-				node_type *node = new node_type(data);
+				auto node = this->_alloc.allocate(1);
+				new(node) node_type(data);
 				this->add_back(node);
 			}
 
@@ -338,7 +346,8 @@ namespace lwiot
 					return;
 
 				if(this->_size == 1UL) {
-					delete this->_head;
+					this->_head->~node_type();
+					this->_alloc.deallocate(this->_head, 1);
 					this->_size = 0UL;
 
 					return;
@@ -351,6 +360,8 @@ namespace lwiot
 				}
 			}
 
+			/* CAPACITY */
+
 			constexpr size_t size() const
 			{
 				return this->_size;
@@ -361,7 +372,9 @@ namespace lwiot
 				return this->size() == 0UL;
 			}
 
-			constexpr friend void swap(LinkedList<value_type>& l1, LinkedList<value_type>& l2)
+			/* UTILITY */
+
+			constexpr friend void swap(LinkedList& l1, LinkedList& l2)
 			{
 				using stl::swap;
 
@@ -371,14 +384,14 @@ namespace lwiot
 
 
 		private:
-
-			friend struct list::Node<T>;
+			friend struct list::Node<value_type>;
 			node_type *_head;
 			size_t _size;
+			allocator_type _alloc;
 
 			constexpr bool removeAndKeepNode(const node_type *node)
 			{
-				if(this->_head == nullptr || !(node->next || node->prev))
+				if(this->_head == nullptr || !(node->_next || node->_prev))
 					return false;
 
 				this->_size--;
@@ -389,29 +402,38 @@ namespace lwiot
 				}
 
 				if(node == this->_head) {
-					this->_head = node->next;
+					this->_head = node->_next;
 				}
 
-				if(node->next)
-					node->next->prev = node->prev;
+				if(node->_next)
+					node->_next->_prev = node->_prev;
 
-				if(node->prev)
-					node->prev->next = node->next;
+				if(node->_prev)
+					node->_prev->_next = node->_next;
 
 				return true;
 			}
 
+			void remove(node_type *node)
+			{
+				if(!removeAndKeepNode(node))
+					return;
+
+				this->_alloc.destroy(node);
+				this->_alloc.deallocate(node, 1);
+			}
+
 			constexpr void add(node_type *lnew, node_type *prev, node_type *next)
 			{
-				next->prev = lnew;
-				lnew->next = next;
-				lnew->prev = prev;
-				prev->next = lnew;
+				next->_prev = lnew;
+				lnew->_next = next;
+				lnew->_prev = prev;
+				prev->_next = lnew;
 			}
 
 			constexpr void add_front(node_type *node)
 			{
-				node->prev = node->next = node;
+				node->_prev = node->_next = node;
 				this->_size++;
 
 				if(this->_head == nullptr) {
@@ -419,7 +441,7 @@ namespace lwiot
 					return;
 				}
 
-				this->add(node, _head, _head->next);
+				this->add(node, _head, _head->_next);
 				this->_head = node;
 			}
 
@@ -427,7 +449,7 @@ namespace lwiot
 			{
 				assert(node);
 
-				node->prev = node->next = node;
+				node->_prev = node->_next = node;
 				this->_size++;
 
 				if(this->_head == nullptr) {
@@ -435,7 +457,7 @@ namespace lwiot
 					return;
 				}
 
-				this->add(node, _head->prev, _head);
+				this->add(node, _head->_prev, _head);
 			}
 		};
 	}
