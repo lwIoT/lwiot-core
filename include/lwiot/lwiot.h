@@ -34,6 +34,13 @@ namespace lwiot
 	}
 
 	stl::String randstr(const stl::String& prefix, size_t size);
+
+#define RANDOM_MIN = 0x7FFF;
+
+	inline int random()
+	{
+		return rand();
+	}
 }
 #endif
 
