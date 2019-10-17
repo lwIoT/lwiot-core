@@ -26,7 +26,6 @@ namespace lwiot
 	struct SFConcept {
 		virtual ReturnType operator()(Xs...) const = 0;
 		virtual ReturnType operator()(Xs...) = 0;
-		virtual void copy(void *) const = 0;
 
 		virtual ~SFConcept() = default;
 	};
@@ -37,11 +36,6 @@ namespace lwiot
 
 		explicit SFModel(F const &f) : f(f)
 		{
-		}
-
-		virtual void copy(void *memory) const
-		{
-			new(memory) SFModel<F, ReturnType, Xs...>(f);
 		}
 
 		virtual ReturnType operator()(Xs...xs) const
@@ -58,46 +52,47 @@ namespace lwiot
 	};
 
 
-	template<typename Func, size_t size = 128>
+	template<typename Func>
 	class Function ;
 
-	template<typename ReturnType, typename ...Xs, size_t size>
-	class Function<ReturnType(Xs...), size> {
+	template<typename ReturnType, typename ...Xs>
+	class Function<ReturnType(Xs...)> {
+		typedef size_t size_type;
+		static constexpr size_type SIZE = sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>);
+
 	public:
-		static_assert(sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>) <= size, "Expression too big!");
-
-		Function() : memory(), allocated(false)
+		Function() : _buffer(SIZE), allocated(false)
 		{
 		}
 
 		template <typename Func>
-		explicit Function(const Func &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		explicit Function(const Func &f) : _buffer(SIZE),  allocated(true)
 		{
-			new(memory) SFModel<Func, ReturnType, Xs...>(f);
+			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		Function(const Function &sf) : memory(), allocated(sf.allocated)
+		Function(const Function &sf) : _buffer(SIZE), allocated(sf.allocated)
 		{
-			sf.copy(memory);
+			this->_buffer = sf._buffer;
 		}
 
-		Function(Function &&sf) noexcept : memory(), allocated(sf.allocated)
+		Function(Function &&sf) noexcept : _buffer(stl::move(sf._buffer)), allocated(sf.allocated)
 		{
-			sf.copy(memory);
+			sf.allocated = false;
 		}
 
 		template <typename Func>
-		Function(Func&& func) noexcept : memory(), allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		Function(Func&& func) noexcept : _buffer(SIZE), allocated(true)
 		{
-			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
-			new(memory) SFModel<Func, ReturnType, Xs...>(func);
+			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= SIZE, "Expression too big!");
+			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(func);
 		}
 
 		Function &operator=(Function const &sf)
 		{
 			clean();
 			allocated = sf.allocated;
-			sf.copy(memory);
+			this->_buffer = sf._buffer;
 			return *this;
 		}
 
@@ -112,17 +107,30 @@ namespace lwiot
 
 		virtual ~Function()
 		{
-			if(allocated) {
+			if(allocated && this->_buffer.data() != nullptr) {
 				auto c = this->as_concept();
+				this->allocated = false;
 				c->~concept();
 			}
+		}
+
+		template <typename Func>
+		Function& operator=(Func&& func) noexcept
+		{
+			this->clean();
+			this->allocated = true;
+			this->_buffer.reset();
+			new(this->_buffer.data()) SFModel<Func, ReturnType, Xs...>(stl::forward<Func>(func));
+			return *this;
 		}
 
 		Function& operator=(Function&& func) noexcept
 		{
 			this->clean();
 			this->allocated = func.allocated;
-			func.copy(this->memory);
+			this->_buffer = stl::move(func._buffer);
+
+			func.allocated = false;
 			return *this;
 		}
 
@@ -130,7 +138,7 @@ namespace lwiot
 		Function& operator=(Func& f)
 		{
 			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
-			new(memory) SFModel<Func, ReturnType, Xs...>(f);
+			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
 			return *this;
 		}
 
@@ -161,18 +169,18 @@ namespace lwiot
 		void copy(void *data) const
 		{
 			if(allocated) {
-				((concept *) memory)->copy(data);
+				((concept *) _buffer)->copy(data);
 			}
 		}
 
 	private:
-		char memory[size];
+		ByteBuffer _buffer;
 		bool allocated;
 		using concept = SFConcept<ReturnType, Xs...>;
 
 		constexpr concept* as_concept() const
 		{
-			return (concept*) &memory[0];
+			return (concept*) this->_buffer.data();
 		}
 	};
 }
