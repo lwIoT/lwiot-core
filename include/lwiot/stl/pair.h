@@ -25,6 +25,13 @@ namespace lwiot
 			Pair(const first_type& a, const second_type& b) : first(a), second(b)
 			{}
 
+			Pair( first_type&& a,  second_type&& b) :
+				first(stl::forward<first_type>(a)), second(stl::forward<second_type>(b))
+
+			{
+
+			}
+
 			constexpr Pair(const Pair& p) = default;
 			constexpr Pair(Pair&& p) noexcept = default;
 
