@@ -100,7 +100,7 @@ namespace lwiot
 			this->acquire(static_cast<typename SharedPointer<T>::PointerType *>(ptr._ptr));
 		}
 
-		CONSTEXPR explicit SharedPointer(SharedPointer&& ptr) noexcept : _ptr(ptr._ptr), _pn(stl::move(ptr._pn))
+		CONSTEXPR SharedPointer(SharedPointer&& ptr) noexcept : _ptr(ptr._ptr), _pn(stl::move(ptr._pn))
 		{
 			ptr._ptr = nullptr;
 		}
