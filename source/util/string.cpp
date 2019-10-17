@@ -196,7 +196,12 @@ namespace lwiot
 		unsigned char String::changeBuffer(unsigned int maxStrLen)
 		{
 			unsigned char rv = 0;
-			char *newbuffer = (char *) lwiot_mem_realloc(buffer, maxStrLen + 1);
+			char *newbuffer;
+
+			if(this->buffer == nullptr)
+				newbuffer = (char*) lwiot_mem_zalloc(maxStrLen + 1);
+			else
+				newbuffer = (char *) lwiot_mem_realloc(buffer, maxStrLen + 1);
 
 			if(capacity == 0) {
 				buffer = newbuffer;
