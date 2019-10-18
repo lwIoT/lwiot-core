@@ -9,7 +9,6 @@
 
 #include <lwiot/stl/skiplist.h>
 #include <lwiot/stl/hash.h>
-#include <map>
 
 namespace lwiot
 {

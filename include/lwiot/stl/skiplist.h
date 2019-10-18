@@ -7,6 +7,11 @@
 
 #pragma once
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-non-private-member-variables-in-classes"
+#pragma ide diagnostic ignored "cppcoreguidelines-avoid-c-arrays"
+
+
 #include <lwiot/util/application.h>
 
 #include <lwiot/stl/vector.h>
@@ -569,7 +574,7 @@ namespace lwiot
 				for(node_type *node = other._head[0]; node != nullptr; node = node->_next[0]) {
 					const auto copy_node = this->allocateNode(node->_key, node->_value, node->_levels);
 
-					for(auto i = 0u; i < copy_node->_levels; ++i) {
+					for(auto i = 0U; i < copy_node->_levels; ++i) {
 						*tail[i] = copy_node;
 						tail[i] = &copy_node->_next[i];
 					}
@@ -586,3 +591,5 @@ namespace lwiot
 		};
 	}
 }
+
+#pragma clang diagnostic pop
