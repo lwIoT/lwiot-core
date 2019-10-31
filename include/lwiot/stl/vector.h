@@ -273,7 +273,7 @@ namespace lwiot
 			template <typename... Args>
 			inline void push_back(Args&&... args)
 			{
-				this->pushback(stl::forward<Args>(args)...);
+				this->pushback(stl::forward<Args...>(args...));
 			}
 
 			inline void add(const ObjectType &val)
