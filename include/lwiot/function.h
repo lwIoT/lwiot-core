@@ -62,17 +62,17 @@ namespace lwiot
 #define FUNC_SIZE sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>)
 
 	public:
-		Function() : _buffer(FUNC_SIZE), allocated(false)
+		Function() : _buffer(), allocated(false)
 		{
 		}
 
 		template <typename Func>
-		explicit Function(const Func &f) : _buffer(FUNC_SIZE),  allocated(true)
+		explicit Function(const Func &f) : _buffer(FUNC_SIZE * 2),  allocated(true)
 		{
 			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		Function(const Function &sf) : _buffer(FUNC_SIZE), allocated(sf.allocated)
+		Function(const Function &sf) : _buffer(FUNC_SIZE * 2), allocated(sf.allocated)
 		{
 			this->_buffer = sf._buffer;
 		}
@@ -83,9 +83,9 @@ namespace lwiot
 		}
 
 		template <typename Func>
-		Function(Func&& func) noexcept : _buffer(sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>)), allocated(true)
+		Function(Func&& func) noexcept : _buffer(FUNC_SIZE * 2), allocated(true)
 		{
-			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(func);
+			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(stl::forward<Func>(func));
 		}
 
 		Function &operator=(Function const &sf)
@@ -137,7 +137,8 @@ namespace lwiot
 		template <typename Func>
 		Function& operator=(Func& f)
 		{
-			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
+			this->clean();
+			this->allocated = true;
 			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
 			return *this;
 		}
