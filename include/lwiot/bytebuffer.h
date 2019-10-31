@@ -44,8 +44,8 @@ namespace lwiot
 		explicit ByteBuffer();
 		explicit ByteBuffer(const size_t& size, bool exactfit = false);
 		ByteBuffer(const ByteBuffer& other);
-		explicit ByteBuffer(ByteBuffer&& other) noexcept;
-		virtual ~ByteBuffer();
+		ByteBuffer(ByteBuffer&& other) noexcept;
+		~ByteBuffer() override ;
 
 		ByteBuffer& operator =(const ByteBuffer& other);
 		ByteBuffer& operator =(ByteBuffer&& other) noexcept;

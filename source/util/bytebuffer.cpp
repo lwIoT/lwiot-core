@@ -19,6 +19,11 @@ namespace lwiot
 
 	ByteBuffer::ByteBuffer(const size_t& size, bool exactfit) : Countable(size), _index(0), _exactfit(exactfit), _default(0)
 	{
+		if(size == 0UL) {
+			this->_data = nullptr;
+			return;
+		}
+
 		this->_data = (uint8_t*)lwiot_mem_alloc(size);
 		memset(this->_data, 0, size);
 	}
