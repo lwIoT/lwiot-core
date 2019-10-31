@@ -48,5 +48,7 @@ namespace lwiot { namespace traits
 	struct IsIntegral_helper<unsigned long long> : TrueType { };
 
 	template <typename T>
-	struct IsIntegral : IsIntegral_helper<T> { };
+	struct IsIntegral : IsIntegral_helper<T> {
+		static constexpr bool Value = IsIntegral_helper<T>::value;
+	};
 }}
