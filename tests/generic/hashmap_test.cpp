@@ -67,6 +67,8 @@ private:
 		map.emplace("abt", 1);
 		map.emplace("abu", 1);
 
+		assert(map.contains("abu"));
+
 		map.dump();
 	}
 

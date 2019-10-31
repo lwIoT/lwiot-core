@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 	lwiot::SharedPointer<int> s1(ptr);
 	lwiot::SharedPointer<int> s2(s1);
 	lwiot::SharedPointer<int> s3(s2);
+	auto s5 = lwiot::stl::MakeShared<int>(4);
 
 	*s2 = 10;
 
@@ -37,6 +38,7 @@ int main(int argc, char **argv)
 	s0 = s2;
 	print_dbg("Shared pointer 4 value: %i\n", *s4);
 	print_dbg("Shared pointer 0 value: %i\n", *s0);
+	print_dbg("Shared pointer 5 value: %i\n", *s5);
 
 	assert(s4 == newptr);
 	assert(s4);
