@@ -7,11 +7,6 @@
 
 #pragma once
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-non-private-member-variables-in-classes"
-#pragma ide diagnostic ignored "cppcoreguidelines-avoid-c-arrays"
-
-
 #include <lwiot/util/application.h>
 
 #include <lwiot/stl/vector.h>
@@ -52,13 +47,13 @@ namespace lwiot
 			class HashMap;
 
 			friend class HashMap<K,V>;
-			typedef detail::SkipListNode<K, V> node_type;
 
 		public:
 			typedef K key_type;
 			typedef V value_type;
 			typedef size_t size_type;
 			typedef A allocator_type;
+			typedef detail::SkipListNode<K, V> node_type;
 
 			template<bool is_const>
 			class IteratorBase {
@@ -67,14 +62,13 @@ namespace lwiot
 						SkipList::value_type>::type value_type;
 				typedef typename traits::TypeChoice<is_const, const SkipList::key_type, SkipList::key_type>::type key_type;
 				typedef typename traits::TypeChoice<is_const,
-					const typename stl::SkipList<key_type , value_type, allocator_type>::node_type,
-					typename stl::SkipList<key_type, value_type, allocator_type>::node_type>::type node_type;
+					const SkipList::node_type*, SkipList::node_type*>::type pointer_type;
 
 				constexpr explicit IteratorBase() : _current(nullptr)
 				{
 				}
 
-				constexpr explicit IteratorBase(node_type *pos) : _current(pos)
+				constexpr explicit IteratorBase(pointer_type pos) : _current(pos)
 				{
 				}
 
@@ -166,13 +160,18 @@ namespace lwiot
 					return this->_current->_value;
 				}
 
+				constexpr value_type *operator->() const
+				{
+					return &this->_current->_value;
+				}
+
 				constexpr value_type *operator->()
 				{
 					return &this->_current->_value;
 				}
 
 			private:
-				node_type *_current;
+				pointer_type _current;
 
 				friend class SkipList<K, V>;
 			};
@@ -313,7 +312,7 @@ namespace lwiot
 				auto level = this->generateLevel();
 				auto node = this->allocateNode(stl::forward<Args>(args)..., level);
 				auto rv = this->insert(node, level, true);
-				auto ok = rv == this->end();
+				auto ok = rv != this->end();
 
 				if(rv == this->end())
 					this->destroyNode(node);
@@ -395,7 +394,7 @@ namespace lwiot
 					if(!next[index] || next[index]->_key > key) {
 						--level;
 					} else if(next[index]->_key == key) {
-						return const_iterator{next[index]};
+						return const_iterator(next[index]);
 					} else {
 						next = next[index]->_next;
 					}
@@ -591,5 +590,3 @@ namespace lwiot
 		};
 	}
 }
-
-#pragma clang diagnostic pop

@@ -37,12 +37,12 @@ namespace lwiot {
 	public:
 		class NewLine {
 		public:
-			NewLine() {}
+			NewLine() = default;
 		};
 
 		explicit Logger();
 		explicit Logger(FILE *output);
-		Logger(const String& subsys, FILE *output = stdout);
+		explicit Logger(const String& subsys, FILE *output = stdout);
 
 		Logger& operator <<(NewLine nl);
 		Logger& operator <<(const char *txt);
@@ -57,6 +57,7 @@ namespace lwiot {
 		Logger& operator <<(double fp);
 
 		static NewLine newline;
+
 	private:
 		FILE *_f_output;
 		bool _newline;
