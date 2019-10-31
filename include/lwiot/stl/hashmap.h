@@ -42,7 +42,7 @@ namespace lwiot
 				return this->_list.at(stl::hash(key));
 			}
 
-			value_type& at(const key_type& key) const
+			const value_type& at(const key_type& key) const
 			{
 				return this->_list.at(stl::hash(key));
 			}
