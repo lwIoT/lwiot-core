@@ -25,7 +25,12 @@ namespace lwiot
 		explicit FunctionalThread(const String& name);
 		explicit FunctionalThread(const char* name);
 		FunctionalThread(const String& name, Runner& runner);
+		FunctionalThread(FunctionalThread&& other) noexcept;
+		FunctionalThread(const FunctionalThread& other) = delete;
 		~FunctionalThread() override = default;
+
+		FunctionalThread& operator=(FunctionalThread&& rhs) noexcept;
+		FunctionalThread& operator=(const FunctionalThread& rhs) = delete;
 
 		template <typename Func>
 		FunctionalThread& operator=(Func&& runner)

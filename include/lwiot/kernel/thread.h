@@ -85,6 +85,7 @@ namespace lwiot {
 		void pre_run();
 
 		bool _running;
+		bool _allocated;
 		lwiot_thread_t *_internal;
 		Event _join;
 		Lock _lock;

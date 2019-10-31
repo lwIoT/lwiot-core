@@ -27,6 +27,10 @@ namespace lwiot
 	{
 	}
 
+	FunctionalThread::FunctionalThread(FunctionalThread &&other) noexcept : Thread(stl::forward<FunctionalThread>(other)),
+	                                                                        _runner(stl::move(other._runner))
+	{ }
+
 	void FunctionalThread::run()
 	{
 		if(this->_runner.valid())
@@ -38,4 +42,13 @@ namespace lwiot
 		this->_runner = runner;
 		Thread::start();
 	}
+
+	FunctionalThread &FunctionalThread::operator=(FunctionalThread &&rhs) noexcept
+	{
+		this->move(rhs);
+		this->_runner = stl::move(rhs._runner);
+
+		return *this;
+	}
+
 }

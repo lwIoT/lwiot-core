@@ -5,7 +5,6 @@
  * @email  dev@bietje.net
  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
@@ -27,14 +26,16 @@ namespace lwiot
 	{
 	}
 
-	Thread::Thread(const char *name, void *argument) : _internal(nullptr), _prio(-1), stacksize(0), _name(name)
+	Thread::Thread(const char *name, void *argument) : _allocated(false),_internal(nullptr),
+		_prio(-1), stacksize(0), _name(name)
 	{
 		this->_running = false;
 		this->_argument = argument;
 	}
 
 	Thread::Thread(const String& name, int priority, size_t stacksize, void* argument) :
-		_argument(nullptr), _running(false), _internal(nullptr), _prio(priority), stacksize(stacksize), _name(name)
+		_argument(nullptr), _running(false), _allocated(false),
+		_internal(nullptr), _prio(priority), stacksize(stacksize), _name(name)
 	{
 		this->_running = false;
 		this->_argument = argument;
@@ -45,8 +46,9 @@ namespace lwiot
 	}
 
 	Thread::Thread(lwiot::Thread &&other) noexcept :
-		_argument(other._argument), _running(other._running), _internal(other._internal), _join(stl::move(other._join)),
-		_lock(stl::move(other._lock)), _prio(other._prio), stacksize(other.stacksize), _name(stl::move(other._name))
+		_argument(other._argument), _running(other._running), _allocated(other._allocated), _internal(other._internal),
+		_join(stl::move(other._join)), _lock(stl::move(other._lock)), _prio(other._prio), stacksize(other.stacksize),
+		_name(stl::move(other._name))
 	{
 	}
 
@@ -94,6 +96,8 @@ namespace lwiot
 		} else {
 			this->_internal = lwiot_thread_create(thread_starter, this->_name.c_str(), this);
 		}
+
+		this->_allocated = true;
 	}
 
 	void Thread::join()
@@ -110,10 +114,11 @@ namespace lwiot
 	{
 		ScopedLock g(this->_lock);
 
-		if(!this->_running)
+		if(!this->_allocated)
 			return;
 
 		this->_running = false;
+		this->_allocated = false;
 		this->_join.signal();
 
 		g.unlock();
@@ -125,6 +130,7 @@ namespace lwiot
 		this->run();
 
 		ScopedLock g(this->_lock);
+
 		this->_running = false;
 		this->_join.signal();
 	}
