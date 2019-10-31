@@ -301,4 +301,10 @@ namespace lwiot
 			return SharedPointer<T>();
 		}
 	}
+
+	template <typename T, typename... Args>
+	SharedPointer<T> MakeShared(Args&&... args)
+	{
+		return SharedPointer<T>(new T(stl::forward<Args...>(args...)));
+	}
 }
