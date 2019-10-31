@@ -5,9 +5,7 @@
  * @email  dev@bietje.net
  */
 
-#include <stdlib.h>
 #include <unistd.h>
-#include <lwiot.h>
 #include <pthread.h>
 
 #include <lwiot/types.h>

@@ -5,16 +5,11 @@
  * @email  dev@bietje.net
  */
 
-#include <stdlib.h>
 #include <lwiot.h>
 
 #include <lwiot/log.h>
 #include <lwiot/io/gpiochip.h>
-#include <lwiot/util/pair.h>
 #include <lwiot/hosted/hostedgpiochip.h>
-
-#include <vector>
-#include <map>
 
 namespace lwiot
 {
