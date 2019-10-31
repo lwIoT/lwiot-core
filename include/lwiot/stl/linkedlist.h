@@ -324,7 +324,9 @@ namespace lwiot
 
 			void push_back(value_type &&data)
 			{
-				node_type *node = new node_type(stl::forward<value_type>(data));
+				auto node = this->_alloc.allocate(1);
+				new(node) node_type(stl::forward<value_type>(data));
+				//node_type *node = new node_type(stl::forward<value_type>(data));
 				this->add_back(node);
 			}
 
@@ -336,7 +338,8 @@ namespace lwiot
 
 			void push_front(value_type &&data)
 			{
-				node_type *node = new node_type(stl::forward<value_type>(data));
+				auto node = this->_alloc.allocate(1);
+				new(node) node_type(stl::forward<value_type>(data));
 				this->add_front(node);
 			}
 

@@ -197,7 +197,7 @@ namespace lwiot
 			{
 				for(auto idx = this->begin(); idx != this->end(); ++idx) {
 					if(idx->key == key) {
-						this->_data.remove(idx.node());
+						this->_data.erase(idx);
 						break;
 					}
 				}
