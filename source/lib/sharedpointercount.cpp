@@ -11,36 +11,47 @@
 
 #include <lwiot/types.h>
 #include <lwiot/log.h>
-#include <lwiot/sharedpointer.h>
+
+#include <lwiot/stl/sharedpointer.h>
 
 namespace lwiot
 {
-	SharedPointerCount::SharedPointerCount(lwiot::SharedPointerCount &&count) noexcept : _count(count._count)
+	namespace stl
 	{
-		count._count = nullptr;
-	}
+		namespace detail
+		{
+			SharedPointerCount::SharedPointerCount(SharedPointerCount &&count) noexcept : _count(
+					count._count)
+			{
+				count._count = nullptr;
+			}
 
-	SharedPointerCount& SharedPointerCount::operator=(lwiot::SharedPointerCount &&rhs) noexcept
-	{
-		this->_count = rhs._count;
-		rhs._count = nullptr;
-		return *this;
-	}
+			SharedPointerCount &SharedPointerCount::operator=(SharedPointerCount &&rhs) noexcept
+			{
+				this->_count = rhs._count;
+				rhs._count = nullptr;
+				return *this;
+			}
 
-	void SharedPointerCount::swap(lwiot::SharedPointerCount &cnt) noexcept
-	{
-		lwiot::stl::swap(this->_count, cnt._count);
-	}
+			void SharedPointerCount::swap(SharedPointerCount &cnt) noexcept
+			{
+				lwiot::stl::swap(this->_count, cnt._count);
+			}
 
-	long SharedPointerCount::useCount() const
-	{
-		return this->_count->load();
-	}
+			long SharedPointerCount::useCount() const
+			{
+				if(this->_count == nullptr)
+					return 0L;
 
-	void SharedPointerCount::acquire() const noexcept
-	{
-		assert(this->_count != nullptr);
-		this->_count->fetch_add(1L);
+				return this->_count->load();
+			}
+
+			void SharedPointerCount::acquire() const noexcept
+			{
+				assert(this->_count != nullptr);
+				this->_count->fetch_add(1L);
+			}
+		}
 	}
 }
 
