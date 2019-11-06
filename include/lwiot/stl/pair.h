@@ -49,11 +49,12 @@ namespace lwiot
 				return *this;
 			}
 
-			constexpr void swap(Pair& p)
+			friend constexpr void swap(Pair& a, Pair& b)
 			{
 				using stl::swap;
-				swap(this->first, p.first);
-				swap(this->second, p.second);
+
+				swap(a.first, b.first);
+				swap(a.second, b.second);
 			}
 
 			first_type first;
