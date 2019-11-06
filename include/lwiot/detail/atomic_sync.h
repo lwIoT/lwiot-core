@@ -78,12 +78,12 @@ namespace lwiot
 			}
 
 			// Post-increment
-			const T operator ++(int)
+			T operator ++(int)
 			{
 				return fetch_add(1);
 			}
 
-			const T operator ++(int) volatile
+			T operator ++(int) volatile
 			{
 				return fetch_add(1);
 			}
