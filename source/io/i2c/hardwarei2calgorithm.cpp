@@ -252,13 +252,13 @@ namespace lwiot
 
 	bool HardwareI2CAlgorithm::isBusy() const
 	{
-		Function<bool()> is_busy = [this]() -> bool {
+		Function<bool()> is_busy([&]() -> bool {
 			bool scl, sda;
 
 			this->_scl >> scl;
 			this->_sda >> sda;
 			return scl && sda;
-		};
+		});
 
 		if(is_busy()) {
 			lwiot_udelay(MaxRiseTime);
