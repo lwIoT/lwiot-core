@@ -43,8 +43,11 @@ namespace lwiot
 
 	ByteBuffer::~ByteBuffer()
 	{
-		if(this->_data)
+		if(this->_data) {
 			lwiot_mem_free(this->_data);
+		}
+
+		this->_data = nullptr;
 	}
 
 	ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other) noexcept
@@ -97,7 +100,8 @@ namespace lwiot
 	{
 		auto size = other.count();
 
-		lwiot_mem_free(this->_data);
+		if(this->_data != nullptr)
+			lwiot_mem_free(this->_data);
 		this->_data = static_cast<uint8_t*>(lwiot_mem_zalloc(size));
 
 		memcpy(this->_data, other._data, size);
