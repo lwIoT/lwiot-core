@@ -8,6 +8,7 @@
 
 #pragma once
 
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -26,16 +27,22 @@ namespace lwiot
 	struct SFConcept {
 		virtual ReturnType operator()(Xs...) const = 0;
 		virtual ReturnType operator()(Xs...) = 0;
+		virtual void copy(void *) const = 0;
 
 		virtual ~SFConcept() = default;
 	};
 
 	template<class F, typename ReturnType, typename...Xs>
 	struct SFModel final : SFConcept<ReturnType, Xs...> {
-        typename traits::RemoveCv<F>::type f;
+		typename traits::RemoveCv<F>::type f;
 
 		explicit SFModel(F const &f) : f(f)
 		{
+		}
+
+		virtual void copy(void *memory) const
+		{
+			new(memory) SFModel<F, ReturnType, Xs...>(f);
 		}
 
 		virtual ReturnType operator()(Xs...xs) const
@@ -52,47 +59,35 @@ namespace lwiot
 	};
 
 
-	template<typename Func>
+	template<typename Func, size_t size = 128>
 	class Function ;
 
-	template<typename ReturnType, typename ...Xs>
-	class Function<ReturnType(Xs...)> {
+	template<typename ReturnType, typename ...Xs, size_t size>
+	class Function<ReturnType(Xs...), size> {
 	public:
-		typedef size_t size_type;
-#define FUNC_SIZE sizeof(SFModel<ReturnType(*)(Xs...), ReturnType, Xs...>)
-
-	public:
-		Function() : _buffer(), allocated(false)
+		Function() : memory(), allocated(false)
 		{
 		}
 
 		template <typename Func>
-		explicit Function(const Func &f) : _buffer(FUNC_SIZE * 2),  allocated(true)
+		Function(const Func &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
 		{
-			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
+			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
+			new(memory) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		Function(const Function &sf) : _buffer(FUNC_SIZE * 2), allocated(sf.allocated)
+		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
+		explicit Function(const Function& sf) : memory(), allocated(sf.allocated)
 		{
-			this->_buffer = sf._buffer;
+			sf.copy(memory);
 		}
 
-		Function(Function &&sf) noexcept : _buffer(stl::move(sf._buffer)), allocated(sf.allocated)
+		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
+		Function &operator=(const Function& sf)
 		{
-			sf.allocated = false;
-		}
-
-		template <typename Func>
-		Function(Func&& func) noexcept : _buffer(FUNC_SIZE * 2), allocated(true)
-		{
-			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(stl::forward<Func>(func));
-		}
-
-		Function &operator=(Function const &sf)
-		{
-			clean();
+			this->clean();
 			allocated = sf.allocated;
-			this->_buffer = sf._buffer;
+			sf.copy(memory);
 			return *this;
 		}
 
@@ -107,39 +102,25 @@ namespace lwiot
 
 		virtual ~Function()
 		{
-			if(allocated && this->_buffer.data() != nullptr) {
+			if(allocated) {
 				auto c = this->as_concept();
-				this->allocated = false;
 				c->~concept();
 			}
 		}
 
 		template <typename Func>
-		Function& operator=(Func&& func) noexcept
+		Function& operator=(Func&& f)
 		{
-			this->clean();
-			this->allocated = true;
-			this->_buffer.reset();
-			new(this->_buffer.data()) SFModel<Func, ReturnType, Xs...>(stl::forward<Func>(func));
-			return *this;
-		}
-
-		Function& operator=(Function&& func) noexcept
-		{
-			this->clean();
-			this->allocated = func.allocated;
-			this->_buffer = stl::move(func._buffer);
-
-			func.allocated = false;
+			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
+			new(memory) SFModel<Func, ReturnType, Xs...>(stl::forward<Func>(f));
 			return *this;
 		}
 
 		template <typename Func>
-		Function& operator=(Func& f)
+		Function& operator=(const Func &f)
 		{
-			this->clean();
-			this->allocated = true;
-			new(_buffer.data()) SFModel<Func, ReturnType, Xs...>(f);
+			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
+			new(memory) SFModel<Func, ReturnType, Xs...>(f);
 			return *this;
 		}
 
@@ -170,18 +151,18 @@ namespace lwiot
 		void copy(void *data) const
 		{
 			if(allocated) {
-				((concept *) _buffer)->copy(data);
+				((concept *) memory)->copy(data);
 			}
 		}
 
 	private:
-		ByteBuffer _buffer;
+		char memory[size];
 		bool allocated;
 		using concept = SFConcept<ReturnType, Xs...>;
 
 		constexpr concept* as_concept() const
 		{
-			return (concept*) this->_buffer.data();
+			return (concept*) &memory[0];
 		}
 	};
 }
