@@ -505,7 +505,7 @@ namespace lwiot
 				swap(a._alloc, b._alloc);
 			}
 
-			iterator insert(node_type *new_node, int node_level, bool once = false)
+			iterator insert(node_type *new_node, size_t node_level, bool once = false)
 			{
 				node_type *old = nullptr;
 
