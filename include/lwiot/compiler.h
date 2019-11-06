@@ -17,10 +17,6 @@
 #include <lwiot/compiler-gcc.h>
 #endif
 
-#ifndef optimize
-#define optimize
-#endif
-
 #define likely(x) __compiler_likely(x)
 #define unlikely(x) __compiler_unlikely(x)
 

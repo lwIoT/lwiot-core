@@ -20,7 +20,7 @@
 
 #define PACKED_ATTR __attribute__((packed))
 
-#define optimize gnu::hot
+#define cxx_optimize gnu::hot
 
 #if __cplusplus >= 201402L
 #define CONSTEXPR constexpr
