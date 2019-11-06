@@ -23,7 +23,7 @@ namespace lwiot
 		struct RemoveAllExtents
 		{ typedef _Tp     type; };
 
-		template<typename _Tp, std::size_t _Size>
+		template<typename _Tp, size_t _Size>
 		struct RemoveAllExtents<_Tp[_Size]>
 		{ typedef typename RemoveAllExtents<_Tp>::type     type; };
 

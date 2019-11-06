@@ -22,9 +22,9 @@
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include <cstdlib>
-#include <cstdio>
-#include <cctype>
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
 
 #include <lwiot/lwiot.h>
 #include <lwiot/stl/string.h>

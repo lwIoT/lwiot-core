@@ -12,8 +12,6 @@
 #include <lwiot/traits/isdestructible.h>
 #include <lwiot/traits/isarray.h>
 
-#include <type_traits>
-
 namespace lwiot
 {
 	namespace traits
