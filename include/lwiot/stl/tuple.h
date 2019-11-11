@@ -7,6 +7,10 @@
 
 #pragma once
 
+/**
+ * @file tuple.h
+ */
+
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -114,6 +118,10 @@ namespace lwiot
 		};
 
 
+		/**
+		 * @brief Tuple object.
+		 * @tparam Types Types wrapped by the tuple.
+		 */
 		template<typename ... Types>
 		class Tuple : public TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...> {
 		private:
