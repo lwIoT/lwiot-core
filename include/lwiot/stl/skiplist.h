@@ -279,6 +279,42 @@ namespace lwiot
 				return *iter;
 			}
 
+			bool operator==(const SkipList& other) const
+			{
+				if(this->_size != other._size)
+					return false;
+
+				const_iterator a = this->begin();
+				const_iterator b = other.begin();
+
+				for(; a != this->end(); ++a, ++b) {
+					if(*a == *b)
+						continue;
+
+					return false;
+				}
+
+				return true;
+			}
+
+			bool operator!=(const SkipList& other) const
+			{
+				if(this->_size != other._size)
+					return true;
+
+				const_iterator a = this->begin();
+				const_iterator b = other.begin();
+
+				for(; a != this->end(); ++a, ++b) {
+					if(*a == *b)
+						continue;
+
+					return true;
+				}
+
+				return false;
+			}
+
 			iterator insert(const Pair<key_type, value_type>& p)
 			{
 				return this->insert(p.first, p.second);
