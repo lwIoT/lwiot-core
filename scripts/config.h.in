@@ -30,6 +30,10 @@
 #define CONFIG_CONFIG_STANDALONE 1
 #endif
 
+#if !defined(CONFIG_NO_SYS) || defined(HAVE_RTOS)
+#define HAVE_OS
+#endif
+
 #cmakedefine HAVE_LWIP
 
 /* SSD1306 options */
