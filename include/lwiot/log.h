@@ -35,6 +35,14 @@ CDECL_END
 namespace lwiot {
 	class Logger {
 	public:
+		enum Visibility {
+			None = 0,
+			Critical,
+			Info,
+			Debug,
+			Trace
+		};
+
 		class NewLine {
 		public:
 			NewLine() = default;
@@ -43,6 +51,8 @@ namespace lwiot {
 		explicit Logger();
 		explicit Logger(FILE *output);
 		explicit Logger(const String& subsys, FILE *output = stdout);
+
+		void setStreamVisibility(Visibility visibility);
 
 		Logger& operator <<(NewLine nl);
 		Logger& operator <<(const char *txt);
@@ -56,12 +66,21 @@ namespace lwiot {
 		Logger& operator <<(float fp);
 		Logger& operator <<(double fp);
 
+		Logger& debug(const String& str);
+		Logger& critical(const String& str);
+		Logger& info(const String& str);
+
+		void setVisibility(Visibility v);
+		Visibility visibility() const;
+
 		static NewLine newline;
 
 	private:
 		FILE *_f_output;
 		bool _newline;
 		String _subsys;
+		Visibility _visibility;
+		Visibility _output;
 
 		void format(const char *fmt, ...);
 		void print_newline();

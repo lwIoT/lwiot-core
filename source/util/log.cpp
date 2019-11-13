@@ -17,19 +17,19 @@
 namespace lwiot {
 	Logger::NewLine Logger::newline;
 
-	Logger::Logger(FILE *output) : _f_output(output), _newline(true)
+	Logger::Logger(FILE *output) : _f_output(output), _newline(true), _visibility(Visibility::Info), _output(Visibility::Info)
 	{ }
 
-	Logger::Logger() : _f_output(stdout), _newline(true)
+	Logger::Logger() : _f_output(stdout), _newline(true), _visibility(Visibility::Info), _output(Visibility::Info)
 	{
 	}
 
 	Logger::Logger(const String& subsys, FILE *output /* = stdout */) :
-		_f_output(output), _newline(true), _subsys(subsys)
+		_f_output(output), _newline(true), _subsys(subsys), _visibility(Visibility::Info), _output(Visibility::Info)
 	{
 	}
 
-	void Logger::print_newline(void)
+	void Logger::print_newline()
 	{
 #ifdef WIN32
 		this->format("\r\n");
@@ -113,6 +113,9 @@ namespace lwiot {
 		if(fmt == nullptr)
 			return;
 
+		if(this->_visibility < this->_output)
+			return;
+
 		if(this->_newline) {
 			this->_newline = false;
 			tick = lwiot_tick_ms();
@@ -133,5 +136,44 @@ namespace lwiot {
 		if(this->_f_output != nullptr)
 			vfprintf(this->_f_output, fmt, va);
 		va_end(va);
+	}
+
+	Logger::Visibility Logger::visibility() const
+	{
+		return this->_visibility;
+	}
+
+	void Logger::setVisibility(Logger::Visibility v)
+	{
+		this->_visibility = v;
+	}
+
+	void Logger::setStreamVisibility(Logger::Visibility visibility)
+	{
+		this->_output = visibility;
+	}
+
+	Logger &Logger::debug(const String &str)
+	{
+		if(this->_visibility >= Visibility::Debug)
+			this->format(str.c_str());
+
+		return *this;
+	}
+
+	Logger &Logger::critical(const String &str)
+	{
+		if(this->_visibility >= Visibility::Critical)
+			this->format(str.c_str());
+
+		return *this;
+	}
+
+	Logger &Logger::info(const String &str)
+	{
+		if(this->_visibility >= Visibility::Info)
+			this->format(str.c_str());
+
+		return *this;
 	}
 }
