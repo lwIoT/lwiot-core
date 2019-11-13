@@ -82,6 +82,11 @@ namespace lwiot
 				return true;
 			}
 
+			void clear()
+			{
+				this->_set.clear();
+			}
+
 		private:
 			stl::SkipList<key_type, bool> _set;
 		};
