@@ -17,6 +17,7 @@ SET(WRAPPER_SOURCES
 	kernel/functionalthread.cpp
 	kernel/event.cpp
 	kernel/timer.cpp
+	kernel/timereventqueue.cpp
 	kernel/asyncfsm.cpp
 
 	net/802.15.4/asyncxbee.cpp

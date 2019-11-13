@@ -36,5 +36,14 @@ target_link_libraries(async-fsm-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS
 add_executable(fsm-test fsm_test.cpp)
 target_link_libraries(fsm-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
 
+add_executable(dispatchqueue-test dpq_test.cpp)
+target_link_libraries(dispatchqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(eventqueue-test evq_test.cpp)
+target_link_libraries(eventqueue-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+
+add_executable(dispatchqueue-policy-test dpq-policy_test.cpp)
+target_link_libraries(dispatchqueue-policy-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
+
 add_executable(hardwarei2c-test hardwarei2c_test.cpp)
 target_link_libraries(hardwarei2c-test lwiot ${PLATFORM} lwiot ${LWIOT_SYSTEM_LIBS})
