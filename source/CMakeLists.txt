@@ -17,6 +17,7 @@ SET(WRAPPER_SOURCES
 	kernel/functionalthread.cpp
 	kernel/event.cpp
 	kernel/timer.cpp
+	kernel/asyncfsm.cpp
 
 	net/802.15.4/asyncxbee.cpp
 )
@@ -29,6 +30,7 @@ SET(SOURCES
     application.cpp
 
 	kernel/lock.cpp
+	kernel/fsm.cpp
 
 	net/802.15.4/xbee.cpp
 	net/802.15.4/xbeeresponse.cpp
@@ -133,6 +135,7 @@ SET(GENERIC_HEADERS
 	lwiot/device/bmp280sensor.h
 	lwiot/device/apds9301sensor.h
 	lwiot/stl/vector.h
+	lwiot/stl/pair.h
 	lwiot/stl/move.h
 	lwiot/stl/forward.h
 	lwiot/stl/array.h
@@ -150,7 +153,6 @@ SET(GENERIC_HEADERS
 	lwiot/kernel/atomic.h
 	lwiot/util/measurementvector.h
 	lwiot/util/defaultallocator.h
-	lwiot/util/pair.h
 	lwiot/kernel/port.h
 	lwiot/kernel/event.h
 	lwiot/kernel/lock.h
