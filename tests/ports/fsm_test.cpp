@@ -117,7 +117,7 @@ class Application : public lwiot::Functor {
 
 		print_dbg("State size: %u\n", sizeof(state1));
 
-		state2.setAction([&](stl::SharedPointer<FsmType::SignalType>& signal) {
+		state2.setAction([&](const stl::SharedPointer<FsmType::SignalType>& signal) {
 			auto value = SignalAs<MySignal>(signal);
 			assert(value);
 			MySignal s(12, 31);
@@ -131,7 +131,7 @@ class Application : public lwiot::Functor {
 			return true;
 		});
 
-		state3.setAction([&](stl::SharedPointer<FsmType::SignalType>& signal) {
+		state3.setAction([&](const stl::SharedPointer<FsmType::SignalType>& signal) {
 			auto value = SignalAs<MySignal>(signal);
 			assert(value);
 			MySignal s(1, 3);
