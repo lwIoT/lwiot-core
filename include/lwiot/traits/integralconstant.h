@@ -83,8 +83,15 @@ namespace lwiot { namespace traits {
 		struct IsBaseOf : public IntegralConstant<bool, __is_base_of(_Base, _Derived)>
 		{ };
 
+#ifndef WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
 		template <typename T, template <typename...> class Template>
 		struct IsSpecializationOf : FalseType { };
 		template <template <typename...> class Template, typename... Args>
 		struct IsSpecializationOf<Template<Args...>, Template> : TrueType { };
+#ifndef WIN32
+#pragma GCC diagnostic pop
+#endif
 	}}
