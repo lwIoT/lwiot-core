@@ -14,6 +14,8 @@
 #include <lwiot/functor.h>
 #include <lwiot/test.h>
 
+#include <lwiot/stl/bind.h>
+
 class FunctorTest : public lwiot::Functor {
 public:
 	FunctorTest() = default;
@@ -31,6 +33,36 @@ protected:
 
 };
 
+struct test {
+	bool tst2(int x)
+	{
+		print_dbg("Test_2 called!\n");
+		return x == 5;
+	}
+
+	void tst3(int x)
+	{
+		print_dbg("Test_3 called!\n");
+	}
+};
+
+static void test_bind()
+{
+	test t;
+	auto f1 = lwiot::stl::bind(&test::tst2, t, lwiot::stl::placeholders::_1);
+	auto f2 = lwiot::stl::bind(&test::tst3, t, lwiot::stl::placeholders::_1);
+	int x = 5;
+
+	f1(x);
+	lwiot::Function<bool(int)> g1;
+
+	g1 = f1;
+	lwiot::Function<void(int)> g2 = f2;
+
+	g1(5);
+	g2(x);
+}
+
 int main(int argc, char **argv)
 {
 	lwiot::Function<int(int)> fn;
@@ -38,6 +70,14 @@ int main(int argc, char **argv)
 	int x = 0;
 
 	lwiot_init();
+
+	print_dbg("Testing stl::bind()\n");
+	test_bind();
+
+	lwiot::Function<bool(test, int)> memfn_wrapper(&test::tst2);
+	test t;
+	memfn_wrapper(t, 5);
+
 	print_dbg("Testing lambda wrapping..\n");
 
 	FunctorTest functor;
