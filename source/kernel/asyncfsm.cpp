@@ -9,6 +9,9 @@
 
 #include <lwiot/kernel/asyncfsm.h>
 
+#include <lwiot/stl/string.h>
+#include <lwiot/stl/bind.h>
+
 namespace lwiot
 {
 	AsyncFsm::AsyncFsm(const stl::String& name) : Base(), _executor(name)
@@ -60,7 +63,7 @@ namespace lwiot
 	void AsyncFsm::start()
 	{
 		Base::start(true);
-		this->_executor.start([&]() { this->run(); });
+		this->_executor.start(stl::bind(&AsyncFsm::run, this));
 	}
 
 	void AsyncFsm::halt()
