@@ -41,4 +41,15 @@ typedef enum {
 
 typedef void (*irq_handler_t)(void);
 
+#ifdef __cplusplus
+namespace lwiot
+{
+	namespace stl
+	{
+		typedef ::size_t size_t;
+		template<typename...> using __void_t = void;
+	}
+}
+#endif
+
 #endif
