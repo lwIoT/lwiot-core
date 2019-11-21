@@ -15,132 +15,182 @@
 #include <lwiot/lwiot.h>
 #include <lwiot/log.h>
 #include <lwiot/types.h>
-#include <lwiot/sharedpointer.h>
 #include <lwiot/functor.h>
+#include <lwiot/uniquepointer.h>
 
-#include <lwiot/traits/isfunction.h>
+#include <lwiot/stl/forward.h>
+#include <lwiot/stl/memfn.h>
+
 #include <lwiot/traits/enableif.h>
+#include <lwiot/traits/removecv.h>
+#include <lwiot/traits/integralconstant.h>
+#include <lwiot/traits/decay.h>
 
 namespace lwiot
 {
 	template<class ReturnType, class...Xs>
 	struct SFConcept {
-		virtual ReturnType operator()(Xs...) const = 0;
-		virtual ReturnType operator()(Xs...) = 0;
-		virtual void copy(void *) const = 0;
+		virtual ReturnType invoke(Xs&&...) = 0;
+		virtual SFConcept* clone() const = 0;
 
 		virtual ~SFConcept() = default;
 	};
 
-	template<class F, typename ReturnType, typename...Xs>
-	struct SFModel final : SFConcept<ReturnType, Xs...> {
-		typename traits::RemoveCv<F>::type f;
+	template<typename Signature, typename Functor>
+	struct SFModel;
 
-		explicit SFModel(F const &f) : f(f)
+	/* Specialization for member functions */
+	template <typename Class, typename Member, typename ReturnType, typename... Args>
+	struct SFModel<ReturnType(Args...), Member Class::*> : SFConcept<ReturnType, Args...> {
+	private:
+		using CallableType = Member (Class::*);
+		CallableType _callable;
+
+	public:
+		explicit SFModel(CallableType callable) : _callable(stl::move(callable))
 		{
 		}
 
-		virtual void copy(void *memory) const
+		SFModel(const SFModel &) = default;
+		SFModel(SFModel &&) noexcept = default;
+
+		SFModel& operator=(const SFModel &) = default;
+		SFModel& operator=(SFModel &&) noexcept = default;
+
+		ReturnType invoke(Args &&... args)
 		{
-			new(memory) SFModel<F, ReturnType, Xs...>(f);
+			return this->call(stl::forward<Args>(args)...);
 		}
 
-		virtual ReturnType operator()(Xs...xs) const
+		template<typename ClassType, typename... Params>
+		ReturnType call(ClassType obj, Params &&... args)
 		{
-			return f(xs...);
+			return stl::mem_fn(this->_callable)(obj, stl::forward<Params>(args)...);
 		}
 
-		virtual ReturnType operator()(Xs...xs)
+		SFConcept<ReturnType, Args...>* clone() const override
 		{
-			return f(xs...);
+			return new SFModel(*this);
+		}
+	};
+
+	/* Specialization for function pointers */
+	template<typename ReturnType, typename... Args>
+	struct SFModel<ReturnType(Args...), ReturnType(*)(Args...)> {
+	private:
+		using CallableType = ReturnType(*)(Args...);
+		CallableType _callable;
+
+	public:
+		explicit SFModel(CallableType callable) : _callable(stl::move(callable))
+		{
+		}
+
+		SFModel(const SFModel &) = default;
+		SFModel(SFModel &&) noexcept = default;
+
+		SFModel& operator=(const SFModel &) = default;
+		SFModel& operator=(SFModel &&) noexcept = default;
+
+		ReturnType invoke(Args&&... args)
+		{
+			return this->_callable(stl::forward<Args>(args)...);
+		}
+
+		SFConcept<ReturnType, Args...>* clone() const override
+		{
+			return new SFModel(*this);
+		}
+	};
+
+	/* Specialization for Functors */
+	template<typename F, typename ReturnType, typename...Xs>
+	struct SFModel<ReturnType(Xs...), F> : SFConcept<ReturnType, Xs...> {
+		SFModel(F&& f) : f(stl::forward<F>(f))
+		{
+		}
+
+		SFModel(const SFModel &) = default;
+		SFModel(SFModel &&) noexcept = default;
+
+		SFModel& operator=(const SFModel &) = default;
+		SFModel& operator=(SFModel &&) noexcept = default;
+
+		SFConcept<ReturnType, Xs...>* clone() const override
+		{
+			return new SFModel(*this);
+		}
+
+		ReturnType invoke(Xs&&... xs)
+		{
+			return f(stl::forward<Xs>(xs)...);
 		}
 
 		virtual ~SFModel() = default;
+
+	private:
+		F f;
 	};
 
 
-	template<typename Func, size_t size = 128>
+	template<typename Func>
 	class Function ;
 
-	template<typename ReturnType, typename ...Xs, size_t size>
-	class Function<ReturnType(Xs...), size> {
+	template<typename ReturnType, typename ...Xs>
+	class Function<ReturnType(Xs...)> {
+		using Signature = ReturnType(Xs...);
+		using Concept = SFConcept<ReturnType, Xs...>;
+
 	public:
-		Function() : memory(), allocated(false)
+		Function() : _concept(nullptr)
+		{ }
+
+		Function(const Function& other) : _concept()
+		{
+			if(other.valid())
+				this->_concept.reset(other._concept->clone());
+		}
+
+		Function(Function&& other) noexcept : _concept(stl::move(other._concept))
 		{
 		}
 
-		template <typename Func>
-		Function(const Func &f) : memory(),  allocated(sizeof(SFModel<Func, ReturnType, Xs...>) != 0)
+		template <typename F>
+		Function(F f) : _concept(new SFModel<Signature, F>(stl::move(f)))
 		{
-			static_assert(sizeof(SFModel<Func, ReturnType, Xs...>) <= size, "Expression too big!");
-			new(memory) SFModel<Func, ReturnType, Xs...>(f);
 		}
 
-		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
-		explicit Function(const Function& sf) : memory(), allocated(sf.allocated)
+		Function& operator=(const Function& other)
 		{
-			sf.copy(memory);
-		}
+			if(other.valid())
+				this->_concept.reset(other._concept->clone());
 
-		template<unsigned s, traits::EnableIf_t<(s <= size), bool> = false>
-		Function &operator=(const Function& sf)
-		{
-			this->clean();
-			allocated = sf.allocated;
-			sf.copy(memory);
 			return *this;
 		}
 
-		void clean()
+		Function& operator=(Function&& other) noexcept
 		{
-			if(allocated) {
-				auto c = this->as_concept();
-				c->~concept();
-				allocated = false;
-			}
-		}
-
-		virtual ~Function()
-		{
-			if(allocated) {
-				auto c = this->as_concept();
-				c->~concept();
-			}
-		}
-
-		template <typename Func>
-		Function& operator=(Func&& f)
-		{
-			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
-			new(memory) SFModel<Func, ReturnType, Xs...>(stl::forward<Func>(f));
+			this->_concept.reset(other._concept.release());
 			return *this;
 		}
 
-		template <typename Func>
-		Function& operator=(const Func &f)
+		template <typename F, typename traits::EnableIf<
+					!traits::IsSame<typename traits::Decay<F>::type, Function<ReturnType(Xs...)>>::value, bool>::type = true>
+		Function& operator=(F&& f)
 		{
-			this->allocated = sizeof(SFModel<Func, ReturnType, Xs...>) != 0;
-			new(memory) SFModel<Func, ReturnType, Xs...>(f);
+			this->_concept.reset(new SFModel<Signature, F>(stl::forward<F>(f)));
 			return *this;
 		}
 
-		template<class...Ys>
-		ReturnType operator()(Ys &&...ys)
+		ReturnType operator()(Xs... args) const
 		{
 			auto c = this->as_concept();
-			return (*c)(stl::forward<Ys>(ys)...);
-		}
-
-		template<class...Ys>
-		ReturnType operator()(Ys &&...ys) const
-		{
-			auto c = this->as_concept();
-			return (*c)(stl::forward<Ys>(ys)...);
+			return c->invoke(stl::forward<Xs>(args)...);
 		}
 
 		bool valid() const
 		{
-			return this->allocated;
+			return static_cast<bool>(this->_concept);
 		}
 
 		explicit operator bool() const
@@ -148,21 +198,12 @@ namespace lwiot
 			return this->valid();
 		}
 
-		void copy(void *data) const
-		{
-			if(allocated) {
-				((concept *) memory)->copy(data);
-			}
-		}
-
 	private:
-		char memory[size];
-		bool allocated;
-		using concept = SFConcept<ReturnType, Xs...>;
+		UniquePointer<Concept> _concept;
 
-		constexpr concept* as_concept() const
+		constexpr Concept* as_concept() const
 		{
-			return (concept*) &memory[0];
+			return this->_concept.get();
 		}
 	};
 }
