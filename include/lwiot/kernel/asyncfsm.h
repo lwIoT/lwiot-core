@@ -11,6 +11,11 @@
 
 #pragma once
 
+#include <lwiot.h>
+
+#include <lwiot/function.h>
+#include <lwiot/stl/string.h>
+
 #include <lwiot/detail/fsm_policy.h>
 #include <lwiot/detail/fsm_base.h>
 
