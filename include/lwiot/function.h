@@ -41,7 +41,7 @@ namespace lwiot
 
 	/* Specialization for member functions */
 	template <typename Class, typename Member, typename ReturnType, typename... Args>
-	struct SFModel<ReturnType(Args...), Member Class::*> : SFConcept<ReturnType, Args...> {
+	struct SFModel<ReturnType(Args...), Member Class::*> : public SFConcept<ReturnType, Args...> {
 	private:
 		using CallableType = Member (Class::*);
 		CallableType _callable;
@@ -76,7 +76,7 @@ namespace lwiot
 
 	/* Specialization for function pointers */
 	template<typename ReturnType, typename... Args>
-	struct SFModel<ReturnType(Args...), ReturnType(*)(Args...)> {
+	struct SFModel<ReturnType(Args...), ReturnType(*)(Args...)> : public SFConcept<ReturnType, Args...> {
 	private:
 		using CallableType = ReturnType(*)(Args...);
 		CallableType _callable;
@@ -105,7 +105,7 @@ namespace lwiot
 
 	/* Specialization for Functors */
 	template<typename F, typename ReturnType, typename...Xs>
-	struct SFModel<ReturnType(Xs...), F> : SFConcept<ReturnType, Xs...> {
+	struct SFModel<ReturnType(Xs...), F> : public SFConcept<ReturnType, Xs...> {
 		SFModel(F&& f) : f(stl::forward<F>(f))
 		{
 		}
@@ -155,11 +155,6 @@ namespace lwiot
 		{
 		}
 
-		template <typename F>
-		Function(F f) : _concept(new SFModel<Signature, F>(stl::move(f)))
-		{
-		}
-
 		Function& operator=(const Function& other)
 		{
 			if(other.valid())
@@ -180,6 +175,11 @@ namespace lwiot
 		{
 			this->_concept.reset(new SFModel<Signature, F>(stl::forward<F>(f)));
 			return *this;
+		}
+
+		template <typename F>
+		Function(F f) : _concept(MakeUnique<SFModel<Signature, F>>(stl::move(f)))
+		{
 		}
 
 		ReturnType operator()(Xs... args) const
