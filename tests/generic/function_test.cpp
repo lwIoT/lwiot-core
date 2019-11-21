@@ -65,7 +65,7 @@ static void test_bind()
 
 int main(int argc, char **argv)
 {
-	lwiot::Function<int(int)> fn;
+	lwiot::Function<int(int&)> fn;
 	lwiot::Function<void(void)> fn2;
 	int x = 0;
 
@@ -85,7 +85,8 @@ int main(int argc, char **argv)
 
 	functor_wrapper();
 
-	fn = [&](int a) -> int {
+	fn = [&](int& a) -> int {
+		a += 2;
 		return a + 1;
 	};
 
@@ -103,6 +104,10 @@ int main(int argc, char **argv)
 	};
 
 	fn2();
+
+	int integer = 10;
+	fn(integer);
+	assert(integer == 12);
 
 	assert(x == 2);
 
