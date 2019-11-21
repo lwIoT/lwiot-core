@@ -8,6 +8,7 @@
 #pragma once
 
 #include <lwiot.h>
+#include <string.h>
 
 #ifdef CXX
 #include <lwiot/lwiot.h>
@@ -270,10 +271,9 @@ namespace lwiot
 				this->_index++;
 			}
 
-			template <typename... Args>
-			inline void push_back(Args&&... args)
+			inline void push_back(ObjectType&& value)
 			{
-				this->pushback(stl::forward<Args...>(args...));
+				this->pushback(stl::forward<ObjectType >(value));
 			}
 
 			inline void add(const ObjectType &val)
