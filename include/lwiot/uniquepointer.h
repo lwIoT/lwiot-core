@@ -124,6 +124,27 @@ namespace lwiot
 		PointerType* px;
 	};
 
+	namespace detail
+	{
+		template<class _Ty> struct _Unique_if {
+			typedef UniquePointer<_Ty> _Single_object;
+		};
+
+		template<class _Ty> struct _Unique_if<_Ty[]> {
+			typedef UniquePointer<_Ty[]> _Unknown_bound;
+		};
+
+		template<class _Ty, size_t N> struct _Unique_if<_Ty[N]> {
+			typedef void _Known_bound;
+		};
+	}
+
+	template <typename T, typename... Args>
+	inline UniquePointer<T> MakeUnique(Args&&... args)
+	{
+		return UniquePointer<T>(new T(stl::forward<Args>(args)...));
+	}
+
 	template<class T, class U>
 	inline bool operator==(const UniquePointer <T> &l, const UniquePointer <U> &r) noexcept
 	{
