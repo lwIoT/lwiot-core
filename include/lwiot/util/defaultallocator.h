@@ -11,6 +11,9 @@
 
 #ifdef CXX
 
+#include <lwiot/stl/move.h>
+#include <lwiot/stl/forward.h>
+
 #include <stddef.h>
 
 namespace lwiot
