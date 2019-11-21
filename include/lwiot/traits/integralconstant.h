@@ -82,4 +82,9 @@ namespace lwiot { namespace traits {
 		template<typename _Base, typename _Derived>
 		struct IsBaseOf : public IntegralConstant<bool, __is_base_of(_Base, _Derived)>
 		{ };
+
+		template <typename T, template <typename...> class Template>
+		struct IsSpecializationOf : FalseType { };
+		template <template <typename...> class Template, typename... Args>
+		struct IsSpecializationOf<Template<Args...>, Template> : TrueType { };
 	}}

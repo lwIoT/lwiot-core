@@ -9,22 +9,12 @@
 
 #include <lwiot/traits/integralconstant.h>
 #include <lwiot/traits/isintegral.h>
+#include <lwiot/traits/ismember.h>
 
 namespace lwiot
 {
 	namespace traits
 	{
-		template<typename _Tp>
-		struct __is_member_pointer_helper : public FalseType { };
-
-		template<typename _Tp, typename _Cp>
-		struct __is_member_pointer_helper<_Tp _Cp::*> : public TrueType { };
-
-		/// is_member_pointer
-		template<typename _Tp>
-		struct IsMemberPointer : public __is_member_pointer_helper<typename RemoveCv<_Tp>::type>::type
-		{ };
-
 		template<typename>
 		struct __is_null_pointer_helper : public FalseType { };
 

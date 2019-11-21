@@ -88,6 +88,26 @@ namespace lwiot
 				: public __add_rvalue_reference_helper<_Tp>
 		{ };
 
+		template <typename T>
+		using AddRvalueReference = add_rvalue_reference<T>;
+
+		template<typename _Tp, bool = IsReferenceable<_Tp>::value>
+		struct __add_lvalue_reference_helper
+		{ typedef _Tp   type; };
+
+		template<typename _Tp>
+		struct __add_lvalue_reference_helper<_Tp, true>
+		{ typedef _Tp&   type; };
+
+		/// add_lvalue_reference
+		template<typename _Tp>
+		struct add_lvalue_reference
+				: public __add_lvalue_reference_helper<_Tp>
+		{ };
+
+		template <typename T>
+		using AddLvalueReference = add_lvalue_reference<T>;
+
 		template<typename _Tp>
 		struct __declval_protector
 		{

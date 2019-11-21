@@ -46,5 +46,8 @@ namespace lwiot
 		public:
 			typedef typename DecaySelector<__remove_ref>::__type type;
 		};
+
+		template<typename _Tp>
+		using Decay_t = typename Decay<_Tp>::type;
 	}
 }

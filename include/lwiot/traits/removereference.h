@@ -7,19 +7,23 @@
 
 #pragma once
 
-namespace lwiot { namespace traits {
+namespace lwiot
+{
+	namespace traits
+	{
 		template<typename _Tp>
 		struct RemoveReference {
 			typedef _Tp type;
 		};
 
 		template<typename _Tp>
-		struct RemoveReference<_Tp&> {
+		struct RemoveReference<_Tp &> {
 			typedef _Tp type;
 		};
 
 		template<typename _Tp>
-		struct RemoveReference<_Tp&&> {
+		struct RemoveReference<_Tp &&> {
 			typedef _Tp type;
 		};
-}}
+	}
+}
