@@ -13,9 +13,13 @@
 
 #include <lwiot.h>
 
+#include <lwiot/types.h>
+#include <lwiot/function.h>
+
 #ifdef HAVE_OS
 #include <lwiot/kernel/event.h>
 #include <lwiot/kernel/functionalthread.h>
+#include <lwiot/kernel/lock.h>
 #endif
 
 #include <lwiot/kernel/uniquelock.h>
