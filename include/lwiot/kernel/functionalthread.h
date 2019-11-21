@@ -43,7 +43,7 @@ namespace lwiot
 		using Thread::start;
 
 		template <typename Func>
-		CONSTEXPR void start(Func&& functor)
+		void start(Func&& functor)
 		{
 			this->_runner = stl::forward<Func>(functor);
 			Thread::start();

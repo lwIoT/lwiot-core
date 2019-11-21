@@ -37,9 +37,15 @@ namespace lwiot
 		explicit AsyncXbee();
 		explicit AsyncXbee(XBee& xb);
 		explicit AsyncXbee(Stream& stream);
-		virtual ~AsyncXbee();
+		~AsyncXbee() override;
 
-		void begin(ResponseHandler&& handler);
+		template <typename T>
+		void begin(T&& handler)
+		{
+			this->_handler = handler;
+			this->init();
+		}
+
 		void begin(const ResponseHandler& handler);
 
 		void setHandler(const ResponseHandler& handler);

@@ -30,12 +30,6 @@ namespace lwiot
 		this->_xb.begin(stream);
 	}
 
-	void AsyncXbee::begin(lwiot::AsyncXbee::ResponseHandler &&handler)
-	{
-		this->_handler = stl::move(handler);
-		this->init();
-	}
-
 	void AsyncXbee::begin(const lwiot::AsyncXbee::ResponseHandler &handler)
 	{
 		this->_handler = handler;
