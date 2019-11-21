@@ -140,7 +140,7 @@ namespace lwiot
 	}
 
 	template <typename T, typename... Args>
-	inline UniquePointer<T> MakeUnique(Args&&... args)
+	typename detail::_Unique_if<T>::_Single_object MakeUnique(Args&&... args)
 	{
 		return UniquePointer<T>(new T(stl::forward<Args>(args)...));
 	}
