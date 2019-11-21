@@ -76,6 +76,7 @@ SET(LIB_SOURCES
 	lib/measurementvector.cpp
 	lib/sharedpointercount.cpp
 	lib/guid.cpp
+	lib/placeholders.cpp
 
 	${JSON_SOURCES}
 	${TIME_SOURCES}
