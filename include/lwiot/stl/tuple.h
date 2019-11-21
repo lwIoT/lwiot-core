@@ -11,7 +11,6 @@
  * @file tuple.h
  */
 
-
 #include <stdlib.h>
 #include <stddef.h>
 
@@ -24,6 +23,8 @@
 #include <lwiot/traits/decay.h>
 #include <lwiot/traits/removecv.h>
 #include <lwiot/traits/enableif.h>
+
+#include <lwiot/traits/integralconstant.h>
 
 namespace lwiot
 {
@@ -48,42 +49,25 @@ namespace lwiot
 		struct make_index_sequence<1> : IndexSequence<0> {
 		};
 
-		template<size_t, typename T>
-		struct TupleElement {
-			typedef T Type;
-			Type _value;
+		namespace detail
+		{
+			template<typename... T>
+			struct TemplateForAll;
 
-			explicit TupleElement(const T& value) : _value(value) { }
-			TupleElement(const TupleElement& other) = default;
-			TupleElement( TupleElement&& other) noexcept = default;
+			template<>
+			struct TemplateForAll<> : public traits::TrueType {
+			};
 
-			/*explicit TupleElement(T const &value) : _value(value)
-			{
-			}
+			template<typename... T>
+			struct TemplateForAll<traits::FalseType, T...> : public traits::FalseType {
+			};
 
-			explicit TupleElement(T &&value) : _value(stl::forward<T>(value))
-			{
-			}*/
+			template<typename... T>
+			struct TemplateForAll<traits::TrueType, T...> : public TemplateForAll<T...>::type {
+			};
+		}
 
-			/*template<typename U>
-			explicit TupleElement(U &&value) : _value(stl::forward<U>(value))
-			{
-			}*/
-		};
-
-
-		template<typename seq, typename ... T>
-		struct TupleImpl;
-
-		template<typename>
-		struct IsTupleImpl : traits::FalseType {
-		};
-
-		template<size_t ... Indices, typename ... Types>
-		struct IsTupleImpl<TupleImpl<IndexSequence<Indices...>, Types...>> : traits::TrueType {
-		};
-
-#ifndef WIN32
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
@@ -100,20 +84,47 @@ namespace lwiot
 			return Op<Head>::value || is_any_of<Op, Tail...>();
 		}
 
-#ifndef WIN32
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
 
-		template<size_t... indices, typename... types>
-		struct TupleImpl<IndexSequence<indices...>, types...> : public TupleElement<indices, types> ... {
-			template<typename... OtherTypes,
-					typename = typename traits::EnableIf<
-							!is_any_of<IsTupleImpl, typename traits::Decay<OtherTypes>::type...>()
-					>::type>
-			explicit
-			TupleImpl(OtherTypes &&... elems) : TupleElement<indices, types>(stl::forward<OtherTypes>(elems))...
-			{
+		template<typename ... Types>
+		class Tuple;
 
+		template<size_t, typename T>
+		struct TupleElement {
+			typedef T Type;
+			typedef T type;
+			Type _value;
+
+			explicit TupleElement(const T& value) : _value(value) { }
+
+			template<typename U>
+			TupleElement(U &&value) noexcept : _value(stl::forward<U>(value))
+			{
+			}
+		};
+
+
+		template<typename seq, typename ... T>
+		struct TupleImpl;
+
+		template<typename>
+		struct IsTupleImpl : traits::FalseType {
+		};
+
+		template<size_t ... Indices, typename ... Types>
+		struct IsTupleImpl<TupleImpl<IndexSequence<Indices...>, Types...>> : traits::TrueType {
+		};
+
+		template<size_t... indices, typename... Types>
+		struct TupleImpl<IndexSequence<indices...>, Types...> : public TupleElement<indices, Types> ... {
+			template<typename... OtherTypes,
+					typename = typename traits::EnableIf<sizeof...(OtherTypes) == sizeof...(Types) &&
+					                                     !is_any_of<IsTupleImpl, typename traits::Decay<OtherTypes>::type...>()
+					>::type>
+			TupleImpl(OtherTypes &&... elems) noexcept : TupleElement<indices, Types>(stl::forward<OtherTypes>(elems))...
+			{
 			}
 		};
 
@@ -127,18 +138,27 @@ namespace lwiot
 		private:
 			using tuple_base_t = TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...>;
 
+			template <typename... Args>
+			static constexpr bool IsTuple()
+			{
+				return detail::TemplateForAll<typename traits::IsSpecializationOf<Args, stl::Tuple>::type...>::value;
+			}
+
 		public:
 			explicit Tuple() = default;
 
 			Tuple(Tuple const &) = default;
 
+			template<typename Dummy = void, typename = typename traits::EnableIf<sizeof...(Types) >= 1, bool>::type>
+			Tuple(const Types& ...types) : TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...>(types...)
+			{
+			}
+
 			Tuple(Tuple &&) noexcept = default;
 
-			template<typename ... OtherTypes,
-					typename = typename traits::EnableIf<
-							sizeof...(OtherTypes) == sizeof...(Types)>::type
-			>
-			explicit Tuple(OtherTypes &&... elems) : tuple_base_t(stl::forward<OtherTypes>(elems)...)
+			template<typename ... OtherTypes, typename traits::EnableIf<sizeof...(OtherTypes) == sizeof...(Types) &&
+			        sizeof...(Types) >= 1 && !IsTuple<typename traits::Decay<OtherTypes>::type...>(), bool>::type = true>
+			Tuple(OtherTypes &&... elems) noexcept : tuple_base_t(stl::forward<OtherTypes>(elems)...)
 			{
 			}
 
@@ -151,6 +171,7 @@ namespace lwiot
 		template<>
 		class Tuple<> {
 		};
+
 
 		template<size_t I, typename, typename ... Tail>
 		struct TypeAtIndex {
@@ -205,18 +226,21 @@ namespace lwiot
 		}
 
 		template<size_t I, typename... Types>
-		constexpr type_at_index_t<I, Types...> const &get(Tuple<Types...> const &tup)
+		constexpr type_at_index_t<I, Types...> &get(Tuple<Types...> &tup)
 		{
 			TupleElement<I, type_at_index_t<I, Types...>> &base = tup;
 			return base._value;
 		}
 
 		template<size_t I, typename... Types>
-		constexpr type_at_index_t<I, Types...> &get(Tuple<Types...> &tup)
+		constexpr const type_at_index_t<I, Types...> &get(const Tuple<Types...> &tup)
 		{
-			TupleElement<I, type_at_index_t<I, Types...>> &base = tup;
+			const TupleElement<I, type_at_index_t<I, Types...>> &base = tup;
 			return base._value;
 		}
+
+		template<size_t __i, typename _Tp>
+		using TupleElement_t = typename TupleElement<__i, _Tp>::Type ;
 
 		/* Size calculation */
 		template<typename>
@@ -239,10 +263,15 @@ namespace lwiot
 		template<class T>
 		using special_decay_t = typename UnwrapRefwrapper<typename traits::Decay<T>::type>::type;
 
-		template<class... Types>
-		constexpr Tuple<special_decay_t<Types>...> MakeTuple(Types &&... args)
+		template<class T>
+		using SpecialDecay = UnwrapRefwrapper<typename traits::Decay<T>::type>;
+
+		template<typename... _Elements>
+		constexpr Tuple<typename SpecialDecay<_Elements>::type...>
+		MakeTuple(_Elements&&... __args)
 		{
-			return lwiot::stl::Tuple<special_decay_t<Types>...>(stl::forward<Types>(args)...);
+			typedef Tuple<typename SpecialDecay<_Elements>::type...> __result_type;
+			return __result_type(stl::forward<_Elements>(__args)...);
 		}
 
 		template <typename... T>
@@ -250,52 +279,27 @@ namespace lwiot
 		{
 			return Tuple<T&...>(args...);
 		}
-/*template<typename Value>
-struct Tuple<Value> {
-	constexpr Tuple()
-	{
-	}
 
-	constexpr Tuple(const Tuple &tuple) : value(tuple.value)
-	{
-	}
+		template<size_t... Indices>
+		struct IndexTuple {
+			typedef IndexTuple<Indices..., sizeof...(Indices)> __next;
+		};
 
-	constexpr Tuple(Tuple &&tuple) : value(stl::move(tuple.value))
-	{
-	}
+		template <size_t _Num>
+		struct BuildIndexTuple {
+			typedef typename BuildIndexTuple<_Num - 1>::__type::__next __type;
+		};
 
-	constexpr Tuple(Value value) : value(value)
-	{
-	}
+		template <>
+		struct BuildIndexTuple<0> {
+			typedef IndexTuple<> __type;
+		};
 
-	Tuple &operator=(const Tuple &) = default;
-
-	Value value;
-};*/
-
-
-/*template<int index, typename Value, typename... Rest>
-struct GetImpl {
-	static auto value(const Tuple<Value, Rest...> *t) -> decltype(GetImpl<index - 1, Rest...>::value(t))
-	{
-		return GetImpl<index - 1, Rest...>::value(t);
-	}
-};
-
-template<typename Value, typename... Rest>
-struct GetImpl<0, Value, Rest...> {
-	static Value value(const Tuple<Value, Rest...> *t)
-	{
-		return t->value;
-	}
-};
-
-template<int index, typename Value, typename... Rest>
-auto get(const Tuple<Value, Rest...> &t) -> decltype(GetImpl<index, Value, Rest...>::value(&t))
-{
-	return GetImpl<index, Value, Rest...>::value(&t);
-}*/
-
+		template<typename... _Elements>
+		constexpr Tuple<_Elements&&...> ForwardAsTuple(_Elements&&... __args) noexcept
+		{
+			return Tuple<_Elements&&...>(stl::forward<_Elements>(__args)...);
+		}
 	}
 }
 
