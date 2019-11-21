@@ -10,13 +10,14 @@
 #include <stdlib.h>
 
 #include <lwiot/util/application.h>
-#include <lwiot/functor.h>
 #include <lwiot/log.h>
 #include <lwiot/test.h>
 
-#include <lwiot/stl/tuple.h>
-
 #include <lwiot/kernel/asyncfsm.h>
+
+#include <lwiot/stl/memfn.h>
+#include <lwiot/stl/bind.h>
+
 #include <lwiot/system.h>
 
 #ifdef HAVE_RTOS
@@ -71,6 +72,7 @@ private:
 };
 
 class Application : public lwiot::Functor {
+
 	void test_async_fsm()
 	{
 		FsmType fsm;
@@ -123,7 +125,7 @@ class Application : public lwiot::Functor {
 
 		print_dbg("State size: %u\n", sizeof(state1));
 
-		state2.setAction([&](stl::SharedPointer<FsmType::SignalType>& signal) {
+		state2.setAction([&](const stl::SharedPointer<FsmType::SignalType>& signal) {
 			auto value = SignalAs<MySignal>(signal);
 			assert(value);
 			MySignal s(2, 3);
@@ -138,7 +140,7 @@ class Application : public lwiot::Functor {
 			return true;
 		});
 
-		state3.setAction([&](stl::SharedPointer<FsmType::SignalType>& signal) {
+		state3.setAction([&](const stl::SharedPointer<FsmType::SignalType>& signal) {
 			auto value = SignalAs<MySignal>(signal);
 			assert(value);
 
