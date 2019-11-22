@@ -22,6 +22,9 @@ cmake-build-*
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
+# Doxygen output
+resources/Documentation/html/
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
