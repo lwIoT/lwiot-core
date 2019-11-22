@@ -5,6 +5,10 @@
  * @email  dev@bietje.net
  */
 
+/**
+ * @file dpq_base.h Dispatch queue base header.
+ */
+
 #pragma once
 
 #include <lwiot/log.h>
@@ -123,6 +127,19 @@ namespace lwiot
 			{ }
 		};
 
+#ifdef DOXYGEN
+		/**
+		 * @brief Dispatch queue base class implementation.
+		 *
+		 * A dispatch queue is a threaded work queue.
+		 *
+		 * @tparam Handler Work handler type.
+		 * @tparam Policy  Polciy type.
+		 */
+		template <typename Handler, template <typename> typename Policy>
+		class DispatchQueueBase : public DispatchQueueBase_helper<Handler> {
+#else
+
 #ifdef __GNUG__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
@@ -135,11 +152,11 @@ namespace lwiot
 #ifdef __GNUG__
 #pragma GCC diagnostic pop
 #endif
-		public:
+#endif
 			struct Work;
-
-			typedef R ReturnType;
-			typedef P<Work> PolicyType;
+		public:
+			typedef R ReturnType; //!< Handler return type.
+			typedef P<Work> PolicyType; //!< DPQ polity type.
 
 		private:
 			static constexpr bool IsConvirtableToBool()
@@ -155,15 +172,16 @@ namespace lwiot
 			using ArgumentWrapper = stl::Tuple<typename traits::RemoveCv<typename traits::RemoveCv<Args>::type>::type...>;
 
 		public:
-			static constexpr bool Threaded = detail::HasThreading<PolicyType>::Value;
+			static constexpr bool Threaded = detail::HasThreading<PolicyType>::Value; //!< Threading indicator.
 
-			typedef typename detail::SelectThreadingPolicy<PolicyType, Threaded>::Type Threading;
-			typedef DispatchQueueBase_helper<ReturnType(Args...), Args...> Base;
-			typedef DispatchQueueBase<ReturnType(Args...), P> ThisClass;
-			typedef UniqueLock<typename Threading::Lock> LockGuard;
-			typedef typename PolicyType::Queue Queue;
-			typedef size_t size_type;
+			typedef typename detail::SelectThreadingPolicy<PolicyType, Threaded>::Type Threading; //!< Threading policy.
+			typedef DispatchQueueBase_helper<ReturnType(Args...), Args...> Base; //!< Base class definition.
+			typedef DispatchQueueBase<ReturnType(Args...), P> ThisClass; //!< Definition of *this type.
+			typedef UniqueLock<typename Threading::Lock> LockGuard; //!< Lock type.
+			typedef typename PolicyType::Queue Queue; //!< Queue type.
+			typedef size_t size_type; //!< Size type.
 
+		private:
 			struct Work {
 			public:
 				constexpr Work() : _handler(), _buffer(), _is_allocated(false)
@@ -275,22 +293,38 @@ namespace lwiot
 				}
 			};
 
+		public:
+			/**
+			 * @brief Create a new dispatch queue object.
+			 */
 			explicit DispatchQueueBase() : Base(), _lock(), _empty_event(), _not_full_event(),
 				_queue(), _capacity(DefaultCapacity), _timeout(DefaultTimeout)
 			{
 			}
 
+			/**
+			 * @brief Create a new dispatch queue object.
+			 * @param capacity DPQ capacity.
+			 * @param tmo Timout. Default to DefaultTimeout.
+			 */
 			explicit DispatchQueueBase(size_type capacity, int tmo = DefaultTimeout) : Base(), _lock(),
 				_empty_event(), _not_full_event(), _queue(), _capacity(capacity), _timeout(tmo)
 			{
 			}
 
+			/**
+			 * @brief Copy a dispatch queue.
+			 * @param other DPQ to copy.
+			 */
 			DispatchQueueBase(DispatchQueueBase&& other) noexcept : Base(), _lock(),
 				_empty_event(stl::move(other._empty_event)), _not_full_event(stl::move(other._not_full_event)),
 				_queue(stl::move(other._queue)), _capacity(other._capacity), _timeout(other._timeout)
 			{
 			}
 
+			/**
+			 * @brief Dispatch queue destructor.
+			 */
 			virtual ~DispatchQueueBase()
 			{
 				LockGuard g(this->_lock);
@@ -303,6 +337,11 @@ namespace lwiot
 				this->_queue.clear();
 			}
 
+			/**
+			 * @brief Copy assignment operator.
+			 * @param rhs DPQ to copy into *this.
+			 * @return A reference to *this.
+			 */
 			DispatchQueueBase& operator=(DispatchQueueBase&& rhs) noexcept
 			{
 				this->move(rhs);
@@ -312,7 +351,11 @@ namespace lwiot
 			DispatchQueueBase(const DispatchQueueBase&) = delete;
 			DispatchQueueBase& operator=(const DispatchQueueBase&) = delete;
 
-
+			/**
+			 * @brief Enqueue work for future execution.
+			 * @param handler Handler to enqueue.
+			 * @param args Arguments to pass to \p handler when \p handler is executed.
+			 */
 			inline void enqueue(const typename Base::HandlerType& handler, Args&&... args)
 			{
 				LockGuard g(this->_lock);
@@ -328,6 +371,12 @@ namespace lwiot
 				this->_empty_event.signal();
 			}
 
+			/**
+			 * @brief Enqueue work for future execution.
+			 * @tparam Func Function object pointer.
+			 * @param handler Handler to enqueue.
+			 * @param args Arguments to pass to \p handler when \p handler is executed.
+			 */
 			template <typename Func>
 			inline void enqueue(Func&& handler, Args&&... args)
 			{
@@ -344,6 +393,12 @@ namespace lwiot
 				this->_empty_event.signal();
 			}
 
+			/**
+			 * @brief Enqueue work for future execution from IRQ context.
+			 * @tparam Func Function object pointer.
+			 * @param handler Handler to enqueue.
+			 * @param args Arguments to pass to \p handler when \p handler is executed.
+			 */
 			template <typename Func>
 			inline void enqueue_irq(Func&& handler, Args&&... args)
 			{
@@ -351,12 +406,22 @@ namespace lwiot
 				this->_empty_event.signalFromIrq();
 			}
 
+			/**
+			 * @brief Enqueue work for future execution from IRQ context.
+			 * @param handler Handler to enqueue.
+			 * @param args Arguments to pass to \p handler when \p handler is executed.
+			 */
 			inline void enqueue_irq(const typename Base::HandlerType& handler, Args&&... args)
 			{
 				this->__enqueue(stl::forward(handler), stl::forward<Args>(args)...);
 				this->_empty_event.signalFromIrq();
 			}
 
+			/**
+			 * @brief Swap two dispatch queue objects.
+			 * @param a Dispatch queue 1.
+			 * @param b Dispatch queue 2.
+			 */
 			friend void swap(ThisClass& a, ThisClass& b) noexcept
 			{
 				using lwiot::stl::swap;
@@ -382,6 +447,12 @@ namespace lwiot
 				}
 			}
 
+			/**
+			 * @brief Process the current state of the dispatch queue.
+			 * @return The number of work items remaining on the queue due to execution errors.
+			 *
+			 * This member function will execute the available work on the work queue.
+			 */
 			[[cxx_optimize]]
 			inline ssize_t process() noexcept
 			{
@@ -421,43 +492,68 @@ namespace lwiot
 				return this->_queue.size();
 			}
 
+			/**
+			 * @brief Get the capacity of the DPQ.
+			 * @return The capacity of the dispatch queue.
+			 */
 			constexpr size_type capacity() const
 			{
 				return this->_capacity;
 			}
 
+			/**
+			 * @brief Get the size of the DPQ.
+			 * @return The size of the dispatch queue.
+			 */
 			inline size_type size() const
 			{
 				LockGuard g(this->_lock);
 				return this->_queue.size();
 			}
 
+			/**
+			 * @brief Get the DPQ timeout value.
+			 * @return The DPQ timeout value.
+			 */
 			constexpr int timeout() const
 			{
 				return this->_timeout;
 			}
 
 		protected:
-			mutable typename Threading::Lock _lock;
-			static constexpr size_type DefaultCapacity = 20;
-			static constexpr int DefaultTimeout = 100;
+			mutable typename Threading::Lock _lock; //!< Dispatch queue lock.
+			static constexpr size_type DefaultCapacity = 20; //!< Default capacity.
+			static constexpr int DefaultTimeout = 100; //!< Default timeout value.
 
+			/**
+			 * @brief Move \p other into \p *this.
+			 * @param other DPQ to move into \p *this.
+			 */
 			constexpr void move(ThisClass& other)
 			{
 				using stl::swap;
 				swap(*this, other);
 			}
 
+			/**
+			 * @brief Lock the dispatch queue.
+			 */
 			void lock()
 			{
 				this->_lock.lock();
 			}
 
+			/**
+			 * @brief Unlock the dispatch queue.
+			 */
 			void unlock()
 			{
 				this->_lock.unlock();
 			}
 
+			/**
+			 * @brief Wait for the queue to become non-empty.
+			 */
 			inline void wait_for()
 			{
 				bool success;
@@ -472,6 +568,11 @@ namespace lwiot
 				} while(!success);
 			}
 
+			/**
+			 * @brief Signal threads waiting on a dispatch queue event.
+			 * @see _not_full_event
+			 * @see _empty_event
+			 */
 			inline void clear_waiters()
 			{
 				for(size_type idx = 0; idx < this->_capacity; idx++) {
