@@ -46,7 +46,7 @@ static void dumplist()
 	print_dbg("Value at 6: %s\n", sl1[6].c_str());
 
 	assert(sl1.size() == 20);
-	sl1.dump();
+	sl1.dump("Level %i\n\t", "%i ");
 }
 
 static void skiplist_test()

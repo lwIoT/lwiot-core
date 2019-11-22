@@ -445,17 +445,17 @@ namespace lwiot
 			}
 
 #ifndef NDEBUG
-			void dump( )
+			void dump(const String& formatlvl, const String& formatnode)
 			{
 				auto level = this->_head.size();
 
 				for(int idx = 0; idx < level; idx++) {
 					auto node = this->_head[idx];
 
-					printf("Level %i\n\t", idx);
+					printf(formatlvl.c_str(), idx);
 
 					while(node != nullptr) {
-						printf("%lu ", node->_key);
+						printf(formatnode.c_str(), node->_key);
 						node = node->_next[idx];
 					}
 
