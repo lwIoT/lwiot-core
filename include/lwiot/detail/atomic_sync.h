@@ -6,11 +6,8 @@
  */
 
 /**
- * @file atomic_sync.h
+ * @file atomic_sync.h Atomic header.
  */
-
-/// @addtogroup kernel
-/// @{
 
 #pragma once
 
@@ -27,9 +24,9 @@ namespace lwiot
 	{
 		/**
 		 * @brief Memory ordering.
+		 * @ingroup kernel
 		 */
-		typedef enum memory_order
-		{
+		typedef enum {
 			memory_order_relaxed, //!< Relaxed operation.
 			memory_order_consume, //!< Loads perform a consume operation.
 			memory_order_acquire, //!< Loads perform an acquire operation.
@@ -39,6 +36,7 @@ namespace lwiot
 		} memory_order;
 
 		/**
+		 * @ingroup kernel
 		 * @brief Atomic type definition.
 		 * @tparam T Value type that is bound to an instance of \p Atomic.
 		 */
@@ -727,5 +725,3 @@ namespace lwiot
 	template <typename T>
 	using Atomic = detail::Atomic<T>;
 }
-
-///@{

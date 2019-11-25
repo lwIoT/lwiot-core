@@ -14,6 +14,7 @@ namespace lwiot
 {
 	namespace detail
 	{
+#ifndef DOXYGEN
 		typedef enum memory_order {
 			memory_order_relaxed,
 			memory_order_consume,
@@ -22,6 +23,7 @@ namespace lwiot
 			memory_order_acq_rel,
 			memory_order_seq_cst
 		} memory_order;
+#endif
 
 		template<typename T>
 		class Atomic {
