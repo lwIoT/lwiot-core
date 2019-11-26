@@ -5,6 +5,12 @@
  * @email  michel@michelmegens.net
  */
 
+/**
+ * @file hash.h Hashing header.
+ * @addtogroup stl
+ * @{
+ */
+
 #pragma once
 
 #include <stdlib.h>
@@ -37,6 +43,14 @@ namespace lwiot
 			}
 		}
 
+		/**
+		 * @brief Calculate the hash of \p value.
+		 * @tparam T Type to hash.
+		 * @param value Value to hash.
+		 * @return The hash of \p value.
+		 *
+		 * The binary value of \p value will be hashed.
+		 */
 		template <typename T>
 		inline hash_type hash(T value)
 		{
@@ -46,15 +60,27 @@ namespace lwiot
 			return detail::hash(data, size);
 		}
 
+		/**
+		 * @brief Calculate the hash of \p value.
+		 * @param value C-style string to hash.
+		 * @return The hash of \p value.
+		 */
 		inline hash_type hash(const char* value)
 		{
 			auto data = reinterpret_cast<const uint8_t *>(value);
 			return detail::hash(data, strlen(value));
 		}
 
+		/**
+		 * @brief Calculate the hash of \p value.
+		 * @param value String to hash.
+		 * @return The hash of \p value.
+		 */
 		inline hash_type hash(const stl::String& value)
 		{
 			return detail::hash(reinterpret_cast<const uint8_t *>(value.c_str()), value.length());
 		}
 	}
 }
+
+/// @}
