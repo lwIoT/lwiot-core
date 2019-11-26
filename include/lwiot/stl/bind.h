@@ -1,6 +1,16 @@
 /*
  * Bind header/implementation.
+ *
+ * @author Michel Megens
+ * @email  michel@michelmegens.net
  */
+
+/**
+ * @file bind.h Bind header.
+ */
+
+/// @addtogroup stl
+/// @{
 
 #pragma once
 
@@ -42,7 +52,7 @@ namespace lwiot
 			struct _Weak_result_type_impl : _Maybe_get_result_type<_Functor> {
 			};
 
-			/// Retrieve the result type for a function type.
+			// Retrieve the result type for a function type.
 			template<typename _Res, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res(_ArgTypes...)> {
 				typedef _Res result_type;
@@ -83,7 +93,7 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/// Retrieve the result type for a function reference.
+			// Retrieve the result type for a function reference.
 			template<typename _Res, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res(&)(_ArgTypes...)> {
 				typedef _Res result_type;
@@ -94,7 +104,7 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/// Retrieve the result type for a function pointer.
+			// Retrieve the result type for a function pointer.
 			template<typename _Res, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res(*)(_ArgTypes...)> {
 				typedef _Res result_type;
@@ -105,7 +115,7 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/// Retrieve result type for a member function pointer.
+			// Retrieve result type for a member function pointer.
 			template<typename _Res, typename _Class, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res (_Class::*)(_ArgTypes...)> {
 				typedef _Res result_type;
@@ -116,7 +126,7 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/// Retrieve result type for a const member function pointer.
+			// Retrieve result type for a const member function pointer.
 			template<typename _Res, typename _Class, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res (_Class::*)(_ArgTypes...) const> {
 				typedef _Res result_type;
@@ -127,7 +137,7 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/// Retrieve result type for a volatile member function pointer.
+			// Retrieve result type for a volatile member function pointer.
 			template<typename _Res, typename _Class, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res (_Class::*)(_ArgTypes...) volatile> {
 				typedef _Res result_type;
@@ -138,7 +148,7 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/// Retrieve result type for a const volatile member function pointer.
+			// Retrieve result type for a const volatile member function pointer.
 			template<typename _Res, typename _Class, typename... _ArgTypes>
 			struct _Weak_result_type_impl<_Res (_Class::*)(_ArgTypes...)
 			const volatile> {
@@ -151,10 +161,10 @@ namespace lwiot
 				typedef _Res result_type;
 			};
 
-			/**
+			/*
 			 *  Strip top-level cv-qualifiers from the function object and let
 			 *  _Weak_result_type_impl perform the real work.
-			*/
+			 */
 			template<typename _Functor>
 			struct _Weak_result_type : _Weak_result_type_impl<typename traits::RemoveCv<_Functor>::type> {
 			};
@@ -281,11 +291,6 @@ namespace lwiot
 				}
 			};
 
-			/**
-			 *  If the argument is a placeholder for the Nth argument, returns
-			 *  a reference to the Nth argument to the bind function object.
-			 *  [TR1 3.6.3/5 bullet 3]
-			 */
 			template<typename _Arg>
 			class _Mu<_Arg, false, true> {
 			public:
@@ -725,6 +730,14 @@ namespace lwiot
 		struct _Bind_helper<true, _Func, _BoundArgs...> {
 		};
 
+		/**
+		 * @brief Generate a forwarding call wrapper for \p f. Some arguments can be bound.
+		 * @tparam _Func Type of the callable.
+		 * @tparam _BoundArgs Argument types bound to \p __f.
+		 * @param __f Functor.
+		 * @param __args Arguments to \p __f.
+		 * @return A callable object.
+		 */
 		template<typename _Func, typename... _BoundArgs>
 		inline typename
 		_Bind_helper<__is_socketlike<_Func>::value, _Func, _BoundArgs...>::type
@@ -746,6 +759,15 @@ namespace lwiot
 		};
 
 
+		/**
+		 * @brief Generate a forwarding call wrapper for \p f. Some arguments can be bound.
+		 * @tparam _Result Result type.
+		 * @tparam _Func Type of the callable.
+		 * @tparam _BoundArgs Argument types bound to \p __f.
+		 * @param __f Functor.
+		 * @param __args Arguments to \p __f.
+		 * @return A callable object.
+		 */
 		template<typename _Result, typename _Func, typename... _BoundArgs>
 		inline typename _Bindres_helper<_Result, _Func, _BoundArgs...>::type
 		bind(_Func &&__f, _BoundArgs &&... __args)
@@ -759,3 +781,5 @@ namespace lwiot
 
 	}
 }
+
+/// @ }
