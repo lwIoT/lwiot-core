@@ -36,7 +36,8 @@ namespace lwiot
 				key_type _key;
 				value_type _value;
 				size_type _levels;
-				SkipListNode *_next[1];
+//				SkipListNode *_next[1];
+				stl::Vector<SkipListNode*> _next;
 			};
 		}
 
@@ -361,19 +362,19 @@ namespace lwiot
 				node_type *node = nullptr;
 
 				auto level = this->_head.size();
-				auto next = this->_head.data();
+				stl::ReferenceWrapper<Vector<node_type*>> vec(this->_head);
 
 				while(level > 0) {
 					const auto link_index = level - 1;
 
-					if(!next[link_index] || next[link_index]->_key > key) {
+					if(!vec->at(link_index) || vec->at(link_index)->_key > key) {
 						--level;
-					} else if(next[link_index]->_key == key) {
-						node = next[link_index];
-						next[link_index] = node->_next[link_index];
+					} else if(vec->at(link_index)->_key == key) {
+						node = vec->at(link_index);
+						vec->at(link_index) = node->_next[link_index];
 						--level;
 					} else {
-						next = next[link_index]->_next;
+						vec = vec->at(link_index)->_next;
 					}
 				}
 
@@ -402,17 +403,17 @@ namespace lwiot
 			iterator find(const key_type &key)
 			{
 				auto level = this->_head.size();
-				auto next = this->_head.data();
+				stl::ReferenceWrapper<Vector<node_type*>> vec(this->_head);
 
 				while(level > 0) {
 					const auto index = level - 1;
 
-					if(!next[index] || next[index]->_key > key) {
+					if(vec->at(index) == nullptr || vec->at(index)->_key > key) {
 						--level;
-					} else if(next[index]->_key == key) {
-						return iterator{next[index]};
+					} else if(vec->at(index)->_key == key) {
+						return iterator{vec->at(index)};
 					} else {
-						next = next[index]->_next;
+						vec = vec->at(index)->_next;
 					}
 				}
 
@@ -422,17 +423,17 @@ namespace lwiot
 			const_iterator find(const key_type &key) const
 			{
 				auto level = this->_head.size();
-				auto next = this->_head.data();
+				stl::ReferenceWrapper<const Vector<node_type*>> vec(this->_head);
 
 				while(level > 0) {
 					const auto index = level - 1;
 
-					if(!next[index] || next[index]->_key > key) {
+					if(vec->at(index) == nullptr || vec->at(index)->_key > key) {
 						--level;
-					} else if(next[index]->_key == key) {
-						return const_iterator(next[index]);
+					} else if(vec->at(index)->_key == key) {
+						return const_iterator{vec->at(index)};
 					} else {
-						next = next[index]->_next;
+						vec = vec->at(index)->_next;
 					}
 				}
 
@@ -497,17 +498,20 @@ namespace lwiot
 
 			node_type *allocateNode(key_type &&key, value_type &&value, size_type levels)
 			{
-				const auto node = this->_alloc.allocate(levels);
+				stl::Vector<node_type*> vec(levels);
+				const auto node = this->_alloc.allocate(1);
 
-				new(node) node_type{stl::forward<key_type>(key), stl::forward<value_type>(value), levels, {nullptr}};
+				new(node) node_type{stl::forward<key_type>(key),
+				        stl::forward<value_type>(value), levels, vec};
 				return reinterpret_cast<node_type *>(node);
 			}
 
 			node_type *allocateNode(const key_type &key, const value_type &value, size_type levels)
 			{
-				const auto node = this->_alloc.allocate(levels);
+				const auto node = this->_alloc.allocate(1);
+				stl::Vector<node_type*> vec(levels);
 
-				new(node) node_type{key, value, levels, {nullptr}};
+				new(node) node_type{key, value, levels, vec};
 				return reinterpret_cast<node_type *>(node);
 			}
 
@@ -549,17 +553,16 @@ namespace lwiot
 					this->_head.push_back(nullptr);
 
 				auto level = this->_head.size();
-				auto next = this->_head.data();
+				stl::ReferenceWrapper<Vector<node_type*>> vec(this->_head);
 
 				while(level > 0) {
 					const auto index = level - 1;
-					auto node = next[index];
+					auto node = vec->at(index);
 
 					if(node == nullptr || node->_key > new_node->_key) {
 						if(level <= node_level) {
-							new_node->_next[index] = next[index];
-							next[index] = new_node;
-
+							new_node->_next[index] = vec->at(index);
+							vec->at(index) = new_node;
 						}
 
 						--level;
@@ -577,10 +580,10 @@ namespace lwiot
 						old = node;
 
 						new_node->_next[index] = node->_next[index];
-						next[index] = new_node;
+						vec->at(index) = new_node;
 						--level;
 					} else {
-						next = node->_next;
+						vec = stl::ReferenceWrapper<Vector<node_type*>>(node->_next);
 					}
 				}
 
