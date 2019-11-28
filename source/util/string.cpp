@@ -177,20 +177,20 @@ namespace lwiot
 			capacity = len = 0;
 		}
 
-		unsigned char String::reserve(unsigned int size)
+		bool String::reserve(unsigned int size)
 		{
 			if(buffer && capacity >= size)
-				return 1;
+				return true;
 
 			if(changeBuffer(size)) {
 				for(auto idx = length(); idx < this->capacity + 1; idx++) {
 					this->buffer[idx] = 0;
 				}
 
-				return 1;
+				return true;
 			}
 
-			return 0;
+			return false;
 		}
 
 		unsigned char String::changeBuffer(unsigned int maxStrLen)
@@ -312,33 +312,38 @@ namespace lwiot
 		/*  concat                                   */
 		/*********************************************/
 
-		unsigned char String::concat(const String &s)
+		bool String::concat(const String &s)
 		{
 			return concat(s.buffer, s.len);
 		}
 
-		unsigned char String::concat(const char *cstr, unsigned int length)
+		bool String::concat(const char *cstr, unsigned int length)
 		{
 			unsigned int newlen = len + length;
+
 			if(!cstr)
-				return 0;
+				return false;
+
 			if(length == 0)
-				return 1;
+				return true;
+
 			if(!reserve(newlen))
-				return 0;
+				return false;
+
 			strcpy(buffer + len, cstr);
 			len = newlen;
-			return 1;
+
+			return true;
 		}
 
-		unsigned char String::concat(const char *cstr)
+		bool String::concat(const char *cstr)
 		{
 			if(!cstr)
 				return 0;
 			return concat(cstr, strlen(cstr));
 		}
 
-		unsigned char String::concat(char c)
+		bool String::concat(char c)
 		{
 			char buf[2];
 			buf[0] = c;
@@ -346,7 +351,7 @@ namespace lwiot
 			return concat(buf, 1);
 		}
 
-		unsigned char String::concat(unsigned char num)
+		bool String::concat(unsigned char num)
 		{
 			char buf[1 + 3 * sizeof(unsigned char)];
 
@@ -354,7 +359,7 @@ namespace lwiot
 			return concat(buf, strlen(buf));
 		}
 
-		unsigned char String::concat(int num)
+		bool String::concat(int num)
 		{
 			char buf[2 + 3 * sizeof(int)];
 
@@ -362,7 +367,7 @@ namespace lwiot
 			return concat(buf, strlen(buf));
 		}
 
-		unsigned char String::concat(unsigned int num)
+		bool String::concat(unsigned int num)
 		{
 			char buf[1 + 3 * sizeof(unsigned int)];
 
@@ -370,7 +375,7 @@ namespace lwiot
 			return concat(buf, strlen(buf));
 		}
 
-		unsigned char String::concat(long num)
+		bool String::concat(long num)
 		{
 			char buf[2 + 3 * sizeof(long)];
 
@@ -378,7 +383,7 @@ namespace lwiot
 			return concat(buf, strlen(buf));
 		}
 
-		unsigned char String::concat(unsigned long num)
+		bool String::concat(unsigned long num)
 		{
 			char buf[1 + 3 * sizeof(unsigned long)];
 
@@ -386,7 +391,7 @@ namespace lwiot
 			return concat(buf, strlen(buf));
 		}
 
-		unsigned char String::concat(float num)
+		bool String::concat(float num)
 		{
 			char buf[33];
 
@@ -394,7 +399,7 @@ namespace lwiot
 			return concat(buf, (unsigned int) strlen(buf));
 		}
 
-		unsigned char String::concat(double num)
+		bool String::concat(double num)
 		{
 			char buf[33];
 
@@ -502,12 +507,12 @@ namespace lwiot
 			return strcmp(buffer, s.buffer);
 		}
 
-		unsigned char String::equals(const String &s2) const
+		bool String::equals(const String &s2) const
 		{
 			return (len == s2.len && compareTo(s2) == 0);
 		}
 
-		unsigned char String::equals(const char *cstr) const
+		bool String::equals(const char *cstr) const
 		{
 			if(len == 0)
 				return (cstr == nullptr || *cstr == 0);
@@ -516,61 +521,66 @@ namespace lwiot
 			return strcmp(buffer, cstr) == 0;
 		}
 
-		unsigned char String::operator<(const String &rhs) const
+		bool String::operator<(const String &rhs) const
 		{
 			return compareTo(rhs) < 0;
 		}
 
-		unsigned char String::operator>(const String &rhs) const
+		bool String::operator>(const String &rhs) const
 		{
 			return compareTo(rhs) > 0;
 		}
 
-		unsigned char String::operator<=(const String &rhs) const
+		bool String::operator<=(const String &rhs) const
 		{
 			return compareTo(rhs) <= 0;
 		}
 
-		unsigned char String::operator>=(const String &rhs) const
+		bool String::operator>=(const String &rhs) const
 		{
 			return compareTo(rhs) >= 0;
 		}
 
-		unsigned char String::equalsIgnoreCase(const String &s2) const
+		bool String::equalsIgnoreCase(const String &s2) const
 		{
 			if(this == &s2)
-				return 1;
+				return true;
+
 			if(len != s2.len)
-				return 0;
+				return false;
+
 			if(len == 0)
-				return 1;
+				return true;
+
 			const char *p1 = buffer;
 			const char *p2 = s2.buffer;
+
 			while(*p1) {
 				if(tolower(*p1++) != tolower(*p2++))
-					return 0;
+					return false;
 			}
-			return 1;
+
+			return true;
 		}
 
-		unsigned char String::startsWith(const String &s2) const
+		bool String::startsWith(const String &s2) const
 		{
 			if(len < s2.len)
-				return 0;
+				return false;
 			return startsWith(s2, 0);
 		}
 
-		unsigned char String::startsWith(const String &s2, unsigned int offset) const
+		bool String::startsWith(const String &s2, unsigned int offset) const
 		{
 			if(offset > len - s2.len || !buffer || !s2.buffer)
-				return 0;
+				return false;
 			return strncmp(&buffer[offset], s2.buffer, s2.len) == 0;
 		}
 
-		unsigned char String::endsWith(const String &s2) const
+		bool String::endsWith(const String &s2) const
 		{
 			if(len < s2.len || !buffer || !s2.buffer)
-				return 0;
+				return false;
 			return strcmp(&buffer[len - s2.len], s2.buffer) == 0;
 		}
 
@@ -625,12 +635,12 @@ namespace lwiot
 		/*  Search                                   */
 		/*********************************************/
 
-		int String::indexOf(char c) const
+		long String::indexOf(char c) const
 		{
 			return indexOf(c, 0);
 		}
 
-		int String::indexOf(char ch, unsigned int fromIndex) const
+		long String::indexOf(char ch, unsigned int fromIndex) const
 		{
 			if(fromIndex >= len)
 				return -1;
@@ -640,12 +650,12 @@ namespace lwiot
 			return temp - buffer;
 		}
 
-		int String::indexOf(const String &s2) const
+		long String::indexOf(const String &s2) const
 		{
 			return indexOf(s2, 0);
 		}
 
-		int String::indexOf(const String &s2, unsigned int fromIndex) const
+		long String::indexOf(const String &s2, unsigned int fromIndex) const
 		{
 			if(fromIndex >= len)
 				return -1;
@@ -655,12 +665,12 @@ namespace lwiot
 			return found - buffer;
 		}
 
-		int String::lastIndexOf(char theChar) const
+		long String::lastIndexOf(char theChar) const
 		{
 			return lastIndexOf(theChar, len - 1);
 		}
 
-		int String::lastIndexOf(char ch, unsigned int fromIndex) const
+		long String::lastIndexOf(char ch, unsigned int fromIndex) const
 		{
 			if(fromIndex >= len)
 				return -1;
@@ -673,18 +683,21 @@ namespace lwiot
 			return temp - buffer;
 		}
 
-		int String::lastIndexOf(const String &s2) const
+		long String::lastIndexOf(const String &s2) const
 		{
 			return lastIndexOf(s2, len - s2.len);
 		}
 
-		int String::lastIndexOf(const String &s2, unsigned int fromIndex) const
+		long String::lastIndexOf(const String &s2, unsigned int fromIndex) const
 		{
 			if(s2.len == 0 || len == 0 || s2.len > len)
 				return -1;
+
 			if(fromIndex >= len)
 				fromIndex = len - 1;
-			int found = -1;
+
+			long found = -1;
+
 			for(char *p = buffer; p <= buffer + fromIndex; p++) {
 				p = strstr(p, s2.buffer);
 				if(!p)
@@ -692,6 +705,7 @@ namespace lwiot
 				if((unsigned int) (p - buffer) <= fromIndex)
 					found = p - buffer;
 			}
+
 			return found;
 		}
 
@@ -732,9 +746,10 @@ namespace lwiot
 		{
 			if(len == 0 || find.len == 0)
 				return;
-			int diff = replace.len - find.len;
+			long diff = replace.len - find.len;
 			char *readFrom = buffer;
 			char *foundAt;
+
 			if(diff == 0) {
 				while((foundAt = strstr(readFrom, find.buffer)) != nullptr) {
 					memcpy(foundAt, replace.buffer, replace.len);
@@ -763,7 +778,7 @@ namespace lwiot
 					return;
 				if(size > capacity && !changeBuffer(size))
 					return; // XXX: tell user!
-				int index = len - 1;
+				long index = len - 1;
 				while(index >= 0 && (index = lastIndexOf(find, index)) >= 0) {
 					readFrom = buffer + index + find.len;
 					memmove(readFrom + diff, readFrom, len - (readFrom - buffer));
@@ -805,7 +820,7 @@ namespace lwiot
 			if(!buffer)
 				return;
 			for(char *p = buffer; *p; p++) {
-				*p = tolower(*p);
+				*p = static_cast<char>(tolower(*p));
 			}
 		}
 
@@ -814,23 +829,31 @@ namespace lwiot
 			if(!buffer)
 				return;
 			for(char *p = buffer; *p; p++) {
-				*p = toupper(*p);
+				*p = static_cast<char>(toupper(*p));
 			}
 		}
 
 		void String::trim()
 		{
+			char *begin = buffer;
+
 			if(!buffer || len == 0)
 				return;
-			char *begin = buffer;
+
+
 			while(isspace(*begin))
 				begin++;
+
 			char *end = buffer + len - 1;
+
 			while(isspace(*end) && end >= begin)
 				end--;
+
 			len = end + 1 - begin;
+
 			if(begin > buffer)
 				memcpy(buffer, begin, len);
+
 			buffer[len] = 0;
 		}
 
@@ -842,6 +865,7 @@ namespace lwiot
 		{
 			if(buffer)
 				return atol(buffer);
+
 			return 0;
 		}
 
@@ -854,6 +878,7 @@ namespace lwiot
 		{
 			if(buffer)
 				return atof(buffer);
+
 			return 0;
 		}
 

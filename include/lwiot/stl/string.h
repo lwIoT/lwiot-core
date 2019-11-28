@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file string.h String header.
+
 #pragma once
 
 #include <lwiot.h>
@@ -19,7 +21,10 @@ namespace lwiot
 	{
 		class StringSumHelper;
 
-		// The string class
+		/**
+		 * @ingroup stl
+		 * @brief Character sequence wrapper.
+		 */
 		class String {
 			// use a function pointer to allow for "if (s)" without the
 			// complications of an operator bool(). for more information, see:
@@ -31,151 +36,311 @@ namespace lwiot
 			}
 
 		public:
-			// constructors
-			// creates a copy of the initial value.
-			// if the initial value is null or invalid, or if memory allocation
-			// fails, the string will be marked as invalid (i.e. "if (s)" will
-			// be false).
+			/**
+			 * @brief Construct a new string.
+			 * @param cstr String to copy.
+			 */
 			String(const char *cstr = "");
+			/**
+			 * @brief Construct a new string.
+			 * @param buf Byte buffer to copy.
+			 */
 			explicit String(const lwiot::ByteBuffer& buf);
+
+			/**
+			 * @brief Copy constructor.
+			 * @param str String to copy.
+			 */
 			String(const String &str);
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-
+			/**
+			 * @brief Move constructor.
+			 * @param rval Value to move.
+			 */
 			String(String &&rval) noexcept;
-
 			explicit String(StringSumHelper &&rval);
 
-#endif
-
-
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 */
 			explicit String(char c);
 
-			explicit String(unsigned char, unsigned char base = 10);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(unsigned char c, unsigned char base = 10);
 
-			explicit String(int, unsigned char base = 10);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(int c, unsigned char base = 10);
 
-			explicit String(unsigned int, unsigned char base = 10);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(unsigned int c, unsigned char base = 10);
 
-			explicit String(long, unsigned char base = 10);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(long c, unsigned char base = 10);
 
-			explicit String(unsigned long, unsigned char base = 10);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(unsigned long c, unsigned char base = 10);
 
-			explicit String(float, unsigned char decimalPlaces = 2);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(float c, unsigned char decimalPlaces = 2);
 
-			explicit String(double, unsigned char decimalPlaces = 2);
+			/**
+			 * @brief Construct a new string.
+			 * @param c Initial value.
+			 * @param base Integer base.
+			 */
+			explicit String(double c, unsigned char decimalPlaces = 2);
 
+			/**
+			 * @brief Destruct a string.
+			 */
 			virtual ~String();
 
-			// memory management
-			// return true on success, false on failure (in which case, the string
-			// is left unchanged).  reserve(0), if successful, will validate an
-			// invalid string (i.e., "if (s)" will be true afterwards)
-			unsigned char reserve(unsigned int size);
+			/**
+			 * @brief Reserve memory.
+			 * @param size Number of characters to reserve memory for.
+			 * @return True on success, false otherwise.
+			 */
+			bool reserve(unsigned int size);
 
+			/**
+			 * @brief Get the length of a string.
+			 * @return
+			 */
 			size_t length()  const noexcept
 			{
 				return this->len;
 			}
 
-			// creates a copy of the assigned value.  if the value is null or
-			// invalid, or if the memory allocation fails, the string will be
-			// marked as invalid ("if (s)" will be false).
+			/**
+			 * @brief String copy assignment.
+			 * @param rhs String to copy.
+			 * @return A reference to *this.
+			 */
 			String &operator=(const String &rhs);
 
+			/**
+			 * @brief String copy assignment.
+			 * @param cstr String to copy.
+			 * @return A reference to *this.
+			 */
 			String &operator=(const char *cstr);
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 
+			/**
+			 * @brief String move assignment.
+			 * @param rval String to copy.
+			 * @return A reference to *this.
+			 */
 			String &operator=(String &&rval) noexcept;
 
 			String &operator=(StringSumHelper &&rval);
 
-#endif
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param param Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(const String &param);
 
-			// concatenate (works w/ built-in types)
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param param Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(const char *param);
 
-			// returns true on success, false on failure (in which case, the string
-			// is left unchanged).  if the argument is null or invalid, the
-			// concatenation is considered unsucessful.
-			unsigned char concat(const String &str);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param param Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(char param);
 
-			unsigned char concat(const char *cstr);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param param Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(unsigned char param);
 
-			unsigned char concat(char c);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param num Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(int num);
 
-			unsigned char concat(unsigned char c);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param num Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(unsigned int num);
 
-			unsigned char concat(int num);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param num Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(long num);
 
-			unsigned char concat(unsigned int num);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param num Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(unsigned long num);
 
-			unsigned char concat(long num);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param num Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(float num);
 
-			unsigned char concat(unsigned long num);
+			/**
+			 * @brief Concatinate *this with \p param.
+			 * @param num Value to concatinate to \p *this.
+			 * @return True on success, false otherwise.
+			 */
+			bool concat(double num);
 
-			unsigned char concat(float num);
-
-			unsigned char concat(double num);
-
+			/**
+			 * @brief Compare *this against \p s.
+			 * @param s String to compare against.
+			 * @return True when \p s and \p *this are equal, false otherse.
+			 */
 			bool equalsConstantTime(const String &s) const;
 
-			// if there's not enough memory for the concatenated value, the string
-			// will be left unchanged (but this isn't signalled in any way)
+			/**
+			 * @brief Append \p rhs to \p *this.
+			 * @param rhs Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(const String &rhs)
 			{
 				concat(rhs);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p cstr to \p *this.
+			 * @param cstr Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(const char *cstr)
 			{
 				concat(cstr);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p c to \p *this.
+			 * @param c Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(char c)
 			{
 				concat(c);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(unsigned char num)
 			{
 				concat(num);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(int num)
 			{
 				concat(num);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(unsigned int num)
 			{
 				concat(num);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(long num)
 			{
 				concat(num);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(unsigned long num)
 			{
 				concat(num);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(float num)
 			{
 				concat(num);
 				return (*this);
 			}
 
+			/**
+			 * @brief Append \p num to \p *this.
+			 * @param num Value to append to \p *this.
+			 * @return A reference to \p *this.
+			 */
 			String &operator+=(double num)
 			{
 				concat(num);
@@ -208,145 +373,366 @@ namespace lwiot
 				return buffer ? &String::StringIfHelper : nullptr;
 			}
 
+			/**
+			 * @brief Compare \p *this against \p *s.
+			 * @param s String to compare against.
+			 * @retval <0 when the first character that doesn't match is smaller in \p *this than \p s.
+			 * @retval 0 when both strings are equal.
+			 * @retval >0 when the first character that doesn't match is bigger in \p *this than \p s.
+			 */
 			int compareTo(const String &s) const;
 
-			unsigned char equals(const String &s) const;
+			/**
+			 * @brief Check if \p *this equals \p s.
+			 * @param s String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool equals(const String &s) const;
 
-			unsigned char equals(const char *cstr) const;
+			/**
+			 * @brief Check if \p *this equals \p cstr.
+			 * @param cstr String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool equals(const char *cstr) const;
 
-			unsigned char operator==(const String &rhs) const
+			/**
+			 * @brief Check if \p *this equals \p rhs.
+			 * @param rhs String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator==(const String &rhs) const
 			{
 				return equals(rhs);
 			}
 
-			unsigned char operator==(const char *cstr) const
+			/**
+			 * @brief Check if \p *this equals \p cstr.
+			 * @param cstr String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator==(const char *cstr) const
 			{
 				return equals(cstr);
 			}
 
-			unsigned char operator!=(const String &rhs) const
+			/**
+			 * @brief Check if \p *this equals \p rhs.
+			 * @param rhs String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator!=(const String &rhs) const
 			{
 				return !equals(rhs);
 			}
 
-			unsigned char operator!=(const char *cstr) const
+			/**
+			 * @brief Check if \p *this equals \p cstr.
+			 * @param cstr String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator!=(const char *cstr) const
 			{
 				return !equals(cstr);
 			}
 
-			unsigned char operator<(const String &rhs) const;
+			/**
+			 * @brief Check if \p *this equals \p rhs.
+			 * @param rhs String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator<(const String &rhs) const;
 
-			unsigned char operator>(const String &rhs) const;
+			/**
+			 * @brief Check if \p *this equals \p rhs.
+			 * @param rhs String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator>(const String &rhs) const;
 
-			unsigned char operator<=(const String &rhs) const;
+			/**
+			 * @brief Check if \p *this equals \p rhs.
+			 * @param rhs String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator<=(const String &rhs) const;
 
-			unsigned char operator>=(const String &rhs) const;
+			/**
+			 * @brief Check if \p *this equals \p rhs.
+			 * @param rhs String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool operator>=(const String &rhs) const;
 
-			unsigned char equalsIgnoreCase(const String &s) const;
+			/**
+			 * @brief Check if \p *this equals \p s.
+			 * @param s String to check against \p *this.
+			 * @return True when equal, false otherwise.
+			 */
+			bool equalsIgnoreCase(const String &s) const;
 
-			unsigned char startsWith(const String &prefix) const;
+			/**
+			 * @brief Check of \p *this starts with \p prefix.
+			 * @param prefix Prefix to test.
+			 * @return True on success, false otherwise.
+			 */
+			bool startsWith(const String &prefix) const;
 
-			unsigned char startsWith(const String &prefix, unsigned int offset) const;
+			/**
+			 * @brief Check of \p *this starts with \p prefix.
+			 * @param prefix Prefix to test.
+			 * @return True on success, false otherwise.
+			 */
+			bool startsWith(const String &prefix, unsigned int offset) const;
 
-			unsigned char endsWith(const String &suffix) const;
+			/**
+			 * @brief Check of \p *this ends with \p prefix.
+			 * @param prefix Suffix to test.
+			 * @return True on success, false otherwise.
+			 */
+			bool endsWith(const String &suffix) const;
 
-			// character acccess
+			/**
+			 * @brief Access the character at \p index.
+			 * @param index Index to access.
+			 * @return The character at \p index.
+			 */
 			char charAt(unsigned int index) const;
 
+			/**
+			 * @brief Update the character at \p index.
+			 * @param index Index to access.
+			 * @param c Character to set at \p index.
+			 * @return The character at \p index.
+			 */
 			void setCharAt(unsigned int index, char c);
 
+			/**
+			 * @brief Access the character at \p index.
+			 * @param index Index to access.
+			 * @return The character at \p index.
+			 */
 			char operator[](unsigned int index) const;
 
+			/**
+			 * @brief Access the character at \p index.
+			 * @param index Index to access.
+			 * @return The character at \p index.
+			 */
 			char &operator[](unsigned int index);
 
+			/**
+			 * @brief Convert \p *this to a byte array.
+			 * @param buf Target array.
+			 * @param bufsize Size of \p buf.
+			 * @param index Index to start at.
+			 */
 			void getBytes(unsigned char *buf, unsigned int bufsize, unsigned int index = 0) const;
 
+			/**
+			 * @brief Convert \p *this to a char array.
+			 * @param buf Target array.
+			 * @param bufsize Size of \p buf.
+			 * @param index Index to start at.
+			 */
 			void toCharArray(char *buf, unsigned int bufsize, unsigned int index = 0) const
 			{
 				getBytes((unsigned char *) buf, bufsize, index);
 			}
 
+			/**
+			 * @brief Get the C-style string representation of \p *this.
+			 * @return The underlying C-style string.
+			 */
 			const char *c_str() const
 			{
 				return buffer;
 			}
 
+			/**
+			 * @brief Get a reference to the first character of \p *this.
+			 * @return An reference to the first character of \p *this.
+			 */
 			char *begin()
 			{
 				return buffer;
 			}
 
+			/**
+			 * @brief Get a reference to the last character of \p *this.
+			 * @return An reference to the last character of \p *this.
+			 */
 			char *end()
 			{
 				return buffer + length();
 			}
 
+			/**
+			 * @brief Get a reference to the first character of \p *this.
+			 * @return An reference to the first character of \p *this.
+			 */
 			const char *begin() const
 			{
 				return c_str();
 			}
 
+			/**
+			 * @brief Get a reference to the last character of \p *this.
+			 * @return An reference to the last character of \p *this.
+			 */
 			const char *end() const
 			{
 				return c_str() + length();
 			}
 
-			// search
-			int indexOf(char ch) const;
+			/**
+			 * @brief Find the first occurance of \p ch.
+			 * @param ch Value to search for.
+			 * @return First occurance of \p ch or <0.
+			 */
+			long indexOf(char ch) const;
 
-			int indexOf(char ch, unsigned int fromIndex) const;
+			/**
+			 * @brief Find the first occurance of \p ch.
+			 * @param ch Value to search for.
+			 * @param fromIndex Start index.
+			 * @return First occurance of \p ch or <0.
+			 */
+			long indexOf(char ch, unsigned int fromIndex) const;
 
-			int indexOf(const String &str) const;
+			/**
+			 * @brief Find the first occurance of \p ch.
+			 * @param ch Value to search for.
+			 * @return First occurance of \p ch or <0.
+			 */
+			long indexOf(const String &str) const;
 
-			int indexOf(const String &str, unsigned int fromIndex) const;
+			/**
+			 * @brief Find the first occurance of \p ch.
+			 * @param str Value to search for.
+			 * @param fromIndex Start index.
+			 * @return First occurance of \p ch or <0.
+			 */
+			long indexOf(const String &str, unsigned int fromIndex) const;
 
-			int lastIndexOf(char ch) const;
+			/**
+			 * @brief Find the last occurance of \p ch.
+			 * @param ch Value to search for.
+			 * @return Last occurance of \p ch or <0.
+			 */
+			long lastIndexOf(char ch) const;
 
-			int lastIndexOf(char ch, unsigned int fromIndex) const;
+			/**
+			 * @brief Find the last occurance of \p ch.
+			 * @param ch Value to search for.
+			 * @param fromIndex Start index.
+			 * @return last occurance of \p ch or <0.
+			 */
+			long lastIndexOf(char ch, unsigned int fromIndex) const;
 
-			int lastIndexOf(const String &str) const;
+			/**
+			 * @brief Find the last occurance of \p ch.
+			 * @param str Value to search for.
+			 * @return last occurance of \p ch or <0.
+			 */
+			long lastIndexOf(const String &str) const;
 
-			int lastIndexOf(const String &str, unsigned int fromIndex) const;
+			/**
+			 * @brief Find the last occurance of \p ch.
+			 * @param str Value to search for.
+			 * @param fromIndex Start index.
+			 * @return last occurance of \p ch or <0.
+			 */
+			long lastIndexOf(const String &str, unsigned int fromIndex) const;
 
+			/**
+			 * @brief Get a substring of \p *this from a given index to the end.
+			 * @param beginIndex Index to start.
+			 * @return A substring of \p *this.
+			 */
 			String substring(unsigned int beginIndex) const
 			{
 				return substring(beginIndex, len);
-			};
+			}
 
+			/**
+			 * @brief Get a substring of \p *this from a given index to another given index..
+			 * @param beginIndex Index to start.
+			 * @param endIndex Index to stop.
+			 * @return A substring of \p *this.
+			 */
 			String substring(unsigned int beginIndex, unsigned int endIndex) const;
 
-			// modification
+			/**
+			 * @brief Replace a character.
+			 * @param find Character to replace.
+			 * @param replace New value.
+			 */
 			void replace(char find, char replace);
 
+			/**
+			 * @brief Replace a substring.
+			 * @param find Substring to replace.
+			 * @param replace New value.
+			 */
 			void replace(const String &find, const String &replace);
 
+			/**
+			 * @brief Remove the character at \p index.
+			 * @param index Index to remove.
+			 */
 			void remove(unsigned int index);
 
+			/**
+			 * @brief Remove a number of characters starting at \p index.
+			 * @param index Index to remove.
+			 * @param count Number of characters to remove.
+			 */
 			void remove(unsigned int index, unsigned int count);
 
+			/**
+			 * @brief Convert \p *this to all lower case.
+			 */
 			void toLowerCase();
 
+			/**
+			 * @brief Convert \p *this to all upper case.
+			 */
 			void toUpperCase();
 
+			/**
+			 * @brief Trim \p *this.
+			 */
 			void trim();
 
-			// parsing/conversion
+			/**
+			 * @brief Convert *this to an integer.
+			 * @return Integer representation of \p *this.
+			 */
 			long toInt() const;
 
+			/**
+			 * @brief Convert *this to a float.
+			 * @return Float representation of \p *this.
+			 */
 			float toFloat() const;
 
+			/**
+			 * @brief Convert *this to a double.
+			 * @return Double representation of \p *this.
+			 */
 			double toDouble() const;
 
 		protected:
-			char *buffer;
-			unsigned int capacity;
-			unsigned int len;
+			char *buffer; //!< Underlying C-style string.
+			unsigned int capacity; //!< Capacity of \p buffer.
+			unsigned int len; //!< Current string length.
 
 		protected:
 			void init();
 			void invalidate();
 			unsigned char changeBuffer(unsigned int maxStrLen);
-			unsigned char concat(const char *cstr, unsigned int length);
+			bool concat(const char *cstr, unsigned int length);
 
 			// copy and move
 			String &copy(const char *cstr, unsigned int length);
