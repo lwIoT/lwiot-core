@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file vector.h
+
 #pragma once
 
 #include <lwiot.h>
@@ -23,12 +25,18 @@ namespace lwiot
 {
 	namespace stl
 	{
+		/**
+		 * @ingroup stl
+		 * @brief A dynamically allocated array.
+		 * @tparam T Element type.
+		 * @tparam A Allocator type.
+		 */
 		template<class T, class A = DefaultAllocator<T>>
 		class Vector {
 		public:
-			typedef A Allocator;
-			typedef T ObjectType;
-			typedef size_t size_type;
+			typedef A Allocator; //!< Allocator type.
+			typedef T ObjectType; //!< Element type.
+			typedef size_t size_type; //!< Size type.
 
 			template<bool is_const>
 			class Iterator {
@@ -63,7 +71,7 @@ namespace lwiot
 					return *this;
 				}
 
-				const Iterator operator++(int num)
+				Iterator operator++(int num)
 				{
 					Iterator iter(*this);
 
@@ -106,18 +114,29 @@ namespace lwiot
 				}
 			};
 
-			typedef Iterator<false> iterator;
-			typedef Iterator<true> const_iterator;
+			typedef Iterator<false> iterator; //!< Iterator type.
+			typedef Iterator<true> const_iterator; //!< Const iterator type.
 
-			CONSTEXPR explicit Vector() : _index(0), _objects(nullptr), _space(0)
+			/**
+			 * @brief Construct a new Vector.
+			 */
+			constexpr explicit Vector() : _index(0), _objects(nullptr), _space(0)
 			{
 			}
 
+			/**
+			 * @brief Construct a new vector.
+			 * @param s Initial size.
+			 */
 			explicit Vector(const size_t &s) : _index(0), _objects(nullptr), _space(0)
 			{
 				this->reserve(s);
 			}
 
+			/**
+			 * @brief Construct a new vector.
+			 * @param other Vector to copy into \p *this.
+			 */
 			Vector(const Vector<T, A> &other) : _alloc(other._alloc), _index(0), _objects(nullptr), _space(0)
 			{
 				this->clear();
@@ -128,7 +147,11 @@ namespace lwiot
 				}
 			}
 
-			CONSTEXPR Vector(Vector<T, A> &&other) noexcept :
+			/**
+			 * @brief Construct a new vector.
+			 * @param other Vector to copy into \p this.
+			 */
+			constexpr Vector(Vector<T, A> &&other) noexcept :
 					_index(other._index), _objects(other._objects), _space(other._space)
 			{
 				this->_alloc = other._alloc;
@@ -138,8 +161,18 @@ namespace lwiot
 				other._index = 0;
 			}
 
+			/**
+			 * @brief Copy assignment operator.
+			 * @param a Vector to copy into \p *this.
+			 * @return A reference to \p *this.
+			 */
 			Vector<T, A> &operator=(const Vector &a);
 
+			/**
+			 * @brief Move assignment operator.
+			 * @param rhs Vector to move into \p *this.
+			 * @return A reference to \p *this.
+			 */
 			Vector<T, A> &operator=(Vector<T, A> &&rhs) noexcept
 			{
 				this->release();
@@ -156,22 +189,37 @@ namespace lwiot
 				return *this;
 			}
 
+			/**
+			 * @brief Vector destructor.
+			 */
 			virtual ~Vector()
 			{
 				this->release();
 			}
 
 			/* ITERATORS */
+			/**
+			 * @brief Get a reference to the first element of \p *this.
+			 * @return An reference to the first element of \p *this.
+			 */
 			iterator begin() noexcept
 			{
 				return Iterator<false>(&this->_objects[0]);
 			}
 
+			/**
+			 * @brief Get a refernce to the first element of \p *this.
+			 * @return An reference to the first element of \p *this.
+			 */
 			const_iterator begin() const noexcept
 			{
 				return const_iterator(&this->_objects[0]);
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			iterator end() noexcept
 			{
 				Iterator<false> it;
@@ -180,6 +228,10 @@ namespace lwiot
 				return it;
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			const_iterator end() const noexcept
 			{
 				const_iterator it;
@@ -189,77 +241,147 @@ namespace lwiot
 			}
 
 			/* ELEMENT ACCESS */
+			/**
+			 * @brief Access the specified element
+			 * @param n Index to access.
+			 * @return Element at \p n.
+			 */
 			constexpr const ObjectType& at(size_type n) const
 			{
 				return this->_objects[n];
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param n Index to access.
+			 * @return Element at \p n.
+			 */
 			constexpr ObjectType & at(size_type n)
 			{
 				return this->_objects[n];
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param n Index to access.
+			 * @return Element at \p n.
+			 */
 			constexpr ObjectType& operator[](size_type n)
 			{
 				return this->_objects[n];
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param n Index to access.
+			 * @return Element at \p n.
+			 */
 			constexpr const T &operator[](size_type n) const
 			{
 				return this->_objects[n];
 			}
 
+			/**
+			 * @brief Get a reference to the last element of \p *this.
+			 * @return An reference to the last element of \p *this.
+			 */
 			constexpr const ObjectType& back() const
 			{
 				return this->_objects[this->_index - 1];
 			}
 
+			/**
+			 * @brief Get a reference to the last element of \p *this.
+			 * @return An reference to the last element of \p *this.
+			 */
 			constexpr ObjectType& back()
 			{
 				return this->_objects[this->_index - 1];
 			}
 
+			/**
+			 * @brief Direct access to the underlying array.
+			 * @return The array structure that \p *this wraps around.
+			 */
 			constexpr ObjectType* data()
 			{
 				return &this->_objects[0];
 			}
 
-			constexpr ObjectType& front()
-			{
-				return this->_objects[0];
-			}
-
-			constexpr const ObjectType& front() const
-			{
-				return this->_objects[0];
-			}
-
+			/**
+			 * @brief Direct access to the underlying array.
+			 * @return The array structure that \p *this wraps around.
+			 */
 			constexpr const ObjectType* data() const
 			{
 				return &this->_objects[0];
 			}
 
+			/**
+			 * @brief Access the first element.
+			 * @return A reference to the first element.
+			 */
+			constexpr ObjectType& front()
+			{
+				return this->_objects[0];
+			}
+
+			/**
+			 * @brief Access the first element.
+			 * @return A reference to the first element.
+			 */
+			constexpr const ObjectType& front() const
+			{
+				return this->_objects[0];
+			}
+
 			/* CAPACITY */
+			/**
+			 * @brief Get the size of an array.
+			 * @return Size of the array.
+			 */
 			constexpr size_t size() const
 			{
 				return _index;
 			}
 
+			/**
+			 * @brief Get the capacity of the array.
+			 * @return The capacity of the underlying array in its current state.
+			 * @note \f$ capacity \geq size
+			 */
 			constexpr size_t capacity() const
 			{
 				return this->_space;
 			}
 
+			/**
+			 * @brief Get the size of an array.
+			 * @return Size of the array.
+			 */
 			constexpr size_t length() const
 			{
 				return this->size();
 			}
 
+			/**
+			 * @brief Reserve storage space for a number of objects.
+			 * @param newalloc Number of objects reserve space for.
+			 */
 			void reserve(size_t newalloc);
 
 			/* Modifiers */
+
+			/**
+			 * @brief Insert an element at the end.
+			 * @param val Element to insert.
+			 */
 			void pushback(const ObjectType &val);
 
+			/**
+			 * @brief Insert an element at the end.
+			 * @param val Element to insert.
+			 */
 			void pushback(ObjectType&& value)
 			{
 				if(this->_space == 0UL)
@@ -271,16 +393,28 @@ namespace lwiot
 				this->_index++;
 			}
 
+			/**
+			 * @brief Insert an element at the end.
+			 * @param val Element to insert.
+			 */
 			inline void push_back(ObjectType&& value)
 			{
 				this->pushback(stl::forward<ObjectType >(value));
 			}
 
+			/**
+			 * @brief Insert an element at the end.
+			 * @param val Element to insert.
+			 */
 			inline void add(const ObjectType &val)
 			{
 				this->pushback(val);
 			}
 
+			/**
+			 * @brief Remove an element from the end.
+			 * @param val Element to remove.
+			 */
 			void popback()
 			{
 				if(this->_index == 0)
@@ -291,8 +425,15 @@ namespace lwiot
 				memset(&this->_objects[this->_index], 0, sizeof(ObjectType));
 			}
 
+			/**
+			 * @brief Remove an element from the end.
+			 * @param val Element to remove.
+			 */
 			void pop_back() { this->popback(); }
 
+			/**
+			 * @brief Remove all elements.
+			 */
 			inline void clear()
 			{
 				if(this->length() == 0UL)
@@ -306,6 +447,11 @@ namespace lwiot
 			}
 
 			/* UTILITY */
+			/**
+			 * @brief Iterate over all elements.
+			 * @tparam Func Functor type.
+			 * @param functor Callback function.
+			 */
 			template<typename Func>
 			inline void foreach(Func functor)
 			{
@@ -314,6 +460,12 @@ namespace lwiot
 				}
 			}
 
+			/**
+			 * @brief Assign a value \p n times to the vector.
+			 * @param n Number of times to assign \p value.
+			 * @param value Value to assign \p n times.
+			 * @note The vector will be cleared before assigning \p value.
+			 */
 			void assign(size_type n, const ObjectType& value)
 			{
 				this->release();

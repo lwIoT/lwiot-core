@@ -52,117 +52,202 @@ namespace lwiot
 			}
 		};
 
+		/**
+		 * @ingroup stl
+		 * @brief Static size array wrapper.
+		 * @tparam _Tp Array type.
+		 * @tparam _Nm Size of the array (number of elements).
+		 */
 		template<typename _Tp, size_t _Nm>
 		struct Array {
-			typedef _Tp value_type;
-			typedef value_type *pointer;
-			typedef const value_type *const_pointer;
-			typedef value_type &reference;
-			typedef const value_type &const_reference;
-			typedef value_type *iterator;
-			typedef const value_type *const_iterator;
-			typedef size_t size_type;
-			typedef ptrdiff_t difference_type;
+			typedef _Tp value_type; //!< Value type.
+			typedef value_type *pointer; //!< Value pointer type.
+			typedef const value_type *const_pointer; //!< Value const pointer.
+			typedef value_type &reference; //!< Value reference.
+			typedef const value_type &const_reference; //!< Value const reference.
+			typedef value_type *iterator; //!< Iterator type.
+			typedef const value_type *const_iterator; //!< Const iterator type.
+			typedef size_t size_type; //!< Size type.
+			typedef ptrdiff_t difference_type; //!< Pointer difference type.
 
+		private:
 			// Support for zero-sized arrays mandatory.
 			typedef lwiot::stl::__array_traits<_Tp, _Nm> _AT_Type;
 			typename _AT_Type::_Type _M_elems;
 
-			// No explicit construct/copy/destroy for aggregate type.
-
-			CONSTEXPR iterator begin() noexcept
+		public:
+			/**
+			 * @brief Get an iterator to the first element.
+			 * @return Iterator pointing to the first element.
+			 */
+			constexpr iterator begin() noexcept
 			{
 				return iterator(data());
 			}
 
-			CONSTEXPR const_iterator begin() const noexcept
+			/**
+			 * @brief Get an iterator to the first element.
+			 * @return Iterator pointing to the first element.
+			 */
+			constexpr const_iterator begin() const noexcept
 			{
 				return const_iterator(data());
 			}
 
-			CONSTEXPR iterator end() noexcept
+			/**
+			 * @brief Pointer past the last element.
+			 * @return Iterator pointing to the end of the array.
+			 */
+			constexpr iterator end() noexcept
 			{
 				return iterator(data() + _Nm);
 			}
 
-			CONSTEXPR const_iterator end() const noexcept
+			/**
+			 * @brief Pointer past the last element.
+			 * @return Iterator pointing to the end of the array.
+			 */
+			constexpr const_iterator end() const noexcept
 			{
 				return const_iterator(data() + _Nm);
 			}
 
-			CONSTEXPR const_iterator cbegin() const noexcept
+			/**
+			 * @brief Get an iterator to the first element.
+			 * @return Iterator pointing to the first element.
+			 */
+			constexpr const_iterator cbegin() const noexcept
 			{
 				return const_iterator(data());
 			}
 
-			CONSTEXPR const_iterator cend() const noexcept
+			/**
+			 * @brief Pointer past the last element.
+			 * @return Iterator pointing to the end of the array.
+			 */
+			constexpr const_iterator cend() const noexcept
 			{
 				return const_iterator(data() + _Nm);
 			}
 
+			/**
+			 * @brief Get the size of an array.
+			 * @return Size of the array.
+			 */
 			constexpr size_type size() const noexcept
 			{
 				return _Nm;
 			}
 
+			/**
+			 * @brief Get the maximum array size.
+			 * @return Size of the array.
+			 */
 			constexpr size_type max_size() const noexcept
 			{
 				return _Nm;
 			}
 
+			/**
+			 * @brief Check if \p *this is empty.
+			 * @return True or false based on whether or not \p *this is false.
+			 */
 			constexpr bool empty() const noexcept
 			{
 				return size() == 0;
 			}
 
-			// Element access.
-			CONSTEXPR reference operator[](size_type __n) noexcept
+			/**
+			 * @brief Access operator.
+			 * @param __n Element to access.
+			 * @return Reference to the element at the \p n th position.
+			 */
+			constexpr reference operator[](size_type __n) noexcept
 			{
 				return _AT_Type::_S_ref(_M_elems, __n);
 			}
 
-			CONSTEXPR const_reference operator[](size_type __n) const noexcept
+			/**
+			 * @brief Access operator.
+			 * @param __n Element to access.
+			 * @return Reference to the element at the \p n th position.
+			 */
+			constexpr const_reference operator[](size_type __n) const noexcept
 			{
 				return _AT_Type::_S_ref(_M_elems, __n);
 			}
 
-			CONSTEXPR reference at(size_type __n)
+			/**
+			 * @brief Access operator.
+			 * @param __n Element to access.
+			 * @return Reference to the element at the \p n th position.
+			 */
+			constexpr reference at(size_type __n)
 			{
 				return _AT_Type::_S_ref(_M_elems, __n);
 			}
 
-			CONSTEXPR const_reference at(size_type __n) const
+			/**
+			 * @brief Access operator.
+			 * @param __n Element to access.
+			 * @return Reference to the element at the \p n th position.
+			 */
+			constexpr const_reference at(size_type __n) const
 			{
 				return _AT_Type::_S_ref(_M_elems, __n);
 			}
 
-			CONSTEXPR reference front() noexcept
+			/**
+			 * @brief Access the first element.
+			 * @return A reference to the first element.
+			 */
+			constexpr reference front() noexcept
 			{
 				return *begin();
 			}
 
-			CONSTEXPR const_reference front() const noexcept
+			/**
+			 * @brief Access the first element.
+			 * @return A reference to the first element.
+			 */
+			constexpr const_reference front() const noexcept
 			{
 				return _AT_Type::_S_ref(_M_elems, 0);
 			}
 
-			CONSTEXPR reference back() noexcept
+			/**
+			 * @brief Access the last element.
+			 * @return A reference to the last element.
+			 */
+			constexpr reference back() noexcept
 			{
 				return _Nm ? *(end() - 1) : *end();
 			}
 
-			CONSTEXPR const_reference back() const noexcept
+			/**
+			 * @brief Access the last element.
+			 * @return A reference to the last element.
+			 */
+			constexpr const_reference back() const noexcept
 			{
 				return _Nm ? _AT_Type::_S_ref(_M_elems, _Nm - 1)
 				           : _AT_Type::_S_ref(_M_elems, 0);
 			}
 
-			CONSTEXPR pointer data() noexcept
+			/**
+			 * @brief Direct access to the underlying array.
+			 * @return The array structure that \p *this wraps around.
+			 */
+			constexpr pointer data() noexcept
 			{
 				return _AT_Type::_S_ptr(_M_elems);
 			}
 
-			CONSTEXPR const_pointer data() const noexcept
+			/**
+			 * @brief Direct access to the underlying array.
+			 * @return The array structure that \p *this wraps around.
+			 */
+			constexpr const_pointer data() const noexcept
 			{
 				return _AT_Type::_S_ptr(_M_elems);
 			}

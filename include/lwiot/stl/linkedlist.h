@@ -5,6 +5,10 @@
  * @email  dev@bietje.net
  */
 
+/**
+ * @file linkedlist.h Linked list header.
+ */
+
 #pragma once
 
 #include <assert.h>
@@ -53,12 +57,18 @@ namespace lwiot
 			};
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief List container.
+		 * @tparam T Storage type type.
+		 * @tparam A Allocator type.
+		 */
 		template<typename T, typename A = DefaultAllocator<list::Node<T>>>
 		class LinkedList {
 		public:
-			typedef T value_type;
-			typedef list::Node<value_type> node_type;
-			typedef A allocator_type;
+			typedef T value_type; //!< Value type.
+			typedef list::Node<value_type> node_type; //!< Node type.
+			typedef A allocator_type; //!< Allocator type.
 
 			template<bool is_const>
 			class Iterator {
@@ -156,18 +166,29 @@ namespace lwiot
 				node_type *_next;
 			};
 
-			typedef Iterator<false> iterator;
-			typedef Iterator<true> const_iterator;
+			typedef Iterator<false> iterator; //!< Iterator type.
+			typedef Iterator<true> const_iterator; //!< Const iterator type.
 
+			/**
+			 * @brief Construct a new list.
+			 */
 			constexpr explicit LinkedList() : _head(nullptr), _size(0UL), _alloc()
 			{
 			}
 
+			/**
+			 * @brief Copy construct a new list.
+			 * @param other List to copy into \p *this.
+			 */
 			LinkedList(const LinkedList &other) : _head(nullptr), _size(0UL), _alloc(other._alloc)
 			{
 				this->copy(other);
 			}
 
+			/**
+			 * @brief Move construct a list.
+			 * @param other List to move into \p *this.
+			 */
 			constexpr LinkedList(LinkedList &&other) noexcept : _head(nullptr), _size(0), _alloc(stl::move(other._alloc))
 			{
 				this->_size = other._size;
@@ -182,12 +203,22 @@ namespace lwiot
 				this->clear();
 			}
 
+			/**
+			 * @brief Copy assignment.
+			 * @param rhs List to copy into \p *this.
+			 * @return Reference to \p *this.
+			 */
 			LinkedList &operator=(const LinkedList<T> &rhs)
 			{
 				this->copy(rhs);
 				return *this;
 			}
 
+			/**
+			 * @brief Move assignment.
+			 * @param rhs List to move into \p *this.
+			 * @return Reference to \p *this.
+			 */
 			LinkedList &operator=(LinkedList<T> &&rhs) noexcept
 			{
 				if(this->_size > 0UL)
@@ -202,6 +233,12 @@ namespace lwiot
 				return *this;
 			}
 
+			/**
+			 * @brief Replace a value with another.
+			 * @param iter Position to replace.
+			 * @param value Value to store at \p iter.
+			 * @return The value previously stored at \p iter.
+			 */
 			constexpr value_type replace(iterator& iter, value_type&& value)
 			{
 				auto node = iter.node();
@@ -215,21 +252,37 @@ namespace lwiot
 
 			/* ITERATORS */
 
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
 			constexpr iterator begin()
 			{
 				return iterator(this->_head);
 			}
 
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
 			constexpr const_iterator begin() const
 			{
 				return const_iterator(this->_head);
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			constexpr iterator end()
 			{
 				return iterator(nullptr);
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			constexpr const_iterator end() const
 			{
 				return const_iterator(nullptr);
@@ -237,16 +290,28 @@ namespace lwiot
 
 			/* ELEMENT ACCESS */
 
+			/**
+			 * @brief Get a refernce to the first element of \p *this.
+			 * @return An reference to the first element of \p *this.
+			 */
 			constexpr value_type &front()
 			{
 				return *this->begin();
 			}
 
+			/**
+			 * @brief Get a refernce to the last element of \p *this.
+			 * @return An reference to the last element of \p *this.
+			 */
 			constexpr const value_type &front() const
 			{
 				return *this->begin();
 			}
 
+			/**
+			 * @brief Get a reference to the last element of \p *this.
+			 * @return An reference to the last element of \p *this.
+			 */
 			constexpr value_type& back()
 			{
 				if(this->_head == nullptr)
@@ -258,6 +323,10 @@ namespace lwiot
 				return this->_head->_prev->_data;
 			}
 
+			/**
+			 * @brief Get a refernce to the last element of \p *this.
+			 * @return An reference to the last element of \p *this.
+			 */
 			constexpr const value_type& back() const
 			{
 				if(this->_head == nullptr)
@@ -271,6 +340,10 @@ namespace lwiot
 
 			/* MODIFIERS */
 
+			/**
+			 * @brief Remove the element stored at \p iter.
+			 * @param iter Position to erase.
+			 */
 			void erase(const_iterator  iter)
 			{
 				this->remove(iter.node());
@@ -279,6 +352,10 @@ namespace lwiot
 					iter.clear();
 			}
 
+			/**
+			 * @brief Remove the element stored at \p iter.
+			 * @param iter Position to erase.
+			 */
 			void erase(iterator iter)
 			{
 				this->remove(iter.node());
@@ -287,6 +364,10 @@ namespace lwiot
 					iter.clear();
 			}
 
+			/**
+			 * @brief Merge two linked lists.
+			 * @param list List to merge into \p *this.
+			 */
 			constexpr void merge(LinkedList&& list)
 			{
 				if(this == &list)
@@ -301,11 +382,19 @@ namespace lwiot
 				});
 			}
 
+			/**
+			 * @brief Merge two linked lists.
+			 * @param list List to merge into \p *this.
+			 */
 			constexpr void merge(LinkedList& list)
 			{
 				this->append(stl::move(list));
 			}
 
+			/**
+			 * @brief Copy a linked list into \p *this.
+			 * @param list List to copy into \p *this.
+			 */
 			void copy(const LinkedList &list)
 			{
 				this->_alloc = list._alloc;
@@ -315,6 +404,10 @@ namespace lwiot
 				}
 			}
 
+			/**
+			 * @brief Add an element to the end.
+			 * @param data Data to add.
+			 */
 			void push_back(const value_type &data)
 			{
 				auto node = this->_alloc.allocate(1);
@@ -322,6 +415,10 @@ namespace lwiot
 				this->add_back(node);
 			}
 
+			/**
+			 * @brief Add an element to the end.
+			 * @param data Data to add.
+			 */
 			void push_back(value_type &&data)
 			{
 				auto node = this->_alloc.allocate(1);
@@ -330,12 +427,20 @@ namespace lwiot
 				this->add_back(node);
 			}
 
+			/**
+			 * @brief Add an element to the front.
+			 * @param data Data to add.
+			 */
 			void push_front(const value_type &data)
 			{
 				node_type *node = new node_type(data);
 				this->add_front(node);
 			}
 
+			/**
+			 * @brief Add an element to the front.
+			 * @param data Data to add.
+			 */
 			void push_front(value_type &&data)
 			{
 				auto node = this->_alloc.allocate(1);
@@ -343,6 +448,9 @@ namespace lwiot
 				this->add_front(node);
 			}
 
+			/**
+			 * @brief Remove all items.
+			 */
 			void clear()
 			{
 				if(this->_size == 0UL)
@@ -365,11 +473,19 @@ namespace lwiot
 
 			/* CAPACITY */
 
+			/**
+			 * @brief Get the size of \p *this.
+			 * @return The size of \p *this.
+			 */
 			constexpr size_t size() const
 			{
 				return this->_size;
 			}
 
+			/**
+			 * @brief Check if the list is empty.
+			 * @return True or false based on whether or not the list is empty.
+			 */
 			constexpr bool empty() const
 			{
 				return this->size() == 0UL;
@@ -377,6 +493,11 @@ namespace lwiot
 
 			/* UTILITY */
 
+			/**
+			 * @brief Swap two linked lists.
+			 * @param l1 First list.
+			 * @param l2 Second list.
+			 */
 			constexpr friend void swap(LinkedList& l1, LinkedList& l2)
 			{
 				using stl::swap;
