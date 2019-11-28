@@ -16,13 +16,17 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief Real-time clock.
+	 * @ingroup util
+	 */
 	class RealTimeClock {
 	public:
 		virtual ~RealTimeClock() = default;
 
-		virtual DateTime now() = 0;
-		void time(DateTime& dt);
+		virtual DateTime now() = 0; //!< Get the current time.
+		void time(DateTime& dt); //!< Get the current time in a DateTime object.
 
-		virtual void set(const DateTime& dt) = 0;
+		virtual void set(const DateTime& dt) = 0; //!< Set the time.
 	};
 }
