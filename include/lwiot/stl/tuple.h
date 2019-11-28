@@ -215,7 +215,7 @@ namespace lwiot
 		 */
 		template<size_t I, typename, typename ... Tail>
 		struct TypeAtIndex {
-			using type = typename TypeAtIndex<I - 1, Tail...>::type;
+			using type = typename TypeAtIndex<I - 1, Tail...>::type; //!< Type at \p I.
 		};
 
 		template<typename Head, typename ... Tail>
@@ -332,7 +332,7 @@ namespace lwiot
 		 * @tparam Types Tuple types.
 		 */
 		template<typename ... Types>
-		struct TupleSize<Tuple<Types...>> : traits::IntegralConstant<size_t, sizeof...(Types)> {
+		struct TupleSize<Tuple<Types...>> : public traits::IntegralConstant<size_t, sizeof...(Types)> {
 		};
 
 		template<typename T>

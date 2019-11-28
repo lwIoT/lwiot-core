@@ -104,14 +104,14 @@ namespace lwiot
 			/**
 			 * @brief Construct a new string.
 			 * @param c Initial value.
-			 * @param base Integer base.
+			 * @param decimalPlaces Number of decimal places.
 			 */
 			explicit String(float c, unsigned char decimalPlaces = 2);
 
 			/**
 			 * @brief Construct a new string.
 			 * @param c Initial value.
-			 * @param base Integer base.
+			 * @param decimalPlaces Number of decimal places.
 			 */
 			explicit String(double c, unsigned char decimalPlaces = 2);
 
@@ -481,13 +481,14 @@ namespace lwiot
 			/**
 			 * @brief Check of \p *this starts with \p prefix.
 			 * @param prefix Prefix to test.
+			 * @param offset Number of characters to skip.
 			 * @return True on success, false otherwise.
 			 */
 			bool startsWith(const String &prefix, unsigned int offset) const;
 
 			/**
 			 * @brief Check of \p *this ends with \p prefix.
-			 * @param prefix Suffix to test.
+			 * @param suffix Suffix to test.
 			 * @return True on success, false otherwise.
 			 */
 			bool endsWith(const String &suffix) const;
@@ -602,7 +603,7 @@ namespace lwiot
 
 			/**
 			 * @brief Find the first occurance of \p ch.
-			 * @param ch Value to search for.
+			 * @param str Value to search for.
 			 * @return First occurance of \p ch or <0.
 			 */
 			long indexOf(const String &str) const;

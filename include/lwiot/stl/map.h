@@ -186,7 +186,7 @@ namespace lwiot
 			 * @param key Key to access.
 			 * @return A reference to the element at \p key.
 			 */
-			const MapValue& operator[](MapKey key) const
+			MapValue operator[](MapKey key) const
 			{
 				return this->at(key);
 			}
