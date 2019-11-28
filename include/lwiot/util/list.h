@@ -15,6 +15,7 @@
 
  /**
   * @brief List head structure.
+  * @ingroup util
   */
 struct DLL_EXPORT list_head {
 	struct list_head *next; //!< Next pointer.
@@ -57,6 +58,7 @@ static inline void __list_del(struct list_head *prev,
 /**
  * @brief Delete an entry from a linked list.
  * @param entry Entry which has to be deleted.
+ * @ingroup util
  */
 static inline void list_del(struct list_head *entry)
 {
@@ -71,6 +73,7 @@ static inline void list_del(struct list_head *entry)
  * @return True or false based on whether the list is empty or not.
  * @retval true if the list is empty.
  * @retval false if the list is not empty.
+ * @ingroup util
  */
 static inline int list_empty(const struct list_head *head)
 {
@@ -82,6 +85,7 @@ static inline int list_empty(const struct list_head *head)
  * @param list List entry to check.
  * @param head List head.
  * @return True or false based on whether the entry is the last entry or not.
+ * @ingroup util
  */
 static inline int list_is_last(const struct list_head *list,
 	const struct list_head *head)
@@ -98,6 +102,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
  * @brief Loop through a list.
  * @param pos Carriage pointer.
  * @param head List head.
+ * @ingroup util
  */
 #define list_for_each(pos, head) \
 		for(pos = (head)->next; pos != (head); pos = pos->next)
@@ -106,6 +111,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
   * @brief Loop reversed through a list.
   * @param pos Carriage pointer.
   * @param head Head pointer.
+  * @ingroup util
   */
 #define list_for_each_prev(pos, head) \
 		for(pos = (head)->prev; pos != (head); pos = pos->prev)
@@ -115,6 +121,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
    * @param pos Carriage pointer.
    * @param n Temporary value.
    * @param head List head.
+   * @ingroup util
    *
    * Safe means that the current item (\p pos) can be deleted.
    */
@@ -127,6 +134,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
 	* @param pos Carriage pointer.
 	* @param n Temporary value.
 	* @param head List head.
+    * @ingroup util
 	* @see list_for_each_safe
 	*/
 #define list_for_each_prev_safe(pos, n, head) \
@@ -137,6 +145,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
 	 * @brief Add a new list node.
 	 * @param ___n Node to add.
 	 * @param ___h List head.
+     * @ingroup util
 	 */
 #define list_add(___n, ___h) __list_add(___n, ___h, (___h)->next)
 
@@ -144,6 +153,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
 	  * @brief Add a new entry to the tail.
 	  * @param __n New node.
 	  * @param __h List head.
+      * @ingroup util
 	  */
 #define list_add_tail(__n, __h) __list_add(__n, (__h)->prev, __h)
 
@@ -152,6 +162,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
 	   * @param ptr Entry pointer.
 	   * @param type Container type.
 	   * @param member Container member name.
+       * @ingroup util
 	   */
 #define list_entry(ptr, type, member) container_of(ptr, type, member)
 
@@ -160,6 +171,7 @@ typedef int(*list_comparator_t)(struct list_head *lh1, struct list_head *lh2);
 		* @param ptr the list head to take the element from.
 		* @param type the type of the struct this is embedded in.
 		* @param member the name of the list_struct within the struct.
+        * @ingroup util
 		*
 		* Note, that list is expected to be not empty.
 		*/
