@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file skiplist.h Skip list header.
+
 #pragma once
 
 #include <lwiot/util/application.h>
@@ -41,6 +43,13 @@ namespace lwiot
 			};
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief Allocate a new SkipList object.
+		 * @tparam K Key type.
+		 * @tparam V Value type.
+		 * @tparam A Allocator type.
+		 */
 		template<typename K, typename V, typename A = DefaultAllocator<detail::SkipListNode<K,V>>>
 		class SkipList {
 		private:
@@ -50,11 +59,11 @@ namespace lwiot
 			friend class HashMap<K,V>;
 
 		public:
-			typedef K key_type;
-			typedef V value_type;
-			typedef size_t size_type;
-			typedef A allocator_type;
-			typedef detail::SkipListNode<K, V> node_type;
+			typedef K key_type; //!< Key type.
+			typedef V value_type; //!< Value type.
+			typedef size_t size_type; //!< Size type.
+			typedef A allocator_type; //!< Allocator type.
+			typedef detail::SkipListNode<K, V> node_type; //!< Node type.
 
 			template<bool is_const>
 			class IteratorBase {
@@ -177,19 +186,30 @@ namespace lwiot
 				friend class SkipList<K, V>;
 			};
 
-			typedef IteratorBase<true> const_iterator;
-			typedef IteratorBase<false> iterator;
+			typedef IteratorBase<true> const_iterator; //!< Iterator type.
+			typedef IteratorBase<false> iterator; //!< Iterator type.
 
+			/**
+			 * @brief Create a new skiplist object.
+			 */
 			explicit SkipList() : _head(1), _size(0UL), _prob(DefaultProbability), _max(DefaultLevel), _alloc()
 			{
 			}
 
+			/**
+			 * @brief Construct a new skiplist object.
+			 * @param other Skiplist to copy.
+			 */
 			SkipList(const SkipList &other) :
 				_head(other._head.size()), _size(other._size), _prob(other._prob), _max(DefaultLevel), _alloc(other._alloc)
 			{
 				this->copy(other);
 			}
 
+			/**
+			 * @brief Construct a new skiplist object.
+			 * @param other Skiplist to move.
+			 */
 			SkipList(SkipList &&other) noexcept :
 				_head(stl::move(other._head)), _size(other._size), _prob(other._prob), _max(DefaultLevel),
 				_alloc(stl::move(other._alloc))
@@ -197,11 +217,19 @@ namespace lwiot
 				other._head.assign(1, nullptr);
 			}
 
+			/**
+			 * @brief Destroy a skiplist object.
+			 */
 			virtual ~SkipList()
 			{
 				this->freeAllNodes(this->_head[0]);
 			}
 
+			/**
+			 * @brief Move asign a skiplist object.
+			 * @param rhs Skip list to move into \p *this.
+			 * @return A reference to \p *this.
+			 */
 			constexpr SkipList &operator=(SkipList &&rhs) noexcept
 			{
 				using stl::swap;
@@ -209,53 +237,94 @@ namespace lwiot
 				return *this;
 			}
 
+			/**
+			 * @brief Move asign a skiplist object.
+			 * @param rhs Skip list to copy into \p *this.
+			 * @return A reference to \p *this.
+			 */
 			SkipList &operator=(const SkipList &rhs)
 			{
 				this->copy(rhs);
 				return *this;
 			}
 
+			/**
+			 * @brief Clear all elements.
+			 */
 			inline void clear()
 			{
 				this->freeAllNodes(this->_head[0]);
 				this->_head.assign(1, nullptr);
 			}
 
+			/**
+			 * @brief Check if \p *this is empty.
+			 * @return True or false based on whether or not \p *this is empty.
+			 */
 			constexpr bool empty() const noexcept
 			{
 				return this->_head[0] == nullptr;
 			}
 
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
 			iterator begin() noexcept
 			{
 				return iterator{this->_head[0]};
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			iterator end() noexcept
 			{
 				return iterator{nullptr};
 			}
 
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
 			const_iterator begin() const noexcept
 			{
 				return const_iterator{this->_head[0]};
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			const_iterator end() const noexcept
 			{
 				return const_iterator{nullptr};
 			}
 
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
 			const_iterator cbegin() const noexcept
 			{
 				return begin();
 			}
 
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
 			const_iterator cend() const noexcept
 			{
 				return end();
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param key Key to access.
+			 * @return Element at \p k.
+			 */
 			value_type & operator[] (const key_type& key)
 			{
 				auto iter = this->find(key);
@@ -268,6 +337,11 @@ namespace lwiot
 				return *iter;
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param key Key to access.
+			 * @return Element at \p k.
+			 */
 			value_type & operator[] (key_type &&key)
 			{
 				auto iter = this->find(key);
@@ -280,6 +354,11 @@ namespace lwiot
 				return *iter;
 			}
 
+			/**
+			 * @brief Equality operator.
+			 * @param other Set to compare against \p *this.
+			 * @return \p *this \f$ \equiv \f$ \p other
+			 */
 			bool operator==(const SkipList& other) const
 			{
 				if(this->_size != other._size)
@@ -298,6 +377,11 @@ namespace lwiot
 				return true;
 			}
 
+			/**
+			 * @brief Inequality operator.
+			 * @param other Set to compare against \p *this.
+			 * @return \p *this \f$ \neq \f$ \p other
+			 */
 			bool operator!=(const SkipList& other) const
 			{
 				if(this->_size != other._size)
@@ -316,16 +400,32 @@ namespace lwiot
 				return false;
 			}
 
+			/**
+			 * @brief Insert an element in using a key-value pair.
+			 * @param p Key-value pair.
+			 * @return An iterator to the inserted item.
+			 */
 			iterator insert(const Pair<key_type, value_type>& p)
 			{
 				return this->insert(p.first, p.second);
 			}
 
+			/**
+			 * @brief Insert an element in using a key-value pair.
+			 * @param p Key-value pair.
+			 * @return An iterator to the inserted item.
+			 */
 			iterator insert(Pair<key_type, value_type>&& p)
 			{
 				return this->insert(stl::move(p.first), stl::move(p.second));
 			}
 
+			/**
+			 * @brief Insert an element in using a key-value pair.
+			 * @param key Key value.
+			 * @param value Value to insert.
+			 * @return An iterator to the inserted item.
+			 */
 			iterator insert(key_type &&key, value_type &&value)
 			{
 				auto node_level = this->generateLevel();
@@ -335,6 +435,12 @@ namespace lwiot
 				return this->insert(new_node, node_level);
 			}
 
+			/**
+			 * @brief Insert an element in using a key-value pair.
+			 * @param key Key value.
+			 * @param value Value to insert.
+			 * @return An iterator to the inserted item.
+			 */
 			iterator insert(const key_type &key, const value_type &value)
 			{
 				auto node_level = this->generateLevel();
@@ -343,6 +449,12 @@ namespace lwiot
 				return this->insert(new_node, node_level);
 			}
 
+			/**
+			 * @brief Construct an element in-place.
+			 * @param args Arguments to forward to the element constructor.
+			 * @return Returns a pair consiting of an iterator to the element inserted and a bool indicating whether or
+			 *         not an insert operation took place.
+			 */
 			template <typename... Args>
 			stl::Pair<iterator, bool> emplace(Args&&... args)
 			{
@@ -357,6 +469,11 @@ namespace lwiot
 				return stl::Pair<iterator, bool>(rv, ok);
 			}
 
+			/**
+			 * @brief Erase an element from the hashmap.
+			 * @param key Position to erase.
+			 * @return True or false based on whether or not an element was removed.
+			 */
 			bool erase(const key_type &key)
 			{
 				node_type *node = nullptr;
@@ -390,16 +507,31 @@ namespace lwiot
 				}
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param key Key to access.
+			 * @return Element at \p key.
+			 */
 			value_type& at(const key_type& key)
 			{
 				return *this->find(key);
 			}
 
+			/**
+			 * @brief Access the specified element
+			 * @param key Key to access.
+			 * @return Element at \p key.
+			 */
 			const value_type& at(const key_type& key) const
 			{
 				return *this->find(key);
 			}
 
+			/**
+			 * @brief Find an element with \p x as key value.
+			 * @param key Key value.
+			 * @return An iterator to the key value \p x or and iterator to end.
+			 */
 			iterator find(const key_type &key)
 			{
 				auto level = this->_head.size();
@@ -420,6 +552,11 @@ namespace lwiot
 				return this->end();
 			}
 
+			/**
+			 * @brief Find an element with \p x as key value.
+			 * @param key Key value.
+			 * @return An iterator to the key value \p x or and iterator to end.
+			 */
 			const_iterator find(const key_type &key) const
 			{
 				auto level = this->_head.size();
@@ -440,6 +577,10 @@ namespace lwiot
 				return this->end();
 			}
 
+			/**
+			 * @brief Get the number of keys stored.
+			 * @return The number of keys stored by \p *this.
+			 */
 			size_type size() const
 			{
 				return this->_size;
