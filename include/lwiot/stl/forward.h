@@ -9,9 +9,6 @@
  * @file forward.h Forward header.
  */
 
-/// @addtogroup stl
-/// @{
-
 #pragma once
 
 #include <lwiot/traits/removereference.h>
@@ -22,6 +19,7 @@ namespace lwiot
 	namespace stl
 	{
 		/**
+		 * @ingroup stl
 		 * @brief Forward \p __t as an lvalue or rvalue reference based on \p _Tp.
 		 * @tparam _Tp Type to be forwarded.
 		 * @param __t Value to be forwarded.
@@ -34,6 +32,7 @@ namespace lwiot
 		}
 
 		/**
+		 * @ingroup stl
 		 * @brief Forward the rvalue reference \p t.
 		 * @tparam T Type to be forwarded.
 		 * @param t Value to be forwarded.
@@ -48,5 +47,3 @@ namespace lwiot
 		}
 	}
 }
-
-/// @}

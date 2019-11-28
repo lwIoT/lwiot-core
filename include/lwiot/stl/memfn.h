@@ -5,6 +5,8 @@
  * @email  michel@michelmegens.net
  */
 
+/// @file memfn.h
+
 #pragma once
 
 #include <lwiot/types.h>
@@ -322,9 +324,10 @@ namespace lwiot
 		};
 
 		/**
-		 *  @brief Returns a function object that forwards to the member pointer __pm;
-		 *  @param __pm Member function.
-		 *  @return Function object towards \p __pm.
+		 * @ingroup stl
+		 * @brief Returns a function object that forwards to the member pointer __pm;
+		 * @param __pm Member function.
+		 * @return Function object towards \p __pm.
 		 */
 		template<typename _Tp, typename _Class>
 		inline _Mem_fn<_Tp _Class::*>
