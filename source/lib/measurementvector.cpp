@@ -77,9 +77,8 @@ namespace lwiot
 		double data;
 
 		data = 0.0F;
-		for(stl::Vector<double>::const_iterator iter = this->_measurements.begin();
-				iter != this->_measurements.end(); ++iter) {
-			auto tmp = *iter * *iter;
+		for(auto& _measurement : this->_measurements) {
+			auto tmp = _measurement * _measurement;
 			data += tmp;
 		}
 

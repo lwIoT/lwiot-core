@@ -26,7 +26,7 @@ namespace lwiot {
 	BufferedStream::BufferedStream() : BufferedStream(BUFFEREDSTREAM_DEFAULT_SIZE)
 	{ }
 
-	BufferedStream::BufferedStream(const BufferedStream& other) : Stream(), Countable(other.size())
+	BufferedStream::BufferedStream(const BufferedStream& other) : Stream(other), Countable(other.size())
 	{
 		auto size = other.size();
 
@@ -36,20 +36,17 @@ namespace lwiot {
 		memcpy(static_cast<void*>(this->_data), static_cast<const void*>(other.data()), size);
 	}
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-	BufferedStream::BufferedStream(BufferedStream&& other)
+	BufferedStream::BufferedStream(BufferedStream&& other) noexcept : _data(nullptr), rd_idx(0), wr_idx(0)
 	{
 		this->move(other);
 	}
-#endif
 
 	BufferedStream::~BufferedStream()
 	{
 		lwiot_mem_free(this->_data);
 	}
 
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || defined(WIN32)
-	Stream& BufferedStream::operator=(Stream&& other)
+	BufferedStream& BufferedStream::operator=(Stream&& other) noexcept
 	{
 		BufferedStream& bfs = reinterpret_cast<BufferedStream&>(other);
 		this->move(bfs);
@@ -84,9 +81,8 @@ namespace lwiot {
 		other.wr_idx = other.rd_idx = 0;
 		other._count = BUFFEREDSTREAM_DEFAULT_SIZE;
 	}
-#endif
 
-	Stream& BufferedStream::operator =(const Stream& other)
+	BufferedStream& BufferedStream::operator =(const Stream& other)
 	{
 		const BufferedStream& bfs = reinterpret_cast<const BufferedStream&>(other);
 		auto size = bfs.size();
@@ -286,7 +282,7 @@ namespace lwiot {
 		this->grow(this->count() * 2U);
 	}
 
-	void BufferedStream::grow(int num)
+	void BufferedStream::grow(const size_t& num)
 	{
 		uint8_t *buf;
 		auto newsize = num;
