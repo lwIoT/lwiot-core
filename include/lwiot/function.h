@@ -6,8 +6,9 @@
  * @authos joas <StackOverflow>
  */
 
-#pragma once
+/// @file function.h
 
+#pragma once
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -132,29 +133,55 @@ namespace lwiot
 		F f;
 	};
 
+#ifdef DOXYGEN
+	/**
+	 * @brief A general purpose, polymorphic function wrapper.
+	 * @tparam Func Functor type.
+	 * @ingroup util
+	 */
+	template<typename Func>
+	class Function
 
+#else
 	template<typename Func>
 	class Function ;
 
 	template<typename ReturnType, typename ...Xs>
-	class Function<ReturnType(Xs...)> {
-		using Signature = ReturnType(Xs...);
-		using Concept = SFConcept<ReturnType, Xs...>;
+	class Function<ReturnType(Xs...)>
+#endif
+	{
+		using Signature = ReturnType(Xs...); //!< Signature type.
+		using Concept = SFConcept<ReturnType, Xs...>; //!< Concept type.
 
 	public:
+		/**
+		 * @brief Construct a new function.
+		 */
 		Function() : _concept(nullptr)
 		{ }
 
+		/**
+		 * @brief Copy construct a function.
+		 * @param other Function object to copy.
+		 */
 		Function(const Function& other) : _concept()
 		{
 			if(other.valid())
 				this->_concept.reset(other._concept->clone());
 		}
 
+		/**
+		 * @brief Move construct a function.
+		 * @param other Function to move.
+		 */
 		Function(Function&& other) noexcept : _concept(stl::move(other._concept))
 		{
 		}
 
+		/**
+		 * @brief Copy assignment operator.
+		 * @param other Function to copy.
+		 */
 		Function& operator=(const Function& other)
 		{
 			if(other.valid())
@@ -163,12 +190,22 @@ namespace lwiot
 			return *this;
 		}
 
+		/**
+		 * @brief Move assignment operator.
+		 * @param other Function to move.
+		 */
 		Function& operator=(Function&& other) noexcept
 		{
 			this->_concept.reset(other._concept.release());
 			return *this;
 		}
 
+		/**
+		 * @brief Assign a functor to \p *this.
+		 * @tparam F Functor type.
+		 * @param f Functor object.
+		 * @return A reference to \p *this.
+		 */
 		template <typename F, typename traits::EnableIf<
 					!traits::IsSame<typename traits::Decay<F>::type, Function<ReturnType(Xs...)>>::value, bool>::type = true>
 		Function& operator=(F&& f)
@@ -177,22 +214,40 @@ namespace lwiot
 			return *this;
 		}
 
+		/**
+		 * @brief Construct a function.
+		 * @tparam F Functor type.
+		 * @param f Functor object.
+		 */
 		template <typename F>
 		Function(F f) : _concept(MakeUnique<SFModel<Signature, F>>(stl::move(f)))
 		{
 		}
 
+		/**
+		 * @brief Invoke the underlying functor.
+		 * @param args Arguments forwarded to the underlying functor.
+		 * @return The return value of the stored object.
+		 */
 		ReturnType operator()(Xs... args) const
 		{
 			auto c = this->as_concept();
 			return c->invoke(stl::forward<Xs>(args)...);
 		}
 
+		/**
+		 * @brief Check if a valid functor is stored.
+		 * @return Success indicator.
+		 */
 		bool valid() const
 		{
 			return static_cast<bool>(this->_concept);
 		}
 
+		/**
+		 * @brief Check if a valid functor is stored.
+		 * @return Success indicator.
+		 */
 		explicit operator bool() const
 		{
 			return this->valid();
