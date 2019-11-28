@@ -33,10 +33,20 @@ namespace lwiot
 		class String;
 	}
 
+	/**
+	 * @brief Generate a random string.
+	 * @param prefix Prefix.
+	 * @param size Number of characters to generate.
+	 * @return A randommly generated string.
+	 */
 	stl::String randstr(const stl::String& prefix, size_t size);
 
 #define RANDOM_MIN = 0x7FFF;
 
+	/**
+	 * @brief Generate a random integer.
+	 * @return A random integer.
+	 */
 	inline int random()
 	{
 		return rand();

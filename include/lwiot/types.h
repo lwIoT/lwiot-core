@@ -6,6 +6,8 @@
  * Email: dev@bietje.net
  */
 
+/// @file types.h
+
 #ifndef __ESTACK_TYPES_H__
 #define __ESTACK_TYPES_H__
 
@@ -39,7 +41,11 @@ typedef enum {
 #include <stdint.h>
 #endif
 
-typedef void (*irq_handler_t)(void);
+/**
+ * @brief IRQ handler type.
+ * @ingroup kernel
+ */
+typedef void (*irq_handler_t)();
 
 #ifdef __cplusplus
 namespace lwiot

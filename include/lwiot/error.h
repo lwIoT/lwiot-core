@@ -9,6 +9,10 @@
 #ifndef __ESTACK_ERROR_H__
 #define __ESTACK_ERROR_H__
 
+/**
+ * @brief lwIoT error codes.
+ * @ingroup util
+ */
 typedef enum error_code {
 	EOK = 0,
 	EDRPPPED,
