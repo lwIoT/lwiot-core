@@ -130,8 +130,13 @@ namespace lwiot
 
 
 		/**
+		 * @ingroup stl
 		 * @brief Tuple object.
 		 * @tparam Types Types wrapped by the tuple.
+		 * @note This is a generalization of Pair.
+		 * @see Pair
+		 *
+		 * A fixed size collection of heterogeneous values.
 		 */
 		template<typename ... Types>
 		class Tuple : public TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...> {
@@ -145,34 +150,69 @@ namespace lwiot
 			}
 
 		public:
+			/**
+			 * @brief Construct a new tuple.
+			 */
 			explicit Tuple() = default;
 
-			Tuple(Tuple const &) = default;
+			/**
+			 * @brief Construct a new tuple.
+			 * @param other Tuple to copy.
+			 */
+			Tuple(const Tuple& other) = default;
 
+			/**
+			 * @brief Construct a new tuple.
+			 * @param types Initializer values.
+			 * @note This constructor is only available if \f$ sizeof...(Types) \geq 1 \f$
+			 */
 			template<typename Dummy = void, typename = typename traits::EnableIf<sizeof...(Types) >= 1, bool>::type>
 			Tuple(const Types& ...types) : TupleImpl<typename make_index_sequence<sizeof...(Types)>::type, Types...>(types...)
 			{
 			}
 
-			Tuple(Tuple &&) noexcept = default;
+			/**
+			 * @brief Construct a new tuple.
+			 * @param other Tuple to move.
+			 */
+			Tuple(Tuple&& other) noexcept = default;
 
+			/**
+			 * @brief Construct a new tuple.
+			 * @param types Initializer values.
+			 * @tparam OtherTypes Intializer types.
+			 */
 			template<typename ... OtherTypes, typename traits::EnableIf<sizeof...(OtherTypes) == sizeof...(Types) &&
 			        sizeof...(Types) >= 1 && !IsTuple<typename traits::Decay<OtherTypes>::type...>(), bool>::type = true>
 			Tuple(OtherTypes &&... elems) noexcept : tuple_base_t(stl::forward<OtherTypes>(elems)...)
 			{
 			}
 
-
+			/**
+			 * @brief Assignment operator.
+			 * @param rhs Tuple to copy.
+			 * @return A reference to \p *this.
+			 */
 			Tuple &operator=(Tuple const &rhs) = default;
 
-			Tuple &operator=(Tuple &&) noexcept = default;
+			/**
+			 * @brief Assignment operator.
+			 * @param rhs Tuple to move.
+			 * @return A reference to \p *this.
+			 */
+			Tuple &operator=(Tuple &&rhs) noexcept = default;
 		};
 
 		template<>
 		class Tuple<> {
 		};
 
-
+		/**
+		 * @brief Provides compile-time indexed access to types of a tuple.
+		 * @tparam I Index.
+		 * @tparam Tail Tuple types.
+		 * @ingroup stl
+		 */
 		template<size_t I, typename, typename ... Tail>
 		struct TypeAtIndex {
 			using type = typename TypeAtIndex<I - 1, Tail...>::type;
@@ -183,6 +223,14 @@ namespace lwiot
 			using type = Head;
 		};
 
+		/**
+		 * @brief Provides compile-time indexed access to types of a tuple.
+		 * @tparam I Index.
+		 * @tparam Tail Tuple types.
+		 * @ingroup stl
+		 *
+		 * Helper type for TypeAtIndex.
+		 */
 		template<size_t I, typename... Types>
 		using type_at_index_t = typename TypeAtIndex<I, Types...>::type;
 
@@ -210,6 +258,14 @@ namespace lwiot
 			return traits::IsSame<T, Head>::value ? idx : find<T, Tail...>(idx + 1);
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief Extract the element whose type is \p T from a tuple.
+		 * @tparam T Type to extract.
+		 * @tparam Types Tuple types.
+		 * @param tuple Tuple object.
+		 * @return A reference to \p T.
+		 */
 		template<typename T, typename ... Types>
 		T &get(Tuple<Types...> &tuple)
 		{
@@ -218,6 +274,14 @@ namespace lwiot
 			return get<idx>(tuple);
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief Extract the \p I th element from a tuple.
+		 * @tparam I Element index to extract.
+		 * @tparam Types Tuple types.
+		 * @param tuple Tuple object.
+		 * @return A reference to \p T.
+		 */
 		template<size_t I, typename ... Types>
 		constexpr typename traits::RemoveReference<type_at_index_t<I, Types...>>::type &&get(Tuple<Types...> &&tuple)
 		{
@@ -225,6 +289,14 @@ namespace lwiot
 			return stl::move(base._value);
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief Extract the \p I th element from a tuple.
+		 * @tparam I Element index to extract.
+		 * @tparam Types Tuple types.
+		 * @param tup Tuple object.
+		 * @return A reference to \p T.
+		 */
 		template<size_t I, typename... Types>
 		constexpr type_at_index_t<I, Types...> &get(Tuple<Types...> &tup)
 		{
@@ -232,6 +304,14 @@ namespace lwiot
 			return base._value;
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief Extract the \p I th element from a tuple.
+		 * @tparam I Element index to extract.
+		 * @tparam Types Tuple types.
+		 * @param tup Tuple object.
+		 * @return A reference to \p T.
+		 */
 		template<size_t I, typename... Types>
 		constexpr const type_at_index_t<I, Types...> &get(const Tuple<Types...> &tup)
 		{
@@ -246,6 +326,11 @@ namespace lwiot
 		template<typename>
 		struct TupleSize;
 
+		/**
+		 * @ingroup stl
+		 * @brief Provide compile-time access to the number of elements in a tuple.
+		 * @tparam Types Tuple types.
+		 */
 		template<typename ... Types>
 		struct TupleSize<Tuple<Types...>> : traits::IntegralConstant<size_t, sizeof...(Types)> {
 		};
@@ -266,6 +351,13 @@ namespace lwiot
 		template<class T>
 		using SpecialDecay = UnwrapRefwrapper<typename traits::Decay<T>::type>;
 
+		/**
+		 * @ingroup stl
+		 * @brief Create a tuple object, deducing the target type from the types of arguments.
+		 * @tparam _Elements Element types.
+		 * @param __args Tuple values.
+		 * @return Tuple object based on \p __args.
+		 */
 		template<typename... _Elements>
 		constexpr Tuple<typename SpecialDecay<_Elements>::type...>
 		MakeTuple(_Elements&&... __args)
@@ -274,6 +366,13 @@ namespace lwiot
 			return __result_type(stl::forward<_Elements>(__args)...);
 		}
 
+		/**
+		 * @ingroup stl
+		 * @brief Create a tuple of lvalue references to its arguments.
+		 * @tparam T Tuple types.
+		 * @param args Zero or more lvalue arguments to construct the tuple from.
+		 * @return A Tuple object containing lvalue references.
+		 */
 		template <typename... T>
 		constexpr Tuple<T&...> tie(T&... args)
 		{
