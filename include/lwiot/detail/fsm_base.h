@@ -59,6 +59,7 @@ namespace lwiot
 		/**
 		 * @brief Check if the FSM policy defines a threading model.
 		 * @tparam T Policy type.
+		 * @ingroup fsm
 		 */
 		template<typename T>
 		struct HasThreading {
@@ -89,6 +90,7 @@ namespace lwiot
 		 * @tparam T Policy type.
 		 * @tparam threading Indicator if \p T has a threading model.
 		 * @see HasThreading
+		 * @ingroup fsm
 		 */
 		template<typename T, bool threading>
 		struct SelectThreadingPolicy;
@@ -126,6 +128,7 @@ namespace lwiot
 		 *
 		 * @tparam W Watchdog type.
 		 * @tparam Args Handler arguments.
+		 * @ingroup fsm
 		 */
 		template<typename W, typename... Args>
 		struct FsmBase_helper {
@@ -197,6 +200,7 @@ namespace lwiot
 
 		/**
 		 * @brief FSM status.
+		 * @ingroup fsm
 		 */
 		enum class FsmStatus {
 			StateUnchanged, //!< No transition has taken place.
@@ -208,9 +212,10 @@ namespace lwiot
 		};
 
 		/**
-		 * Transition type definition.
+		 * @brief Transition type definition.
 		 * @tparam P Policy type.
 		 * @tparam Args Handler argument types.
+		 * @ingroup fsm
 		 */
 		template<typename P, typename... Args>
 		class Transition {
@@ -355,6 +360,7 @@ namespace lwiot
 		 * @tparam H Handler type.
 		 * @tparam R Return type.
 		 * @tparam Args Handler arguments.
+		 * @ingroup fsm
 		 */
 		template<typename P, typename H, typename R, typename... Args>
 		class State {
@@ -614,6 +620,7 @@ namespace lwiot
 		 * @tparam Handler State handler type.
 		 * @tparam Policy Policy type.
 		 * @tparam Watchdog Watchdog type.
+		 * @ingroup fsm
 		 */
 		template <typename Handler, typename Policy, typename Watchdog>
 		class FsmBase : public FsmBase_helper<W, Args...>
@@ -1675,6 +1682,7 @@ namespace lwiot
 
 /**
  * @brief Event signal type definition.
+ * @ingroup fsm
  *
  * Default FSM event handler argument type.
  */
@@ -1705,6 +1713,7 @@ class Signal {
 	 * @tparam T Requested signal type.
 	 * @param value Base signal pointer.
 	 * @return Shared pointer of type \p T.
+	 * @ingroup fsm
 	 */
 	template <typename T>
 	inline stl::SharedPointer<T> SignalAs(stl::SharedPointer<Signal> value)

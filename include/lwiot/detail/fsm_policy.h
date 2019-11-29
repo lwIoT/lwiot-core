@@ -36,6 +36,7 @@ namespace lwiot
 		/**
 		 * @brief Default watchdog definition.
 		 * @note This is a dummy watchdog.
+		 * @ingroup fsm
 		 */
 		struct Watchdog {
 			constexpr void enable(int timeout) { }
@@ -45,6 +46,7 @@ namespace lwiot
 
 		/**
 		 * @brief Threading model for systems that do not have a scheduler.
+		 * @ingroup fsm
 		 */
 		struct SingleThreading {
 			/**
@@ -60,6 +62,7 @@ namespace lwiot
 
 			/**
 			 * @brief Dummy event.
+		     * @ingroup fsm
 			 */
 			struct Event {
 				constexpr void signal() { }
@@ -72,6 +75,7 @@ namespace lwiot
 
 			/**
 			 * @brief Dummy thread.
+			 * @ingroup fsm
 			 */
 			struct Thread {
 				typedef Function<void(void)> Runner;
@@ -94,6 +98,7 @@ namespace lwiot
 
 		/**
 		 * @brief FSM policy for systems that do not have scheduler.
+		 * @ingroup fsm
 		 */
 		struct SingleThreadingPolicy {
 			using FsmEvent  = uint16_t; //!< FSM event ID type.
@@ -131,6 +136,7 @@ namespace lwiot
 #ifdef HAVE_OS
 		/**
 		 * @brief Threading model for the lwIoT abstraction layer.
+		 * @ingroup fsm
 		 */
 		struct MultiThreading {
 			using Thread = lwiot::FunctionalThread; //!< Thread type definition.
@@ -140,6 +146,7 @@ namespace lwiot
 
 		/**
 		 * @brief Multithreading policy for the lwIoT abstraction layer.
+		 * @ingroup fsm
 		 */
 		struct MultiThreadingPolicy {
 			using FsmEvent   = uint16_t; //!< FSM event ID type.
