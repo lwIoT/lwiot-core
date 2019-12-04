@@ -10,12 +10,12 @@
 #include <lwiot.h>
 
 #include <lwiot/test.h>
+#include <lwiot/log.h>
 
 #include <lwiot/stl/string.h>
 #include <lwiot/stl/skiplist.h>
 #include <lwiot/stl/referencewrapper.h>
 #include <lwiot/stl/move.h>
-#include <lwiot/stl/foreach.h>
 
 static void dumplist()
 {
@@ -43,7 +43,10 @@ static void dumplist()
 	sl1.insert(90, "ABC");
 	sl1.insert(100, "ABC");
 
-	print_dbg("Value at 6: %s\n", sl1[6].c_str());
+	auto rv = sl1.emplace(9, "BDA");
+
+	print_dbg("Emplaced: %s\n", rv.second ? "true" : "false");
+	print_dbg("Value at 9: %s\n", sl1[9].c_str());
 
 	assert(sl1.size() == 20);
 	sl1.dump("Level %i\n\t", "%i ");

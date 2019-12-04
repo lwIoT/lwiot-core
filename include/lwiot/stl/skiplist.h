@@ -14,6 +14,7 @@
 #include <lwiot/stl/vector.h>
 #include <lwiot/stl/foreach.h>
 #include <lwiot/stl/pair.h>
+#include <lwiot/stl/referencewrapper.h>
 
 namespace lwiot
 {
@@ -522,7 +523,13 @@ namespace lwiot
 			{
 				auto level = this->generateLevel();
 				auto node = this->allocateNode(stl::forward<Args>(args)..., level);
-				auto rv = this->insert(node, level, false);
+
+				auto result = this->find(node->_key);
+
+				if(result != this->end())
+					return stl::Pair<iterator, bool>(this->end(), false);
+
+				auto rv = this->insert(node, level);
 				auto ok = rv != this->end();
 
 				if(rv == this->end()) {
@@ -749,7 +756,7 @@ namespace lwiot
 				swap(a._alloc, b._alloc);
 			}
 
-			iterator insert(node_type *new_node, size_t node_level, bool once = false)
+			iterator insert(node_type *new_node, size_t node_level)
 			{
 				node_type *old = nullptr;
 
@@ -771,9 +778,6 @@ namespace lwiot
 
 						--level;
 					} else if(node->_key == new_node->_key) {
-						if(once)
-							return this->end();
-
 						if(node->_levels >= node_level) {
 							node->_value = stl::move(new_node->_value);
 							this->destroyNode(new_node);
