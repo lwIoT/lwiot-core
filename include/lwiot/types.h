@@ -43,7 +43,7 @@ typedef enum {
 
 /**
  * @brief IRQ handler type.
- * @ingroup kernel
+ * @ingroup io
  */
 typedef void (*irq_handler_t)();
 
