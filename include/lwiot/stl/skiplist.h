@@ -522,11 +522,12 @@ namespace lwiot
 			{
 				auto level = this->generateLevel();
 				auto node = this->allocateNode(stl::forward<Args>(args)..., level);
-				auto rv = this->insert(node, level, true);
+				auto rv = this->insert(node, level, false);
 				auto ok = rv != this->end();
 
-				if(rv == this->end())
+				if(rv == this->end()) {
 					this->destroyNode(node);
+				}
 
 				return stl::Pair<iterator, bool>(rv, ok);
 			}
@@ -775,7 +776,7 @@ namespace lwiot
 
 						if(node->_levels >= node_level) {
 							node->_value = stl::move(new_node->_value);
-							this->destroyNode(node);
+							this->destroyNode(new_node);
 
 							return iterator(node);
 						}
