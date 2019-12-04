@@ -163,32 +163,32 @@ class Application : public lwiot::Functor {
 			return rv;
 		});
 
-		state1.addTransition(1, state2.id(), [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
-		state1.addTransition(2, state1.id());
-		state1.addTransition(3, state1.id());
-		state1.addTransition(4, state1.id());
+		fsm.addTransition(state5, 4, state5);
+		fsm.addTransition(state5, 3, state5);
+		fsm.addTransition(state5, 2, state5);
+		fsm.addTransition(state5, 1, state5);
 
-		state2.addTransition(1, state3.id(), [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
-		state2.addTransition(2, state1.id());
-		state2.addTransition(3, state1.id());
-		state2.addTransition(4, state1.id());
+		fsm.addTransition(super, 4, state1);
+		fsm.addTransition(super, 1, state1);
 
-		state3.addTransition(2, state3.id(), [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
-		state3.addTransition(3, state4.id(), [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
+		fsm.addTransition(state1, 1, state2, [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
+		fsm.addTransition(state1, 2, state1);
+		fsm.addTransition(state1, 3, state1);
+		fsm.addTransition(state1, 4, state1);
 
-		super.addTransition(1, state1.id());
-		super.addTransition(4, state1.id());
+		fsm.addTransition(state2, 1, state3, [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
+		fsm.addTransition(state2, 2, state1);
+		fsm.addTransition(state2, 3, state1);
+		fsm.addTransition(state2, 4, state1);
+
+		fsm.addTransition(state3, 2, state3, [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
+		fsm.addTransition(state3, 3, state4, [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
+
+		fsm.addTransition(state4, 2, state4);
+		fsm.addTransition(state4, 3, state1, [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
 
 		state4.setParent(super);
 		state3.setParent(super);
-
-		state4.addTransition(2, state4.id());
-		state4.addTransition(3, state1.id(), [](const stl::SharedPointer<FsmType::SignalType>& signal) { return true; });
-
-		state5.addTransition(4, state5.id());
-		state5.addTransition(3, state5.id());
-		state5.addTransition(2, state5.id());
-		state5.addTransition(1, state5.id());
 
 		auto s_super = fsm.addState(super);
 		auto s1 = fsm.addState(state1);
@@ -220,7 +220,7 @@ class Application : public lwiot::Functor {
 		auto now = lwiot_tick_ms();
 		auto done = false;
 
-		fsm.block(true);
+		fsm.block(false);
 
 #define RAISE_TMO 100
 #define DONE_TMO  1000
