@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file uart.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -48,33 +50,54 @@
 #ifdef __cplusplus
 namespace lwiot
 {
+	/**
+	 * @brief UART peripheral abstraction.
+	 * @see Stream
+	 * @ingroup io
+	 */
 	class Uart : public Stream {
 	public:
+		/**
+		 * @brief Create a new UART object.
+		 * @param tx TX pin.
+		 * @param rx RX pin.
+		 * @param baud Baud rate.
+		 * @param config UART configuration.
+		 */
 		explicit Uart(int tx, int rx, long baud = 9600, uint32_t config = SERIAL_8N1);
+
+		/**
+		 * @brief Create a new UART object.
+		 * @param tx TX pin.
+		 * @param rx RX pin.
+		 * @param baud Baud rate.
+		 * @param config UART configuration.
+		 */
 		explicit Uart(const GpioPin& tx, const GpioPin& rx, long baud = 9600, uint32_t config = SERIAL_8N1);
 
 		using Stream::write;
 		using Stream::read;
 		using Stream::available;
 
-		virtual Stream& operator << (char x) override;
-		virtual Stream& operator << (short x) override;
-		virtual Stream& operator << (int  x) override;
-		virtual Stream& operator << (const long&  x) override;
-		virtual Stream& operator << (const long long&  x) override;
-		virtual Stream& operator << (unsigned char x) override;
-		virtual Stream& operator << (unsigned short x) override;
-		virtual Stream& operator << (unsigned int  x) override;
-		virtual Stream& operator << (const unsigned long&  x) override;
-		virtual Stream& operator << (const unsigned long long&  x) override;
-		virtual Stream& operator << (const double& flt) override;
-		virtual Stream& operator << (const float& flt) override;
-		virtual Stream& operator << (const String& str) override;
-		virtual Stream& operator << (const char *cstr) override;
+		Stream& operator << (char x) override;
+		Stream& operator << (short x) override;
+		Stream& operator << (int  x) override;
+		Stream& operator << (const long&  x) override;
+		Stream& operator << (const long long&  x) override;
+		Stream& operator << (unsigned char x) override;
+		Stream& operator << (unsigned short x) override;
+		Stream& operator << (unsigned int  x) override;
+		Stream& operator << (const unsigned long&  x) override;
+		Stream& operator << (const unsigned long long&  x) override;
+		Stream& operator << (const double& flt) override;
+		Stream& operator << (const float& flt) override;
+		Stream& operator << (const String& str) override;
+		Stream& operator << (const char *cstr) override;
 
 	protected:
-		GpioPin _tx, _rx;
-		long _baud;
+		GpioPin _tx; //!< TX pin.
+		GpioPin _rx; //!< RX pin.
+		long _baud;  //!< Baud rate.
 
 	private:
 		uint32_t _config;
