@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <lwiot/traits/removereference.h>
+
 namespace lwiot
 {
 	namespace traits

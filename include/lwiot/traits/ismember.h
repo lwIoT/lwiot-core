@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <lwiot/traits/removecv.h>
+
 namespace lwiot
 {
 	namespace traits
