@@ -65,8 +65,9 @@ namespace lwiot
 			typedef A allocator_type; //!< Allocator type.
 			typedef detail::SkipListNode<K, V> node_type; //!< Node type.
 
-			template<bool is_const>
+			template<bool is_const, bool is_key_it = false>
 			class IteratorBase {
+				static constexpr bool KeyIterator = is_key_it;
 			public:
 				typedef typename traits::TypeChoice<is_const, const SkipList::value_type,
 						SkipList::value_type>::type value_type;
@@ -165,17 +166,38 @@ namespace lwiot
 					return it;
 				}
 
-				constexpr value_type& operator*()
+				template <bool b = is_key_it, typename = typename traits::EnableIf_t<b> >
+				constexpr key_type & operator*()
+				{
+					return this->_current->_key;
+				}
+
+				template <typename = typename traits::EnableIf_t<!is_key_it> >
+				constexpr value_type & operator*()
 				{
 					return this->_current->_value;
 				}
 
-				constexpr value_type *operator->() const
+				template <bool b = is_key_it, typename = typename traits::EnableIf<b>::type >
+				constexpr key_type * operator->() const
+				{
+					return &this->_current->_key;
+				}
+
+				template <bool b = is_key_it, typename = typename traits::EnableIf<b>::type >
+				constexpr value_type* operator->() const
 				{
 					return &this->_current->_value;
 				}
 
-				constexpr value_type *operator->()
+				template <bool b = is_key_it, typename = typename traits::EnableIf<b>::type >
+				constexpr key_type * operator->()
+				{
+					return &this->_current->_key;
+				}
+
+				template <bool b = is_key_it, typename = typename traits::EnableIf<b>::type >
+				constexpr value_type * operator->()
 				{
 					return &this->_current->_value;
 				}
@@ -188,6 +210,9 @@ namespace lwiot
 
 			typedef IteratorBase<true> const_iterator; //!< Iterator type.
 			typedef IteratorBase<false> iterator; //!< Iterator type.
+
+			typedef IteratorBase<true, true> const_key_iterator; //!< Iterator type.
+			typedef IteratorBase<false, true> key_iterator; //!< Iterator type.
 
 			/**
 			 * @brief Create a new skiplist object.
@@ -265,6 +290,43 @@ namespace lwiot
 			{
 				return this->_head[0] == nullptr;
 			}
+
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
+			key_iterator key_begin() noexcept
+			{
+				return key_iterator{this->_head[0]};
+			}
+
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
+			key_iterator key_end() noexcept
+			{
+				return key_iterator{nullptr};
+			}
+
+			/**
+			 * @brief Get an iterator to the beginning of \p *this.
+			 * @return An iterator to the beginning of \p *this.
+			 */
+			const_key_iterator key_begin() const noexcept
+			{
+				return const_key_iterator{this->_head[0]};
+			}
+
+			/**
+			 * @brief Get an iterator to the end of \p *this.
+			 * @return An iterator to the end of \p *this.
+			 */
+			const_key_iterator key_end() const noexcept
+			{
+				return const_key_iterator{nullptr};
+			}
+
 
 			/**
 			 * @brief Get an iterator to the beginning of \p *this.

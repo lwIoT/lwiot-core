@@ -22,8 +22,10 @@ namespace lwiot
 		class Set {
 		public:
 			typedef T key_type; //!< Key type.
-			typedef typename SkipList<T,bool>::iterator iterator; //!< Iterator type.
-			typedef typename SkipList<T,bool>::iterator const_iterator; //!< Const iterator type.
+
+			typedef typename SkipList<T,bool>::iterator _iterator; //!< Iterator type.
+			typedef typename SkipList<T,bool>::key_iterator iterator; //!< Iterator type.
+			typedef typename SkipList<T,bool>::const_key_iterator const_iterator; //!< Const iterator type.
 
 			/**
 			 * @brief Insert a new key.
@@ -31,12 +33,12 @@ namespace lwiot
 			 * @return Pair object containing an iterator to the inserted object and a boolean indicating of an insert
 			 *         operation has taken place.
 			 */
-			stl::Pair<iterator, bool> insert(const key_type& value)
+			stl::Pair<_iterator, bool> insert(const key_type& value)
 			{
 				if(this->contains(value))
-					return stl::Pair<iterator, bool>(this->_set.end(), false);
+					return stl::Pair<_iterator, bool>(this->_set.end(), false);
 
-				stl::Pair<iterator, bool> p(this->_set.insert(value, true), true);
+				stl::Pair<_iterator, bool> p(this->_set.insert(value, true), true);
 				return p;
 			}
 
@@ -59,7 +61,7 @@ namespace lwiot
 			 *         operation has taken place.
 			 */
 			template <typename... Args>
-			stl::Pair<iterator, bool> emplace(Args&&... args)
+			stl::Pair<_iterator, bool> emplace(Args&&... args)
 			{
 				return this->_set.emplace(stl::forward<Args>(args)..., true);
 			}
@@ -70,7 +72,7 @@ namespace lwiot
 			 */
 			iterator begin()
 			{
-				return this->_set.begin();
+				return this->_set.key_begin();
 			}
 
 			/**
@@ -79,7 +81,7 @@ namespace lwiot
 			 */
 			const_iterator begin() const
 			{
-				return this->_set.begin();
+				return this->_set.key_begin();
 			}
 
 			/**
@@ -88,7 +90,7 @@ namespace lwiot
 			 */
 			iterator end()
 			{
-				return this->_set.end();
+				return this->_set.key_end();
 			}
 
 			/**
@@ -97,7 +99,7 @@ namespace lwiot
 			 */
 			const_iterator end() const
 			{
-				return this->_set.end();
+				return this->_set.key_end();
 			}
 
 			/**
