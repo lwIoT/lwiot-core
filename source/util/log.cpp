@@ -136,6 +136,8 @@ namespace lwiot {
 		if(this->_f_output != nullptr)
 			vfprintf(this->_f_output, fmt, va);
 		va_end(va);
+
+		fflush(this->_f_output);
 	}
 
 	Logger::Visibility Logger::visibility() const
