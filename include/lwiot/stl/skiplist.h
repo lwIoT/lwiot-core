@@ -526,8 +526,10 @@ namespace lwiot
 
 				auto result = this->find(node->_key);
 
-				if(result != this->end())
+				if(result != this->end()) {
+					this->destroyNode(node);
 					return stl::Pair<iterator, bool>(this->end(), false);
+				}
 
 				auto rv = this->insert(node, level);
 				auto ok = rv != this->end();
