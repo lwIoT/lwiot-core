@@ -12,6 +12,8 @@
 #include <assert.h>
 #include <lwiot.h>
 
+#include <lwiot/traits/removecv.h>
+
 namespace lwiot
 {
 	namespace stl
@@ -140,5 +142,29 @@ namespace lwiot
 		private:
 			type* _value;
 		};
+
+		/**
+		 * @brief Denotes a reference should be taken to a variable.
+		 * @tparam T Reference type.
+		 * @param ref Object wrap into a ReferenceWrapper.
+		 * @return The reference wrapper object around \p ref.
+		 */
+		template <typename T>
+		constexpr ReferenceWrapper<T> MakeRef(T& ref) noexcept
+		{
+			return ReferenceWrapper<T>(ref);
+		}
+
+		/**
+		 * @brief Denotes a const reference should be taken to a variable.
+		 * @tparam T Reference type.
+		 * @param ref Object wrap into a const ReferenceWrapper.
+		 * @return The reference wrapper object around \p ref.
+		 */
+		template <typename T>
+		constexpr ReferenceWrapper<typename traits::AddConst<T>::type> MakeCRef(const T& ref) noexcept
+		{
+			return ReferenceWrapper<typename traits::AddConst<T>::type>(ref);
+		}
 	}
 }
