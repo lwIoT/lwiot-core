@@ -17,7 +17,6 @@
 #include <lwiot/log.h>
 #include <lwiot/types.h>
 #include <lwiot/functor.h>
-#include <lwiot/uniquepointer.h>
 
 #include <lwiot/stl/forward.h>
 #include <lwiot/stl/memfn.h>
@@ -26,6 +25,7 @@
 #include <lwiot/traits/removecv.h>
 #include <lwiot/traits/integralconstant.h>
 #include <lwiot/traits/decay.h>
+#include <lwiot/stl/sharedpointer.h>
 
 namespace lwiot
 {
@@ -196,7 +196,7 @@ namespace lwiot
 		 */
 		Function& operator=(Function&& other) noexcept
 		{
-			this->_concept.reset(other._concept.release());
+			this->_concept = stl::move(other._concept);
 			return *this;
 		}
 
@@ -220,7 +220,7 @@ namespace lwiot
 		 * @param f Functor object.
 		 */
 		template <typename F>
-		Function(F f) : _concept(MakeUnique<SFModel<Signature, F>>(stl::move(f)))
+		Function(F f) : _concept(stl::MakeShared<SFModel<Signature, F>>(stl::move(f)))
 		{
 		}
 
@@ -254,7 +254,7 @@ namespace lwiot
 		}
 
 	private:
-		UniquePointer<Concept> _concept;
+		stl::SharedPointer<Concept> _concept;
 
 		constexpr Concept* as_concept() const
 		{
