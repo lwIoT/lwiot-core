@@ -1,0 +1,26 @@
+/**
+ * @defgroup kernel Kernel subsystem
+ * @brief The kernel subsystem defines and implements system level features.
+ */
+
+/**
+ * @defgroup fsm Finite state machines
+ * @ingroup kernel
+ * @brief Module for FSM related classes and functions.
+ */
+
+/**
+ * @defgroup stl Simple Template Library
+ * @brief The STL implements a variation of the traditional STL.
+ */
+
+ /**
+  * @defgroup util Utility
+  * @brief Utility functions and structures.
+  */
+
+ /**
+  * @defgroup io I/O
+  * @brief I/O utilities.
+  */
+
