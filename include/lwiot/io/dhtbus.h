@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file dhtbus.h
+
 #pragma once
 
 #include <lwiot/lwiot.h>
@@ -15,20 +17,43 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief DHT readout.
+	 * @ingroup io
+	 */
 	struct DhtReadout {
-		float humidity;
-		float temperature;
+		float humidity; //!< RH% value.
+		float temperature; //!< Temperature.
 	};
 
+	/**
+	 * @brief Communication bus for DHT sensors.
+	 * @see DhtSensor
+	 * @ingroup io
+	 */
 	class DhtBus {
 	public:
+		/**
+		 * @brief Construct a new DHT bus object.
+		 * @param pin Data pin.
+		 */
 		explicit DhtBus(const GpioPin& pin);
-		virtual ~DhtBus();
+		virtual ~DhtBus(); //!< DHT destructor.
 
+		/**
+		 * @brief Read from the bus.
+		 * @param output Values read from the DHT device.
+		 * @return Success indicator.
+		 */
 		bool read(stl::Vector<bool>& output);
+
+		/**
+		 * @brief GpioPin getter.
+		 * @return Get the data pin object.
+		 */
 		const GpioPin& pin() const;
 
-		static constexpr int Bits = 40;
+		static constexpr int Bits = 40; //!< Number of data bits.
 
 	private:
 		GpioPin _pin;
