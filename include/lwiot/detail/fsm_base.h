@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <lwiot/types.h>
+
 #include "fsm_policy.h"
 
 #include <lwiot/stl/tuple.h>
@@ -135,7 +137,7 @@ namespace lwiot
 			/**
 			 * Create a new FsmBase_helper object and construct a default watchdog object.
 			 */
-			explicit FsmBase_helper() : _watchdog()
+			explicit FsmBase_helper() : m_watchdog()
 			{
 			}
 
@@ -151,9 +153,9 @@ namespace lwiot
 			 *
 			 * @param timeout WDT timeout.
 			 */
-			explicit FsmBase_helper(time_t timeout) : _watchdog()
+			explicit FsmBase_helper(time_t timeout) : m_watchdog()
 			{
-				this->_watchdog.enable(timeout);
+				this->m_watchdog.enable(timeout);
 			}
 
 		private:
@@ -191,7 +193,7 @@ namespace lwiot
 
 
 		protected:
-			WatchdogType _watchdog; //!< FSM watchdog.
+			WatchdogType m_watchdog; //!< FSM watchdog.
 
 			static_assert(FsmBase_helper::IsCopyConstructible(), "Arguments must be copy constructible!");
 			static_assert(FsmBase_helper::IsMoveConstructible(), "Arguments must be move constructible!");
@@ -228,7 +230,7 @@ namespace lwiot
 			/**
 			 * @brief Create a new transition object.
 			 */
-			explicit Transition() : _handler(), _event(), _next()
+			explicit Transition() : m_handler(), m_event(), m_next()
 			{
 			}
 
@@ -239,7 +241,7 @@ namespace lwiot
 			 * @param handler Guard handler.
 			 */
 			explicit Transition(const FsmEventType &event, const FsmStateIdType &next, const GuardHandlerType &handler) :
-				_handler(handler), _event(event), _next(next)
+					m_handler(handler), m_event(event), m_next(next)
 			{
 			}
 
@@ -249,7 +251,7 @@ namespace lwiot
 			 * @param next State this transition transitions into.
 			 */
 			explicit Transition(const FsmEventType &event, const FsmStateIdType &next) :
-				_handler(), _event(event), _next(next)
+					m_handler(), m_event(event), m_next(next)
 			{
 			}
 
@@ -260,7 +262,7 @@ namespace lwiot
 			 */
 			bool guard(Args &&... args)
 			{
-				return this->_handler(stl::forward<Args>(args)...);
+				return this->m_handler(stl::forward<Args>(args)...);
 			}
 
 			/**
@@ -269,7 +271,7 @@ namespace lwiot
 			 */
 			bool hasGuard() const
 			{
-				return static_cast<bool>(this->_handler.valid());
+				return static_cast<bool>(this->m_handler.valid());
 			}
 
 			/**
@@ -278,7 +280,7 @@ namespace lwiot
 			 */
 			const FsmEventType &event() const
 			{
-				return this->_event;
+				return this->m_event;
 			}
 
 			/**
@@ -288,7 +290,7 @@ namespace lwiot
 			 */
 			bool operator==(const FsmEventType &eventId) const
 			{
-				return this->_event == eventId;
+				return this->m_event == eventId;
 			}
 
 			/**
@@ -298,7 +300,7 @@ namespace lwiot
 			 */
 			bool operator!=(const FsmEventType &eventId) const
 			{
-				return this->_event != eventId;
+				return this->m_event != eventId;
 			}
 
 			/**
@@ -309,7 +311,7 @@ namespace lwiot
 			template<typename Func>
 			void setGuard(Func &&func)
 			{
-				this->_handler = stl::forward<Func>(func);
+				this->m_handler = stl::forward<Func>(func);
 			}
 
 			/**
@@ -318,7 +320,7 @@ namespace lwiot
 			 */
 			void setGuard(const GuardHandlerType &guard)
 			{
-				this->_handler = guard;
+				this->m_handler = guard;
 			}
 
 			/**
@@ -327,7 +329,7 @@ namespace lwiot
 			 */
 			void setEvent(const FsmEventType &event)
 			{
-				this->_event = event;
+				this->m_event = event;
 			}
 
 			/**
@@ -336,7 +338,7 @@ namespace lwiot
 			 */
 			void setNext(const FsmStateIdType &next)
 			{
-				this->_next = next;
+				this->m_next = next;
 			}
 
 			/**
@@ -345,13 +347,18 @@ namespace lwiot
 			 */
 			const FsmStateIdType &next() const
 			{
-				return this->_next;
+				return this->m_next;
+			}
+
+			constexpr operator bool() const
+			{
+				return this->m_next && this->m_event;
 			}
 
 		private:
-			GuardHandlerType _handler; //!< Guard handler.
-			FsmEventType _event; //!< Alphabet symbol tied to the transition.
-			FsmStateIdType _next; //!< Continuation state.
+			GuardHandlerType m_handler; //!< Guard handler.
+			FsmEventType m_event; //!< Alphabet symbol tied to the transition.
+			FsmStateIdType m_next; //!< Continuation state.
 		};
 
 		/**
@@ -381,7 +388,7 @@ namespace lwiot
 			/**
 			 * @brief Create a new state object.
 			 */
-			explicit State() : _id(State::generateFsmStateId()), _parent()
+			explicit State() : m_id(State::generateFsmStateId()), m_parent()
 			{
 			}
 
@@ -389,7 +396,7 @@ namespace lwiot
 			 * @brief Create a new state with \p parent as a parent state.
 			 * @param parent Parent state.
 			 */
-			explicit State(const FsmStateIdType parent) : _id(generateFsmStateId()), _parent(parent)
+			explicit State(const FsmStateIdType parent) : m_id(generateFsmStateId()), m_parent(parent)
 			{
 			}
 
@@ -403,7 +410,7 @@ namespace lwiot
 			inline traits::EnableIf_t<traits::Not<traits::IsSame<void, ReturnType>>::value, bool>
 			action(Args &&... args)
 			{
-				return this->_action(stl::forward<Args>(args)...);
+				return this->m_action(stl::forward<Args>(args)...);
 			}
 
 			/**
@@ -415,69 +422,8 @@ namespace lwiot
 			template<typename ReturnType = R>
 			inline traits::EnableIf_t<traits::IsSame<void, ReturnType>::value, bool> action(Args &&... args)
 			{
-				this->_action(stl::forward<Args>(args)...);
+				this->m_action(stl::forward<Args>(args)...);
 				return true;
-			}
-
-			/**
-			 * @brief Add a transition to the state.
-			 * @param transition Transition to add.
-			 */
-			inline void addTransition(const TransitionType &transition)
-			{
-				this->_transitions.push_back(transition);
-			}
-
-			/**
-			 * @brief Add a transition to the state.
-			 * @param transition Transition to add using move semantics.
-			 */
-			inline void addTransition(TransitionType &&transition)
-			{
-				this->_transitions.push_back(stl::forward<TransitionType>(transition));
-			}
-
-			/**
-			 * @brief Construct a new transition and add it to the state.
-			 * @tparam Func GuardHandler type.
-			 * @param event Event ID.
-			 * @param next State the transition transitions to.
-			 * @param guard Transition guard.
-			 */
-			template<typename Func>
-			inline void addTransition(const FsmEventType &event, const FsmStateIdType &next, Func &&guard)
-			{
-				TransitionType t(event, next);
-
-				t.setGuard(stl::forward<Func>(guard));
-				this->_transitions.push_back(stl::move(t));
-			}
-
-			/**
-			 * @brief Construct a new transition and add it to the state.
-			 * @param event Event ID.
-			 * @param next State the transition transitions to.
-			 * @param guard Transition guard.
-			 */
-			inline void addTransition(const FsmEventType &event, const FsmStateIdType &next,
-			                          const typename TransitionType::GuardHandlerType &guard)
-			{
-				TransitionType t(event, next);
-
-				t.setGuard(guard);
-				this->_transitions.push_back(stl::move(t));
-			}
-
-			/**
-			 * @brief Add a transition to the state.
-			 * @param event Event ID.
-			 * @param next State the transition transitions to.
-			 */
-			inline void addTransition(const FsmEventType &event, const FsmStateIdType &next)
-			{
-				TransitionType t(event, next);
-
-				this->_transitions.push_back(stl::move(t));
 			}
 
 			/**
@@ -486,7 +432,7 @@ namespace lwiot
 			 */
 			void setId(const FsmStateIdType &id)
 			{
-				this->_id = id;
+				this->m_id = id;
 			}
 
 			/**
@@ -495,7 +441,7 @@ namespace lwiot
 			 */
 			void setParent(const FsmStateIdType &id)
 			{
-				this->_parent = id;
+				this->m_parent = id;
 			}
 
 			/**
@@ -504,7 +450,7 @@ namespace lwiot
 			 */
 			void setParent(const State &state)
 			{
-				this->_parent = state._id;
+				this->m_parent = state.m_id;
 			}
 
 			/**
@@ -513,7 +459,7 @@ namespace lwiot
 			 */
 			const FsmStateIdType &id() const
 			{
-				return this->_id;
+				return this->m_id;
 			}
 
 			/**
@@ -523,16 +469,7 @@ namespace lwiot
 			 */
 			const FsmStateIdType &parent() const
 			{
-				return this->_parent;
-			}
-
-			/**
-			 * @brief Transition table getter.
-			 * @return Dynamic array of transitions.
-			 */
-			const ArrayList<TransitionType> &transitions() const
-			{
-				return this->_transitions;
+				return this->m_parent;
 			}
 
 			/**
@@ -541,7 +478,7 @@ namespace lwiot
 			 */
 			void setAction(const HandlerType &handler)
 			{
-				this->_action = handler;
+				this->m_action = handler;
 			}
 
 			/**
@@ -552,7 +489,7 @@ namespace lwiot
 			template<typename Action>
 			void setAction(Action &&act)
 			{
-				this->_action = stl::forward<Action>(act);
+				this->m_action = stl::forward<Action>(act);
 			}
 
 			/**
@@ -561,7 +498,7 @@ namespace lwiot
 			 */
 			bool hasAction() const
 			{
-				return static_cast<bool>(this->_action);
+				return static_cast<bool>(this->m_action);
 			}
 
 			/**
@@ -570,15 +507,14 @@ namespace lwiot
 			 */
 			bool hasParent() const
 			{
-				return static_cast<bool>(this->_parent);
+				return static_cast<bool>(this->m_parent);
 			}
 
 		private:
-			FsmStateIdType _id; //!< State ID.
-			FsmStateIdType _parent; //!< Parent state ID.
-			ArrayList<TransitionType> _transitions; //!< Transition table.
+			FsmStateIdType m_id; //!< State ID.
+			FsmStateIdType m_parent; //!< Parent state ID.
 
-			HandlerType _action; //!< State handler object.
+			HandlerType m_action; //!< State handler object.
 
 			/* METHODS */
 
@@ -599,6 +535,36 @@ namespace lwiot
 
 				return result;
 			}
+		};
+
+		/**
+		 * @brief Union type to index the FSM state transition table.
+		 * @tparam S State ID type.
+		 * @tparam E Event ID type.
+		 * @ingroup fsm
+		 */
+		template <typename S, typename E>
+		union SttIndex {
+			typedef uint64_t IntegerType; //!< Integer type.
+
+			/**
+			 * @brief Conversion operator to IntegerType.
+			 * @return The IntegerType representation of SttIndex.
+			 */
+			operator IntegerType() const
+			{
+				return this->integer;
+			}
+
+			IntegerType integer; //!< Integer value.
+
+			struct {
+				typedef S StateIdType; //!< State ID type.
+				typedef E EventIdType; //!< Event ID type.
+
+				StateIdType stateId; //!< State ID.
+				EventIdType eventId; //!< Event ID.
+			} value;
 		};
 
 #ifdef DOXYGEN
@@ -635,6 +601,7 @@ namespace lwiot
 		{
 			typedef FsmBase_helper<W, Args...> Base; //!< Base class type.
 			typedef FsmBase<R(Args...), P, W> ThisClass; //!< This class definition.
+			typedef SttIndex<FsmStateId, typename P::FsmEvent> SttIndexType;
 
 		protected:
 			/**
@@ -654,6 +621,7 @@ namespace lwiot
 			typedef typename PolicyType::FsmEvent FsmEventType; //!< FSM event type.
 			typedef Transition<P, Args...> TransitionType; //!< Transition type.
 			typedef FsmStateId FsmStateIdType; //!< State ID type.
+			typedef stl::SharedPointer<StateType> StatePointer; //!< Smart state pointer type.
 
 			/**
 			 * @brief Queue type.
@@ -814,30 +782,31 @@ namespace lwiot
 				using lwiot::stl::swap;
 
 				if(&a < &b) {
-					a._lock.lock();
-					b._lock.lock();
+					a.m_lock.lock();
+					b.m_lock.lock();
 				} else {
-					b._lock.lock();
-					a._lock.lock();
+					b.m_lock.lock();
+					a.m_lock.lock();
 				}
 
-				swap(a._events, b._events);
-				swap(a._states, b._states);
-				swap(a._stop_states, b._stop_states);
-				swap(a._start_state, b._start_state);
-				swap(a._current, b._current);
-				swap(a._error_state, b._error_state);
-				swap(a._status, b._status);
-				swap(a._in_transition, b._in_transition);
-				swap(a._logger, b._logger);
-				swap(a._silent, b._silent);
+				swap(a.m_stt, b.m_stt);
+				swap(a.m_events, b.m_events);
+				swap(a.m_states, b.m_states);
+				swap(a.m_stop_states, b.m_stop_states);
+				swap(a.m_start_state, b.m_start_state);
+				swap(a.m_current, b.m_current);
+				swap(a.m_error_state, b.m_error_state);
+				swap(a.m_status, b.m_status);
+				swap(a.m_in_transition, b.m_in_transition);
+				swap(a.m_logger, b.m_logger);
+				swap(a.m_silent, b.m_silent);
 
 				if(&a < &b) {
-					b._lock.unlock();
-					a._lock.unlock();
+					b.m_lock.unlock();
+					a.m_lock.unlock();
 				} else {
-					a._lock.unlock();
-					b._lock.unlock();
+					a.m_lock.unlock();
+					b.m_lock.unlock();
 				}
 			}
 
@@ -849,15 +818,15 @@ namespace lwiot
 			/**
 			 * @brief Request the current status.
 			 * @return Current FSM status.
-			 * @see FsmStatus _lock
-			 * @note This methods acquires _lock.
+			 * @see FsmStatus m_lock
+			 * @note This methods acquires m_lock.
 			 */
 			inline FsmStatus status() const;
 
 			/**
 			 * @brief Check if the FSM is currently running.
 			 * @return True or false based on whether the FSM is running or not.
-			 * @note This methods acquires _lock.
+			 * @note This methods acquires m_lock.
 			 */
 			inline bool running() const;
 
@@ -892,6 +861,24 @@ namespace lwiot
 
 			/// @name FSM builder methods
 			/// @{
+
+			/**
+			 * @brief Add a new transition.
+			 * @tparam T Transition arguments.
+			 * @param state State to add a transition to.
+			 * @param args Arguments to be forwarded to the transition constructor.
+			 * @return A success indicator.
+			 */
+			template <typename... T>
+			bool addTransition(FsmStateIdType state, T&&... args);
+
+			/**
+			 * @brief Add a new transition to a state.
+			 * @param state State to add a transition to.
+			 * @param transition Transition to add to \p state.
+			 * @return A success indicator.
+			 */
+			bool addTransition(FsmStateIdType state, TransitionType&& transition);
 
 			/**
 			 * @brief Add a new state.
@@ -947,7 +934,7 @@ namespace lwiot
 			 * @brief Add a new symbol to the alphabet.
 			 * @param event Event symbol to add to the alphabet.
 			 * @see transition raise
-			 * @see _alphabet
+			 * @see m_alphabet
 			 * @return True or false based on whether or not \p event has been added to the alphabet.
 			 */
 			bool addAlphabetSymbol(const FsmEventType& event);
@@ -956,7 +943,7 @@ namespace lwiot
 			 * @brief Add a new symbol to the alphabet using move semantics.
 			 * @param event Event symbol to add to the alphabet.
 			 * @see transition raise
-			 * @see _alphabet
+			 * @see m_alphabet
 			 * @return True or false based on whether or not \p event has been added to the alphabet.
 			 */
 			bool addAlphabetSymbol(FsmEventType&& event);
@@ -1001,9 +988,9 @@ namespace lwiot
 			/// @}
 
 		protected:
-			QueueType<stl::Pair<FsmEventType, ArgumentWrapper>> _events; //!< Queue of requested transitions.
-			mutable LockType _lock; //!< FSM lock.
-			mutable Logger _logger; //!< Logging stream.
+			QueueType<stl::Pair<FsmEventType, ArgumentWrapper>> m_events; //!< Queue of requested transitions.
+			mutable LockType m_lock; //!< FSM lock.
+			mutable Logger m_logger; //!< Logging stream.
 
 			static constexpr int Timeout = 200;
 
@@ -1045,8 +1032,8 @@ namespace lwiot
 			 * @see State
 			 * @see Transition
 			 * @see FsmEventType
-			 * @see _states
-			 * @note This method will acquire and release @ref _lock.
+			 * @see m_states
+			 * @note This method will acquire and release @ref m_lock.
 			 *
 			 * Transition from the current state to the next state based on \p event. The arguments wrapped
 			 * by \p args will be passed to the state handlers.
@@ -1081,16 +1068,17 @@ namespace lwiot
 			/// @}
 
 		private:
-			FsmBase::MapType<FsmStateIdType, stl::SharedPointer<StateType>> _states; //!< FSM state map.
-			FsmBase::ArrayListType<stl::ReferenceWrapper<StateType>> _stop_states; //!< Stop state set.
-			stl::ReferenceWrapper<StateType> _start_state; //!< Start state reference.
-			FsmStateIdType _current; //!< Current state ID.
-			stl::ReferenceWrapper<StateType> _error_state; //!< Error state reference.
-			FsmStatus _status; //!< FSM status.
-			EventType _stop_event; //!< Stop event. Signalled every time a stop state is executed.
-			bool _in_transition; //!< Transition indicator. Set when a state invokes a transition. Cleared after execution.
-			SetType<FsmEventType> _alphabet; //!< DFA alphabet definition.
-			bool _silent; //!< Flag which indicates if message output is enabled or not.
+			FsmBase::MapType<typename SttIndexType::IntegerType, TransitionType> m_stt; //!< State transition table.
+			FsmBase::MapType<FsmStateIdType, stl::SharedPointer<StateType>> m_states; //!< FSM state map.
+			FsmBase::ArrayListType<stl::ReferenceWrapper<StateType>> m_stop_states; //!< Stop state set.
+			stl::ReferenceWrapper<StateType> m_start_state; //!< Start state reference.
+			FsmStateIdType m_current; //!< Current state ID.
+			stl::ReferenceWrapper<StateType> m_error_state; //!< Error state reference.
+			FsmStatus m_status; //!< FSM status.
+			EventType m_stop_event; //!< Stop event. Signalled every time a stop state is executed.
+			bool m_in_transition; //!< Transition indicator. Set when a state invokes a transition. Cleared after execution.
+			SetType<FsmEventType> m_alphabet; //!< DFA alphabet definition.
+			bool m_silent; //!< Flag which indicates if message output is enabled or not.
 
 			/* METHODS */
 
@@ -1119,42 +1107,52 @@ namespace lwiot
 			void toErrorState(Args &&... args);
 
 			/**
-			 * @brief Update the DFA alphabet based on a state's transition set.
-			 * @param state State object to use as the basis for the update.
+			 * @brief Update the DFA alphabet based on a new transition.
+			 * @param transition Transition to add to the alphabet.
 			 */
-			void updateAlphabet(const StateType& state);
+			void updateAlphabet(const TransitionType& transition);
+
+			/**
+			 * @brief Check if a state accepts a given event (alphabet symbol).
+			 * @param state State to check.
+			 * @param event Event to check.
+			 * @note This member function assumes that \p event \f$ \in \f$ FsmBase::m_alphabet.
+			 * @return A pair, containing the transition and a boolean indicating whether or
+			 *         not \p state has a transition for \p event.
+			 */
+			stl::Pair<stl::ReferenceWrapper<const TransitionType>, bool> lookup(const StatePointer& state, FsmEventType event) const;
 		};
 
 		template<typename P, typename W, typename R, typename... Args>
-		FsmBase<R(Args...), P, W>::FsmBase(time_t tmo) : Base(tmo), _lock(true), _logger("fsm", stdout),
-		                                                 _current(), _status(FsmStatus::Stopped), _in_transition(false),
-		                                                 _silent(false)
+		FsmBase<R(Args...), P, W>::FsmBase(time_t tmo) : Base(tmo), m_lock(true), m_logger("fsm", stdout),
+		                                                 m_current(), m_status(FsmStatus::Stopped), m_in_transition(false),
+		                                                 m_silent(false)
 		{
-            this->_logger.setVisibility(Logger::Visibility::Info);
-            this->_logger.setStreamVisibility(Logger::Visibility::Info);
+            this->m_logger.setVisibility(Logger::Visibility::Info);
+            this->m_logger.setStreamVisibility(Logger::Visibility::Info);
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
-		FsmBase<R(Args...), P, W>::FsmBase(bool silent, time_t tmo) : Base(tmo), _lock(true), _logger("fsm", stdout),
-		                                                              _current(), _status(FsmStatus::Stopped), _in_transition(false),
-		                                                              _silent(silent)
+		FsmBase<R(Args...), P, W>::FsmBase(bool silent, time_t tmo) : Base(tmo), m_lock(true), m_logger("fsm", stdout),
+		                                                              m_current(), m_status(FsmStatus::Stopped), m_in_transition(false),
+		                                                              m_silent(silent)
 		{
-			this->_logger.setVisibility(Logger::Visibility::Info);
-			this->_logger.setStreamVisibility(Logger::Visibility::Info);
+			this->m_logger.setVisibility(Logger::Visibility::Info);
+			this->m_logger.setStreamVisibility(Logger::Visibility::Info);
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
-		FsmBase<R(Args...), P, W>::FsmBase(const FsmBase &other)  : Base(), _lock(true),
-		                                                            _current(), _status(FsmStatus::Stopped),
-		                                                            _in_transition(false), _silent(false)
+		FsmBase<R(Args...), P, W>::FsmBase(const FsmBase &other)  : Base(), m_lock(true),
+		                                                            m_current(), m_status(FsmStatus::Stopped),
+		                                                            m_in_transition(false), m_silent(false)
 		{
 			FsmBase::copy(other);
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
-		FsmBase<R(Args...), P, W>::FsmBase(FsmBase &&other) noexcept : Base(), _lock(true), _current(),
-		                                                               _status(FsmStatus::Stopped), _in_transition(false),
-		                                                               _silent(false)
+		FsmBase<R(Args...), P, W>::FsmBase(FsmBase &&other) noexcept : Base(), m_lock(true), m_current(),
+		                                                               m_status(FsmStatus::Stopped), m_in_transition(false),
+		                                                               m_silent(false)
 		{
 			FsmBase::move(other);
 		}
@@ -1162,14 +1160,14 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		FsmBase<R(Args...), P, W>::~FsmBase()
 		{
-			UniqueLock<LockType>  lock(this->_lock);
+			UniqueLock<LockType>  lock(this->m_lock);
 
-			this->_status = FsmStatus::Stopped;
-			this->_events.clear();
-			this->_stop_states.clear();
-			this->_states.clear();
-			this->_stop_event.signal();
-			this->_alphabet.clear();
+			this->m_status = FsmStatus::Stopped;
+			this->m_events.clear();
+			this->m_stop_states.clear();
+			this->m_states.clear();
+			this->m_stop_event.signal();
+			this->m_alphabet.clear();
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
@@ -1189,32 +1187,32 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		void FsmBase<R(Args...), P, W>::halt()
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			if(!this->running())
 				return;
 
-			this->_status = FsmStatus::Stopped;
+			this->m_status = FsmStatus::Stopped;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::stop(bool recurse)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			if(!this->running())
 				return true;
 
-			auto &current = this->_states.at(this->_current);
+			auto &current = this->m_states.at(this->m_current);
 
-			if(current->id() == this->_error_state->id()) {
-				this->_status = FsmStatus::Stopped;
+			if(current->id() == this->m_error_state->id()) {
+				this->m_status = FsmStatus::Stopped;
 				return true;
 			}
 
-			for(auto &state : this->_stop_states) {
+			for(auto &state : this->m_stop_states) {
 				if(state->id() == current->id()) {
-					this->_status = FsmStatus::Stopped;
+					this->m_status = FsmStatus::Stopped;
 					return true;
 				}
 			}
@@ -1222,33 +1220,33 @@ namespace lwiot
 			if(!recurse)
 				return false;
 
-			this->_stop_event.wait(lock);
+			this->m_stop_event.wait(lock);
 			return stop(false);
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		void FsmBase<R(Args...), P, W>::start(bool check)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			if(check && !this->valid())
 				return;
 
-			this->_current = this->_start_state->id();
-			this->_status = FsmStatus::Running;
+			this->m_current = this->m_start_state->id();
+			this->m_status = FsmStatus::Running;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		inline bool FsmBase<R(Args...), P, W>::running() const
 		{
-			UniqueLock<LockType> lock(this->_lock);
-			return this->_status == FsmStatus::Running;
+			UniqueLock<LockType> lock(this->m_lock);
+			return this->m_status == FsmStatus::Running;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::accept(const FsmEventType &event) const
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			if(!this->running())
 				return false;
@@ -1256,17 +1254,20 @@ namespace lwiot
 			auto state = this->current();
 
 			do {
-				for(const TransitionType &transition : state->transitions()) {
-					auto &tmp = transition.event();
+				SttIndexType index {0ULL};
 
-					if(tmp == event)
-						return true;
-				}
+				index.value.eventId = event;
+				index.value.stateId = state->id();
+
+				auto transition = this->m_stt.find(index);
+
+				if(transition != this->m_stt.end())
+					return true;
 
 				if(!state->parent())
 					break;
 
-				state = this->_states.at(state->parent());
+				state = this->m_states.at(state->parent());
 			} while(state);
 
 
@@ -1276,18 +1277,18 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::valid() const
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(!(this->_status == FsmStatus::Running || this->_status == FsmStatus::Stopped))
+			if(!(this->m_status == FsmStatus::Running || this->m_status == FsmStatus::Stopped))
 				return false;
 
-			if(this->_states.size() == 0)
+			if(this->m_states.size() == 0)
 				return false;
 
-			if(!this->_start_state || this->_stop_states.size() == 0)
+			if(!this->m_start_state || this->m_stop_states.size() == 0)
 				return false;
 
-			if(!this->_error_state)
+			if(!this->m_error_state)
 				return false;
 
 			return this->deterministic();
@@ -1296,36 +1297,26 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::deterministic() const
 		{
-			SetType<stl::String> transitions;
-
-			for(const SharedPointer<StateType> &state : this->_states) {
+			for(const StatePointer& state : this->m_states) {
+				/* We need to store accepted events in order to check for epsilon transitions */
 				SetType<FsmEventType> accepts;
 
-				FsmStateIdType id = state->id();
-				SharedPointer<StateType> parent;
+				for(const auto& symbol: this->m_alphabet) {
+					auto result = this->lookup(state, symbol);
 
-				do {
-					parent = this->_states.at(id);
-
-					for(auto t : parent->transitions()) {
-						auto rv = accepts.insert(t.event());
-
-						if(!rv.second) {
-							if(!this->_silent)
-								this->_logger << "FSM is not deterministic" << Logger::newline;
-
-							return false;
-						}
+					if(!result.second && state->hasAction()) {
+						this->m_logger << "FSM is missing a transition for [State ID: " << state->id() <<
+						               " | Event ID: " << symbol << "]" << Logger::newline;
+						return false;
 					}
 
-					id = parent->parent();
-				} while(parent->hasParent());
+					auto value = accepts.insert(symbol);
 
-				if(this->_alphabet != accepts && state->hasAction()) {
-					if(this->_silent)
-						this->_logger << "FSM is not deterministic" << Logger::newline;
-
-					return false;
+					if(!value.second) {
+						this->m_logger << "FSM contains an epsilon transition: [state ID: " << state->id() <<
+						               " | Event ID: " << symbol << "]" << Logger::newline;
+						return false;
+					}
 				}
 			}
 
@@ -1335,71 +1326,99 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		stl::SharedPointer<State<P, Function<R(Args...)>, R, Args...>> FsmBase<R(Args...), P, W>::current() const
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			if(!this->running())
 				return stl::MakeShared<StateType>();
 
-			return this->_states.at(this->_current);
+			return this->m_states.at(this->m_current);
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		FsmStatus FsmBase<R(Args...), P, W>::status() const
 		{
-			UniqueLock<LockType> lock(this->_lock);
-			return this->_status;
+			UniqueLock<LockType> lock(this->m_lock);
+			return this->m_status;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::addAlphabetSymbol(const FsmEventType &event)
 		{
-			auto rv = this->_alphabet.insert(event);
+			auto rv = this->m_alphabet.insert(event);
 			return rv.second;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::addAlphabetSymbol(FsmEventType &&event)
 		{
-			auto rv = this->_alphabet.emplace(stl::forward<FsmEventType>(event));
+			auto rv = this->m_alphabet.emplace(stl::forward<FsmEventType>(event));
+			return rv.second;
+		}
+
+
+		template<typename P, typename W, typename R, typename... Args>
+		template <typename... T>
+		bool FsmBase<R(Args...), P, W>::addTransition(FsmStateIdType state, T &&... args)
+		{
+			TransitionType transition(stl::forward<T>(args)...);
+			SttIndexType index { 0ULL };
+
+			index.value.stateId = state;
+			index.value.eventId = transition.event();
+
+			this->updateAlphabet(transition);
+
+			auto rv = this->m_stt.emplace(stl::move(index.integer), stl::move(transition));
+			return rv.second;
+		}
+
+		template<typename P, typename W, typename R, typename... Args>
+		bool FsmBase<R(Args...), P, W>::addTransition(FsmStateIdType state, TransitionType&& transition)
+		{
+			SttIndexType index {0ULL};
+
+			index.value.eventId = transition.event();
+			index.value.stateId = state;
+
+			this->updateAlphabet(transition);
+
+			auto rv = this->m_stt.emplace(stl::move(index.integer), stl::forward<TransitionType>(transition));
 			return rv.second;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		stl::Pair<FsmStateId, bool> FsmBase<R(Args...), P, W>::addState(StateType &&state)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 			auto id = state.id();
 
-			if(this->_states.contains(id))
+			if(this->m_states.contains(id))
 				return stl::Pair<FsmStateIdType, bool>(id, false);
 
-			this->_logger << "Adding state " << state.id() << Logger::newline;
+			this->m_logger << "Adding state " << state.id() << Logger::newline;
 
-			this->updateAlphabet(state);
 			auto ptr = stl::MakeShared<StateType>(stl::forward<StateType>(state));
 			auto pair = stl::Pair<FsmStateIdType, bool>(id, false);
-			auto rv = this->_states.emplace(stl::move(id), stl::move(ptr));
+			auto rv = this->m_states.emplace(stl::move(id), stl::move(ptr));
 			pair.second = rv.second;
 
 			return pair;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
-		stl::Pair<FsmStateId, bool>
-		FsmBase<R(Args...), P, W>::addState(const StateType &state)
+		stl::Pair<FsmStateId, bool> FsmBase<R(Args...), P, W>::addState(const StateType &state)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 			auto id = state.id();
 
-			if(this->_states.contains(id))
+			if(this->m_states.contains(id))
 				return stl::Pair<FsmStateIdType, bool>(id, false);
 
-			this->_logger << "Adding state " << state.id() << Logger::newline;
+			this->m_logger << "Adding state " << state.id() << Logger::newline;
 
-			this->updateAlphabet(state);
 			auto ptr = stl::MakeShared<StateType>(state);
 			auto pair = stl::Pair<FsmStateIdType, bool>(id, false);
-			auto rv = this->_states.emplace(stl::move(id), stl::move(ptr));
+			auto rv = this->m_states.emplace(stl::move(id), stl::move(ptr));
 			pair.second = rv.second;
 
 			return stl::move(pair);
@@ -1408,19 +1427,17 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::addStates(ArrayListType<StateType> &states)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			for(auto &state : states) {
 				auto id = state.id();
 
-				if(this->_states.contains(id))
+				if(this->m_states.contains(id))
 					return false;
 
-				this->updateAlphabet(state);
 				auto ptr = stl::MakeShared<StateType>(stl::forward<StateType>(state));
-
-				auto rv = this->_states.emplace(stl::move(id), stl::move(ptr));
-				this->_logger << "Adding state " << state.id() << Logger::newline;
+				auto rv = this->m_states.emplace(stl::move(id), stl::move(ptr));
+				this->m_logger << "Adding state " << state.id() << Logger::newline;
 
 				if(!rv.second)
 					return false;
@@ -1432,38 +1449,38 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		void FsmBase<R(Args...), P, W>::setStartState(const FsmStateIdType &id)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(!this->_states.contains(id))
+			if(!this->m_states.contains(id))
 				return;
 
-			auto ptr = this->_states.at(id);
-			this->_start_state = *ptr;
+			auto ptr = this->m_states.at(id);
+			this->m_start_state = *ptr;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::setErrorState(const FsmStateIdType &id)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(!this->_states.contains(id))
+			if(!this->m_states.contains(id))
 				return false;
 
-			this->_error_state = *this->_states.at(id);
+			this->m_error_state = *this->m_states.at(id);
 			return true;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::addStopState(const FsmStateIdType &state)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(!this->_states.contains(state))
+			if(!this->m_states.contains(state))
 				return false;
 
-			auto ptr = this->_states.at(state);
+			auto ptr = this->m_states.at(state);
 			stl::ReferenceWrapper<StateType> ref(*ptr);
-			this->_stop_states.push_back(stl::move(ref));
+			this->m_stop_states.push_back(stl::move(ref));
 
 			return true;
 		}
@@ -1471,21 +1488,21 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::addStopStates(const ArrayListType<FsmStateIdType> &states)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			/*
 			 * Do not merge the loops below. It is critical that either all states are
 			 * added succesfully or none at all.
 			 */
 			for(auto &state: states) {
-				if(!this->_states.contains(state))
+				if(!this->m_states.contains(state))
 					return false;
 			}
 
 			for(auto &state: states) {
-				auto ptr = this->_states.at(state);
+				auto ptr = this->m_states.at(state);
 				stl::ReferenceWrapper<StateType> ref(*ptr);
-				this->_stop_states.push_back(stl::move(ref));
+				this->m_stop_states.push_back(stl::move(ref));
 			}
 
 			return true;
@@ -1494,7 +1511,7 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::raise(FsmEventType &&event, Args &&... args)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
 			if(!this->accept(event))
 				return false;
@@ -1508,14 +1525,14 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::transition(FsmEventType &&event, Args &&... args)
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(!this->accept(event) || this->_in_transition)
+			if(!this->accept(event) || this->m_in_transition)
 				return false;
 
 			auto wrapper = MakeArgumentWrapper(stl::forward<Args>(args)...);
 			this->addEvent(stl::forward<FsmEventType>(event), stl::move(wrapper));
-			this->_in_transition = true;
+			this->m_in_transition = true;
 
 			return true;
 		}
@@ -1525,15 +1542,15 @@ namespace lwiot
 		FsmStatus FsmBase<R(Args...), P, W>::transition(FsmEventType &&event, ArgumentWrapper &&args,
 		                                                IndexSequence<Indices...>) noexcept
 		{
-			UniqueLock<LockType> lock(this->_lock);
-			stl::ReferenceWrapper<TransitionType> transition;
+			UniqueLock<LockType> lock(this->m_lock);
+			stl::ReferenceWrapper<const TransitionType> transition;
 			stl::SharedPointer<StateType> state;
 			bool success;
 
-			this->_watchdog.reset();
+			this->m_watchdog.reset();
 
 			if(!this->running())
-				return this->_status;
+				return this->m_status;
 
 			/*
 			 * Find the transition for the given input symbol. Past this point we
@@ -1545,56 +1562,32 @@ namespace lwiot
 			 * b) We verified that the current state accepts the given input
 			 *    symbol atleast twice.
 			 */
-			auto id = this->_current;
+			state = this->m_states.at(this->m_current);
+			auto result = this->lookup(state, event);
+			transition = stl::move(result.first);
 
-			do {
-				state = this->_states.at(id);
-
-				for(auto &t : state->transitions()) {
-					if(t == event) {
-						transition = t;
-						break;
-					}
-				}
-
-				if(transition)
-					break;
-
-				id = state->parent();
-			} while(unlikely(state->hasParent()));
-
-			if(!transition)
-				return FsmStatus::StateUnchanged;
-
-			if(transition->hasGuard()) {
-				ArgumentWrapper copy(args);
-
-				if(!transition->guard(stl::get<Indices>(stl::move(copy))...))
-					return FsmStatus::StateUnchanged;
-			}
-
-			auto nextId = transition->next();
-			this->_current = nextId;
-			auto next = this->_states.at(nextId);
+			auto next = transition->next();
+			this->m_current = next;
+			state = this->m_states[next];
 
 			ArgumentWrapper copy(args);
 
-			if(next->hasAction())
-				success = next->action(stl::get<Indices>(stl::move(args))...);
+			if(state->hasAction())
+				success = state->action(stl::get<Indices>(stl::move(args))...);
 			else
 				success = false;
 
 			if(unlikely(!success)) {
 				this->toErrorState(stl::get<Indices>(stl::move(copy))...);
-				this->_stop_event.signal();
+				this->m_stop_event.signal();
 
-				this->_logger << "Unable to succesfully execute FSM state!" << Logger::newline;
+				this->m_logger << "Unable to succesfully execute FSM state!" << Logger::newline;
 
 				return FsmStatus::Fault;
 			}
 
-			if(this->isStopState(nextId))
-				this->_stop_event.signal();
+			if(this->isStopState(next))
+				this->m_stop_event.signal();
 
 			return FsmStatus::StateChanged;
 		}
@@ -1602,24 +1595,50 @@ namespace lwiot
 		template<typename P, typename W, typename R, typename... Args>
 		FsmStatus FsmBase<R(Args...), P, W>::transition() noexcept
 		{
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(this->_events.size() == 0UL)
+			if(this->m_events.size() == 0UL)
 				return FsmStatus::StateUnchanged;
 
-			auto value = stl::move(*this->_events.begin());
-			this->_events.erase(this->_events.begin());
+			auto value = stl::move(*this->m_events.begin());
+			this->m_events.erase(this->m_events.begin());
 			auto rv = this->transition(stl::move(value.first), stl::move(value.second),
 			                           typename MakeIndexSequence<sizeof...(Args)>::Type());
-			this->_in_transition = false;
+			this->m_in_transition = false;
 
+			return rv;
+		}
+
+		template<typename P, typename W, typename R, typename... Args>
+		stl::Pair<stl::ReferenceWrapper<const Transition<P, Args...>>, bool>
+		FsmBase<R(Args...), P, W>::lookup(const StatePointer &state, FsmEventType event) const
+		{
+			stl::Pair<stl::ReferenceWrapper<const TransitionType>, bool> rv;
+			SttIndexType index = { 0ULL };
+
+			index.value.eventId = event;
+			index.value.stateId = state->id();
+
+			auto result = this->m_stt.find(index);
+			rv.second = result != this->m_stt.end();
+
+			if(unlikely(!rv.second)) {
+				auto parent = state->parent();
+
+				if(!state->hasParent())
+					return rv;
+
+				return this->lookup(this->m_states.at(parent), event);
+			}
+
+			rv.first = stl::MakeCRef(*result);
 			return rv;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		bool FsmBase<R(Args...), P, W>::isStopState(const FsmStateIdType &state) const
 		{
-			for(const stl::ReferenceWrapper<StateType> &ref : this->_stop_states) {
+			for(const stl::ReferenceWrapper<StateType> &ref : this->m_stop_states) {
 				if(ref->id() == state)
 					return true;
 			}
@@ -1633,35 +1652,36 @@ namespace lwiot
 			stl::Pair<FsmEventType, ArgumentWrapper> value(stl::forward<FsmEventType>(event), stl::move(args));
 
 			if(front)
-				this->_events.push_front(stl::move(value));
+				this->m_events.push_front(stl::move(value));
 			else
-				this->_events.push_back(stl::move(value));
+				this->m_events.push_back(stl::move(value));
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		void FsmBase<R(Args...), P, W>::toErrorState(Args &&... args)
 		{
-			this->_current = this->_error_state->id();
-			this->_status = FsmStatus::Error;
-			this->_error_state->action(stl::forward<Args>(args)...);
+			this->m_current = this->m_error_state->id();
+			this->m_status = FsmStatus::Error;
+			this->m_error_state->action(stl::forward<Args>(args)...);
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
 		void FsmBase<R(Args...), P, W>::copy(const FsmBase &other)
 		{
-			UniqueLock<LockType> l1(this->_lock);
-			UniqueLock<LockType> l2(other._lock);
+			UniqueLock<LockType> l1(this->m_lock);
+			UniqueLock<LockType> l2(other.m_lock);
 
-			this->_events = other._events;
-			this->_states = other._states;
-			this->_stop_states = other._stop_states;
-			this->_start_state = other._start_state;
-			this->_current = other._current;
-			this->_error_state = other._error_state;
-			this->_status = other._status;
-			this->_in_transition = other._in_transition;
-			this->_logger = other._logger;
-			this->_silent = other._silent;
+			this->m_stt = other.m_stt;
+			this->m_events = other.m_events;
+			this->m_states = other.m_states;
+			this->m_stop_states = other.m_stop_states;
+			this->m_start_state = other.m_start_state;
+			this->m_current = other.m_current;
+			this->m_error_state = other.m_error_state;
+			this->m_status = other.m_status;
+			this->m_in_transition = other.m_in_transition;
+			this->m_logger = other.m_logger;
+			this->m_silent = other.m_silent;
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
@@ -1672,11 +1692,12 @@ namespace lwiot
 		}
 
 		template<typename P, typename W, typename R, typename... Args>
-		void FsmBase<R(Args...), P, W>::updateAlphabet(const StateType& state)
+		void FsmBase<R(Args...), P, W>::updateAlphabet(const TransitionType& transition)
 		{
-			for(auto& transition : state.transitions()) {
-				this->_alphabet.insert(transition.event());
-			}
+			if(this->m_alphabet.contains(transition.event()))
+				return;
+
+			this->m_alphabet.insert(transition.event());
 		}
 	}
 
@@ -1692,7 +1713,7 @@ class Signal {
 		 * @brief Construct a new Signal type.
 		 * @param now Current timestamp.
 		 */
-		explicit Signal(time_t now = lwiot_tick_ms()) : _moment(now)
+		explicit Signal(time_t now = lwiot_tick_ms()) : m_moment(now)
 		{ }
 
 		/**
@@ -1701,11 +1722,11 @@ class Signal {
 		 */
 		time_t time() const
 		{
-			return this->_moment;
+			return this->m_moment;
 		}
 
 	private:
-		time_t _moment;
+		time_t m_moment;
 	};
 
 	/**
