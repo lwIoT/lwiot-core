@@ -6,13 +6,13 @@
  */
 
 #include <stdlib.h>
-#include <stdint.h>
 #include <lwiot.h>
 #include <assert.h>
 
 #include <lwiot/log.h>
 #include <lwiot/test.h>
 #include <lwiot/stl/vector.h>
+#include <lwiot/stl/array.h>
 
 struct IteratorTest {
 	void test_const_iter(const lwiot::stl::Vector<int>& vec) const
