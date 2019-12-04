@@ -165,11 +165,36 @@ namespace lwiot
 		 */
 		bool blocking() const;
 
+
+		/**
+		 * @brief Add a transition to to the state machine.
+		 * @param state Origin state.
+		 * @param event Event / alphabet symbol.
+		 * @param next Target state.
+		 * @return True or false depending on whether or not a transition was created and added to the FSM.
+		 */
+		bool addTransition(const StateType& state, FsmEventType event, const StateType& next);
+
+		/**
+		 * @brief Add a transition to to the state machine.
+		 * @tparam Func Guard functor type.
+		 * @param state Origin state.
+		 * @param event Event / alphabet symbol.
+		 * @param next Target state.
+		 * @param func Guard functor.
+		 * @return True or false depending on whether or not a transition was created and added to the FSM.
+		 */
+		template <typename Func>
+		bool addTransition(const StateType& state, FsmEventType event, const StateType& next, Func&& func)
+		{
+			return Base::addTransition(state.id(), stl::move(event), next.id(), stl::forward<Func>(func));
+		}
+
 	protected:
 		using Base::transition;
 
 	private:
-		bool _blocking;
+		bool m_blocking;
 
 		/* METHODS */
 		void cycle();

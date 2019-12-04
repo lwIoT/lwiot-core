@@ -14,29 +14,29 @@
 
 namespace lwiot
 {
-	AsyncFsm::AsyncFsm(const stl::String& name) : Base(), _executor(name)
+	AsyncFsm::AsyncFsm(const stl::String& name) : Base(), m_executor(name)
 	{
 	}
 
-	AsyncFsm::AsyncFsm(AsyncFsm &&other) noexcept : Base(stl::forward<AsyncFsm>(other)), _executor(stl::move(other._executor))
+	AsyncFsm::AsyncFsm(AsyncFsm &&other) noexcept : Base(stl::forward<AsyncFsm>(other)), m_executor(stl::move(other.m_executor))
 	{
 	}
 
 	AsyncFsm::~AsyncFsm()
 	{
-		this->_transition_q.signal();
+		this->m_transition_q.signal();
 		this->stop();
 	}
 
 	void AsyncFsm::run()
 	{
 		while(this->running()) {
-			UniqueLock<LockType> lock(this->_lock);
+			UniqueLock<LockType> lock(this->m_lock);
 
-			if(this->_events.empty())
-				this->_transition_q.wait(lock, Timeout);
+			if(this->m_events.empty())
+				this->m_transition_q.wait(lock, Timeout);
 
-			if(this->_events.empty())
+			if(this->m_events.empty())
 				continue;
 
 			Base::transition();
@@ -46,16 +46,16 @@ namespace lwiot
 	bool AsyncFsm::stop()
 	{
 		if(!this->running()) {
-			this->_executor.join();
-			this->_executor.stop();
+			this->m_executor.join();
+			this->m_executor.stop();
 
 			return true;
 		}
 
 		Base::stop(true);
 
-		this->_executor.join();
-		this->_executor.stop();
+		this->m_executor.join();
+		this->m_executor.stop();
 
 		return true;
 	}
@@ -63,15 +63,15 @@ namespace lwiot
 	void AsyncFsm::start()
 	{
 		Base::start(true);
-		this->_executor.start(stl::bind(&AsyncFsm::run, this));
+		this->m_executor.start(stl::bind(&AsyncFsm::run, this));
 	}
 
 	void AsyncFsm::halt()
 	{
 		Base::halt();
 
-		this->_transition_q.signal();
-		this->_executor.join();
+		this->m_transition_q.signal();
+		this->m_executor.join();
 	}
 
 	AsyncFsm::FsmStatus AsyncFsm::raiseFromIrq(AsyncFsm::FsmEventType &&event, AsyncFsm::SignalPointer signal)
@@ -80,18 +80,23 @@ namespace lwiot
 		auto rv = Base::raise(stl::forward<FsmEventType>(event), stl::move(signal));
 		exit_critical();
 
-		this->_transition_q.signalFromIrq();
+		this->m_transition_q.signalFromIrq();
 		return rv ? this->status() : FsmStatus::StateUnchanged;
 	}
 
 	AsyncFsm &AsyncFsm::operator=(AsyncFsm &&other) noexcept
 	{
-		UniqueLock<LockType> lock(this->_lock);
+		UniqueLock<LockType> lock(this->m_lock);
 
 		this->move(other);
-		this->_executor = stl::move(other._executor);
-		this->_transition_q = stl::move(other._transition_q);
+		this->m_executor = stl::move(other.m_executor);
+		this->m_transition_q = stl::move(other.m_transition_q);
 
 		return *this;
+	}
+
+	bool AsyncFsm::addTransition(const StateType& state, FsmEventType event, const StateType& next)
+	{
+		return Base::addTransition(state.id(), stl::move(event), next.id());
 	}
 }

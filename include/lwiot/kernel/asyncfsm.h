@@ -89,7 +89,7 @@ namespace lwiot
 			auto rv = Base::raise(stl::forward<FsmEventType>(event),
 			        stl::move(stl::static_pointer_cast<SignalType>(shared)));
 
-			this->_transition_q.signal();
+			this->m_transition_q.signal();
 			return rv ? this->status() : FsmStatus::StateUnchanged;
 		}
 
@@ -110,7 +110,7 @@ namespace lwiot
 			auto rv = Base::raise(stl::forward<FsmEventType>(event), stl::move(ptr));
 			exit_critical();
 
-			this->_transition_q.signalFromIrq();
+			this->m_transition_q.signalFromIrq();
 			return rv ? this->status() : FsmStatus::StateUnchanged;
 		}
 
@@ -140,12 +140,37 @@ namespace lwiot
 			auto rv = Base::transition(stl::forward<FsmEventType>(event),
 			        stl::move(stl::static_pointer_cast<SignalType>(shared)));
 
-			this->_transition_q.signal();
+			this->m_transition_q.signal();
 			return rv ? this->status() : FsmStatus::StateUnchanged;
 		}
 
 		using Base::start;
 		using Base::stop;
+		using Base::addTransition;
+
+		/**
+		 * @brief Add a transition to to the state machine.
+		 * @param state Origin state.
+		 * @param event Event / alphabet symbol.
+		 * @param next Target state.
+		 * @return True or false depending on whether or not a transition was created and added to the FSM.
+		 */
+		bool addTransition(const StateType& state, FsmEventType event, const StateType& next);
+
+		/**
+		 * @brief Add a transition to to the state machine.
+		 * @tparam Func Guard functor type.
+		 * @param state Origin state.
+		 * @param event Event / alphabet symbol.
+		 * @param next Target state.
+		 * @param func Guard functor.
+		 * @return True or false depending on whether or not a transition was created and added to the FSM.
+		 */
+		template <typename Func>
+		bool addTransition(const StateType& state, FsmEventType event, const StateType& next, Func&& func)
+		{
+			return Base::addTransition(state.id(), stl::move(event), next.id(), stl::forward<Func>(func));
+		}
 
 		/**
 		 * @brief Start the FSM.
@@ -171,7 +196,7 @@ namespace lwiot
 		void run() override ;
 
 	private:
-		ThreadType _executor;
-		Base::EventType _transition_q;
+		ThreadType m_executor;
+		Base::EventType m_transition_q;
 	};
 }

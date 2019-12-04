@@ -10,21 +10,21 @@
 
 namespace lwiot
 {
-	FSM::FSM() : Base(), _blocking(false)
+	FSM::FSM() : Base(), m_blocking(false)
 	{
 	}
 
-	FSM::FSM(const FSM &fsm) : Base(fsm), _blocking(fsm._blocking)
+	FSM::FSM(const FSM &fsm) : Base(fsm), m_blocking(fsm.m_blocking)
 	{ }
 
-	FSM::FSM(FSM &&other) noexcept : Base(stl::forward<FSM>(other)), _blocking(other._blocking)
+	FSM::FSM(FSM &&other) noexcept : Base(stl::forward<FSM>(other)), m_blocking(other.m_blocking)
 	{
 	}
 
 	FSM &FSM::operator=(const FSM &other)
 	{
 		this->copy(other);
-		this->_blocking = other._blocking;
+		this->m_blocking = other.m_blocking;
 
 		return *this;
 	}
@@ -32,7 +32,7 @@ namespace lwiot
 	FSM &FSM::operator=(FSM &&other) noexcept
 	{
 		this->move(other);
-		this->_blocking = other._blocking;
+		this->m_blocking = other.m_blocking;
 
 		return *this;
 	}
@@ -42,7 +42,7 @@ namespace lwiot
 		if(!this->running())
 			return;
 
-		if(this->_blocking) {
+		if(this->m_blocking) {
 			do {
 				this->cycle();
 			} while(this->running());
@@ -68,7 +68,7 @@ namespace lwiot
 
 	void FSM::cycle()
 	{
-		if(this->_events.empty())
+		if(this->m_events.empty())
 			return;
 
 		this->transition();
@@ -85,13 +85,18 @@ namespace lwiot
 
 	void FSM::block(bool blocking)
 	{
-		UniqueLock<Base::LockType> lock(this->_lock);
-		this->_blocking = blocking;
+		UniqueLock<Base::LockType> lock(this->m_lock);
+		this->m_blocking = blocking;
 	}
 
 	bool FSM::blocking() const
 	{
-		UniqueLock<Base::LockType> lock(this->_lock);
-		return this->_blocking;
+		UniqueLock<Base::LockType> lock(this->m_lock);
+		return this->m_blocking;
+	}
+
+	bool FSM::addTransition(const StateType& state, FsmEventType event, const StateType& next)
+	{
+		return Base::addTransition(state.id(), stl::move(event), next.id());
 	}
 }
