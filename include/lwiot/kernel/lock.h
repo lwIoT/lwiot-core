@@ -6,6 +6,8 @@
  * Email:  dev@bietje.net
  */
 
+/// @file lock.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -18,15 +20,32 @@
 #include <lwiot/uniquepointer.h>
 
 namespace lwiot {
+	/**
+	 * @brief Lock type.
+	 * @ingroup kernel
+	 */
 	class Lock {
 	public:
+		/**
+		 * @brief Create a lock object.
+		 * @param recursive Recursive locking indicator.
+		 */
 		explicit Lock(bool recursive = false);
 		virtual ~Lock() = default;
 
+		/**
+		 * @brief Move a lock.
+		 * @param rhs Lock to move.
+		 */
 		Lock(Lock &&rhs) noexcept : _mtx(stl::move(rhs._mtx))
 		{
 		}
 
+		/**
+		 * @brief Move a lock.
+		 * @param rhs Lock to move.
+		 * @return A reference to \p *this.
+		 */
 		Lock& operator=(Lock&& rhs) noexcept
 		{
 			this->_mtx = stl::move(rhs._mtx);
@@ -36,10 +55,25 @@ namespace lwiot {
 		explicit Lock(Lock& lock) = delete;
 		Lock& operator =(Lock& lock) = delete;
 
-		void lock();
+		void lock(); //!< Attempt to acquire \p *this.
+
+		/**
+		 * @brief Attempt to acquire \p *this.
+		 * @param tmo Timeout.
+		 * @return Success indicator.
+		 */
 		bool try_lock(int tmo = 100);
+
+		/**
+		 * @brief Unlock \p  *this.
+		 */
 		void unlock();
 
+		/**
+		 * @brief Swap two locks.
+		 * @param a First lock.
+		 * @param b Second lock.
+		 */
 		friend void swap(Lock& a, Lock& b)
 		{
 			using stl::swap;
