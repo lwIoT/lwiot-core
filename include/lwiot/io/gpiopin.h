@@ -38,7 +38,7 @@ namespace lwiot
 		 * @brief Construct a GpioPin.
 		 * @param pin Pin number.
 		 */
-		explicit GpioPin(int pin);
+		GpioPin(int pin);
 
 		/**
 		 * @brief Construct a GpioPin.
