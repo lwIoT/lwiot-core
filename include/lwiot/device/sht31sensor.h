@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file sht31sensor.h SHT31 sensor driver
+
 #pragma once
 
 #include <lwiot.h>
@@ -27,20 +29,62 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief SHT31 sensor driver.
+	 * @ingroup device
+	 */
 	class Sht31Sensor {
 	public:
+		/**
+		 * @brief SHT31 sensor.
+		 */
 		explicit Sht31Sensor();
-		explicit Sht31Sensor(I2CBus& io);
-		virtual ~Sht31Sensor() = default;
 
+		/**
+		 * @brief SHT31 sensor.
+		 * @param io I2C bus.
+		 */
+		explicit Sht31Sensor(I2CBus& io);
+		~Sht31Sensor() = default;
+
+		/**
+		 * @brief Start the SHT31 driver.
+		 * @return A success indicator.
+		 */
 		bool begin();
+
+		/**
+		 * @brief Get the latest humidity sample value.
+		 * @return The humidity value.
+		 */
 		double humidity();
+
+		/**
+		 * @brief Get the latest temperature sample value.
+		 * @return The temperature value.
+		 */
 		double temperature();
+
+		/**
+		 * @brief Reset the sensor.
+		 */
 		void reset();
+
+		/**
+		 * @brief Enable/disable the heater.
+		 * @param enable Heater status.
+		 */
 		void setHeaterStatus(bool enable);
 
+		/**
+		 * @brief Sample the SH31.
+		 */
 		void measure();
 
+		/**
+		 * @brief Set the I2C bus object.
+		 * @param io I2C bus.
+		 */
 		void setBus(I2CBus& io);
 
 	private:

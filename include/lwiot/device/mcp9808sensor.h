@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file mcp9808.h MCP driver.
+
 #pragma once
 
 #include <lwiot.h>
@@ -19,18 +21,55 @@
 
 namespace lwiot
 {
+	/**
+	 * @file MCP9808 driver.
+	 * @ingroup device
+	 */
 	class MCP9808Sensor {
 	public:
+		/**
+		 * @brief Construct a new driver object.
+		 */
 		explicit MCP9808Sensor();
+
+		/**
+		 * @brief MCP9808 driver destructor.
+		 */
 		~MCP9808Sensor() = default;
 
+		/**
+		 * @brief Start the MCP9808 driver.
+		 * @param bus I2C bus.
+		 * @param addr I2C slave address.
+		 * @return Success indicator.
+		 */
 		bool begin(I2CBus& bus, uint8_t addr = I2C_ADDRESS);
 
+		/**
+		 * @brief Send a wake up to the sensor.
+		 */
 		void wake();
+
+		/**
+		 * @brief Stop the sensor.
+		 */
 		void shutdown();
+
+		/**
+		 * @brief Read the temperature from the sensor.
+		 * @return The current temperature.
+		 */
 		float read();
+
+		/**
+		 * @brief Set the sensor resolution.
+		 * @param resolution Resolution value.
+		 */
 		void setResolution(int resolution);
 
+		/**
+		 * @brief I2C slave address.
+		 */
 		static constexpr uint8_t I2C_ADDRESS = 0x18;
 
 	private:
