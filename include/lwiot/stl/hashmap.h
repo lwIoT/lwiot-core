@@ -277,7 +277,7 @@ namespace lwiot
 #ifndef NDEBUG
 			void dump()
 			{
-				this->_list.dump();
+				this->_list.dump("Level %i\n\t", "%i ");
 			}
 #endif
 
