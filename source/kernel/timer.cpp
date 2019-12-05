@@ -36,7 +36,7 @@ namespace lwiot {
 		this->timer = lwiot_timer_create(name, (int)ms, flags, this, run_timer);
 	}
 
-	Timer::Timer(lwiot::Timer&& rhs) : argument(rhs.argument), timer(rhs.timer), running(rhs.running)
+	Timer::Timer(lwiot::Timer&& other) noexcept : argument(other.argument), timer(other.timer), running(other.running)
 	{
 	}
 
@@ -55,7 +55,7 @@ namespace lwiot {
 		lwiot_timer_reset(this->timer);
 	}
 
-	Timer& Timer::operator=( lwiot::Timer &&rhs)
+	Timer& Timer::operator=( lwiot::Timer &&rhs) noexcept
 	{
 		if(this->running)
 			this->stop();
