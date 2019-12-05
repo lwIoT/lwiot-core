@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file dsrealtimeclock.h RTC clock.
+
 #pragma once
 
 #include <stdlib.h>
@@ -17,8 +19,16 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief DS real time clock driver.
+	 * @ingroup device
+	 */
 	class DsRealTimeClock : public RealTimeClock {
 	public:
+
+		/**
+		 * @brief Alarm type.
+		 */
 		enum AlarmType {
 			ALARM1_EVERY_SECOND = 0x0F,
 			ALARM1_MATCH_SECONDS = 0x0E,
@@ -33,20 +43,68 @@ namespace lwiot
 			ALARM2_MATCH_DAY = 0x90,
 		};
 
+		/**
+		 * @brief Alarm number.
+		 */
 		enum Alarm {
 			ALARM_ONE = 1,
 			ALARM_TWO = 2
 		};
 
+		/**
+		 * @brief Construct a new real time clock.
+		 * @param bus I2C bus.
+		 */
 		explicit DsRealTimeClock(const I2CBus& bus);
+
+		/**
+		 * @brief Construct a new real time clock.
+		 * @param now Current time stamp.
+		 * @param bus I2C bus.
+		 */
 		explicit DsRealTimeClock(const DateTime& now, const I2CBus& bus);
 
+		/**
+		 * @brief Current time value.
+		 * @return The current time value.
+		 */
 		DateTime now() override;
+
+		/**
+		 * @brief Set the time value.
+		 * @param dt Time value to set.
+		 */
 		void set(const DateTime &dt) override;
 
+		/**
+		 * @brief Set an alarm.
+		 * @param type Alarm type to set.
+		 * @param seconds Second value.
+		 * @param minutes Minute value.
+		 * @param hours Hour value.
+		 * @param day Day value.
+		 */
 		void setAlarm(AlarmType type, int seconds = 0, int minutes = 0, int hours = 0, int day = 1);
+
+		/**
+		 * @brief Set an alarm.
+		 * @param type Alarm type.
+		 * @param dt Date/time to set the alarm for.
+		 */
 		void setAlarm(AlarmType type, const DateTime& dt);
+
+		/**
+		 * @brief Reset the alarm.
+		 * @param id Alarm to reset.
+		 * @return A success indicator.
+		 */
 		bool alarm(Alarm id);
+
+		/**
+		 * @brief Enable the alarm interrupt.
+		 * @param id Alarm to enable the ID for.
+		 * @param enabled Enable/disable flag.
+		 */
 		void enableAlarmInterrupt(Alarm id, bool enabled);
 
 	private:
