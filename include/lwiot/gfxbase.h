@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file gfxbase.h
+
 #pragma once
 
 #include <lwiot/types.h>
@@ -26,20 +28,24 @@ typedef struct { // Data stored for FONT AS A WHOLE:
 
 namespace lwiot
 {
+	/**
+	 * @brief Display base driver.
+	 * @ingroup util
+	 */
 	class GfxBase : public Printer {
 	public:
 		explicit GfxBase(int16_t w, int16_t h);
-		virtual ~GfxBase() = default;
+		~GfxBase() override = default;
 
 		virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
 
-		virtual void startWrite(void);
+		virtual void startWrite();
 		virtual void writePixel(int16_t x, int16_t y, uint16_t color);
 		virtual void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 		virtual void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 		virtual void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 		virtual void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-		virtual void endWrite(void);
+		virtual void endWrite();
 
 		virtual void setRotation(uint8_t r);
 		virtual void invert(bool i);
@@ -82,13 +88,13 @@ namespace lwiot
 		void setFont(const GFXfont *f = nullptr);
 		void getTextBounds(char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
-		virtual size_t write(uint8_t byte);
-		int16_t height(void) const;
-		int16_t width(void) const;
-		uint8_t getRotation(void) const;
+		size_t write(uint8_t byte) override;
+		int16_t height() const;
+		int16_t width() const;
+		uint8_t getRotation() const;
 
-		int16_t getCursorX(void) const;
-		int16_t getCursorY(void) const;
+		int16_t getCursorX() const;
+		int16_t getCursorY() const;
 
 	protected:
 		const int16_t WIDTH, HEIGHT;
