@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file bmp085sensor.h
+
 #pragma once
 
 #include <lwiot/lwiot.h>
@@ -15,17 +17,46 @@
 
 namespace lwiot
 {
+	/**
+	 * BMP085 sensor.
+	 * @ingroup device
+	 */
 	class Bmp085Sensor : public BmpSensor {
 	public:
+		/**
+		 * @brief BMP085 sensor driver.
+		 * @param bus I2C bus.
+		 */
 		explicit Bmp085Sensor(I2CBus& bus);
-		virtual ~Bmp085Sensor() = default;
+		~Bmp085Sensor() override = default;
 
+		/**
+		 * @brief Start the driver.
+		 */
 		void begin();
 
+		/**
+		 * @brief Read pressure and temperature values.
+		 * @param pressure Pressure output value.
+		 * @param temperature Temperature output value.
+		 */
 		void read(int32_t & pressure, float& temperature);
+
+		/**
+		 * @brief Start a new sample value.
+		 */
 		void read();
 
+		/**
+		 * @brief Get the latest pressure value.
+		 * @return The latest pressure reading.
+		 */
 		int32_t pressure() const;
+
+		/**
+		 * @brief Get the latest temperature value.
+		 * @return The latest temperature reading.
+		 */
 		float temperature() const;
 
 	private:

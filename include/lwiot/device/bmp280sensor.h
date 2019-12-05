@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file bmp280sensor.h BMP280 sensor driver.
+
 #pragma once
 
 #include <lwiot/types.h>
@@ -18,6 +20,9 @@ typedef int64_t BMP280_S64_t;
 
 namespace lwiot
 {
+	/**
+	 * @brief Sensor register values.
+	 */
 	typedef enum {
 		BMP280_REGISTER_DIG_T1              = 0x88,
 		BMP280_REGISTER_DIG_T2              = 0x8A,
@@ -33,9 +38,9 @@ namespace lwiot
 		BMP280_REGISTER_DIG_P8              = 0x9C,
 		BMP280_REGISTER_DIG_P9              = 0x9E,
 
-		BMP280_REGISTER_CHIPID             = 0xD0,
-		BMP280_REGISTER_VERSION            = 0xD1,
-		BMP280_REGISTER_SOFTRESET          = 0xE0,
+		BMP280_REGISTER_CHIPID             = 0xD0, //!< Chip ID register.
+		BMP280_REGISTER_VERSION            = 0xD1, //!< Version register.
+		BMP280_REGISTER_SOFTRESET          = 0xE0, //!< Soft reset register.
 
 		BMP280_REGISTER_CAL26              = 0xE1,
 
@@ -47,6 +52,9 @@ namespace lwiot
 
 	namespace bmp280
 	{
+		/**
+		 * @brief Callibration data.
+		 */
 		struct CallibrationData {
 			uint16_t dig_T1;
 			int16_t  dig_T2;
@@ -64,17 +72,46 @@ namespace lwiot
 		};
 	}
 
+	/**
+	 * @brief BMP280 driver.
+	 * @ingroup device
+	 */
 	class Bmp280Sensor : public BmpSensor {
 	public:
+		/**
+		 * @brief Construct a new BMP280 driver object.
+		 * @param bus I2C bus.
+		 */
 		explicit Bmp280Sensor(I2CBus& bus);
-		virtual ~Bmp280Sensor() = default;
+		~Bmp280Sensor() override = default;
 
+		/**
+		 * @brief Start the driver.
+		 */
 		void begin();
 
+		/**
+		 * @brief Read pressure and temperature values.
+		 * @param pressure Pressure output value.
+		 * @param temperature Temperature output value.
+		 */
 		void read(int32_t & pressure, float& temperature);
+
+		/**
+		 * @brief Start a new sample value.
+		 */
 		void read();
 
+		/**
+		 * @brief Get the latest pressure value.
+		 * @return The latest pressure reading.
+		 */
 		const int32_t & pressure() const;
+
+		/**
+		 * @brief Get the latest temperature value.
+		 * @return The latest temperature reading.
+		 */
 		const float& temperature() const;
 
 	private:
