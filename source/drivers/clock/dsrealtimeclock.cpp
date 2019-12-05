@@ -87,7 +87,7 @@ namespace lwiot
 
 	void DsRealTimeClock::mktime(struct tm &tm, const lwiot::I2CMessage &msg, bool century) const
 	{
-		unsigned add_century = 0;
+		int add_century = 0;
 
 		tm.tm_sec = msg[0] & ~_BV(DS1307_CH);
 		tm.tm_min = msg[1];
@@ -104,7 +104,8 @@ namespace lwiot
 
 	DateTime DsRealTimeClock::now()
 	{
-		I2CMessage tx(1), rx(ReadLength);
+		I2CMessage tx(1);
+		I2CMessage rx(ReadLength);
 		stl::Vector<I2CMessage> msgs;
 		struct tm tm{};
 		time_t stamp;
@@ -141,7 +142,9 @@ namespace lwiot
 
 	void DsRealTimeClock::set(const DateTime &dt)
 	{
-		I2CMessage tx(8), status(1), rx(1);
+		I2CMessage tx(8);
+		I2CMessage status(1);
+		I2CMessage rx(1);
 		uint8_t stopbit;
 
 		tx.setAddress(SlaveAddress, false);
@@ -187,7 +190,8 @@ namespace lwiot
 
 	uint8_t DsRealTimeClock::read(uint8_t addr)
 	{
-		I2CMessage tx(1), rx(1);
+		I2CMessage tx(1);
+		I2CMessage rx(1);
 		stl::Vector<I2CMessage> msgs;
 
 		tx.setAddress(SlaveAddress, false);
@@ -287,7 +291,8 @@ namespace lwiot
 	bool DsRealTimeClock::alarm(lwiot::DsRealTimeClock::Alarm id)
 	{
 		uint8_t num = id - 1;
-		uint8_t status, mask;
+		uint8_t status;
+		uint8_t mask;
 		bool rv = false;
 
 		status = this->read(RTC_STATUS);

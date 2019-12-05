@@ -5,13 +5,9 @@
  * @email  dev@bietje.net
  */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
-#include <lwiot.h>
 
 #include <lwiot/types.h>
-#include <lwiot/error.h>
 #include <lwiot/log.h>
 
 #include <lwiot/io/i2cmessage.h>
@@ -42,7 +38,7 @@
 
 namespace lwiot
 {
-	MCP9808Sensor::MCP9808Sensor() : _lock(false)
+	MCP9808Sensor::MCP9808Sensor() : _addr(), _lock(false)
 	{
 	}
 
@@ -102,8 +98,8 @@ namespace lwiot
 		raw = this->read16(MCP9808_REG_AMBIENT_TEMP);
 
 		if(raw != 0xFFFF) {
-			temp = raw & 0xFFF;
-			temp /= 16.0f;
+			temp = static_cast<float>(raw & 0xFFF);
+			temp /= 16.0F;
 
 			if(raw & 0x1000)
 				temp -= 256;
@@ -114,7 +110,8 @@ namespace lwiot
 
 	uint8_t MCP9808Sensor::read8(uint8_t reg)
 	{
-		I2CMessage rx(1), tx(1);
+		I2CMessage rx(1);
+		I2CMessage tx(1);
 		stl::Vector<I2CMessage> msgs;
 
 		tx.setAddress(this->_addr, false, false);
@@ -165,7 +162,8 @@ namespace lwiot
 
 	uint16_t MCP9808Sensor::read16(uint8_t reg)
 	{
-		I2CMessage rx(2), tx(1);
+		I2CMessage rx(2);
+		I2CMessage tx(1);
 		stl::Vector<I2CMessage> msgs;
 		uint16_t value;
 
