@@ -24,3 +24,8 @@
   * @brief I/O utilities.
   */
 
+ /**
+  * @defgroup device Device drivers
+  * @brief A collection of supported device drivers.
+  * @see io
+  */
