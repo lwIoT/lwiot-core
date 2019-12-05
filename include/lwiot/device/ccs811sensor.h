@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file ccs811sensor.h
+
 #pragma once
 
 #include <lwiot/lwiot.h>
@@ -37,12 +39,16 @@ namespace lwiot
 		CCS811_SW_RESET = 0xFF,
 	} ccs811_register_t;
 
+	/**
+	 * @brief CCS811 drive mode.
+	 * @ingroup device
+	 */
 	typedef enum {
-		CCS811_DRIVE_MODE_IDLE = 0x00,
-		CCS811_DRIVE_MODE_1SEC = 0x01,
-		CCS811_DRIVE_MODE_10SEC = 0x02,
-		CCS811_DRIVE_MODE_60SEC = 0x03,
-		CCS811_DRIVE_MODE_250MS = 0x04,
+		CCS811_DRIVE_MODE_IDLE = 0x00, //!< Disable the sensor.
+		CCS811_DRIVE_MODE_1SEC = 0x01, //!< Sample every second.
+		CCS811_DRIVE_MODE_10SEC = 0x02, //!< Sample every 10 seconds.
+		CCS811_DRIVE_MODE_60SEC = 0x03, //!< Sample every 60 seconds.
+		CCS811_DRIVE_MODE_250MS = 0x04, //!< Sample every 250ms.
 	} ccs811_drive_mode_t;
 
 	namespace ccs811
@@ -78,25 +84,92 @@ namespace lwiot
 		};
 	}
 
+	/**
+	 * @brief CCS811 driver.
+	 * @ingroup device
+	 */
 	class Ccs811Sensor {
 	public:
+		/**
+		 * @brief Construct a new CCS811 driver object.
+		 * @param bus I2C bus.
+		 */
 		explicit Ccs811Sensor(I2CBus& bus);
-		virtual ~Ccs811Sensor() = default;
+		~Ccs811Sensor() = default;
 
+		/**
+		 * @brief Construct a new
+		 * @return
+		 */
 		bool begin();
 
+		/**
+		 * @brief Set environment values.
+		 * @param rh Relative humidity.
+		 * @param temperature Temperature.
+		 */
 		void setEnvironimentalData(uint8_t rh, double temperature);
+
+		/**
+		 * @brief Set the drive mode.
+		 * @param mode Drive mode to set.
+		 */
 		void setDriveMode(uint8_t mode);
+
+		/**
+		 * @brief Set the interrupt state.
+		 * @param enabled Enable/disable flag.
+		 */
 		void setInterrupt(bool enabled);
+
+		/**
+		 * @brief Set the temperature offset.
+		 * @param offset Offset to set.
+		 */
 		void setTemperatureOffset(float offset);
+
+		/**
+		 * @brief Set the threshold value.
+		 * @param low Low end.
+		 * @param medium Medium threshold.
+		 * @param hysteresis Hysteresis value.
+		 */
 		void setThresholds(uint16_t low, uint16_t medium, uint8_t hysteresis = 50);
 
+		/**
+		 * @brief Get the latest TVOC reading.
+		 * @return The latest TVOC readng.
+		 */
 		uint16_t tvoc() const;
+
+		/**
+		 * @brief Get the latest CO2 equivalent value.
+		 * @return The latest samplevalue.
+		 */
 		uint16_t eco2() const;
+
+		/**
+		 * @brief Check if a new sample is available.
+		 * @return Availability indicator.
+		 */
 		bool available();
+
+		/**
+		 * @brief Get the last error code.
+		 * @return Error code value.
+		 */
 		uint8_t error();
 
+		/**
+		 * @brief Calculate the temperature value.
+		 * @return The current temperature.
+		 */
 		double calculateTemperature();
+
+		/**
+		 * @brief Read a new sample.
+		 * @return Success indicator.
+		 */
 		bool read();
 
 
