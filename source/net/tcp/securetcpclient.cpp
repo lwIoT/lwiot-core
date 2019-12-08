@@ -7,7 +7,6 @@
 
 #include <stdlib.h>
 #include <assert.h>
-#include <lwiot.h>
 
 #include <lwiot/log.h>
 #include <lwiot/types.h>
@@ -15,6 +14,9 @@
 #include <lwiot/network/tcpclient.h>
 #include <lwiot/network/stdnet.h>
 #include <lwiot/network/securetcpclient.h>
+
+#include <lwiot/stl/forward.h>
+#include <lwiot/stl/move.h>
 
 namespace lwiot
 {
@@ -32,13 +34,10 @@ namespace lwiot
 	{
 	}
 
-	SecureTcpClient::SecureTcpClient(lwiot::SecureTcpClient &&other) :
-		TcpClient(other.remote(), other.port()), _socket(other._socket), _host(other._host)
+	SecureTcpClient::SecureTcpClient(lwiot::SecureTcpClient &&other) noexcept :
+		TcpClient(stl::forward<SecureTcpClient>(other)),
+		_socket(stl::move(other._socket)), _host(stl::move(other._host))
 	{
-		other._socket = nullptr;
-		other._remote_port = 0;
-		other._remote_addr = IPAddress();
-		other._host = "";
 	}
 
 	SecureTcpClient::~SecureTcpClient()
@@ -57,7 +56,7 @@ namespace lwiot
 		return *this;
 	}
 
-	SecureTcpClient& SecureTcpClient::operator=(lwiot::SecureTcpClient &&other)
+	SecureTcpClient& SecureTcpClient::operator=(lwiot::SecureTcpClient &&other) noexcept
 	{
 		if(this->connected()) {
 			this->close();
@@ -102,7 +101,7 @@ namespace lwiot
 
 	bool SecureTcpClient::connect()
 	{
-		ssl_context_t context = {0,0,0};
+		ssl_context_t context = {nullptr,nullptr,nullptr};
 		remote_addr_t remote;
 
 		this->remote().toRemoteAddress(remote);

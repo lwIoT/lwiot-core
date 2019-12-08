@@ -5,16 +5,11 @@
  * @email  dev@bietje.net
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <lwiot.h>
-
 #include <lwiot/types.h>
-#include <lwiot/log.h>
 #include <lwiot/stl/string.h>
 #include <lwiot/network/tcpclient.h>
-#include <lwiot/error.h>
 #include <lwiot/network/stdnet.h>
+#include <lwiot/stl/move.h>
 
 namespace lwiot
 {
@@ -30,9 +25,11 @@ namespace lwiot
 	{
 	}
 
-	TcpClient& TcpClient::operator=(lwiot::TcpClient &&client)
+	TcpClient& TcpClient::operator=(lwiot::TcpClient &&client) noexcept
 	{
-		*this = client;
+		this->_remote_addr = stl::move(client._remote_addr);
+		this->_remote_port = client._remote_port;
+		this->_timeout = client._timeout;
 		return *this;
 	}
 
