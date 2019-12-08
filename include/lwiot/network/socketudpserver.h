@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file socketudpserver.h
+
 #pragma once
 
 #include <lwiot/network/stdnet.h>
@@ -14,19 +16,59 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief UDP server socket wrapper.
+	 */
 	class SocketUdpServer : public UdpServer {
 	public:
-		explicit SocketUdpServer();
-		explicit SocketUdpServer(bind_addr_t addr, uint16_t port);
-		explicit SocketUdpServer(const IPAddress& addr, uint16_t port);
-		~SocketUdpServer() override;
+		explicit SocketUdpServer(); //!< Construct a server socket.
 
-		void close() override;
-		bool bind() override;
-		bool bind(bind_addr_t addr, uint16_t port);
+		/**
+		 * @brief Construct a server socket.
+		 * @param addr Bind address.
+		 * @param port Bind port.
+		 */
+		explicit SocketUdpServer(bind_addr_t addr, uint16_t port);
+
+		/**
+		 * @brief Construct a server socket.
+		 * @param addr Bind address.
+		 * @param port Bind port.
+		 */
+		explicit SocketUdpServer(const IPAddress& addr, uint16_t port);
+		~SocketUdpServer() override; //!< Destroy a UDP server socket.
+
+		void close() override; //!< Close the underlying socket.
+		bool bind() override; //!< Bind to the bind address & port.
+
+		/**
+		 * @brief Bind to \p addr and \p port.
+		 * @param addr Bind address.
+		 * @param port Bind port.
+		 * @return A success indicator.
+		 */
+		bool bind(bind_addr_t addr, uint16_t port) override;
+
+		/**
+		 * @brief Bind to \p addr and \p port.
+		 * @param addr Bind address.
+		 * @param port Bind port.
+		 * @return A success indicator.
+		 */
 		bool bind(const IPAddress& addr, uint16_t port) override;
 
+		/**
+		 * @brief Receive data.
+		 * @param buffer Receive buffer.
+		 * @param length Length of \p buffer.
+		 * @return The remote client.
+		 */
 		UniquePointer<UdpClient> recv(void *buffer, size_t& length) override;
+
+		/**
+		 * @brief Set the server socket timeout.
+		 * @param tmo Timeout in seconds.
+		 */
 		void setTimeout(int tmo) override;
 
 	private:
