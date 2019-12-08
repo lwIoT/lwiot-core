@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file dnsserver.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -26,18 +28,52 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief DNS server implementation.
+	 * @see Thread
+	 *
+	 * This is an assynchronous implementation.
+	 */
 	class DnsServer : public Thread {
 	public:
+		/**
+		 * @brief DNS server implementation.
+		 */
 		explicit DnsServer();
-		virtual ~DnsServer();
 
+		/**
+		 * @brief DNS server destructor.
+		 */
+		~DnsServer() override;
+
+		/**
+		 * @brief Start a DNS server.
+		 * @param server UDP server object.
+		 */
 		void begin(UdpServer* server);
+
+		/**
+		 * @brief Stop a DNS server.
+		 */
 		void end();
 
+		/**
+		 * @brief Map a hostname to an IP address.
+		 * @param hostname Hostname to map to \p addr.
+		 * @param addr IP address to map to \p hostname.
+		 */
 		void map(const stl::String& hostname, const IPAddress& addr);
 
 	protected:
+		/**
+		 * @brief Run the DNS server.
+		 * @see Thread::run
+		 */
 		void run() override;
+
+		/**
+		 * @brief Start the DNS server.
+		 */
 		void begin();
 
 	private:
@@ -50,6 +86,5 @@ namespace lwiot
 		/* Methods */
 		void respond(UdpClient& client, char *data, const size_t& length);
 		static void respond(UdpClient& client, DnsHeader* hdr, DnsReplyCode drc);
-		bool hasRecord(const String& record);
 	};
 }
