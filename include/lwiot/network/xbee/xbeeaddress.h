@@ -16,7 +16,7 @@ namespace lwiot
 	 */
 	class XBeeAddress {
 	public:
-		constexpr XBeeAddress() = default;;
+		constexpr XBeeAddress() = default;
 	};
 
 	/**
