@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file mqttclient.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -23,52 +25,126 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief MQTT client.
+	 * @ingroup net
+	 */
 	class MqttClient {
 	public:
-		typedef Function<void(const String&, const ByteBuffer&)> Handler;
+		typedef Function<void(const String&, const ByteBuffer&)> Handler; //!< Handler type.
+
+		/**
+		 * @brief Quality of Service indicator.
+		 */
 		enum QoS {
 			QOS0 = 0,
 			QOS1,
 			QOS2
 		};
 
-		explicit MqttClient();
-		virtual ~MqttClient() = default;
+		explicit MqttClient(); //!< Construct a MQTT client.
+		virtual ~MqttClient() = default; //!< Destruct a MQTT client.
 
+		/**
+		 * @brief Start the client socket.
+		 * @param client TCP socket.
+		 */
 		void begin(TcpClient& client);
-		void setClient(TcpClient& client);
-		bool reconnect();
 
+		/**
+		 * @brief Set the underlying TCP socket.
+		 * @param client The underlying TCP socket to set.
+		 */
+		void setClient(TcpClient& client);
+		bool reconnect(); //!< Reconnect to the broker.
+
+		/**
+		 * @brief Set the callback handler.
+		 * @param cb Callback handler.
+		 */
 		void setCallback(const Handler& cb)
 		{
 			this->_cb = cb;
 		}
 
+		/**
+		 * @brief Set the callback handler.
+		 * @tparam CB Functor type.
+		 * @param cb Callback handler.
+		 */
 		template <typename CB>
 		void setCallback(CB&& cb)
 		{
 			this->_cb = stl::forward<CB>(cb);
 		}
 
+		/**
+		 * @brief Connect to a MQTT broker.
+		 * @param id Client ID.
+		 * @param user Username.
+		 * @param pass Password.
+		 * @return Success indicator.
+		 */
 		bool connect(const String& id, const String& user, const String& pass);
+
+		/**
+		 * @brief Connect to a MQTT broker.
+		 * @param id Client ID.
+		 * @param user Username.
+		 * @param pass Password.
+		 * @param willTopic Will topic.
+		 * @param willQos QoS level.
+		 * @param willRetain Retain flag.
+		 * @param willMessage Will message.
+		 * @param cleanSession Clean session flag.
+		 * @return Success indicator.
+		 */
 		virtual bool connect(const String& id, const String& user, const String& pass,
 				const String& willTopic, uint8_t willQos, bool willRetain,
 				const String& willMessage, bool cleanSession);
-		void disconnect();
+		void disconnect(); //!< Disconnect from the MQTT broker.
 
+		/**
+		 * @brief Subscribe to a topic.
+		 * @param topic Topic to subscribe to.
+		 * @param qos QoS level.
+		 * @return Success indicator.
+		 */
 		bool subscribe(const stl::String& topic, QoS qos);
+
+		/**
+		 * @brief Unsubscribe from a topic.
+		 * @param topic Topic to unsubscribe from.
+		 * @return A success indicator.
+		 */
 		virtual bool unsubscribe(const stl::String& topic);
 
-		bool loop();
-		virtual bool connected()
+		bool loop(); //!< Handle MQTT messages.
+
+		virtual bool connected() //!< Check if connected.
 		{
 			return this->isConnected();
 		}
 
+		/**
+		 * @brief Publish a new message.
+		 * @param topic Topic to publish to.
+		 * @param data Data to publish.
+		 * @param retained Retain indicator.
+		 * @return A success indicator.
+		 */
 		virtual bool publish(const stl::String& topic, const ByteBuffer& data, bool retained);
+
+		/**
+		 * @brief Publish a new message.
+		 * @param topic Topic to publish to.
+		 * @param data Data to publish.
+		 * @param retained Retain indicator.
+		 * @return A success indicator.
+		 */
 		bool publish(const stl::String& topic, const stl::String& data, bool retained = false);
 
-		virtual inline int state() const
+		virtual inline int state() const //!< Get the MQTT state.
 		{
 			return this->_state;
 		}
