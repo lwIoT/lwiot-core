@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file captiveportal.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -24,16 +26,48 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief Captive portal.
+	 * @see Thread
+	 */
 	class CaptivePortal : Thread {
 	public:
+		/**
+		 * @brief Construct a new captive portal object.
+		 * @param bind Address to bind to.
+		 * @param captor Captor address.
+		 * @param port DNS port.
+		 * @param server DNS server.
+		 */
 		explicit CaptivePortal(const IPAddress& bind, const IPAddress& captor, uint16_t port = DNS_SERVER_PORT, UdpServer* server = nullptr);
-		virtual ~CaptivePortal();
 
+		/**
+		 * @brief Destroy a new captive portal object.
+		 */
+		~CaptivePortal() override;
+
+		/**
+		 * @brief Start a captive portal.
+		 */
 		void begin();
+
+		/**
+		 * @brief Start a captive portal.
+		 * @param server UDP server object.
+		 * @param port UDP server port.
+		 */
 		void begin(UdpServer* server, uint16_t port);
+
+		/**
+		 * @brief Stop the captive portal.
+		 */
 		void end();
 
 	protected:
+		/**
+		 * @brief Captive portal runner.
+		 * @see Thread::run
+		 */
 		void run() override;
 
 	private:
