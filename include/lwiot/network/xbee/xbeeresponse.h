@@ -186,10 +186,10 @@ namespace lwiot
 
 		virtual uint8_t getOption();
 
-		uint8_t getDataLength();
+		uint8_t getDataLength() override;
 
 		// frame position where data starts
-		uint8_t getDataOffset();
+		uint8_t getDataOffset() override;
 
 		static const uint8_t API_ID = ZB_RX_RESPONSE;
 	private:
@@ -299,9 +299,9 @@ namespace lwiot
 
 		bool isPanBroadcast();
 
-		uint8_t getDataLength();
+		uint8_t getDataLength() override;
 
-		uint8_t getDataOffset();
+		uint8_t getDataOffset() override;
 
 		virtual uint8_t getRssiOffset() = 0;
 	};
@@ -313,7 +313,7 @@ namespace lwiot
 	public:
 		Rx16Response();
 
-		uint8_t getRssiOffset();
+		uint8_t getRssiOffset() override;
 
 		uint16_t getRemoteAddress16();
 
@@ -329,7 +329,7 @@ namespace lwiot
 	public:
 		Rx64Response();
 
-		uint8_t getRssiOffset();
+		uint8_t getRssiOffset() override;
 
 		XBeeAddress64 &getRemoteAddress64();
 
@@ -392,7 +392,7 @@ namespace lwiot
 
 		uint16_t getRemoteAddress16();
 
-		uint8_t getRssiOffset();
+		uint8_t getRssiOffset() override;
 
 		static const uint8_t API_ID = RX_16_IO_RESPONSE;
 	};
@@ -403,7 +403,7 @@ namespace lwiot
 
 		XBeeAddress64 &getRemoteAddress64();
 
-		uint8_t getRssiOffset();
+		uint8_t getRssiOffset() override;
 
 		static const uint8_t API_ID = RX_64_IO_RESPONSE;
 	private:
