@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file ntpclient.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -18,15 +20,24 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief NTP client.
+	 * @ingroup net
+	 */
 	class NtpClient {
 	public:
-		explicit NtpClient();
+		explicit NtpClient(); //!< Construct a NTP client.
+
+		/**
+		 * @brief Construct a NTP client.
+		 * @param client UDP client.
+		 */
 		explicit NtpClient(UdpClient& client);
 
-		void begin();
-		void begin(UdpClient& client);
-		bool update();
-		time_t time() const;
+		void begin(); //!< Start the NTP client.
+		void begin(UdpClient& client); //!< Start the NTP client.
+		bool update(); //!< Update the time.
+		time_t time() const; //!< Get the current time.
 
 	private:
 		mutable stl::ReferenceWrapper<UdpClient> _client;
