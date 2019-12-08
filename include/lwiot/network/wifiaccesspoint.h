@@ -5,6 +5,8 @@
  * @email  dev@bietje.net
  */
 
+/// @file wifiaccesspoint.h
+
 #pragma once
 
 #include <stdlib.h>
@@ -17,30 +19,58 @@
 
 namespace lwiot
 {
+	/**
+	 * @brief WiFi access point abstraction.
+	 * @ingroup net
+	 */
 	class WifiAccessPoint {
 	public:
-		explicit WifiAccessPoint();
-		virtual ~WifiAccessPoint() = default;
+		explicit WifiAccessPoint(); //!< Construct a new access point.
+		virtual ~WifiAccessPoint() = default; //!< Destroy an access point object.
 
 		WifiAccessPoint(const WifiAccessPoint&) = delete;
 		void operator =(const WifiAccessPoint&) = delete;
 
-		virtual void start() = 0;
+		virtual void start() = 0; //!< Start the WiFi peripheral.
 
+		/**
+		 * @brief Start the access point.
+		 * @param ssid WiFi SSID.
+		 * @param pass WiFi password.
+		 * @param chan Channel number.
+		 * @param hidden Hidden flag.
+		 * @param max Maximum number of clients.
+		 */
 		virtual void begin(const String& ssid, const String& pass, int chan, bool hidden, int max);
-		virtual void config(const IPAddress& local, const IPAddress& gw, const IPAddress& subnet);
-		virtual operator bool() const = 0;
-		virtual void stop() = 0;
 
-		virtual String mac() const = 0;
+		/**
+		 * @brief Configure the access point.
+		 * @param local Local address.
+		 * @param gw Gateway address.
+		 * @param subnet Subnet.
+		 */
+		virtual void config(const IPAddress& local, const IPAddress& gw, const IPAddress& subnet);
+		virtual operator bool() const = 0; //!< Bool conversion operator.
+		virtual void stop() = 0; //!< Stop the access point.
+
+		virtual String mac() const = 0; //!< Get the MAC address.
+
+		/**
+		 * @brief Get the hostname.
+		 * @return The hostname.
+		 */
 		const String& hostname() const;
+
+		/**
+		 * @brief Set the hostname.
+		 */
 		void setHostname(const String& host);
 
-		const String& ssid() const;
-		const String& password() const;
-		int channel() const;
-		bool hidden() const;
-		int max() const;
+		const String& ssid() const; //!< Get the SSID.
+		const String& password() const; //!< Get the password.
+		int channel() const; //!< Get the channel.
+		bool hidden() const; //!< Get the hidden flag.
+		int max() const; //!< Get the maximum number of alllowed clients.
 
 	protected:
 		IPAddress _local, _gw, _subnet;
