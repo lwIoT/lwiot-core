@@ -5,7 +5,6 @@
  * @email  dev@bietje.net
  */
 
-#include <stdlib.h>
 #include <lwiot.h>
 
 #include <lwiot/types.h>
@@ -13,18 +12,17 @@
 #include <lwiot/system.h>
 
 #include <lwiot/network/xbee/constants.h>
-#include <lwiot/network/xbee/xbeeaddress.h>
 #include <lwiot/network/xbee/xbeeresponse.h>
 #include <lwiot/network/xbee/xbeerequest.h>
 #include <lwiot/network/xbee/xbee.h>
 
 #include <lwiot/stl/move.h>
-#include <lwiot/kernel/uniquelock.h>
 #include <lwiot/network/stdnet.h>
 
 namespace lwiot
 {
-	XBee::XBee() : _response(XBeeResponse())
+	XBee::XBee() : _escape(), _pos(), b(),
+	               _checksumTotal(), _nextFrameId(), _responseFrameData(), _max_payload()
 	{
 		_pos = 0;
 		_escape = false;
@@ -32,15 +30,18 @@ namespace lwiot
 		_nextFrameId = 0;
 
 		_response.init();
-		_response.setFrameData(_responseFrameData);
+		_response.setFrameData(this->_responseFrameData.data());
 	}
 
-	XBee::XBee(const lwiot::XBee &xb)
+	XBee::XBee(const lwiot::XBee &xb) : _escape(), _pos(), b(),
+		_checksumTotal(), _nextFrameId(), _responseFrameData(), _max_payload()
 	{
 		this->copy(xb);
 	}
 
-	XBee::XBee(const lwiot::XBee &&xb) noexcept
+	XBee::XBee(lwiot::XBee &&xb) noexcept : _escape(), _pos(), b(),
+	                                        _checksumTotal(), _nextFrameId(),
+	                                        _responseFrameData(), _max_payload()
 	{
 		this->copy(xb);
 	}
@@ -51,7 +52,7 @@ namespace lwiot
 		return *this;
 	}
 
-	XBee& XBee::operator=(const lwiot::XBee &&xb) noexcept
+	XBee& XBee::operator=(lwiot::XBee &&xb) noexcept
 	{
 		this->copy(xb);
 		return *this;
@@ -90,8 +91,9 @@ namespace lwiot
 		this->_response = rhs._response;
 		this->_nextFrameId = rhs._nextFrameId;
 		this->_serial = rhs._serial;
+		this->_responseFrameData = rhs._responseFrameData;
 
-		memcpy(this->_responseFrameData, rhs._responseFrameData, MAX_FRAME_DATA_SIZE);
+//		memcpy(this->_responseFrameData, rhs._responseFrameData, MAX_FRAME_DATA_SIZE);
 	}
 
 	void XBee::writeToFlash()
