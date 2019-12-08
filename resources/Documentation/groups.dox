@@ -29,3 +29,14 @@
   * @brief A collection of supported device drivers.
   * @see io
   */
+
+ /**
+  * @defgroup net Networking
+  * @brief Network I/O support.
+  */
+
+ /**
+  * @defgroup xb XBee
+  * @ingroup net
+  * @brief XBee sensor network definitions.
+  */
