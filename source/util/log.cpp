@@ -137,7 +137,9 @@ namespace lwiot {
 			vfprintf(this->_f_output, fmt, va);
 		va_end(va);
 
+#ifndef __SAMD51__
 		fflush(this->_f_output);
+#endif
 	}
 
 	Logger::Visibility Logger::visibility() const

@@ -25,7 +25,7 @@ static void vfprint_dbg(const char *prefix, const char *fmt, va_list va)
 	tick = lwiot_tick_ms();
 #ifdef AVR
 	fprintf(dbg_file, "[%lu]", (unsigned long)tick);
-#elif defined(ESP8266)
+#elif defined(ESP8266) || defined(__SAMD51__)
 	fprintf(dbg_file, "[%li]", (long)tick);
 #else
 	fprintf(dbg_file, "[%llu]", (unsigned long long)tick);
@@ -33,7 +33,10 @@ static void vfprint_dbg(const char *prefix, const char *fmt, va_list va)
 
 	fprintf(dbg_file, "%s", prefix);
 	vfprintf(dbg_file, fmt, va);
+
+#ifndef __SAMD51__
 	fflush(dbg_file);
+#endif
 }
 
 #ifdef HAVE_DEBUG
