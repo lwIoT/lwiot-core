@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include <lwiot/compiler.h>
+
 CDECL
 #ifndef HAVE_MUTEX
 typedef void* lwiot_mutex_t;
