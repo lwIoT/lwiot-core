@@ -32,4 +32,9 @@ namespace lwiot
 	{
 		return this->read(pin);
 	}
+
+	int AdcChip::width() const
+	{
+		return this->_width;
+	}
 }

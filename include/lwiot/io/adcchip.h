@@ -51,6 +51,13 @@ namespace lwiot
 		 */
 		size_t operator [](int pin) const;
 
+		/**
+		 * @brief Get the ADC bit width.
+		 * @return The width of the ADC.
+		 * @see AdcChip::toVoltage
+		 */
+		 int width() const;
+
 	protected:
 		/**
 		 * @brief Create a new ADC chip.
