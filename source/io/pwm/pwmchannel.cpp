@@ -17,12 +17,13 @@
 
 namespace lwiot
 {
-	PwmChannel::PwmChannel() : _pin(-1) {}
+	PwmChannel::PwmChannel() : freq_cache(), _pin(-1), _duty()
+	{}
 
-	PwmChannel::PwmChannel(int pin) : _pin(pin)
+	PwmChannel::PwmChannel(int pin) : freq_cache(), _pin(pin), _duty()
 	{ }
 
-	PwmChannel::PwmChannel(const GpioPin& pin) : _pin(pin)
+	PwmChannel::PwmChannel(const GpioPin& pin) : freq_cache(), _pin(pin), _duty()
 	{ }
 
 	const double& PwmChannel::duty() const
