@@ -7,14 +7,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
-#include <lwiot.h>
 
 #include <lwiot/io/dacchip.h>
 
 namespace lwiot
 {
-	DacChip::DacChip(int pins, uint8_t width, uint16_t vref) : _pins(pins), _width(width), _vref(vref)
+	DacChip::DacChip(int pins, uint8_t width, uint16_t vref) : _zero_pin(), _pins(pins), _width(width), _vref(vref)
 	{ }
 
 	void DacChip::begin(bool zeropin)
@@ -46,8 +44,8 @@ namespace lwiot
 	{
 		unsigned long value = 1UL;
 		double val;
-		double voltage = static_cast<double>(volts);
-		double ref = static_cast<double>(this->_vref);
+		auto voltage = static_cast<double>(volts);
+		auto ref = static_cast<double>(this->_vref);
 
 		value <<= this->_width;
 		value -= 1;

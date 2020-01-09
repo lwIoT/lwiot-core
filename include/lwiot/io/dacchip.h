@@ -63,8 +63,6 @@ namespace lwiot
 		 */
 		virtual void write(int pin, const size_t& voltage) = 0;
 
-		explicit DacChip() = delete;
-
 	protected:
 		/**
 		 * @brief Create a new DAC object.
@@ -73,6 +71,8 @@ namespace lwiot
 		 * @param vref Voltage reference.
 		 */
 		explicit DacChip(int pins, uint8_t width, uint16_t vref);
+
+		DacChip() = default; //!< Default constructor.
 
 		/**
 		 * @brief Map a voltage to a DAC value.
