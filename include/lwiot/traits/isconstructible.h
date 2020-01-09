@@ -196,7 +196,7 @@ namespace lwiot
 
 		/// is_default_constructible
 		template<typename _Tp>
-		struct is_default_constructible
+		struct IsDefaultConstructible
 				: public __is_default_constructible_safe<_Tp>::type
 		{ };
 
@@ -211,7 +211,7 @@ namespace lwiot
 		};
 
 		template<typename _Tp>
-		struct __is_constructible_impl<_Tp> : public is_default_constructible<_Tp> {
+		struct __is_constructible_impl<_Tp> : public IsDefaultConstructible<_Tp> {
 		};
 
 		template<typename _Tp, typename... _Args>
