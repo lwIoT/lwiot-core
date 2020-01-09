@@ -35,6 +35,9 @@ target_link_libraries(hostedgpio-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS} ${PYTHON_
 add_executable(json-test json_test.cpp)
 target_link_libraries(json-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
+add_executable(ringbuffer-test ringbuffer_test.cpp)
+target_link_libraries(ringbuffer-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
+
 add_executable(ipaddress-test ipaddress_test.cpp)
 target_link_libraries(ipaddress-test ${PLATFORM} ${LWIOT_SYSTEM_LIBS})
 
